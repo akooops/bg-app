@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\Entreprise;
+use App\Models\Supplier;
+use App\Models\Banker;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
@@ -37,15 +39,38 @@ class RegisteredUserController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|confirmed|min:8',
         ]);
-
-        Auth::login($user = Entreprise::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]));
-
+        if($request->type=='banker'){
+            Auth::login($user = Banker::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'type' => 'banker'
+            ]));
+        }
+        else if($request->type == 'supplier'){
+            Auth::login($user = Supplier::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'type' => 'supplier'
+            ]));
+        }
+        else{
+            Auth::login($user = Entreprise::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'type' => 'entreprise'
+            ]));
+        }
         event(new Registered($user));
-
+        
+        if($user->type=='supplier'){
+            return redirect(RouteServiceProvider::SUPPLIER_HOME);
+        }
+        if($user->type == 'banker'){
+            return redirect(RouteServiceProvider::BANKER_HOME);
+        }
         return redirect(RouteServiceProvider::HOME);
     }
 }

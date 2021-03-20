@@ -9,7 +9,7 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, \Parental\HasChildren;
 
     /**
      * The attributes that are mass assignable.
@@ -20,6 +20,12 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'type'
+    ];
+    protected $childTypes = [
+        'entreprise' => Entreprise::class,
+        'banker' => Banker::class,
+        'supplier' => Supplier::class,
     ];
 
     /**

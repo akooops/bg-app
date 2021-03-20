@@ -44,7 +44,11 @@
                                 type="password"
                                 name="password_confirmation" required />
             </div>
-
+            <x-input id="type" class="block mt-1 w-full"
+                                type="text"
+                                name="type"
+                                value="supplier"
+                                 hidden />
             <div class="flex items-center justify-end mt-4">
                 <a class="underline text-sm text-gray-600 hover:text-gray-900" href="{{ route('login') }}">
                     {{ __('Already registered?') }}
