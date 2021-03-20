@@ -4,18 +4,19 @@ namespace App\Nova;
 
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\ID;
-use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Laravel\Nova\Fields\Currency;
 
-class Department extends Resource
+
+class RawMaterial extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
      * @var string
      */
-    public static $model = \App\Models\Department::class;
+    public static $model = \App\Models\RawMaterial::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
@@ -31,6 +32,7 @@ class Department extends Resource
      */
     public static $search = [
         'id',
+        'name'
     ];
 
     /**
@@ -43,8 +45,12 @@ class Department extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
-            Text::make("Name","name"),
-            Number::make("Nombre d'employées au debut","starting_worker_nb")
+            Text::make('Name')
+                ->sortable()
+                ->rules('required', 'max:255'),
+            Text::make('Unit')
+                ->rules('required', 'max:255'),
+            Currency::make('Price')->currency('EUR'),
         ];
     }
 
@@ -90,5 +96,8 @@ class Department extends Resource
     public function actions(Request $request)
     {
         return [];
+    }
+    public static function label() {
+        return 'Matières Premières';
     }
 }

@@ -4,18 +4,18 @@ namespace App\Nova;
 
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\ID;
-use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\Password;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
-class Department extends Resource
+class Product extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
      * @var string
      */
-    public static $model = \App\Models\Department::class;
+    public static $model = \App\Models\Product::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
@@ -31,6 +31,7 @@ class Department extends Resource
      */
     public static $search = [
         'id',
+        'name'
     ];
 
     /**
@@ -43,8 +44,9 @@ class Department extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
-            Text::make("Name","name"),
-            Number::make("Nombre d'employées au debut","starting_worker_nb")
+            Text::make('Name')
+                ->sortable()
+                ->rules('required', 'max:255'),
         ];
     }
 
@@ -90,5 +92,8 @@ class Department extends Resource
     public function actions(Request $request)
     {
         return [];
+    }
+    public static function label() {
+        return 'Produits';
     }
 }

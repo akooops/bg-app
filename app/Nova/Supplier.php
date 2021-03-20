@@ -4,18 +4,18 @@ namespace App\Nova;
 
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\ID;
-use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\Password;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
-class Department extends Resource
+class Supplier extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
      * @var string
      */
-    public static $model = \App\Models\Department::class;
+    public static $model = \App\Models\Supplier::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
@@ -43,8 +43,20 @@ class Department extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
-            Text::make("Name","name"),
-            Number::make("Nombre d'employées au debut","starting_worker_nb")
+            Text::make('Name')
+                ->sortable()
+                ->rules('required', 'max:255'),
+
+            Text::make('Email')
+                ->sortable()
+                ->rules('required', 'email', 'max:254')
+                ->creationRules('unique:users,email')
+                ->updateRules('unique:users,email,{{resourceId}}'),
+
+            Password::make('Password')
+                ->onlyOnForms()
+                ->creationRules('required', 'string', 'min:8')
+                ->updateRules('nullable', 'string', 'min:8'),
         ];
     }
 
@@ -90,5 +102,8 @@ class Department extends Resource
     public function actions(Request $request)
     {
         return [];
+    }
+    public static function label() {
+        return 'Fournisseurs';
     }
 }
