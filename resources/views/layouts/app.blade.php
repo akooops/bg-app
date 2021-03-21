@@ -14,7 +14,8 @@
         <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 
         <!-- Scripts -->
-        <script src="{{ asset('js/app.js') }}" defer></script>
+        <script src="{{ mix('js/app.js') }}" defer></script>
+        <script src="https://kit.fontawesome.com/97bf32ee89.js" crossorigin="anonymous"></script>
     </head>
     <body class="font-sans antialiased">
         <div id="app" class="min-h-screen bg-gray-100">

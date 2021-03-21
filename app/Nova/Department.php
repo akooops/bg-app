@@ -44,6 +44,7 @@ class Department extends Resource
         return [
             ID::make(__('ID'), 'id')->sortable(),
             Text::make("Name","name"),
+            Text::make("Icon","icon"),
             Number::make("Nombre d'employées au debut","starting_worker_nb")
         ];
     }

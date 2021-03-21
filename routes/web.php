@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\EntrepriseController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -17,9 +19,15 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth','entreprise'])->name('dashboard');
+
+
+
+
+Route::middleware(["auth","entreprise"])->group(function(){
+	
+	Route::get('/dashboard',[EntrepriseController::class,"showDashboard"])->name("dashboard");
+});
+
 
 Route::get('/supplier/dashboard', function () {
     return view('supplier.dashboard');
