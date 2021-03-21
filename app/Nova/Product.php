@@ -7,6 +7,8 @@ use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Password;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use NovaAttachMany\AttachMany;
+use Laravel\Nova\Fields\HasMany;
 
 class Product extends Resource
 {
@@ -47,6 +49,8 @@ class Product extends Resource
             Text::make('Name')
                 ->sortable()
                 ->rules('required', 'max:255'),
+            AttachMany::make("Raw Materials","RawMaterials","App\Nova\RawMaterial")->showCounts()->help("Sélectionnez des matieres premiers pour les ajouter à ce produit"),
+            HasMany::make('RawMaterials')
         ];
     }
 
