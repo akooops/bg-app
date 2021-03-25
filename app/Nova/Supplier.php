@@ -5,6 +5,7 @@ namespace App\Nova;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Password;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
@@ -57,6 +58,9 @@ class Supplier extends Resource
                 ->onlyOnForms()
                 ->creationRules('required', 'string', 'min:8')
                 ->updateRules('nullable', 'string', 'min:8'),
+            Number::make('Taux Prix','rate')->min(1)->max(5)->step(0.01),
+            Number::make('Délai de Livraison Min','ddl_min'),
+            Number::make('Délai de Livraison Max','ddl_max')
         ];
     }
 

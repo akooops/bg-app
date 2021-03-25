@@ -26,6 +26,7 @@ Route::get('/', function () {
 Route::middleware(["auth","entreprise"])->group(function(){
 	
 	Route::get('/dashboard',[EntrepriseController::class,"showDashboard"])->name("dashboard");
+	Route::get('/entreprise/department/Approvisionnement',[EntrepriseController::class,"showDptApprov"])->name("approv");
 });
 
 
