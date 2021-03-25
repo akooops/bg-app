@@ -26,6 +26,9 @@ Route::get('/', function () {
 Route::middleware(["auth","entreprise"])->group(function(){
 	
 	Route::get('/dashboard',[EntrepriseController::class,"showDashboard"])->name("dashboard");
+    Route::get('/entreprise/loans',function(){
+        return view('loans');
+    })->name("loans");
 });
 
 

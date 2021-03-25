@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\BankerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,4 +17,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
+});
+Route::prefix("loan")->group(function(){
+    Route::post('/create', [BankerController::class,"createLoan"]);
+    Route::get('/get', [BankerController::class,"getLoan"]);
+    Route::get('/update', [BankerController::class,"updateLoan"]);
 });
