@@ -2,7 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EntrepriseController;
-
+use App\Models\Command;
+use App\Models\Entreprise;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,10 +24,28 @@ Route::get('/', function () {
 
 
 
-Route::middleware(["auth","entreprise"])->group(function(){
+Route::prefix("entreprise")->middleware(["auth","entreprise"])->group(function(){
 	
 	Route::get('/dashboard',[EntrepriseController::class,"showDashboard"])->name("dashboard");
-	Route::get('/entreprise/department/Approvisionnement',[EntrepriseController::class,"showDptApprov"])->name("approv");
+
+	Route::get('/department/Approvisionnement',[EntrepriseController::class,"showDptApprov"])->name("approv");
+	Route::get('/command/create',[EntrepriseController::class,"showCommandMaker"])->name("approv");
+	Route::get('/stock',[EntrepriseController::class,"showStock"])->name("stock");
+    Route::get('/loans',function(){
+        return view('loans');
+    })->name("loans");
+
+});
+
+Route::prefix("supplier")->middleware(["auth","supplier"])->group(function(){
+	
+	Route::get('/dashboard', function () {
+    	return view('supplier.dashboard');
+	})->name('supplier_dashboard');
+	Route::get('/command/{id}',function ($id) {
+		$entreprise_id = Command::where("command_id","=",$id)->first()->entreprise_id;
+    	return view('supplier.single_command',["command_id"=>$id,"entreprise_id"=>$entreprise_id]);
+	});
 });
 
 

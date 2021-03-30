@@ -23,7 +23,7 @@
                   </td>
                    <td class="py-3 px-6 text-left">
                       <div class="flex items-center">
-                          <input v-model = "commandItem['quantity']" type = "number" class = "rounded border-gray-500 px-2 py-1"/>                                       
+                          <input  v-model = "commandItem['quantity']" type = "number" class = "rounded border-gray-500 px-2 py-1"/>                                       
                       </div>
                   </td>
                   <td class = "text-center">
@@ -52,10 +52,10 @@ export default {
 		return {
 			commandItem:{
 				material: "",
-                supplier: "",
-                price: null,
-                quantity: 0,
-                total_price: null
+        supplier: "",
+        price: null,
+        quantity: 0,
+        total_price: null
 			},
       ddl: {
         min: null,
@@ -73,10 +73,13 @@ export default {
 			}
 
 		},
+    filtered_materials(){
+      return this.materials.filter((mat) => mat.name != this.commandItem.material)
+    },
 		materialPrice(){
 			if(this.commandItem.material != "" && this.commandItem.supplier != ""){
-				let material = this.materials.find((item) => this.	commandItem.material == item.name)
-        let supplier = this.suppliers.find((item) => this.  commandItem.supplier == item.name)
+				let material = this.materials.find((item) => this.commandItem.material == item.name)
+        let supplier = this.suppliers.find((item) => this.commandItem.supplier == item.name)
 				
 				return Math.round(material.price * supplier.rate * 100)/100
 			}
