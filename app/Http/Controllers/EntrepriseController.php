@@ -14,11 +14,11 @@ use Illuminate\Support\Facades\DB;
 use App\Events\CommandCreated;
 use App\Traits\HelperTrait;
 use App\Traits\DemandTrait;
-
+use App\Traits\IndicatorTrait;
 
 class EntrepriseController extends Controller
 {
-    use HelperTrait, DemandTrait;
+    use HelperTrait, DemandTrait, IndicatorTrait;
     function showDashboard(){
     	$departments = Department::all();
     	return view("dashboard",["departments"=>$departments]);

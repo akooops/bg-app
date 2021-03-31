@@ -34,7 +34,8 @@ trait IndicatorTrait{
 
     public function getIndicator($indicator_code,$entreprise_id){
         $indicator = DB::table("indicators")->where("code","=",$indicator_code)->first();
-        $entrep_indicator = DB::table("entreprise_indicator")->where("entreprise_id","=",$entreprise_id)->where("indicator_id","=",$indicator->id)->get();
+        $entrep_indicator = DB::table("entreprise_indicator")->where("entreprise_id","=",$entreprise_id)->where("indicator_id","=",$indicator->id)->first();
+        
         $resp = [
             "name" => $indicator->name,
             "value" => $entrep_indicator->value,
