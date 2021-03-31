@@ -24,3 +24,6 @@ Broadcast::channel('banker_channel', function ($user) {
 Broadcast::channel('entreprise_{id}', function ($user,$id) {
     return (int) $user->id === (int) $id;
 });
+Broadcast::channel('supplier_{id}', function ($user,$id) {
+    return (int)  $user->id == (int) $id;
+});

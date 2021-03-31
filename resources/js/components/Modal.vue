@@ -16,7 +16,7 @@
       leave-class="opacity-100 translate-y-0 md:scale-100"
       leave-to-class="opacity-0 translate-y-4 md:translate-y-0 md:scale-95"
     >
-      <div class="h-96 md:my-8  mx-0 bg-white md:rounded text-left shadow-xl transform transition-all align-bottom"
+      <div class="h-auto md:my-8  mx-0 bg-white md:rounded text-left shadow-xl transform transition-all align-bottom"
       :class="custom_css?custom_css:'w-full md:w-2/3'" 
       role="dialog" aria-modal="true" aria-labelledby="modal-headline">
           <div class=" w-full p-5">

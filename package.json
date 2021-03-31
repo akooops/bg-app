@@ -23,10 +23,13 @@
         "vue-template-compiler": "^2.6.12"
     },
     "dependencies": {
+        "@vue/composition-api": "^1.0.0-rc.6",
+        "echarts": "^5.0.2",
         "font-awesome": "^4.7.0",
         "laravel-echo": "^1.10.0",
         "laravel-echo-server": "^1.6.2",
         "socket.io-client": "2.3.0",
-        "vue": "^2.6.12"
+        "vue": "^2.6.12",
+        "vue-echarts": "^6.0.0-rc.4"
     }
 }
