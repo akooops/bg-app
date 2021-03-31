@@ -7,6 +7,7 @@ use App\Models\Loan;
 use App\Models\Entreprise;
 use Illuminate\Support\Facades\DB;
 use App\Events\LoanCreated;
+use App\Events\NewNotification;
 
 
 class BankerController extends Controller
@@ -32,20 +33,36 @@ class BankerController extends Controller
         return $loans;
     }
     function createLoan(Request $request){
-        Loan::create([
+        $new_loan =  Loan::create([
             "entreprise_id" =>  $request->entreprise_id,
             "banker_id" => Banker::first()->id,
             "status"    => "pending",
             "amount" => $request->amount
         ]);
-        $loan = [
+        $data = [
             "name" => Entreprise::find($request->entreprise_id)->name,
             "status" => "pending",
+            "loan_id" => $new_loan->id,
             "amount" => $request->amount,
             "loan_creation" =>  (new \DateTime())->format('Y-m-d H:i:s')
         ];
-        event(new LoanCreated($loan));
-        return response()->json("Votre demande a été envoyé avec succès", 200);
+        event(new LoanCreated($data));
+        return response()->json("Votre demande a été envoyée avec succès", 200);
 
+    }
+    function updateLoan(Request $request){
+        $loan = Loan::find($request->loan_id);
+        $loan->amount = $request->amount;
+        $loan->status = $request->status;
+        $loan->save();
+        $notification = [
+            "type" => "LoanStatusChanged",
+            "entreprise_id" => $loan->entreprise_id,
+            "data" => $loan,
+            "message" => "Le statut de votre demande d'endettement a changé, veuillez consulter votre banque",
+            "title" => "Demande d'endettement"
+        ];
+        event(new NewNotification($notification));
+        return response()->json("Votre réponse a été envoyée avec succès à l'entreprise concernée", 200);
     }
 }

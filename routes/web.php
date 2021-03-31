@@ -29,8 +29,11 @@ Route::middleware(["auth","entreprise"])->group(function(){
     Route::get('/entreprise/loans',function(){
         return view('loans');
     })->name("loans");
-});
 
+    Route::get('/entreprise/department/Marketing', function () {
+        return view('departments.marketing');
+    });
+});
 
 Route::get('/supplier/dashboard', function () {
     return view('supplier.dashboard');

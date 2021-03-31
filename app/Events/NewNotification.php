@@ -10,19 +10,19 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class LoanStatusChanged implements ShouldBroadcast
+class NewNotification implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $loan;
+    public $notification;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($loan)
+    public function __construct($notification)
     {
-        $this->loan = $loan;
+        $this->notification = $notification;
     }
 
     /**
@@ -32,6 +32,6 @@ class LoanStatusChanged implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('entreprise_' .$this->loan['entreprise_id']);
+        return new Channel('entreprise_' .$this->notification['entreprise_id']);
     }
 }

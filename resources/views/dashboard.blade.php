@@ -18,7 +18,7 @@
         </div>
         <div class="w-1/3 ml-8 my-2 max-w-sm overflow-hidden rounded border bg-white shadow">
 		<div class="flex h-32 justify-center items-center">
-			<i class="fas fa-3x fa-coins text-blue-500 text-6xl"></i>
+			<i class="fas fa-3x fa-university text-blue-500 text-6xl"></i>
 		</div>
 		<div class="p-3 text-center">
 			<h3 class=" text-lg font-extrabold mb-4 truncate-2nd">

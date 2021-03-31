@@ -1,6 +1,7 @@
 <template>
     <div>
         <div v-if="mounted">
+            <p v-if="message!=''" class="text-green-600 font-bold">{{message}}</p>
             <p v-if="loans.length==0">Il n'y a pas de demandes pour l'instant</p>
             <table v-else class="border-collapse w-full">
                 <thead>
@@ -22,7 +23,7 @@
                             15.22
                         </td>
                         <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
-                            <input type="text" v-model="loans[key].amount" :disabled="loan.status!='pending'"/>
+                            <input type="text" v-model="loans[key].amount"/>
                         </td>
                         <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
                             {{loan.loan_creation}}
@@ -31,11 +32,11 @@
                             <select v-model="loans[key].status">
                                 <option value="pending">En Attente</option>
                                 <option value="accepted">Accepté</option>
-                                <option value="refused">Refusé</option>
+                                <option value="rejected">Refusé</option>
                             </select>
                         </td>
                          <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
-                            <button :disabled="loans[key].status!='pending'" class="bg-green-400 hover:bg-green-800  text-white py-2 px-4 rounded"  @click="updateLoan(loan,key)">Envoyer</button>
+                            <button  class="bg-green-400 hover:bg-green-800  text-white py-2 px-4 rounded"  @click="updateLoan(loan,key)">Envoyer</button>
                         </td>
                     </tr>
                 </tbody>
@@ -52,6 +53,7 @@ export default {
     return{
         loans : [],
         mounted:false,
+        message:'',
     }
  },
  methods:{
@@ -59,6 +61,14 @@ export default {
     axios.get('/api/loan/get').then(response =>{
        this.loans = response.data
        this.mounted = true
+    })
+    .catch(function (error) {
+        
+    });
+    },
+    updateLoan(loan,key){
+    axios.post('/api/loan/update',this.loans[key]).then(response =>{
+       this.message = response.data
     })
     .catch(function (error) {
         

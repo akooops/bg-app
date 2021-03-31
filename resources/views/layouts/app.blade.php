@@ -27,9 +27,10 @@
                     {{ $header }}
                 </div>
             </header>
-
+            
             <!-- Page Content -->
             <main>
+            <notification v-bind:user="{{auth()->user()}}"></notification>
                 {{ $slot }}
             </main>
         </div>

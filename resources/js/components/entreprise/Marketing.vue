@@ -1,13 +1,13 @@
 <template>
     <div>
-        <Modal v-if="loan_modal" class="align-center" custom_css="w-1/3">
+        <Modal v-if="ad_modal" class="align-center" custom_css="w-1/3">
 	<template v-slot:content>
-		<h3 class="text-2xl font-bold mb-4">Demande d'endettement</h3>
+		<h3 class="text-2xl font-bold mb-4">Nouvelle compagne</h3>
 		<p v-if="message!=''" class="text-green-500" >{{message}}</p>
 		<p v-if="error_message!=''" class="text-red-600">{{error_message}}</p>
 		<div class="relative h-10 input-component mb-5">
 			<label for="amount" class=" left-2 transition-all bg-white px-1">
-				Montant à endetter
+				Montant 
 			</label>
 			<input
 				id="amount"
@@ -19,25 +19,30 @@
 			
 		</div>
 		<div class="mt-12">
-			<input type="checkbox" @change="checkboxChanged" :checked="accept" class="focus:ring-gray-500 h-4 w-4 text-gray-600 border-gray-150 rounded"> 
-			<label>Je veillerai, moi le representant de l'entreprise <span class="font-bold">{{entreprise.name}}</span>  à honorer les termes du contrat.</label>
+            <label>Type</label>
+			<select v-model="type">
+                <option value="social">Réseaux sociaux</option>
+                <option value="tv">Télé</option>
+                <option value="sponsoring">Sponsoring</option>
+            </select>
 		</div>
+        <p>Le résultat prévisionnel : <span class="text-green-600">+230 abonnées</span> </p>
 		<div class="flex">
-		<button class="bg-green-400 hover:bg-green-800  text-white px-3 py-2 rounded w-1/2 mt-4 mr-2"  @click="createLoan">S'endetter</button>
+		<button class="bg-green-400 hover:bg-green-800  text-white px-3 py-2 rounded w-1/2 mt-4 mr-2"  @click="createAd">Créer</button>
 		<button class="bg-gray-200 active:bg-gray-600 hover:bg-gray-400 text-back px-3 py-2 rounded w-1/2 mt-4" @click="closeModal">Annuler</button>
 		</div>
 	</template>
 	</Modal>
         <div v-if="mounted">
         <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 bg-white border-b border-gray-200">
-            <div v-if="loans.length==0" class="text-center">
-                <p>Il semble que vous n'aviez pas encore créer votre première demande d'endettement</p>
-                <button class="bg-green-400 hover:bg-green-800  text-white px-3 py-2 rounded w-1/2 mt-4 mr-2"  @click="openModal">Créer ma première demande d'endettement</button>
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 bg-white overflow-hidden sm:rounded-lg p-6 bg-white ">
+            <div v-if="ads.length==0" class="text-center">
+                <p>Il semble que vous n'aviez pas encore créer votre première compagne publicitaire</p>
+                <button class="bg-green-400 hover:bg-green-800  text-white px-3 py-2 rounded w-1/2 mt-4 mr-2"  @click="openModal">Créer ma première compagne publicitaire</button>
             </div>
             <div v-else>
                 <div class="text-right mb-2">
-                <button class="bg-green-400 hover:bg-green-800  text-white px-3 py-2 rounded text-right"  @click="openModal">Créer une nouvelle demande d'endettement</button>
+                <button class="bg-green-400 hover:bg-green-800  text-white px-3 py-2 rounded text-right"  @click="openModal">Créer une nouvelle compagne publicitaire</button>
                 </div>
             <table  class="border-collapse w-full">
                 <thead>
@@ -49,18 +54,18 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="loan in loans" v-bind:key="loan.loan_id" class="bg-white lg:hover:bg-gray-100 flex lg:table-row flex-row lg:flex-row flex-wrap lg:flex-no-wrap mb-10 lg:mb-0">
+                    <tr v-for="ad in ads" v-bind:key="ad.ad_id" class="bg-white lg:hover:bg-gray-100 flex lg:table-row flex-row lg:flex-row flex-wrap lg:flex-no-wrap mb-10 lg:mb-0">
                         <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
                             Banque Sponsor 
                         </td>
                         <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
-                            {{loan.amount}}
+                            {{ad.amount}}
                         </td>
                         <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
-                            {{loan.loan_creation}}
+                            {{ad.ad_creation}}
                         </td>
                         <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
-                            {{loan.status}}
+                            {{ad.type}}
                         </td>
                     </tr>
                 </tbody>
@@ -69,7 +74,7 @@
         </div>
         </div>
         </div>
-        <div v-else>Veillez attendre svp ... </div>
+        <div v-else>Veuillez attendre svp ... </div>
     </div>
 </template>
 
@@ -79,12 +84,12 @@ import Modal from '../Modal.vue'
 export default {
  props:['entreprise'],
  components:{ Modal },
- name:"EntrepriseLoanListing",
+ name:"Marketing",
  data(){
     return{
-        loans : [],
+        ads : [],
         mounted:false,
-        loan_modal:false,
+        ad_modal:false,
         amount:null,
         message:'',
         error_message:'',
@@ -92,10 +97,10 @@ export default {
     }
  },
  methods:{
-    getLoans(){
-    axios.get('/api/loan/get',{
+    getAds(){
+    axios.get('/api/marketing/get',{
   params: {entreprise_id:this.entreprise.id}}).then(response =>{
-       this.loans = response.data
+       this.ads = response.data
        this.mounted = true
     })
     .catch(function (error) {
@@ -103,23 +108,23 @@ export default {
     });
     },
     openModal(){
-		this.loan_modal = true
+		this.ad_modal = true
 	},
 	closeModal(){
 		this.message = ''
 		this.errr_messsage=''
-		this.loan_modal = false
+		this.ad_modal = false
 	},
 	checkboxChanged(){
 		this.accept = !this.accept
 	},
-	createLoan(){
+	createAd(){
 		if(this.amount!=null && this.accept){
-			axios.post("/api/loan/create",{entreprise_id:this.entreprise.id,amount:this.amount}).then(resp=>{
+			axios.post("/api/ad/create",{entreprise_id:this.entreprise.id,amount:this.amount}).then(resp=>{
 			this.message = resp.data
-            this.loans.unshift({
+            this.ads.unshift({
                 amount : this.amount,
-                loan_creation: new Date().toLocaleString(),
+                ad_creation: new Date().toLocaleString(),
                 status : "pending"
             })
     	})
@@ -131,17 +136,19 @@ export default {
 	}
  },
  mounted(){
-   this.getLoans()
+   this.getAds()
+    /*
     window.Echo.channel("entreprise_"+this.entreprise.id)
     .listen('NewNotification', (e) => {
-        if(e.notification.type=='LoanStatusChanged'){
-            let index = this.loans.findIndex(loan => loan.loan_id == e.notification.data.id)
-            this.loans[index].amount = e.notification.data.amount
-            this.loans[index].status = e.notification.data.status
+        if(e.notification.type=='AdStatusChanged'){
+            let index = this.ads.findIndex(ad => ad.ad_id == e.notification.data.id)
+            this.ads[index].amount = e.notification.data.amount
+            this.ads[index].status = e.notification.data.status
             this.$forceUpdate()
-            //this.loans.unshift(e.notification.data)
+            //this.ads.unshift(e.notification.data)
         }
     })
+    */
  }
 }
 </script>
