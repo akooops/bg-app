@@ -8,14 +8,17 @@ use App\Models\Entreprise;
 use App\Models\RawMaterial;
 use App\Models\Supplier;
 use App\Models\Command;
+use App\Models\Product;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\DB;
 use App\Events\CommandCreated;
 use App\Traits\HelperTrait;
+use App\Traits\DemandTrait;
+
 
 class EntrepriseController extends Controller
 {
-    use HelperTrait;
+    use HelperTrait, DemandTrait;
     function showDashboard(){
     	$departments = Department::all();
     	return view("dashboard",["departments"=>$departments]);
@@ -26,13 +29,18 @@ class EntrepriseController extends Controller
     	$suppliers = Supplier::all();
     	return view("departments.approv",["materials"=>$raw_materials,"suppliers"=>$suppliers]); 
     }
+        // Departments view routes
+    function showDptProduction(Request $request){
+        $products = Product::all();
+        return view("departments.production",["products"=>$products]); 
+    }
     function showCommandMaker(Request $request){
         $raw_materials = RawMaterial::all();
         $suppliers = Supplier::all();
         return view("departments.widgets.command_maker",["materials"=>$raw_materials,"suppliers"=>$suppliers]); 
     }
     function showStock(Request $request){
-        
+        $products = Product::all()->toArray();
         return view("departments.widgets.stock"); 
     }
 
@@ -145,6 +153,17 @@ class EntrepriseController extends Controller
             });
         }
         return $data->toArray();
-
     }
+
+    public function getProdIndicators(Request $request){
+        $keys = ["machines","nb_workers_prod","ca"];
+        $entreprise_id = $request->entreprise_id;
+        $resp = [];
+        foreach ($keys as $ind) {
+            $value = $this->getIndicator($ind,$entreprise_id);
+            $resp[$ind] = $value;
+        }
+        return $resp;
+    }
+
 }

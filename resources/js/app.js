@@ -3,8 +3,10 @@ require('./bootstrap');
 import Vue from "vue"
 
 Vue.component('departmentcard', require('./components/DepartmentCard.vue').default);
-
+// Departments
 Vue.component('approvdepartment', require('./components/departments/ApprovDepartment.vue').default);
+Vue.component('productiondepartment', require('./components/departments/ProductionDepartment.vue').default);
+
 Vue.component('commandmaker', require('./components/departments/ui/CommandMaker.vue').default);
 Vue.component('stock', require('./components/departments/ui/Stock.vue').default);
 Vue.component('entrepriseloanlisting', require('./components/entreprise/LoanListing.vue').default);

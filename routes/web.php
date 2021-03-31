@@ -29,6 +29,7 @@ Route::prefix("entreprise")->middleware(["auth","entreprise"])->group(function()
 	Route::get('/dashboard',[EntrepriseController::class,"showDashboard"])->name("dashboard");
 
 	Route::get('/department/Approvisionnement',[EntrepriseController::class,"showDptApprov"])->name("approv");
+	Route::get('/department/Production',[EntrepriseController::class,"showDptProduction"])->name("production");
 	Route::get('/command/create',[EntrepriseController::class,"showCommandMaker"])->name("approv");
 	Route::get('/stock',[EntrepriseController::class,"showStock"])->name("stock");
     Route::get('/loans',function(){

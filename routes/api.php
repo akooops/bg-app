@@ -29,7 +29,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::prefix("entreprise")->group(function(){
 	Route::get("/commands",[EntrepriseController::class,"getEntrepriseCommands"]);
 	Route::get("/stock",[EntrepriseController::class,"getStock"]);
+	Route::get("/production/indicators",[EntrepriseController::class,"getProdIndicators"]);
+});
 
+Route::prefix("demand")->group(function(){
+	Route::get("/prev",[EntrepriseController::class,"getProductDemandPrev"]);
 });
 
 Route::prefix("command")->group(function(){
@@ -46,3 +50,5 @@ Route::prefix("loan")->group(function(){
     Route::get('/update', [BankerController::class,"updateLoan"]);
 });
 
+
+Route::get("/products",[EntrepriseController::class,"getProducts"]);
