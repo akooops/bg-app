@@ -5,6 +5,8 @@ namespace App\Nova;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\Boolean;
+use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 class Indicator extends Resource
@@ -44,6 +46,9 @@ class Indicator extends Resource
             ID::make(__('ID'), 'id')->sortable(),
             Text::make("Nom","name")->sortable(),
             Text::make("Code","code"),
+            Number::make("Valeur Par Défaut","starting_value")->step(0.01),
+            Boolean::make("KPI Financier ?","is_financial")
+            
         ];
     }
 

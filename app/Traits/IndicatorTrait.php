@@ -12,7 +12,7 @@ trait IndicatorTrait{
 	public function updateIndicator($indicator_code,$entreprise_id,$value){
         $indicator = DB::table("indicators")->where("code","=",$indicator_code)->first();
         $entrep_indicator = DB::table("entreprise_indicator")->where("entreprise_id","=",$entreprise_id)->where("indicator_id","=",$indicator->id);
-        if(count($entreprise_indicator->get()->toArray()) == 0){
+        if(count($entrep_indicator->get()->toArray()) == 0){
             // Create indicator
             DB::table("entreprise_indicator")->insert([
                 "indicator_id" =>  $indicator->id,

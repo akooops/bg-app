@@ -1,6 +1,16 @@
  <template>
 	<div class = "w-full">
-		<h1 class = "text-lg font-extrabold "> Analyse de la Demande</h1>
+		<div class = "w-full">
+			<button v-if = "show_decision_center==false" @click = "show_decision_center = true" class = "bg-green-500 p-3 rounded-sm text-white">Ouvrir le centre de décision</button>
+			<button v-if = "show_decision_center" @click = "show_decision_center=false"  class = "bg-green-500 p-3 rounded-sm text-white">Revenir aux statistiques</button>
+		</div>
+		<div v-if = "show_decision_center == false">
+		<div v-if = "show_stat_cards" class = "flex flex-wrap w-full justify-between py-3">
+			<StatCard title = "Chiffre d'Affaire" color = "text-green-500"  icon = "fa-money" :value = "indicators['ca'].value"></StatCard>
+			<StatCard title = "Machines" color = "text-gray-600" icon = "fa-cogs" :value = "indicators['machines'].value"></StatCard>
+			<StatCard title = "Nb. Employés" color = "text-indigo-600"  icon = "fa-users" :value = "indicators['nb_workers_prod'].value"></StatCard>
+		</div>
+		<h1  class = "text-lg font-extrabold "> Analyse de la Demande</h1>
 		<div v-if = "show_market_demand" class = "flex flex-wrap bg-white justify-center items-center my-3">
 		<div v-for = "(prod,i) in prod_data" class = "w-1/2 rounded  mt-2">
 			<h2 class = "font-extrabold text-lg px-2">Demande Prévisionelle - {{products[i].name}} </h2>
@@ -9,6 +19,10 @@
 			:y-data = "prod.demand"
 			></LineGraph>
 		</div>
+		</div>
+	</div>
+	<div v-if = "show_decision_center" >
+		<ProdCenter :products = "products"></ProdCenter>
 	</div>
 	</div>
 
@@ -17,25 +31,26 @@
 <script type="text/javascript">
 
 import LineGraph from "./ui/LineGraph";
-
-
-
-
-
+import StatCard from "./ui/StatCard";
+import ProdCenter from "./ProdCenter"
 export default {
 	name: "ProductionDepartment",
 	components:{
-		LineGraph
+		LineGraph,
+		StatCard,
+		ProdCenter
 	},
-	props: ["products"],
+	props: ["products","user"],
 	data(){
 		return {
 			market_demand: [],
 			id_list: [1,2,3,4],
 			prod_data: [],
 			show_market_demand: false,
+			show_stat_cards: false,
 			products: [],
-			indicators: null
+			indicators: {},
+			show_decision_center: false
 		}
 	},
 	methods:{
@@ -45,6 +60,7 @@ export default {
 				entreprise_id: this.user.id
 			}}).then((resp)=>{
 				this.indicators = resp.data
+				this.show_stat_cards = true
 			});
 		},
 		async getMarketDemands(){
@@ -59,6 +75,7 @@ export default {
 		}
 	},
 	mounted(){
+		this.getProdNumbers()
 		this.getMarketDemands()
 	}
 
