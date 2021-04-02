@@ -9,6 +9,7 @@ use App\Models\Entreprise;
 use App\Models\Supplier;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Response;
+use App\Jobs\AddToStock;
 class SupplierController extends Controller
 {
     public function getAllCommands(Request $request){
@@ -87,8 +88,8 @@ class SupplierController extends Controller
 
 
     }
-        // Should be queued
-    $this->addToStock($stocks,$full_cost);
+    AddToStock::dispatch($stocks,$full_cost)
+    ->delay(now()->addMinutes($delay));
     return Response::json(["message" => "La commande a été validé
       , vous serez renvoyé vers le dashboard dans 4 secondes "],200);
 }
