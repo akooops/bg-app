@@ -30,6 +30,7 @@
         "laravel-echo-server": "^1.6.2",
         "socket.io-client": "2.3.0",
         "vue": "^2.6.12",
-        "vue-echarts": "^6.0.0-rc.4"
+        "vue-echarts": "^6.0.0-rc.4",
+        "vuejs-datepicker": "^1.6.2"
     }
 }

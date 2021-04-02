@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Modal v-if="ad_modal" class="align-center" custom_css="w-1/3">
+    <Modal v-if="ad_modal" class="align-center" custom_css="w-1/3">
 	<template v-slot:content>
 		<h3 class="text-2xl font-bold mb-4">Nouvelle compagne</h3>
 		<p v-if="message!=''" class="text-green-500" >{{message}}</p>
@@ -26,7 +26,17 @@
                 <option value="sponsoring">Sponsoring</option>
             </select>
 		</div>
-        <p>Le résultat prévisionnel : <span class="text-green-600">+230 abonnées</span> </p>
+        <div class="flex pb-6 justify-center">
+            <div class="mr-2">
+                <label class="text-left	"> Date Début </label>
+                <datepicker v-model="start_date" placeholder="Choisissez" :language="fr" :bootstrap-styling="true"></datepicker>
+            </div>
+            <div>
+                <label class="text-left"> Date Fin </label>
+                <datepicker v-model="end_date" placeholder="Choisissez" :language="fr" :bootstrap-styling="true"></datepicker>
+            </div>
+        </div>
+        <p>Le résultat prévisionnel : <span class="text-green-600">{{predictedFollowers}} abonnées</span> </p>
 		<div class="flex">
 		<button class="bg-green-400 hover:bg-green-800  text-white px-3 py-2 rounded w-1/2 mt-4 mr-2"  @click="createAd">Créer</button>
 		<button class="bg-gray-200 active:bg-gray-600 hover:bg-gray-400 text-back px-3 py-2 rounded w-1/2 mt-4" @click="closeModal">Annuler</button>
@@ -56,7 +66,7 @@
                 <tbody>
                     <tr v-for="ad in ads" v-bind:key="ad.ad_id" class="bg-white lg:hover:bg-gray-100 flex lg:table-row flex-row lg:flex-row flex-wrap lg:flex-no-wrap mb-10 lg:mb-0">
                         <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
-                            Banque Sponsor 
+                           {{ad.type}}
                         </td>
                         <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
                             {{ad.amount}}
@@ -80,20 +90,37 @@
 
 <script>
 import Modal from '../Modal.vue'
+import Datepicker from 'vuejs-datepicker';
+import {fr} from 'vuejs-datepicker/dist/locale'
 
 export default {
  props:['entreprise'],
- components:{ Modal },
+ components:{ Modal,Datepicker },
  name:"Marketing",
  data(){
     return{
+        fr:fr,
         ads : [],
         mounted:false,
         ad_modal:false,
         amount:null,
         message:'',
         error_message:'',
-        accept: false,
+        type:'',
+        duration:null,
+        ad_coef:0.8,
+        type_coef:{
+            social:1.2,
+            tv: 0.8,
+            sponsoring:1,
+        },
+        start_date:null,
+        end_date:null,
+    }
+ },
+ computed:{
+    predictedFollowers:function(){
+       return this.ad_coef*this.type_coef[this.type]*this.amount*this.duration*50
     }
  },
  methods:{
