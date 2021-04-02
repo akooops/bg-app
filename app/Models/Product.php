@@ -24,4 +24,5 @@ class Product extends Model
     {
         return $this->belongsToMany('App\Models\RawMaterial','raw_materials_products')->withPivot(["quantity"]);
     }
+    
 }
