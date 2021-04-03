@@ -5,15 +5,9 @@
 		<h3 class="text-2xl font-bold mb-4">Nouvelle compagne</h3>
 		<p v-if="message!=''" class="text-green-500" >{{message}}</p>
 		<p v-if="error_message!=''" class="text-red-600">{{error_message}}</p>
-        <div class="mt-12 mb-3">
-            <label class=" left-2 transition-all bg-white px-1">Selectionnez le produit a promouvoir </label>
-			<select v-model="new_ad.product" class="h-full w-full rounded-sm">
-                <option  v-for="product in products" v-bind:key="product.id" :value="product.id">{{product.name}}</option>
-            </select>
-		</div>
 		<div class="relative h-10 input-component mb-3">
 			<label for="amount" class=" left-2 transition-all bg-white px-1">
-				Montant en KDA
+				Budget journalier en KDA
 			</label>
 			<input
 				id="amount"
@@ -42,13 +36,18 @@
                 <datepicker v-model="new_ad.end_date" placeholder="Choisissez" :language="fr" :bootstrap-styling="true"></datepicker>
             </div>
         </div>
-        <p>Le résultat prévisionnel : <span class="text-green-600">{{predictedFollowers}} abonnées</span> </p>
+        <p>Le résultat prévisionnel journalier: <span class="text-green-600">{{predictedFollowers}} abonnés/jour</span> </p>
+        <p>Le résultat prévisionnel total: <span class="text-green-600">{{totalPredictedFollowers}} abonnés</span> </p>
+        <p>Le montant total de cette campagne s'élève à <span class="text-yellow-500">{{total_amount}} KDA</span></p>
 		<div class="flex">
 		<button class="bg-green-400 hover:bg-green-800  text-white px-3 py-2 rounded w-1/2 mt-4 mr-2"  @click="createAd">Créer</button>
 		<button class="bg-gray-200 active:bg-gray-600 hover:bg-gray-400 text-back px-3 py-2 rounded w-1/2 mt-4" @click="closeModal">Annuler</button>
 		</div>
 	</template>
 	</Modal>
+    <div class="flex">
+        <StatCard class="mr-3" v-for="(key,id) in Object.keys(indicators)" v-bind:key="id" :title="indicators[key].name" color="text-green-500"  :icon="icons[id]" :value="indicators[key].value"></StatCard>
+    </div>
         <div v-if="mounted">
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 bg-white overflow-hidden sm:rounded-lg p-6 bg-white ">
@@ -56,32 +55,45 @@
                 <p>Il semble que vous n'aviez pas encore créer votre première compagne publicitaire</p>
                 <button class="bg-green-400 hover:bg-green-800  text-white px-3 py-2 rounded w-1/2 mt-4 mr-2"  @click="openModal">Créer ma première compagne publicitaire</button>
             </div>
-            <div v-else>
-                <div class="text-right mb-2">
+            <div v-else >
+                <div class="flex">
+                <p class="mt-2">Vous avez lancé <span class="font-bold">{{ads.length}}</span> campagne(s) publicitaire(s)</p>
+                <div class="text-right mb-2 flex-1">
                 <button class="bg-green-400 hover:bg-green-800  text-white px-3 py-2 rounded text-right"  @click="openModal">Créer une nouvelle compagne publicitaire</button>
+                </div>
                 </div>
             <table  class="border-collapse w-full">
                 <thead>
                     <tr>
-                        <th class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">Banque</th>
-                        <th class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">Montant/ Montant accepté</th>
-                        <th class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">Date de creation</th>
+                        <th class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">Type de campagne</th>
+                        <th class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">Montant</th>
+                        <th class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">Date début</th>
+                        <th class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">Date fin</th>
                          <th class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">Statut</th>
+                         <th class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">Résultat prévisionnel/Réel</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="ad in ads" v-bind:key="ad.ad_id" class="bg-white lg:hover:bg-gray-100 flex lg:table-row flex-row lg:flex-row flex-wrap lg:flex-no-wrap mb-10 lg:mb-0">
                         <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
-                           {{ad.type}}
+                           {{ad.ad_type}}
                         </td>
                         <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
                             {{ad.amount}}
                         </td>
                         <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
-                            {{ad.ad_creation}}
+                            {{ad.start_date}}
                         </td>
-                        <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
-                            {{ad.type}}
+                         <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
+                            {{ad.end_date}}
+                        </td>
+                        <td class="w-full lg:w-auto p-3 font-bold text-center border border-b block lg:table-cell relative lg:static"
+                        :class="ad.status=='Terminé'?'text-green-600':'text-yellow-500'">
+                            {{ad.status}}
+                        </td>
+
+                         <td class="w-full lg:w-auto p-3 text-gray-800 font-bold text-center border border-b block lg:table-cell relative lg:static">
+                            {{ad.result}}
                         </td>
                     </tr>
                 </tbody>
@@ -98,10 +110,10 @@
 import Modal from '../Modal.vue'
 import Datepicker from 'vuejs-datepicker';
 import {fr} from 'vuejs-datepicker/dist/locale'
-
+import StatCard from './ui/StatCard.vue';
 export default {
- props:['entreprise','products','ad_coef'],
- components:{ Modal,Datepicker },
+ props:['entreprise','ad_coef'],
+ components:{ Modal,Datepicker,StatCard },
  name:"Marketing",
  data(){
     return{
@@ -110,6 +122,7 @@ export default {
         mounted:false,
         ad_modal:false,
         message:'',
+        indicators:[],
         error_message:'',
         type_coef:{
             social:1.2,
@@ -121,20 +134,36 @@ export default {
             end_date:null,
             amount:null,
             type:null,
-            product:null,
         },
+        icons:[
+            "fa-users",
+            "fa-hashtag",
+            "fa-tv",
+            "fa-calendar-week"
+        ]
         
     }
  },
  computed:{
     predictedFollowers:function(){
+        if(this.new_ad.amount == null || this.new_ad.type == null){
+            return 0
+        }
+        return parseInt(this.ad_coef*this.type_coef[this.new_ad.type]*this.new_ad.amount*50)
+    },
+    totalPredictedFollowers(){
         if(this.notValidated()){
             return 0
         }
-        let product_id =  this.products.findIndex(elem => elem.id == this.new_ad.product)
-        let ad_product = this.products[product_id].ad_coef
-        let months=Math.abs((this.new_ad.start_date - this.new_ad.end_date) / (24 * 60 *60*60 * 1000))
-        return parseInt(this.ad_coef*this.type_coef[this.new_ad.type]*this.new_ad.amount*months*50*ad_product)
+        let days=Math.abs((this.new_ad.start_date - this.new_ad.end_date) / (24 * 60 *60 * 1000))
+        return parseInt(this.ad_coef*this.type_coef[this.new_ad.type]*this.new_ad.amount*days*50)
+    },
+    total_amount(){
+        if(this.notValidated()){
+            return 0
+        }
+         let days=Math.abs((this.new_ad.start_date - this.new_ad.end_date) / (24 * 60 *60 * 1000))
+        return this.new_ad.amount*days
     }
  },
  methods:{
@@ -148,6 +177,15 @@ export default {
         
     });
     },
+    getIndicators(){
+			// Numbers to show in cards
+        axios.get("/api/entreprise/marketing/indicators",{params:{
+            entreprise_id: this.entreprise.id
+        }}).then((resp)=>{
+            this.indicators = resp.data
+            //this.show_stat_cards = true
+        });
+		},
     openModal(){
 		this.ad_modal = true
 	},
@@ -158,13 +196,14 @@ export default {
 	},
     notValidated(){
         return this.new_ad.start_date == null || this.new_ad.end_date == null 
-        || this.new_ad.amount == null || this.new_ad.type == null || this.new_ad.product == null
+        || this.new_ad.amount == null || this.new_ad.type == null
     },
 	createAd(){
 		if(!this.notValidated()){
             this.new_ad.entreprise_id = this.entreprise.id
             this.new_ad.duration = Math.abs((this.new_ad.start_date - this.new_ad.end_date) / (24 * 60 *60*60 * 1000))
 			this.new_ad.result = this.predictedFollowers
+            this.new_ad.amount = this.total_amount
             axios.post("/api/marketing/create",this.new_ad).then(resp=>{
 			this.message = resp.data
             /*
@@ -184,6 +223,7 @@ export default {
  },
  mounted(){
    this.getAds()
+   this.getIndicators()
     /*
     window.Echo.channel("entreprise_"+this.entreprise.id)
     .listen('NewNotification', (e) => {

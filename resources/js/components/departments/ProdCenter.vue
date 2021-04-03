@@ -65,18 +65,26 @@
 					<option :value = "prod.id" v-for = "prod in products">{{prod.name}}</option>
 				</select>
 				<p class = "my-1 mx-4" v-model = "launch_data.quantity">Quantité (en lot de 100 pièces)</p>
-				<input v-model = "launch_data.quantity" class="mx-4 w-1/3" type = "number"/>
+				<input v-model = "launch_data.quantity" class="mx-4 w-2/3" type = "number"/>
 				<p class = "my-1 mx-4" >Prix (Unitaire)</p>
-				<input class = "mx-4 w-1/3" v-model = "launch_data.price" type = "number"/>
+				<input class = "mx-4 w-2/3" v-model = "launch_data.price" type = "number"/>
+				<div class = "h-auto flex items-center">
+				<button @click = "launchProduction" class = "bg-blue-400 mx-4 my-2 py-1 px-4 text-white">Lancer ! </button></div>
 				</div>
 				<div class = "w-1/2">
 					<h1 class = "font-bold text-xl">Informations Importantes</h1>
+					<h2 class = "font-bold text-lg">Nécessite: </h2>
+					<p>- Machines x <span class = "text-blue-700 font-bold">{{selectedProd.machine_units}}</span> et 
+					 Employés x <span class = "text-blue-700 font-bold">{{selectedProd.labor_units}}</span></p>
+					 <p v-for = "material in selectedProd.raw_materials">- {{material.name}} x <span class = "text-blue-700 font-bold"> {{material.pivot.quantity}} </span></p>
 					<h2 class = "font-bold text-lg">Prévisions: </h2>
-					<p>- Chiffre d'Affaire Estimé: {{launch_data.price * launch_data.quantity * 100 * 0.95}} UM</p>
-					<p>- Coût Total Estimé: {{launch_data.price * launch_data.quantity * 100 * 0.95}} UM</p>
-					<p></p>
+					<p>- Chiffre d'Affaire Estimé : <span class = "font-bold text-indigo-500"> {{salesRevenues}} UM</span></p>
+					<p>- Coût Total Estimé : <span class = "font-bold text-red-500"> {{totalCost}} UM</span></p>
+					<p>- Profit Estimé : <span :class = "profit >= 0 ? 'text-green-500':'text-red-400'" class = "font-bold "> {{profit}} UM</span></p>
+					<p>- Durée de production : <span  class = "text-yellow-500 font-bold "> {{prodDelay}} j</span></p>
+					
 					<h2 class = "text-sm font-bold">Remarques: </h2>					<p class = "text-xs font-bold">- Les prévisions sont calculés dans le cas ou toutes la quantité produite est vendue</p>
-					<p class="text-xs font-bold">- Votre taux de rebuts est de 5%</p>
+					<p class="text-xs font-bold">- Votre taux de rebut est de {{indicators["reject_rate"].value * 100}}%, pour le réduire, lancez une étude AMDEC.</p>
 				</div>
 			</div>
 			</template>	
@@ -91,12 +99,12 @@ import Modal from "../Modal"
 export default{
 	name: "ProdCenter",
 	components:{Modal},
-	props: ["products"],
+	props: ["products","indicators","user"],
 	data(){
 		return {
-			launch_prod_modal: true,
+			launch_prod_modal: false,
 			launch_data:{
-				prod_id: 0,
+				prod_id: 1,
 				price: 10,
 				quantity: 1
 			},
@@ -105,9 +113,36 @@ export default{
 	computed:{
 		selectedProd(){
 			return this.products.find(item => item.id == this.launch_data.prod_id)
+		},
+		salesRevenues(){
+			let coeff = 1 - this.indicators["reject_rate"].value
+			return this.launch_data.price * this.launch_data.quantity * 100 * coeff
+		},
+		totalCost(){
+			return this.launch_data.quantity*(this.selectedProd.machine_units * 25 + this.selectedProd.labor_units * 45)
+		},
+		profit(){
+			return this.salesRevenues - this.totalCost
+		},
+		prodDelay(){
+			let coeff = this.indicators["productivity_coeff"].value
+			return this.launch_data.quantity / (coeff * 10 )
 		}
 	},
 	methods:{
+		launchProduction(){
+			let data = {
+				"product_id": this.selectedProd.id,
+				"entreprise_id": this.user.id,
+				"quantity": this.launch_data.quantity,
+				"price": this.launch_data.price,
+				"cost": this.totalCost,
+				"delay": this.prodDelay * 60
+			}
+			axios.post("/api/production/launch",data).then(resp=>{
+				console.log(resp)
+			})
+		}
 
 	},
 	mounted(){

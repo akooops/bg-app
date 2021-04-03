@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddCostsToProducts extends Migration
+class AddDemandToProducts extends Migration
 {
     /**
      * Run the migrations.
@@ -14,9 +14,8 @@ class AddCostsToProducts extends Migration
     public function up()
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->integer("machine_units")->default(1);
-            $table->integer("labor_units")->default(1);
-    
+            $table->integer("avg_demand")->default(10000);
+            $table->integer("left_demand")->default(10000);
         });
     }
 
@@ -28,8 +27,7 @@ class AddCostsToProducts extends Migration
     public function down()
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->dropColumn("machine_units");
-            $table->dropColumn("labor_units");
+            $table->dropColumn(["avg_demand","left_demand"]);
         });
     }
 }

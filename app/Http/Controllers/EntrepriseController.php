@@ -15,6 +15,7 @@ use App\Events\CommandCreated;
 use App\Traits\HelperTrait;
 use App\Traits\DemandTrait;
 use App\Traits\IndicatorTrait;
+use App\Jobs\ProductionScheduler;
 
 class EntrepriseController extends Controller
 {
@@ -32,6 +33,7 @@ class EntrepriseController extends Controller
         // Departments view routes
     function showDptProduction(Request $request){
         $products = Product::all();
+        $products = $products->load('rawMaterials');
         return view("departments.production",["products"=>$products]); 
     }
     function showCommandMaker(Request $request){
@@ -160,8 +162,12 @@ class EntrepriseController extends Controller
         return $data->toArray();
     }
 
+    // Production functions
+
     public function getProdIndicators(Request $request){
-        $keys = ["machines","nb_workers_prod","ca"];
+        // Return production useful indicators
+        $keys = ["machines","nb_workers_prod","ca",
+        "reject_rate","productivity_coeff"];
         $entreprise_id = $request->entreprise_id;
         $resp = [];
         foreach ($keys as $ind) {
@@ -169,6 +175,30 @@ class EntrepriseController extends Controller
             $resp[$ind] = $value;
         }
         return $resp;
+    }
+
+    public function launchProduction(Request $request){
+        $entreprise_id = $request->entreprise_id;
+        $product_id = $request->product_id;
+        $quantity = $request->quantity*100;
+        $delay = $request->delay;
+        $cost = $request->cost;
+        $production_data = [
+            "entreprise_id" => $entreprise_id,
+            "product_id" => $product_id,
+            "quantity" => $quantity,
+            "finish_date" => now()->addMinutes($delay),
+            "price" => $request->price,
+            "cost" => $cost,
+            "name" => "", // Bug, should be removed from DB
+            "status"=> "pending"
+        ];
+        $prod_id = DB::table("productions")->insertGetId($production_data);
+        ProductionScheduler::dispatch($production_data,$prod_id)
+        ->delay(now()->addSeconds($delay));
+
+        // Schedule production;
+        return "success";
     }
 
 }

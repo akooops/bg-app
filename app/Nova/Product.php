@@ -10,6 +10,7 @@ use Laravel\Nova\Fields\Password;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use NovaAttachMany\AttachMany;
 use Laravel\Nova\Fields\HasMany;
+use Laravel\Nova\Fields\BelongsToMany;
 
 
 class Product extends Resource
@@ -52,11 +53,16 @@ class Product extends Resource
                 ->sortable()
                 ->rules('required', 'max:255'),
             Number::make("Prix Min","price_min"),
-            Number::make("Prix Max","price_max"),  
-            Text::make("Coef publicité","ad_coef"),   
+            Number::make("Prix Max","price_max"),
+            Number::make("Nombre de Machines","machine_units"),
+            Text::make("Coef publicité","ad_coef"),
+            Number::make("Nombre d'Employés","labor_units"),    
             AttachMany::make("Raw Materials","RawMaterials","App\Nova\RawMaterial")->showCounts()->help("Sélectionnez des matieres premiers pour les ajouter à ce produit"),
-            HasMany::make('RawMaterials'),
-            
+            BelongsToMany::make('RawMaterials')->fields(function () {
+                return [
+                    Number::make('Quantité','quantity')->sortable(),
+                ];
+            })
         ];
     }
 

@@ -7,17 +7,31 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Ad;
 use App\Jobs\UpdateAdStatus;
 use App\Models\Entreprise;
+use App\Traits\IndicatorTrait;
+use App\Traits\HelperTrait;
+
 class MarketingController extends Controller
 {
-    function getAd(Request $request){
+    use IndicatorTrait, HelperTrait;
+    public function getAd(Request $request){
         $ads = DB::table('ads')
-        ->select("*",'ads.created_at as ad_creation','ads.id as ad_id')
+        ->select("*",'ads.created_at as ad_creation','ads.id as ad_id','ads.type as ad_type')
         ->join('users','users.id','=','ads.entreprise_id')
         ->where('ads.entreprise_id',$request->entreprise_id)->orderBy('ad_creation', 'desc')->get();
-        
+        $ads = collect($ads)->map(function($ad){
+            return [
+                "entreprise_id" => $ad->entreprise_id,
+                "ad_type" => $this->parseAdType($ad->ad_type),
+                "status" => $this->parseAdStatus($ad->status),
+                "start_date" => $ad->start_date,
+                "end_date" => $ad->end_date,
+                "result" => $ad->result,
+                "amount" => $ad->amount
+            ];
+        });
         return $ads;
     }
-    function createAd(Request $request){
+    public function createAd(Request $request){
         //Calculating result depending on the ad type
         $request->validate([
             'type' => 'required|string|max:255',
@@ -50,6 +64,16 @@ class MarketingController extends Controller
         // Process it with delayed queue to send a notif when it's done
         UpdateAdStatus::dispatch($new_ad,$result)->delay(now()->addMinutes($delay));
         return response()->json("Votre campagne publicitaire a commencé !", 200);
-
+    }
+    public function getMarketingIndicators(Request $request){
+        // Return production useful indicators
+        $keys = ["nb_subscribers","social_presence","media_presence","events_presence"];
+        $entreprise_id = $request->entreprise_id;
+        $resp = [];
+        foreach ($keys as $ind) {
+            $value = $this->getIndicator($ind,$entreprise_id);
+            $resp[$ind] = $value;
+        }
+        return $resp;
     }
 }

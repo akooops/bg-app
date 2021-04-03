@@ -22,12 +22,7 @@ trait IndicatorTrait{
             ]);
         }
         else{
-            if($value >= 0){
-                $entrep_indicator->increment("value",$value);
-            }
-            else{
-                $entrep_indicator->decrement("value",$value);
-            }
+            $entrep_indicator->increment("value",$value);
             
         }
     }
