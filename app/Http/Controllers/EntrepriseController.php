@@ -15,6 +15,7 @@ use App\Events\CommandCreated;
 use App\Traits\HelperTrait;
 use App\Traits\DemandTrait;
 use App\Traits\IndicatorTrait;
+use App\Jobs\ProductionScheduler;
 
 class EntrepriseController extends Controller
 {
@@ -160,7 +161,8 @@ class EntrepriseController extends Controller
 
     public function getProdIndicators(Request $request){
         // Return production useful indicators
-        $keys = ["machines","nb_workers_prod","ca","reject_rate"];
+        $keys = ["machines","nb_workers_prod","ca",
+        "reject_rate","productivity_coeff"];
         $entreprise_id = $request->entreprise_id;
         $resp = [];
         foreach ($keys as $ind) {
@@ -175,16 +177,23 @@ class EntrepriseController extends Controller
         $product_id = $request->product_id;
         $quantity = $request->quantity*100;
         $delay = $request->delay;
+        $cost = $request->cost;
         $production_data = [
             "entreprise_id" => $entreprise_id,
             "product_id" => $product_id,
             "quantity" => $quantity,
-            "delay" => $delay,
+            "finish_date" => now()->addMinutes($delay),
+            "price" => $request->price,
+            "cost" => $cost,
+            "name" => "", // Bug, should be removed from DB
             "status"=> "pending"
         ];
-        DB::table("productions")->insert($production_data);
+        $prod_id = DB::table("productions")->insertGetId($production_data);
+        ProductionScheduler::dispatch($production_data,$prod_id)
+        ->delay(now()->addSeconds($delay));
 
         // Schedule production;
+        return "success";
     }
 
 }

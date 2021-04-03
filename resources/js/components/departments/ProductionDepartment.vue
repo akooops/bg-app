@@ -22,7 +22,7 @@
 		</div>
 	</div>
 	<div v-if = "show_decision_center" >
-		<ProdCenter :products = "products" :indicators="indicators"></ProdCenter>
+		<ProdCenter :user = "user" :products = "products" :indicators="indicators"></ProdCenter>
 	</div>
 	</div>
 

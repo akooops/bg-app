@@ -44,6 +44,11 @@ Route::prefix("command")->group(function(){
     Route::post('/validate', [SupplierController::class,"validateCommand"]);
 });
 
+Route::prefix("production")->group(function(){
+    Route::post('/launch', [EntrepriseController::class,"launchProduction"]);
+    
+});
+
 
 Route::prefix("loan")->group(function(){
     Route::post('/create', [BankerController::class,"createLoan"]);

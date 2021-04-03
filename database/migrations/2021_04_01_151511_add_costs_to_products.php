@@ -16,6 +16,7 @@ class AddCostsToProducts extends Migration
         Schema::table('products', function (Blueprint $table) {
             $table->integer("machine_units")->default(1);
             $table->integer("labor_units")->default(1);
+    
         });
     }
 

@@ -17,8 +17,8 @@ class CreateProductionTable extends Migration
             $table->id();
             $table->timestamps();
             $table->string('name');
-            $table->integer("entreprise_id");
-            $table->integer("product_id");
+            $table->unsignedBigInteger("entreprise_id");
+            $table->unsignedBigInteger("product_id");
             $table->integer("quantity");
             $table->datetime("finish_date");
             $table->string("status");
