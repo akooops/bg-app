@@ -12,7 +12,12 @@ class Ad extends Model
     protected $fillable = [
         'entreprise_id',
         'result',
-        'amount'
+        'amount',
+        'product_id',
+        'start_date',
+        "end_date",
+        "status",
+        "type"
     ];
 
     public function entreprises(){

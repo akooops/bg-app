@@ -5,35 +5,41 @@
 		<h3 class="text-2xl font-bold mb-4">Nouvelle compagne</h3>
 		<p v-if="message!=''" class="text-green-500" >{{message}}</p>
 		<p v-if="error_message!=''" class="text-red-600">{{error_message}}</p>
-		<div class="relative h-10 input-component mb-5">
+        <div class="mt-12 mb-3">
+            <label class=" left-2 transition-all bg-white px-1">Selectionnez le produit a promouvoir </label>
+			<select v-model="new_ad.product" class="h-full w-full rounded-sm">
+                <option  v-for="product in products" v-bind:key="product.id" :value="product.id">{{product.name}}</option>
+            </select>
+		</div>
+		<div class="relative h-10 input-component mb-3">
 			<label for="amount" class=" left-2 transition-all bg-white px-1">
-				Montant 
+				Montant en KDA
 			</label>
 			<input
 				id="amount"
 				type="text"
 				name="amount"
-				v-model="amount"
+				v-model="new_ad.amount"
 				class="h-full w-full rounded-sm"
 			/>
 			
 		</div>
-		<div class="mt-12">
-            <label>Type</label>
-			<select v-model="type">
+		<div class="mt-10 mb-3">
+            <label class=" left-2 transition-all bg-white px-1">Type de campagne: </label>
+			<select v-model="new_ad.type" class="h-full w-full rounded-sm">
                 <option value="social">Réseaux sociaux</option>
-                <option value="tv">Télé</option>
-                <option value="sponsoring">Sponsoring</option>
+                <option value="media">Média(Publicité télé et radio)</option>
+                <option value="events">Sponsoriser un événement</option>
             </select>
 		</div>
         <div class="flex pb-6 justify-center">
-            <div class="mr-2">
+            <div class="mr-2  w-1/2">
                 <label class="text-left	"> Date Début </label>
-                <datepicker v-model="start_date" placeholder="Choisissez" :language="fr" :bootstrap-styling="true"></datepicker>
+                <datepicker v-model="new_ad.start_date" placeholder="Choisissez" :language="fr" :bootstrap-styling="true"></datepicker>
             </div>
-            <div>
+            <div class=" w-1/2">
                 <label class="text-left"> Date Fin </label>
-                <datepicker v-model="end_date" placeholder="Choisissez" :language="fr" :bootstrap-styling="true"></datepicker>
+                <datepicker v-model="new_ad.end_date" placeholder="Choisissez" :language="fr" :bootstrap-styling="true"></datepicker>
             </div>
         </div>
         <p>Le résultat prévisionnel : <span class="text-green-600">{{predictedFollowers}} abonnées</span> </p>
@@ -94,7 +100,7 @@ import Datepicker from 'vuejs-datepicker';
 import {fr} from 'vuejs-datepicker/dist/locale'
 
 export default {
- props:['entreprise'],
+ props:['entreprise','products','ad_coef'],
  components:{ Modal,Datepicker },
  name:"Marketing",
  data(){
@@ -103,24 +109,32 @@ export default {
         ads : [],
         mounted:false,
         ad_modal:false,
-        amount:null,
         message:'',
         error_message:'',
-        type:'',
-        duration:null,
-        ad_coef:0.8,
         type_coef:{
             social:1.2,
             tv: 0.8,
             sponsoring:1,
         },
-        start_date:null,
-        end_date:null,
+        new_ad:{
+            start_date:null,
+            end_date:null,
+            amount:null,
+            type:null,
+            product:null,
+        },
+        
     }
  },
  computed:{
     predictedFollowers:function(){
-       return this.ad_coef*this.type_coef[this.type]*this.amount*this.duration*50
+        if(this.notValidated()){
+            return 0
+        }
+        let product_id =  this.products.findIndex(elem => elem.id == this.new_ad.product)
+        let ad_product = this.products[product_id].ad_coef
+        let months=Math.abs((this.new_ad.start_date - this.new_ad.end_date) / (24 * 60 *60*60 * 1000))
+        return parseInt(this.ad_coef*this.type_coef[this.new_ad.type]*this.new_ad.amount*months*50*ad_product)
     }
  },
  methods:{
@@ -142,18 +156,24 @@ export default {
 		this.errr_messsage=''
 		this.ad_modal = false
 	},
-	checkboxChanged(){
-		this.accept = !this.accept
-	},
+    notValidated(){
+        return this.new_ad.start_date == null || this.new_ad.end_date == null 
+        || this.new_ad.amount == null || this.new_ad.type == null || this.new_ad.product == null
+    },
 	createAd(){
-		if(this.amount!=null && this.accept){
-			axios.post("/api/ad/create",{entreprise_id:this.entreprise.id,amount:this.amount}).then(resp=>{
+		if(!this.notValidated()){
+            this.new_ad.entreprise_id = this.entreprise.id
+            this.new_ad.duration = Math.abs((this.new_ad.start_date - this.new_ad.end_date) / (24 * 60 *60*60 * 1000))
+			this.new_ad.result = this.predictedFollowers
+            axios.post("/api/marketing/create",this.new_ad).then(resp=>{
 			this.message = resp.data
+            /*
             this.ads.unshift({
                 amount : this.amount,
                 ad_creation: new Date().toLocaleString(),
                 status : "pending"
             })
+            */
     	})
 		}
 		else{

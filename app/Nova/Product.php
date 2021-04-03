@@ -52,9 +52,11 @@ class Product extends Resource
                 ->sortable()
                 ->rules('required', 'max:255'),
             Number::make("Prix Min","price_min"),
-            Number::make("Prix Max","price_max"),    
+            Number::make("Prix Max","price_max"),  
+            Text::make("Coef publicité","ad_coef"),   
             AttachMany::make("Raw Materials","RawMaterials","App\Nova\RawMaterial")->showCounts()->help("Sélectionnez des matieres premiers pour les ajouter à ce produit"),
-            HasMany::make('RawMaterials')
+            HasMany::make('RawMaterials'),
+            
         ];
     }
 

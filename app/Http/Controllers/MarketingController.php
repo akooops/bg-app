@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-
+use App\Models\Ad;
+use App\Jobs\UpdateAdStatus;
+use App\Models\Entreprise;
 class MarketingController extends Controller
 {
     function getAd(Request $request){
@@ -19,37 +21,35 @@ class MarketingController extends Controller
         //Calculating result depending on the ad type
         $request->validate([
             'type' => 'required|string|max:255',
-            'amount' => 'required|float',
+            'amount' => 'required',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date',
         ]);
-        $new_ad =  Loan::create([
-            "entreprise_id" =>  $request->entreprise_id,
+        //Must check if 
+        /*
+        $entrep=Entreprise::find($request->entrepris_id);
+        if($request->amount>=$entrep->){
+            return response()->json("Vos disponbilités ne suffisent pas a financier votre campagne publicitaire !", 404);
+        }
+        */
+        // Saving the expected result 
+        dd(stats_dens_normal($request->result,50,sqrt(10)));
+        $new_ad = Ad::create([
+            "entreprise_id" => $request->entreprise_id,
+            "product_id" => $request->product,
             "type" => $request->type,
-            "amount" => $request->amount
-        ]);
-        $data = [
-            "name" => Entreprise::find($request->entreprise_id)->name,
-            "status" => "pending",
-            "ad_id" => $new_ad->id,
             "amount" => $request->amount,
-            "ad_creation" =>  (new \DateTime())->format('Y-m-d H:i:s')
-        ];
-        event(new LoanCreated($data));
-        return response()->json("Votre demande a été envoyée avec succès", 200);
+            "start_date" => strtok($request->start_date, 'T'),
+            "end_date" => strtok($request->end_date, 'T'),
+            "result" => $request->result,
+            "status" => "pending"
+        ]);
+        $delay = round($request->duration*30,0);
+        //Calculating the real result 
+        $result = stats_dens_normal($request->result,50,10);  
+        // Process it with delayed queue to send a notif when it's done
+        UpdateAdStatus::dispatch($new_ad,$result)->delay(now()->addMinutes($delay));
+        return response()->json("Votre campagne publicitaire a commencé !", 200);
 
-    }
-    function updateAd(Request $request){
-        $loan = Loan::find($request->ad_id);
-        $loan->amount = $request->amount;
-        $loan->status = $request->status;
-        $loan->save();
-        $notification = [
-            "type" => "LoanStatusChanged",
-            "entreprise_id" => $loan->entreprise_id,
-            "data" => $loan,
-            "message" => "Le statut de votre demande d'endettement a changé, veuillez consulter votre banque",
-            "title" => "Demande d'endettement"
-        ];
-        event(new NewNotification($notification));
-        return response()->json("Votre réponse a été envoyée avec succès à l'entreprise concernée", 200);
     }
 }

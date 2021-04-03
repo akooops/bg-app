@@ -53,6 +53,4 @@ Route::prefix("loan")->group(function(){
 Route::prefix("marketing")->group(function(){
     Route::post('/create', [MarketingController::class,"createAd"]);
     Route::get('/get', [MarketingController::class,"getAd"]);
-    Route::post('/update', [MarketingController::class,"updateAd"]);
 });
-Route::get("/products",[EntrepriseController::class,"getProducts"]);

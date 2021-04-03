@@ -43,6 +43,11 @@ class EntrepriseController extends Controller
         $products = Product::all()->toArray();
         return view("departments.widgets.stock"); 
     }
+    function showMarketing(Request $request){
+        $products = Product::all();
+        $ad_coef = 0.8;
+        return view("departments.marketing",["products"=>$products,"ad_coef"=>$ad_coef]); 
+    }
 
 
     function getEntrepriseCommands(Request $request){
