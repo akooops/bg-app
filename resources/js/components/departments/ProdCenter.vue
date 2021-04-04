@@ -1,4 +1,20 @@
 <template>
+	<div class = "w-full">
+	<div v-if = "show_success"  class=" my-2 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+      <strong class="font-bold">{{message}}</strong>
+    
+      <span @click = "show_success = false" class="absolute top-0 bottom-0 right-0 px-4 py-3">
+        <svg class="fill-current h-6 w-6 text-green-500" role="button"    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>  Close</title><path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10    11.819l-2.651 3.029a1.2 1.2 0 1   1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1     1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697    1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"/></svg>
+      </span>
+    </div>
+
+      <div v-if = "show_error"  class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+      <strong class="font-bold">{{message}}</strong>
+    
+      <span @click = "show_error = false" class="absolute top-0 bottom-0 right-0 px-4 py-3">
+        <svg class="fill-current h-6 w-6 text-red-500" role="button"    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>  Close</title><path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10    11.819l-2.651 3.029a1.2 1.2 0 1   1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1     1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697    1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"/></svg>
+      </span>
+    </div>
 	<div class = "flex w-full flex-wrap">
 		<div class="w-1/3 mr-3 my-2 max-w-sm overflow-hidden rounded border bg-white shadow">
 			<div class="relative">
@@ -68,12 +84,16 @@
 				<input v-model = "launch_data.quantity" class="mx-4 w-2/3" type = "number"/>
 				<p class = "my-1 mx-4" >Prix (Unitaire)</p>
 				<input class = "mx-4 w-2/3" v-model = "launch_data.price" type = "number"/>
-				<div class = "h-auto flex items-center">
-				<button @click = "launchProduction" class = "bg-blue-400 mx-4 my-2 py-1 px-4 text-white">Lancer ! </button></div>
+				<div class = "h-auto ">
+				<button :disabled = "can_produce == false" @click = "launchProduction" class = "bg-blue-400 mx-4 my-2 py-1 px-4 text-white" v-if = "can_produce">Lancer ! </button>
+				<p class = "text-red-500" v-if = "can_produce== false">{{can_produce_msg}}</p>
+			</div>
+				
 				</div>
 				<div class = "w-1/2">
 					<h1 class = "font-bold text-xl">Informations Importantes</h1>
 					<h2 class = "font-bold text-lg">Nécessite: </h2>
+					<p>Pour un lot:</p>
 					<p>- Machines x <span class = "text-blue-700 font-bold">{{selectedProd.machine_units}}</span> et 
 					 Employés x <span class = "text-blue-700 font-bold">{{selectedProd.labor_units}}</span></p>
 					 <p v-for = "material in selectedProd.raw_materials">- {{material.name}} x <span class = "text-blue-700 font-bold"> {{material.pivot.quantity}} </span></p>
@@ -85,12 +105,14 @@
 					
 					<h2 class = "text-sm font-bold">Remarques: </h2>					<p class = "text-xs font-bold">- Les prévisions sont calculés dans le cas ou toutes la quantité produite est vendue</p>
 					<p class="text-xs font-bold">- Votre taux de rebut est de {{indicators["reject_rate"].value * 100}}%, pour le réduire, lancez une étude AMDEC.</p>
+					<p>
+					<button @click = "launch_prod_modal=false" class = "bg-gray-500 justify-end px-3 py-1 text-white rounded my-1" >Fermer</button></p>
 				</div>
 			</div>
 			</template>	
 		</Modal>
 	</div>
-
+</div>
 	</div>
 </template>
 
@@ -105,9 +127,31 @@ export default{
 			launch_prod_modal: false,
 			launch_data:{
 				prod_id: 1,
-				price: 10,
-				quantity: 1
+				price: 0,
+				quantity: 0
 			},
+			prod_factors: {
+				machines: 0,
+				labor: 0
+			},
+			can_produce_msg: "",
+			can_produce: true,
+			stock: {},
+			show_success: false,
+			show_error: false,
+			message: ""
+		}
+	},
+	watch:{
+		'launch_data.quantity': function(new_val,old_val){
+			this.prod_factors = {
+				"machines": this.launch_data.quantity*this.selectedProd.machine_units,
+				"labor": this.launch_data.quantity*this.selectedProd.labor_units
+			}
+			console.log(this.prod_factors)
+			console.log(this.indicators)
+			this.can_produce = false
+			this.verifyProd()		
 		}
 	},
 	computed:{
@@ -119,6 +163,8 @@ export default{
 			return this.launch_data.price * this.launch_data.quantity * 100 * coeff
 		},
 		totalCost(){
+
+
 			return this.launch_data.quantity*(this.selectedProd.machine_units * 25 + this.selectedProd.labor_units * 45)
 		},
 		profit(){
@@ -140,12 +186,56 @@ export default{
 				"delay": this.prodDelay * 60
 			}
 			axios.post("/api/production/launch",data).then(resp=>{
-				console.log(resp)
+				this.show_success= true
+				this.message = resp.data.message
+				this.launch_prod_modal = false
+			}).catch(e=>{
+				this.show_error = true
+				this.message = resp.data.message
+				this.launch_prod_modal = false
 			})
+		},
+		getStock(){
+			axios.get("/api/entreprise/stock",{params:{
+				entreprise_id: this.user.id
+			}
+			}).then((resp)=>{
+				console.log(resp)
+				this.stock = resp.data
+				this.verifyProd()
+			})
+		},
+		verifyProd(){
+			let resp =  true
+			let free_machines = this.indicators["machines"].value - this.indicators["busy_machines"].value
+			if(this.prod_factors.machines <=  free_machines && this.prod_factors.labor <= this.indicators["nb_workers_prod"].value){
+				for(const material of this.selectedProd.raw_materials){
+					let stock_material = this.stock.find((item)=>{
+						return item.id == material.pivot.raw_material_id
+					})
+					console.log(stock_material)
+					if(material.pivot.quantity < stock_material.quantity){
+						continue
+					}
+					else{
+						resp = false
+						this.can_produce_msg = "Pas assez de matière " + material.name + "vous ne pouvez pas lancer la production !"
+						break;
+					}
+				}
+			}
+			else{
+				resp = false
+				this.can_produce_msg = "Pas assez de machines ou d'employés, vous ne pouvez pas lancer la production !"
+			}
+			this.can_produce = resp
+
+			
 		}
 
 	},
 	mounted(){
+		this.getStock()
 
 	}
 }

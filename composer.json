@@ -12,6 +12,7 @@
         "calebporzio/parental": "^0.11.0",
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
+        "gburtini/distributions": "^0.0.2",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.12",
         "laravel/nova": "*",

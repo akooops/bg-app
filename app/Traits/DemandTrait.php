@@ -6,9 +6,10 @@ use App\Models\Entreprise;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\DB;
+use App\Traits\IndicatorTrait;
 
 trait DemandTrait{
-
+	use IndicatorTrait;
 	public function productDemandPrev($prod_id,$prices ){
 		$demand = collect([]);
 		$prices = collect($prices);
@@ -41,6 +42,67 @@ trait DemandTrait{
 		return $demand;
 
 	}
+	public function socialInfluence($entreprise_id,$coeff_array){
+		$indicators = ["nb_subscribers","social_presence","media_presence","event_presence"];
+		$entreprise_ss = 0;
+		$all_ss = 0;
+		for ($i=0; $i < count($coeff_array) ; $i++) { 
+			$entreprise_ss = $coeff_array[$i] * $this->getIndicator($indicators[$i],$entreprise_id)["value"];
+			
+		}
+		$entreprises = Entreprise::all();
+		foreach ($entreprises as $entreprise) {
+			$eid = $entreprise->id;
+			for ($i=0; $i < count($coeff_array) ; $i++) { 
+				$all_ss += $coeff_array[$i] * $this->getIndicator($indicators[$i],$eid)["value"];
+			}
+		}
+		return $entreprise_ss/$all_ss;
+	}
+	public function productDemandReal($prod_id,$entreprise_id,$price,$quantity){
+		$demand = 0;
+		switch ($prod_id) {
+    	case 1:
+    		$ss = $this->socialInfluence($entreprise_id,[1,1,1,1]);
+        	$social_importance_coeff = 2; 
+        	$demand = 700 - 10*$price;
+        	$demand = $demand + $ss*$demand/$social_importance_coeff;
+    	case 2:
+    		$ss = $this->socialInfluence($entreprise_id,[1,1,1,1]);
+        	$social_importance_coeff = 2; 
+        	$demand = round(500*exp(-$price/20));
+        	$demand = $demand + $ss*$demand/$social_importance_coeff;
+        	break;
+    	case 3:
+    		$ss = $this->socialInfluence($entreprise_id,[1,1,1,1]);
+    		$alpha = -1.25;
+        	$c = 500;
+        	$social_importance_coeff = 2; // Bigger is less important
+        	$demand = $c*$price**($alpha);
+        	$demand = $demand + $ss*$demand/$social_importance_coeff;
+        	break;
+        case 4:
+        	$ss = $this->socialInfluence($entreprise_id,[1,1,1,1]);
+        	$alpha = -1.75;
+        	$c = 600;
+        	$social_importance_coeff = 2; 
+        	$demand = $c*$price**($alpha);
+        	$demand = $demand + $ss*$demand/$social_importance_coeff;
+        	break;
+		}
+		//$epsilon = mt_rand(-50,20);
+		$sup = 1.05 * $demand;
+		$inf = 0.95 * $demand;
+		$real_demand = mt_rand($inf,$sup);
+		$quant_sold = 0;
+		if($real_demand > $quantity){
+			$quant_sold = $quantity;
+		}
+		else{
+			$quant_sold = $real_demand;
+		}
+		return round($quant_sold);
+	}
 	public function getProductDemandPrev(Request $request)
     {
         $prod_id = $request->product_id;
@@ -60,6 +122,23 @@ trait DemandTrait{
         	"demand" => $demand->toArray()
         ];
         return $resp;
-    }	
+    }
+    public function getProductDemandReal(Request $request)
+    {
+    	//dd($request);
+        $prod_id = $request->product_id;
+        $entreprise_id = $request->entreprise_id;
+        $product = Product::whereId($prod_id)->first();
+        //dd($product);
+        $price = $request->price;
+        $quantity = $request->quantity;
+        $demand = $this->productDemandReal($prod_id,$entreprise_id,$price,$quantity);
+        //dd($this->socialInfluence($entreprise_id,[1,1,1,1]));
+        $resp = [
+        	"demand" => $demand,
+        	"stock" => $quantity - $demand
+        ];
+        return $resp;
+    }		
 
 }

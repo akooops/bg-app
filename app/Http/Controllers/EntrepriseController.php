@@ -161,8 +161,8 @@ class EntrepriseController extends Controller
 
     public function getProdIndicators(Request $request){
         // Return production useful indicators
-        $keys = ["machines","nb_workers_prod","ca",
-        "reject_rate","productivity_coeff"];
+        $keys = ["machines","busy_machines","failed_machines","nb_workers_prod","ca",
+        "reject_rate","productivity_coeff","dist_unit_cost"];
         $entreprise_id = $request->entreprise_id;
         $resp = [];
         foreach ($keys as $ind) {
@@ -178,6 +178,8 @@ class EntrepriseController extends Controller
         $quantity = $request->quantity*100;
         $delay = $request->delay;
         $cost = $request->cost;
+        $machines = $request->machines;
+        $labor = $request->machines;
         $production_data = [
             "entreprise_id" => $entreprise_id,
             "product_id" => $product_id,
@@ -189,11 +191,53 @@ class EntrepriseController extends Controller
             "status"=> "pending"
         ];
         $prod_id = DB::table("productions")->insertGetId($production_data);
+        $this->updateIndicator("busy_machines",$entreprise_id,$machines);
+        
         ProductionScheduler::dispatch($production_data,$prod_id)
         ->delay(now()->addSeconds($delay));
 
         // Schedule production;
-        return "success";
+        return Response::json(["message" => "La production a été lancée !"],200);
+    }
+
+    function getAllProductions(Request $request){
+        $productions = DB::table("productions")->where("entreprise_id","=",$request->entreprise_id)->get();
+        $productions = $productions->map(function($p){
+            $product = Product::find($p->product_id);
+            return [
+            "id" => $p->id,
+            "product" => $product->name,
+            "price" => $p->price, 
+            "quantity" => $p->quantity,
+            "status" => $this->parseProductionStatus($p->status),
+            "status_code" => $p->status,
+            "cost" => $p->cost,
+            "sold" => $p->sold
+            ];
+        });
+        return $productions->toArray();
+    }
+
+    function sellProd(Request $request){
+        $entreprise_id = $request->entreprise_id;
+        $product_id = $request->product_id;
+        $dist_cost = $request->dist_cost;
+        $sold_quantity = $request->sold;
+        $price = $request->price;
+        $stock_quantity = $request->stock;
+        $production_id = $request->production_id;
+        // Remove from stock and update production table
+        DB::table("stock")->where("entreprise_id","=",$entreprise_id)->where("product_id","=",$product_id)->decrement("quantity",$sold_quantity);
+        DB::table("productions")->where("id","=",$production_id)->increment("sold",$sold_quantity);
+        // Update indicators: 
+        // Increase caisse
+        $sales = $sold_quantity * $price ;
+        $profit_value = $sales- $dist_cost;
+        $this->updateIndicator("caisse",$entreprise_id,$profit_value);
+        $this->updateIndicator("ca",$entreprise_id,$sales);
+        $this->updateIndicator("dist_cost",$entreprise_id,$dist_cost);
+        $message = "Vous avez vendu ".$sold_quantity." unités et vous avez généré un chiffre d'affaire de ".$sales. " UM";
+        return Response::json(["message" => $message ],200);
     }
 
 }

@@ -31,10 +31,12 @@ Route::prefix("entreprise")->group(function(){
 	Route::get("/commands",[EntrepriseController::class,"getEntrepriseCommands"]);
 	Route::get("/stock",[EntrepriseController::class,"getStock"]);
 	Route::get("/production/indicators",[EntrepriseController::class,"getProdIndicators"]);
+
 });
 
 Route::prefix("demand")->group(function(){
 	Route::get("/prev",[EntrepriseController::class,"getProductDemandPrev"]);
+    Route::get("/real",[EntrepriseController::class,"getProductDemandReal"]);
 });
 
 Route::prefix("command")->group(function(){
@@ -46,6 +48,8 @@ Route::prefix("command")->group(function(){
 
 Route::prefix("production")->group(function(){
     Route::post('/launch', [EntrepriseController::class,"launchProduction"]);
+    Route::get('/all', [EntrepriseController::class,"getAllProductions"]);
+    Route::post("/sell",[EntrepriseController::class,"sellProd"]);
     
 });
 
