@@ -126,8 +126,8 @@ export default {
         error_message:'',
         type_coef:{
             social:1.2,
-            tv: 0.8,
-            sponsoring:1,
+            media: 0.8,
+            events:1,
         },
         new_ad:{
             start_date:null,
@@ -203,9 +203,14 @@ export default {
             this.new_ad.entreprise_id = this.entreprise.id
             this.new_ad.duration = Math.abs((this.new_ad.start_date - this.new_ad.end_date) / (24 * 60 *60*60 * 1000))
 			this.new_ad.result = this.predictedFollowers
-            this.new_ad.amount = this.total_amount
+            this.new_ad.total_amount = this.total_amount
             axios.post("/api/marketing/create",this.new_ad).then(resp=>{
-			this.message = resp.data
+            this.message = resp.data
+            setTimeout(function() {
+                this.modal=false
+                location.reload()
+            }, 5000);
+		
             /*
             this.ads.unshift({
                 amount : this.amount,

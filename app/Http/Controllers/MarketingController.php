@@ -32,10 +32,10 @@ class MarketingController extends Controller
         return $ads;
     }
     public function createAd(Request $request){
-        //Calculating result depending on the ad type
+        //Validating Data depending on the ad type
         $request->validate([
             'type' => 'required|string|max:255',
-            'amount' => 'required',
+            'total_amount' => 'required',
             'start_date' => 'required|date',
             'end_date' => 'required|date',
         ]);
@@ -47,12 +47,10 @@ class MarketingController extends Controller
         }
         */
         // Saving the expected result 
-        dd(stats_dens_normal($request->result,50,sqrt(10)));
         $new_ad = Ad::create([
             "entreprise_id" => $request->entreprise_id,
-            "product_id" => $request->product,
             "type" => $request->type,
-            "amount" => $request->amount,
+            "amount" => $request->total_amount,
             "start_date" => strtok($request->start_date, 'T'),
             "end_date" => strtok($request->end_date, 'T'),
             "result" => $request->result,
@@ -60,10 +58,13 @@ class MarketingController extends Controller
         ]);
         $delay = round($request->duration*30,0);
         //Calculating the real result 
-        $result = stats_dens_normal($request->result,50,10);  
+        $result = $request->result + round(random_int(-$request->result,$request->result)*0.2,0);
+        // Calculating the {type} presence
+        $nb_subscribers = $this->getIndicator('nb_subscribers',$request->entreprise_id)["value"];
+        $presence = round($result/$nb_subscribers,0);
         // Process it with delayed queue to send a notif when it's done
-        UpdateAdStatus::dispatch($new_ad,$result)->delay(now()->addMinutes($delay));
-        return response()->json("Votre campagne publicitaire a commencé !", 200);
+        UpdateAdStatus::dispatch($new_ad,$result,$presence)->delay(now()->addMinutes($delay));
+        return response()->json("Votre campagne publicitaire a commencé ! cette page va se recharger automatiquement dans 5 secondes", 200);
     }
     public function getMarketingIndicators(Request $request){
         // Return production useful indicators

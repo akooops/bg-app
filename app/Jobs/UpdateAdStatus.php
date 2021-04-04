@@ -12,9 +12,11 @@ use App\Models\Ad;
 use App\Models\Product;
 use App\Events\NewNotification;
 use App\Traits\IndicatorTrait;
+use App\Traits\HelperTrait;
+
 class UpdateAdStatus implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels,IndicatorTrait;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels,IndicatorTrait,HelperTrait;
     public $result;
     public $ad;
     public $presence;
@@ -45,7 +47,7 @@ class UpdateAdStatus implements ShouldQueue
             "entreprise_id" => $this->ad->entreprise_id,
             "data" =>  $this->ad,
             "message" => "Votre campagne publicitaire sur  "
-            . $this->ad->type ." est terminée, veuillez consulter votre département Marketing",
+            . $this->parseAdType($this->ad->type) ." est terminée, veuillez consulter votre département Marketing",
             "title" => "Campagne publicitaire"
         ];
         $this->updateIndicator('nb_subscribers',$this->ad->entreprise_id,$this->result);
