@@ -13,6 +13,17 @@ trait HelperTrait{
 		}
 
 	}
+
+	public function parseProductionStatus($status){
+		if($status == "completed"){
+			return "Finis";
+		}
+		elseif($status == "pending"){
+			return "En Attente";
+		}
+
+	}
+
 	public function parseAdStatus($status){
 		if($status == "done"){
 			return "Terminé";
@@ -47,6 +58,7 @@ trait HelperTrait{
 	public function getSimulationTime(Request $request){
 		return $this->parseDateToSimulationDate(nova_get_setting('current_date'));
 	}
+
 	public function in_array_all($value, $array)
     {
         return (reset($array) == $value && count(array_unique($array)) == 1);

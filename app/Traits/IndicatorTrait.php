@@ -26,6 +26,13 @@ trait IndicatorTrait{
             
         }
     }
+    public function resetIndicator($indicator_code,$entreprise_id){
+        $indicator = DB::table("indicators")->where("code","=",$indicator_code)->first();
+        $entrep_indicator = DB::table("entreprise_indicator")->where("entreprise_id","=",$entreprise_id)->where("indicator_id","=",$indicator->id);
+        $entrep_indicator->update(["value" => $indicator->starting_value]);
+            
+        
+    }
 
     public function getIndicator($indicator_code,$entreprise_id){
         $indicator = DB::table("indicators")->where("code","=",$indicator_code)->first();

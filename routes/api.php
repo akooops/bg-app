@@ -31,12 +31,18 @@ Route::prefix("entreprise")->group(function(){
 	Route::get("/commands",[EntrepriseController::class,"getEntrepriseCommands"]);
 	Route::get("/stock",[EntrepriseController::class,"getStock"]);
 	Route::get("/production/indicators",[EntrepriseController::class,"getProdIndicators"]);
+    Route::post("/machine/buy",[EntrepriseController::class,"buyMachine"]);
+     Route::post("/machine/sell",[EntrepriseController::class,"sellMachine"]);
+    Route::post("/production/apply-action",[EntrepriseController::class,"applyProdAction"]); 
     Route::get("/marketing/indicators",[MarketingController::class,"getMarketingIndicators"]);
     Route::get("/hr/indicators",[HrController::class,"getHrIndicators"]);
+
+
 });
 
 Route::prefix("demand")->group(function(){
 	Route::get("/prev",[EntrepriseController::class,"getProductDemandPrev"]);
+    Route::get("/real",[EntrepriseController::class,"getProductDemandReal"]);
 });
 
 Route::prefix("command")->group(function(){
@@ -48,6 +54,8 @@ Route::prefix("command")->group(function(){
 
 Route::prefix("production")->group(function(){
     Route::post('/launch', [EntrepriseController::class,"launchProduction"]);
+    Route::get('/all', [EntrepriseController::class,"getAllProductions"]);
+    Route::post("/sell",[EntrepriseController::class,"sellProd"]);
     
 });
 
@@ -63,3 +71,5 @@ Route::prefix("marketing")->group(function(){
 });
 
 Route::get('/time', [EntrepriseController::class,"getSimulationTime"]);
+
+Route::get("/test",[EntrepriseController::class,"testFunc"]);

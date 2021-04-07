@@ -15,6 +15,9 @@
         <p class="text-lg font-semibold text-gray-700 dark:text-gray-200">
           {{value}}
         </p>
+        <p class="text-md text-gray-700 dark:text-gray-200">
+          {{secondValue}}
+        </p>
       </div>
     </div>
 </div>
@@ -23,7 +26,7 @@
 <script type="text/javascript">
 export default {
 	name: "StatCard",
-	props: ["title","subtitle","value","icon","change","color"],
+	props: ["title","subtitle","value","icon","change","color","secondValue"],
 	mounted(){
 
 	}
