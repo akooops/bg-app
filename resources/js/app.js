@@ -18,6 +18,10 @@ Vue.component('loanlisting', require('./components/banker/LoanListing.vue').defa
 // Supplier components
 Vue.component('allcommands', require('./components/supplier/AllCommands.vue').default)
 Vue.component('singlecommand', require('./components/supplier/SingleCommand.vue').default);
+//Simulation Time
+Vue.component('simulationtime', require('./components/SimulationTime.vue').default);
+
+
 const app = new Vue({
    el: '#app',
 });

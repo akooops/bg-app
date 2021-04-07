@@ -27,3 +27,6 @@ Broadcast::channel('entreprise_{id}', function ($user,$id) {
 Broadcast::channel('supplier_{id}', function ($user,$id) {
     return (int)  $user->id == (int) $id;
 });
+Broadcast::channel('simulation_date', function ($user) {
+    return $user->name!=null;
+});

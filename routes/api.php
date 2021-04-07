@@ -32,6 +32,7 @@ Route::prefix("entreprise")->group(function(){
 	Route::get("/stock",[EntrepriseController::class,"getStock"]);
 	Route::get("/production/indicators",[EntrepriseController::class,"getProdIndicators"]);
     Route::get("/marketing/indicators",[MarketingController::class,"getMarketingIndicators"]);
+    Route::get("/hr/indicators",[HrController::class,"getHrIndicators"]);
 });
 
 Route::prefix("demand")->group(function(){
@@ -60,3 +61,5 @@ Route::prefix("marketing")->group(function(){
     Route::post('/create', [MarketingController::class,"createAd"]);
     Route::get('/get', [MarketingController::class,"getAd"]);
 });
+
+Route::get('/time', [EntrepriseController::class,"getSimulationTime"]);

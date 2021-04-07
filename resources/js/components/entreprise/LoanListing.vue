@@ -45,7 +45,10 @@
                         <th class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">Banque</th>
                         <th class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">Montant/ Montant accepté</th>
                         <th class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">Date de creation</th>
-                         <th class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">Statut</th>
+                        <th class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">Statut</th>
+                        <th class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">Payé? </th>
+                        <th class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">Montant restant </th>
+                        <th class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">Action </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -63,6 +66,15 @@
                         :class="status=='En attente'?'text-yellow-600':status=='Rejettée'?' text-red-700':'text-green-600'">
                             {{loan.status}}
                         </td>
+                        <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
+                            {{loan.payment_status}}
+                        </td>
+                        <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
+                            {{loan.remaining_amount}}
+                        </td>
+                        <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
+                            <button @click="payLoan(loan.loan_id)" class="bg-green-400 hover:bg-green-800 rounded text-white" >Payer la dette</button>
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -75,11 +87,12 @@
 </template>
 
 <script>
+import Button from '../../../../vendor/laravel/breeze/stubs/inertia/resources/js/Components/Button.vue';
 import Modal from '../Modal.vue'
 
 export default {
  props:['entreprise'],
- components:{ Modal },
+ components:{ Modal, Button },
  name:"EntrepriseLoanListing",
  data(){
     return{
@@ -136,11 +149,7 @@ export default {
     window.Echo.channel("entreprise_"+this.entreprise.id)
     .listen('NewNotification', (e) => {
         if(e.notification.type=='LoanStatusChanged'){
-            let index = this.loans.findIndex(loan => loan.loan_id == e.notification.data.id)
-            this.loans[index].amount = e.notification.data.amount
-            this.loans[index].status = e.notification.data.status
-            this.$forceUpdate()
-            //this.loans.unshift(e.notification.data)
+            this.getLoans()
         }
     })
  }

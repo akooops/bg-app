@@ -58,10 +58,11 @@ class MarketingController extends Controller
         ]);
         $delay = round($request->duration*30,0);
         //Calculating the real result 
-        $result = $request->result + round(random_int(-$request->result,$request->result)*0.2,0);
+        $result = random_int(0.8*$request->result,1.2*$request->result);
         // Calculating the {type} presence
         $nb_subscribers = $this->getIndicator('nb_subscribers',$request->entreprise_id)["value"];
         $presence = round($result/$nb_subscribers,0);
+        $this->updateIndicator('caisse',$request->entreprise_id,-1000*$request->total_amount);
         // Process it with delayed queue to send a notif when it's done
         UpdateAdStatus::dispatch($new_ad,$result,$presence)->delay(now()->addMinutes($delay));
         return response()->json("Votre campagne publicitaire a commencé ! cette page va se recharger automatiquement dans 5 secondes", 200);
