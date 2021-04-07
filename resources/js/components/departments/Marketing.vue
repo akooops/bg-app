@@ -27,14 +27,16 @@
             </select>
 		</div>
         <div class="flex pb-6 justify-center">
-            <div class="mr-2  w-1/2">
-                <label class="text-left	"> Date Début </label>
-                <datepicker v-model="new_ad.start_date" placeholder="Choisissez" :language="fr" :bootstrap-styling="true"></datepicker>
-            </div>
-            <div class=" w-1/2">
-                <label class="text-left"> Date Fin </label>
-                <datepicker v-model="new_ad.end_date" placeholder="Choisissez" :language="fr" :bootstrap-styling="true"></datepicker>
-            </div>
+           <label for="days" class=" left-2 transition-all bg-white px-1">
+				Entrez la durée en jours
+			</label>
+			<input
+				id="days"
+				type="number"
+				name="days"
+				v-model="new_ad.days"
+				class="h-full w-full rounded-sm"
+			/>
         </div>
         <p>Le résultat prévisionnel journalier: <span class="text-green-600">{{predictedFollowers}} abonnés/jour</span> </p>
         <p>Le résultat prévisionnel total: <span class="text-green-600">{{totalPredictedFollowers}} abonnés</span> </p>
@@ -108,16 +110,13 @@
 
 <script>
 import Modal from '../Modal.vue'
-import Datepicker from 'vuejs-datepicker';
-import {fr} from 'vuejs-datepicker/dist/locale'
 import StatCard from './ui/StatCard.vue';
 export default {
  props:['entreprise','ad_coef'],
- components:{ Modal,Datepicker,StatCard },
+ components:{ Modal,StatCard },
  name:"Marketing",
  data(){
     return{
-        fr:fr,
         ads : [],
         mounted:false,
         ad_modal:false,
@@ -130,8 +129,7 @@ export default {
             events:1,
         },
         new_ad:{
-            start_date:null,
-            end_date:null,
+            days:null,
             amount:null,
             type:null,
         },
@@ -155,15 +153,13 @@ export default {
         if(this.notValidated()){
             return 0
         }
-        let days=Math.abs((this.new_ad.start_date - this.new_ad.end_date) / (24 * 60 *60 * 1000))
-        return parseInt(this.ad_coef*this.type_coef[this.new_ad.type]*this.new_ad.amount*days*50)
+        return parseInt(this.ad_coef*this.type_coef[this.new_ad.type]*this.new_ad.amount*this.days*50)
     },
     total_amount(){
         if(this.notValidated()){
             return 0
         }
-         let days=Math.abs((this.new_ad.start_date - this.new_ad.end_date) / (24 * 60 *60 * 1000))
-        return this.new_ad.amount*days
+        return this.new_ad.amount*this.days
     }
  },
  methods:{
@@ -195,13 +191,12 @@ export default {
 		this.ad_modal = false
 	},
     notValidated(){
-        return this.new_ad.start_date == null || this.new_ad.end_date == null 
+        return this.new_ad.days == null
         || this.new_ad.amount == null || this.new_ad.type == null
     },
 	createAd(){
 		if(!this.notValidated()){
             this.new_ad.entreprise_id = this.entreprise.id
-            this.new_ad.duration = Math.abs((this.new_ad.start_date - this.new_ad.end_date) / (24 * 60 *60*60 * 1000))
 			this.new_ad.result = this.predictedFollowers
             this.new_ad.total_amount = this.total_amount
             axios.post("/api/marketing/create",this.new_ad).then(resp=>{

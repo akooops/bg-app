@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\EntrepriseController;
+use App\Http\Controllers\HrController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\BankerController;
 use App\Http\Controllers\MarketingController;
@@ -32,12 +33,12 @@ Route::prefix("entreprise")->group(function(){
 	Route::get("/stock",[EntrepriseController::class,"getStock"]);
 	Route::get("/production/indicators",[EntrepriseController::class,"getProdIndicators"]);
     Route::post("/machine/buy",[EntrepriseController::class,"buyMachine"]);
-     Route::post("/machine/sell",[EntrepriseController::class,"sellMachine"]);
+    Route::post("/machine/sell",[EntrepriseController::class,"sellMachine"]);
     Route::post("/production/apply-action",[EntrepriseController::class,"applyProdAction"]); 
     Route::get("/marketing/indicators",[MarketingController::class,"getMarketingIndicators"]);
     Route::get("/hr/indicators",[HrController::class,"getHrIndicators"]);
-
-
+    Route::post("/hr/hire",[HrController::class,"hireWorkers"]);
+    Route::post("/hr/launch-workshop",[HrController::class,"launchWorkshop"]);
 });
 
 Route::prefix("demand")->group(function(){
@@ -63,6 +64,7 @@ Route::prefix("production")->group(function(){
 Route::prefix("loan")->group(function(){
     Route::post('/create', [BankerController::class,"createLoan"]);
     Route::get('/get', [BankerController::class,"getLoan"]);
+    Route::post('/pay', [BankerController::class,"payLoan"]);
     Route::post('/update', [BankerController::class,"updateLoan"]);
 });
 Route::prefix("marketing")->group(function(){
@@ -70,6 +72,6 @@ Route::prefix("marketing")->group(function(){
     Route::get('/get', [MarketingController::class,"getAd"]);
 });
 
-Route::get('/time', [EntrepriseController::class,"getSimulationTime"]);
+Route::get('/navbar', [EntrepriseController::class,"getNavbarData"]);
 
 Route::get("/test",[EntrepriseController::class,"testFunc"]);

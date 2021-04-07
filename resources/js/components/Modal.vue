@@ -1,5 +1,5 @@
 <template>
-    <div  class="fixed z-1200 inset-0">
+    <div  class="fixed z-index-999 inset-0">
     <div   class="flex  justify-center ">
       
     <div  class=" inset-0 transition-opacity" aria-hidden="true">
@@ -38,3 +38,8 @@ export default{
 		},
 	}
 </script>
+<style>
+.z-index-999{
+  z-index:9999;
+}
+</style>

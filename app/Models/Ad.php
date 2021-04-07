@@ -14,10 +14,9 @@ class Ad extends Model
         'result',
         'amount',
         'product_id',
-        'start_date',
-        "end_date",
+        'days',
         "status",
-        "type"
+        "type",
     ];
 
     public function entreprises(){

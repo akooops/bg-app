@@ -51,12 +51,11 @@ class MarketingController extends Controller
             "entreprise_id" => $request->entreprise_id,
             "type" => $request->type,
             "amount" => $request->total_amount,
-            "start_date" => strtok($request->start_date, 'T'),
-            "end_date" => strtok($request->end_date, 'T'),
+            "days" => $request->days,
             "result" => $request->result,
             "status" => "pending"
         ]);
-        $delay = round($request->duration*30,0);
+        $delay = round($request->days*30,0);
         //Calculating the real result 
         $result = random_int(0.8*$request->result,1.2*$request->result);
         // Calculating the {type} presence

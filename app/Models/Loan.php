@@ -12,7 +12,9 @@ class Loan extends Model
         'entreprise_id',
         'banker_id',
         'status',
-        'amount'
+        'amount',
+        "payment_status",
+        "remaining_amount"
     ];
     public function entreprises(){
         return $this->belongsTo('App\Models\Entreprise','entreprise_id','id');

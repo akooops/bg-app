@@ -31,6 +31,7 @@ Route::prefix("entreprise")->middleware(["auth","entreprise"])->group(function()
 	Route::get('/department/Approvisionnement',[EntrepriseController::class,"showDptApprov"])->name("approv");
 	Route::get('/department/Production',[EntrepriseController::class,"showDptProduction"])->name("production");
 	Route::get('/department/Marketing', [EntrepriseController::class,"showMarketing"]);
+	Route::get('/department/Ressources Humaines', [EntrepriseController::class,"showHr"]);
 	Route::get('/command/create',[EntrepriseController::class,"showCommandMaker"])->name("approv");
 	Route::get('/stock',[EntrepriseController::class,"showStock"])->name("stock");
     Route::get('/loans',function(){
@@ -50,7 +51,11 @@ Route::prefix("supplier")->middleware(["auth","supplier"])->group(function(){
 	});
 });
 
-
+Route::get('/logout',function(){
+	Auth::logout();
+	return redirect("/login");
+  });
+  
 Route::get('/banker/dashboard', function () {
     return view('banker.dashboard');
 })->middleware(['auth','banker'])->name('banker_dashboard');

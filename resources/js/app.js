@@ -12,6 +12,7 @@ Vue.component('stock', require('./components/departments/ui/Stock.vue').default)
 Vue.component('entrepriseloanlisting', require('./components/entreprise/LoanListing.vue').default);
 Vue.component('notification', require('./components/Notification.vue').default);
 Vue.component('marketing', require('./components/departments/Marketing.vue').default);
+Vue.component('humanressource', require('./components/departments/HumanRessource.vue').default);
 
 //Banker components
 Vue.component('loanlisting', require('./components/banker/LoanListing.vue').default);

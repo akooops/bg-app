@@ -51,7 +51,9 @@ class EntrepriseController extends Controller
         $ad_coef = 0.8;
         return view("departments.marketing",["products"=>$products,"ad_coef"=>$ad_coef]); 
     }
-
+    function showHr(Request $request){
+        return view("departments.hr"); 
+    }
 
     function getEntrepriseCommands(Request $request){
         $entreprise_id = $request->entreprise_id;
@@ -340,7 +342,18 @@ class EntrepriseController extends Controller
     }
 
 
-
+    public function getNavbarData(Request $request){
+        $time = $this->getSimulationTime();
+        if($request->type=='entreprise'){
+            $caisse = $this->getIndicator("caisse",$request->entreprise_id)['value'];
+            $dettes = $this->getIndicator("dettes",$request->entreprise_id)['value'];
+        }
+        else{
+            $caisse = '';
+            $dettes = '';
+        }
+        return ["time"=>$time,"caisse"=>$caisse,"dettes"=> $dettes];
+    }
     public function testFunc(){
         //$this->resetIndicator("busy_machines",1);
     }

@@ -7,7 +7,7 @@
   </div>
   <div class="p-3 text-center">
     <h3 class=" text-lg font-extrabold mb-4 truncate-2nd">
-      <a class="hover:text-blue-500" href="">Département {{name}}</a>
+      <a class="hover:text-blue-500" :href = "'/entreprise/department/' + name" >Département {{name}}</a>
     </h3>
 
     <a :href = "'/entreprise/department/' + name" 

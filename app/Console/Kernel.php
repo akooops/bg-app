@@ -6,6 +6,7 @@ use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use App\Traits\HelperTrait;
 use App\Events\SimulationDateChanged;
+use App\Jobs\MonthlyCosts;
 class Kernel extends ConsoleKernel
 {
     use HelperTrait;
@@ -37,11 +38,15 @@ class Kernel extends ConsoleKernel
                     $value = nova_get_setting("start_date")->addDays(1); 
                 }
                 nova_set_setting_value("current_date", $value);
-                $date = $this->parseDateToSimulationDate($value);
-                event(new SimulationDateChanged($date));
-                dd("Incremented date successfuly");
+                $data = [
+                    "time" =>$this->parseDateToSimulationDate($value),
+                    "dettes" => '',
+                    "caisse" => '',
+                ];
+                event(new SimulationDateChanged($data));
             }
         })->everyMinute(); 
+        $schedule->job(new MonthlyCosts)->everyThirtyMinutes();
         // $schedule->command('inspire')->hourly();
     }
 

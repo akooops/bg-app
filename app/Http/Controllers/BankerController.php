@@ -20,7 +20,7 @@ class BankerController extends Controller
     }
     function getLoan(Request $request){
         
-        if(isset($request->entreprise_id)){
+        if($request->entreprise_id!=null){
             $loans = DB::table('loans')
             ->select("*",'loans.created_at as loan_creation','loans.id as loan_id')
             ->join('users','users.id','=','loans.entreprise_id')
@@ -38,7 +38,7 @@ class BankerController extends Controller
                     "remaining_amount" => $loan->remaining_amount
                 ];
             });
-            }
+        }
         $loans = DB::table('loans')->where('status','pending')
         ->select("*",'loans.created_at as loan_creation','loans.id as loan_id')
         ->join('users','users.id','=','loans.entreprise_id')->orderBy('loan_creation', 'desc')->get();
@@ -59,6 +59,8 @@ class BankerController extends Controller
             "banker_id" => Banker::first()->id,
             "status"    => "pending",
             "amount" => $request->amount,
+            "remaining_amount" => $request->amount,
+            "payment_status" => 0,
         ]);
         $data = [
             "name" => Entreprise::find($request->entreprise_id)->name,
@@ -69,7 +71,7 @@ class BankerController extends Controller
             "loan_creation" =>  $this->parseDateToSimulationDate(nova_get_setting('current_date')),
         ];
         event(new LoanCreated($data));
-        return response()->json("Votre demande a été envoyée avec succès", 200);
+        return response()->json("Votre demande a été envoyée avec succès, vous serez rediriger dans 4 secondes", 200);
 
     }
     function updateLoan(Request $request){
@@ -77,12 +79,13 @@ class BankerController extends Controller
         $loan->amount = $request->amount;
         $loan->status = $request->status;
         $loan->ratio = $request->ratio;
+        $loan->remaining_amount = $request->amount*(1+0.01*$loan->ratio);
         if($loan->status=="accepted"){
             $loan->payment_status = false;
+            $this->updateIndicator('caisse',$loan->entreprise_id,$request->amount);
+            $this->updateIndicator('dettes',$loan->entreprise_id,$request->amount*(1+0.01*$request->ratio));
         }
         $loan->save();
-        $this->updateIndicator('caisse',$loan->entreprise_id,$request->amount);
-        $this->updateIndicator('dettes',$loan->entreprise_id,$request->amount);
         //Calculating the newest debt ratio and loan_rate 
         $old_ratio = $this->getIndicator('debt_ratio',$loan->entreprise_id)['value'];
         $debt_ratio = round($this->getIndicator('dettes',$loan->entreprise_id)['value']/ $this->getIndicator('caisse',$loan->entreprise_id)['value'],2);
@@ -98,6 +101,14 @@ class BankerController extends Controller
         return response()->json("Votre réponse a été envoyée avec succès à l'entreprise concernée", 200);
     }
     function payLoan(Request $request){
-        
+        $loan = Loan::find($request->loan_id);
+        $loan->remaining_amount = $loan->remaining_amount - $request->refund_amount;
+        if($loan->remaining_amount==0){
+            $loan->payment_status = 1;
+        }
+        $loan->save();
+        $this->updateIndicator("caisse",$request->entreprise_id,-$request->refund_amount);
+        $this->updateIndicator("dettes",$request->entreprise_id,-$request->refund_amount);
+        return response()->json("Votre virement a été envoyé à la banque avec succès", 200);
     }
 }
