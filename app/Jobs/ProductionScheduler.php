@@ -11,7 +11,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
 use App\Traits\IndicatorTrait;
 use App\Models\Product;
-
+use App\Events\NewNotification;
 class ProductionScheduler implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, IndicatorTrait;
@@ -27,6 +27,7 @@ class ProductionScheduler implements ShouldQueue
     {
        $this->production = $production;
        $this->production_id = $prod_id; 
+      
     }
 
     /**
@@ -68,7 +69,19 @@ class ProductionScheduler implements ShouldQueue
             DB::table("raw_materials_stock")->where("entreprise_id","=",$entreprise_id)->where("raw_material_id","=",$mat_id)->decrement("quantity",$quant_mat);
         });
         // update indicators
+ 
         $this->updateIndicator("caisse",$entreprise_id,-1*$this->production["cost"]);
         $this->updateIndicator("prod_cost",$entreprise_id,$this->production["cost"]);
+
+        $this->resetIndicator("busy_machines",$entreprise_id);
+        
+        $message = "La production de ".$this->production["quantity"]." unités de ".$product->name." est terminé.";
+        $notification = [
+            "type" => "ProductionDone",
+            "entreprise_id" => $entreprise_id,
+            "message" => $message,
+            "title" => "Production Finis"
+        ];
+        event(new NewNotification($notification));
     }
 }

@@ -45,10 +45,11 @@
 				</h3>
 				<p>En achetant de nouvelles machines ou en réparant des anciennes machines vous pourrez produire plus de quantité. </p>
 				<p><span class = "font-bold text-sm">Astuce : </span>Attention à ne pas sur-estimer vos besoins en machines</p>
-				<button
+				<button @click = "setMachineTransaction('buy')"
 				class = "bg-blue-500 text-white w-56 my-2 px-3 py-1 rounded text-center"> Acheter une machine </button>
 				<button
-				class = "bg-blue-500 text-white w-56 my-2 px-3 py-1 rounded text-center"> Afficher l'état machines </button>
+				@click = "setMachineTransaction('sell')"
+				class = "bg-blue-500 text-white w-56 my-2 px-3 py-1 rounded text-center"> Vendre une machine </button>
 			</div>
 		</div>
 		<div class="w-1/3 mr-3 my-2 max-w-sm overflow-hidden rounded border bg-white shadow">
@@ -62,13 +63,13 @@
 					Ateliers
 				</h3>
 				<p>Dans cette section vous pouvez lancer des actions pour améliorer l'état de vos usines et votre productivité. </p>
-				<select>
-					<option>Appliquer les 5S</option>
-					<option>Effectuer un audit HSI</option>
-					<option>Autre action</option>
+				<select v-model = "action.value">
+					<option value = "5s">Appliquer les 5S</option>
+					<option value = "hse">Effectuer un audit HSI</option>
+					<option value = "maintenance">Lancer une maintenance générale</option>
 				</select>
 				<button
-				class = "bg-blue-500 text-white w-56 my-2 px-3 py-1 rounded text-center"> Appliquer</button>
+				class = "bg-blue-500 text-white w-56 my-2 px-3 py-1 rounded text-center" @click = "showActionInfo"> Appliquer</button>
 				
 			</div>
 		<Modal v-if = "launch_prod_modal">
@@ -111,6 +112,31 @@
 			</div>
 			</template>	
 		</Modal>
+		<Modal v-if = "machine.show_transaction_modal">
+			<template v-slot:content>
+            		<div class = "w-full">
+            			<p v-if = "machine.transaction == 'buy'">Vous allez acheter une machine au prix de {{machine.buy_price}}, voulez vous continuer ?</p>
+            			<p v-if = "machine.transaction == 'sell'">Vous allez vendre une machine au prix de {{machine.sell_price}} DA, voulez vous continuer ?</p>
+            			<div class = "w-full my-2 flex flex-wrap items-center px-10 space-x-4 ">
+            				<button @click = "confirmMachineTransaction" class = "bg-green-500 rounded px-3 py-1 text-white">Confirmer</button>
+            				<button @click = "machine.show_transaction_modal=false" class = "bg-gray-500 rounded px-3 py-1 text-white">Annuler</button>
+            			</div>
+            		</div>
+            	</template>
+		</Modal>
+		<Modal v-if = "action.show_info">
+			<template v-slot:content>
+            		<div class = "w-full">
+            			<p>{{action.phrase}}</p>
+            			<p> <span class = "font-bold">Résultat : </span>{{action.result_phrase}}</p>
+            			<div class = "w-full my-2 flex flex-wrap items-center px-10 space-x-4 ">
+            				<button @click = "confirmAction" class = "bg-green-500 rounded px-3 py-1 text-white">Confirmer</button>
+            				<button @click = "action.show_info=false" class = "bg-gray-500 rounded px-3 py-1 text-white">Annuler</button>
+            			</div>
+            		</div>
+            	</template>
+		</Modal>
+
 	</div>
 </div>
 	</div>
@@ -134,12 +160,29 @@ export default{
 				machines: 0,
 				labor: 0
 			},
+			machine:{
+				show_transaction_modal: false,
+				transaction:'',
+				buy_price: 10000,
+				sell_price: 8000 * this.indicators["machines_health"].value
+			},
 			can_produce_msg: "",
 			can_produce: true,
 			stock: {},
 			show_success: false,
 			show_error: false,
-			message: ""
+			message: "",
+			action:{
+				value: "",
+				price: {
+					'5s': 20000,
+					'hse': 35000,
+					'maintenance': 5000 * this.indicators["machines"]["value"]
+				},
+				phrase: "",
+				result_phrase: "",
+				show_info: false
+			}
 		}
 	},
 	watch:{
@@ -183,15 +226,27 @@ export default{
 				"quantity": this.launch_data.quantity,
 				"price": this.launch_data.price,
 				"cost": this.totalCost,
-				"delay": this.prodDelay * 60
+				"delay": this.prodDelay * 60,
+				"machines": this.prod_factors.machines,
+				"labor": this.prod_factors.labor
 			}
 			axios.post("/api/production/launch",data).then(resp=>{
 				this.show_success= true
 				this.message = resp.data.message
 				this.launch_prod_modal = false
+				this.launch_data = {
+						prod_id: 1,
+						price: 0,
+						quantity: 0
+					}
+				this.prod_factors =  {
+						machines: 0,
+						labor: 0
+					}
+				this.$emit("prodLaunched");
 			}).catch(e=>{
 				this.show_error = true
-				this.message = resp.data.message
+				this.message = "Oops ! une erreur est survenue, veuillez infomrer un organisateur"
 				this.launch_prod_modal = false
 			})
 		},
@@ -229,14 +284,63 @@ export default{
 				this.can_produce_msg = "Pas assez de machines ou d'employés, vous ne pouvez pas lancer la production !"
 			}
 			this.can_produce = resp
+		},
+		setMachineTransaction(type){
+			this.machine.transaction = type
+			this.machine.show_transaction_modal = true
+		},
+		confirmMachineTransaction(type){
+			if(this.machine.transaction == "buy"){
+				axios.post("/api/entreprise/machine/buy",{
+					entreprise_id: this.user.id,
+					price: this.machine.buy_price 
+				}).then((resp)=>{
+					this.machine.show_transaction_modal = false
+				})
+			}
+			else if(this.machine.transaction == "sell"){
+				axios.post("/api/entreprise/machine/sell",{
+					entreprise_id: this.user.id,
+					price: this.machine.sell_price 
+				}).then((resp)=>{
+					this.machine.show_transaction_modal = false
+				})
+			}
+		},
+		showActionInfo(){
+			switch(this.action.value){
+				case '5s':
+					this.action.phrase = "Vous allez lancer une amélioration en appliquant les 5S, celà vous coutera " + this.action.price['5s'] + " DA"
+					this.action.result_phrase = "Vous pourrez produire plus rapidement !"
+					break;
+				case 'hse':
+					this.action.phrase = "Vous allez lancer une amélioration en suivant la norme ISO 45001 (HSE), celà vous coutera " + this.action.price['hse'] + " DA"
+					this.action.result_phrase = "Vous pourrez produire plus rapidement !"
+					break;
+				case 'maintenance':
+					this.action.phrase = "Vous allez lancer une maintenance générale, celà vous coutera " + this.action.price['maintenance'] +" DA"
+					this.action.result_phrase = "Vous pouvez vendre vos machines avec un prix plus élevé."
+					break;
+			}
+			this.action.show_info = true
 
-			
+		},
+		confirmAction(){
+			let price = this.action.price[this.action.value]
+			axios.post("/api/entreprise/production/apply-action",{
+				'type':this.action.value,
+				'price':price,
+				'entreprise_id':this.user.id
+			}).then(resp=>{
+				this.action.show_info = true
+			})
 		}
+
+
 
 	},
 	mounted(){
 		this.getStock()
-
 	}
 }
 </script>

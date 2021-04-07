@@ -4,52 +4,77 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\Ad;
+use App\Jobs\UpdateAdStatus;
+use App\Models\Entreprise;
+use App\Traits\IndicatorTrait;
+use App\Traits\HelperTrait;
 
 class MarketingController extends Controller
 {
-    function getAd(Request $request){
+    use IndicatorTrait, HelperTrait;
+    public function getAd(Request $request){
         $ads = DB::table('ads')
-        ->select("*",'ads.created_at as ad_creation','ads.id as ad_id')
+        ->select("*",'ads.created_at as ad_creation','ads.id as ad_id','ads.type as ad_type')
         ->join('users','users.id','=','ads.entreprise_id')
         ->where('ads.entreprise_id',$request->entreprise_id)->orderBy('ad_creation', 'desc')->get();
-        
+        $ads = collect($ads)->map(function($ad){
+            return [
+                "entreprise_id" => $ad->entreprise_id,
+                "ad_type" => $this->parseAdType($ad->ad_type),
+                "status" => $this->parseAdStatus($ad->status),
+                "start_date" => $ad->start_date,
+                "end_date" => $ad->end_date,
+                "result" => $ad->result,
+                "amount" => $ad->amount
+            ];
+        });
         return $ads;
     }
-    function createAd(Request $request){
-        //Calculating result depending on the ad type
+    public function createAd(Request $request){
+        //Validating Data depending on the ad type
         $request->validate([
             'type' => 'required|string|max:255',
-            'amount' => 'required|float',
+            'total_amount' => 'required',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date',
         ]);
-        $new_ad =  Loan::create([
-            "entreprise_id" =>  $request->entreprise_id,
+        //Must check if 
+        /*
+        $entrep=Entreprise::find($request->entrepris_id);
+        if($request->amount>=$entrep->){
+            return response()->json("Vos disponbilités ne suffisent pas a financier votre campagne publicitaire !", 404);
+        }
+        */
+        // Saving the expected result 
+        $new_ad = Ad::create([
+            "entreprise_id" => $request->entreprise_id,
             "type" => $request->type,
-            "amount" => $request->amount
+            "amount" => $request->total_amount,
+            "start_date" => strtok($request->start_date, 'T'),
+            "end_date" => strtok($request->end_date, 'T'),
+            "result" => $request->result,
+            "status" => "pending"
         ]);
-        $data = [
-            "name" => Entreprise::find($request->entreprise_id)->name,
-            "status" => "pending",
-            "ad_id" => $new_ad->id,
-            "amount" => $request->amount,
-            "ad_creation" =>  (new \DateTime())->format('Y-m-d H:i:s')
-        ];
-        event(new LoanCreated($data));
-        return response()->json("Votre demande a été envoyée avec succès", 200);
-
+        $delay = round($request->duration*30,0);
+        //Calculating the real result 
+        $result = $request->result + round(random_int(-$request->result,$request->result)*0.2,0);
+        // Calculating the {type} presence
+        $nb_subscribers = $this->getIndicator('nb_subscribers',$request->entreprise_id)["value"];
+        $presence = round($result/$nb_subscribers,0);
+        // Process it with delayed queue to send a notif when it's done
+        UpdateAdStatus::dispatch($new_ad,$result,$presence)->delay(now()->addMinutes($delay));
+        return response()->json("Votre campagne publicitaire a commencé ! cette page va se recharger automatiquement dans 5 secondes", 200);
     }
-    function updateAd(Request $request){
-        $loan = Loan::find($request->ad_id);
-        $loan->amount = $request->amount;
-        $loan->status = $request->status;
-        $loan->save();
-        $notification = [
-            "type" => "LoanStatusChanged",
-            "entreprise_id" => $loan->entreprise_id,
-            "data" => $loan,
-            "message" => "Le statut de votre demande d'endettement a changé, veuillez consulter votre banque",
-            "title" => "Demande d'endettement"
-        ];
-        event(new NewNotification($notification));
-        return response()->json("Votre réponse a été envoyée avec succès à l'entreprise concernée", 200);
+    public function getMarketingIndicators(Request $request){
+        // Return production useful indicators
+        $keys = ["nb_subscribers","social_presence","media_presence","events_presence"];
+        $entreprise_id = $request->entreprise_id;
+        $resp = [];
+        foreach ($keys as $ind) {
+            $value = $this->getIndicator($ind,$entreprise_id);
+            $resp[$ind] = $value;
+        }
+        return $resp;
     }
 }

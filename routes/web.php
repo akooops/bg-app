@@ -30,6 +30,7 @@ Route::prefix("entreprise")->middleware(["auth","entreprise"])->group(function()
 
 	Route::get('/department/Approvisionnement',[EntrepriseController::class,"showDptApprov"])->name("approv");
 	Route::get('/department/Production',[EntrepriseController::class,"showDptProduction"])->name("production");
+	Route::get('/department/Marketing', [EntrepriseController::class,"showMarketing"]);
 	Route::get('/command/create',[EntrepriseController::class,"showCommandMaker"])->name("approv");
 	Route::get('/stock',[EntrepriseController::class,"showStock"])->name("stock");
     Route::get('/loans',function(){
@@ -49,9 +50,6 @@ Route::prefix("supplier")->middleware(["auth","supplier"])->group(function(){
 	});
 });
 
-    Route::get('/entreprise/department/Marketing', function () {
-        return view('departments.marketing');
-    });
 
 Route::get('/banker/dashboard', function () {
     return view('banker.dashboard');

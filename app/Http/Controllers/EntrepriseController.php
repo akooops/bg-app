@@ -16,6 +16,7 @@ use App\Traits\HelperTrait;
 use App\Traits\DemandTrait;
 use App\Traits\IndicatorTrait;
 use App\Jobs\ProductionScheduler;
+use App\Events\NewNotification;
 
 class EntrepriseController extends Controller
 {
@@ -44,6 +45,11 @@ class EntrepriseController extends Controller
     function showStock(Request $request){
         $products = Product::all()->toArray();
         return view("departments.widgets.stock"); 
+    }
+    function showMarketing(Request $request){
+        $products = Product::all();
+        $ad_coef = 0.8;
+        return view("departments.marketing",["products"=>$products,"ad_coef"=>$ad_coef]); 
     }
 
 
@@ -161,7 +167,7 @@ class EntrepriseController extends Controller
 
     public function getProdIndicators(Request $request){
         // Return production useful indicators
-        $keys = ["machines","busy_machines","failed_machines","nb_workers_prod","ca",
+        $keys = ["machines","busy_machines","machines_health","nb_workers_prod","ca",
         "reject_rate","productivity_coeff","dist_unit_cost"];
         $entreprise_id = $request->entreprise_id;
         $resp = [];
@@ -180,19 +186,24 @@ class EntrepriseController extends Controller
         $cost = $request->cost;
         $machines = $request->machines;
         $labor = $request->machines;
+        $reject_rate = $this->getIndicator("reject_rate",$entreprise_id)["value"];
+        $real_produced_quant = $quantity * (1 - $reject_rate);
         $production_data = [
             "entreprise_id" => $entreprise_id,
             "product_id" => $product_id,
-            "quantity" => $quantity,
-            "finish_date" => now()->addMinutes($delay),
+            "quantity" => round($real_produced_quant),
+            "finish_date" => now()->addSeconds($delay),
             "price" => $request->price,
             "cost" => $cost,
             "name" => "", // Bug, should be removed from DB
             "status"=> "pending"
         ];
         $prod_id = DB::table("productions")->insertGetId($production_data);
-        $this->updateIndicator("busy_machines",$entreprise_id,$machines);
-        
+        $this->updateIndicator("busy_machines",$entreprise_id,$machines); 
+        $prod_factors = [
+            "machines" => $machines,
+            "labor" => $labor
+        ];
         ProductionScheduler::dispatch($production_data,$prod_id)
         ->delay(now()->addSeconds($delay));
 
@@ -237,7 +248,101 @@ class EntrepriseController extends Controller
         $this->updateIndicator("ca",$entreprise_id,$sales);
         $this->updateIndicator("dist_cost",$entreprise_id,$dist_cost);
         $message = "Vous avez vendu ".$sold_quantity." unités et vous avez généré un chiffre d'affaire de ".$sales. " UM";
+        $notification = [
+            "type" => "ProductionSold",
+            "entreprise_id" => $entreprise_id,
+            "message" => $message,
+            "title" => "Production Vendue"
+        ];
+        event(new NewNotification($notification));
         return Response::json(["message" => $message ],200);
+    }
+
+    // Machine functions
+    public function buyMachine(Request $request){
+        $entreprise_id = $request->entreprise_id;
+        $buy_price = 10000;
+        // update indicators
+
+        $this->updateIndicator("caisse",$entreprise_id,-1*$buy_price);
+        $this->updateIndicator("machines",$entreprise_id,1);
+        $message = "Vous avez acheté une machine au prix de ". $buy_price . " DA";
+        $notification = [
+            "type" => "MachineBought",
+            "entreprise_id" => $entreprise_id,
+            "message" => $message,
+            "title" => "Machine Achetée"
+        ];
+        event(new NewNotification($notification));
+        return Response::json(["message" => $message ],200);
+    }
+    public function sellMachine(Request $request){
+        $entreprise_id = $request->entreprise_id;
+        $sell_price = 8000;
+        $machines_health = $this->getIndicator("machines_health",$entreprise_id)["value"];
+        $real_sell_price = $sell_price * $machines_health;
+        // update indicators
+
+        $this->updateIndicator("caisse",$entreprise_id,$real_sell_price);
+        $this->updateIndicator("machines",$entreprise_id,-1);
+        $message = "Vous avez vendu une machine au prix de ". $real_sell_price . " DA";
+        $notification = [
+            "type" => "MachineSold",
+            "entreprise_id" => $entreprise_id,
+            "message" => $message,
+            "title" => "Machine Vendue"
+        ];
+        event(new NewNotification($notification));
+        return Response::json(["message" => $message ],200);
+    }
+
+    public function applyProdAction(Request $request){
+        $type = $request->type;
+        $price = $request->price;
+        $entreprise_id = $request->entreprise_id;
+        $message = "";
+        switch($type){
+            case '5s':
+                $prod_coeff = $this->getIndicator("productivity_coeff",$entreprise_id)["value"];
+
+                if($prod_coeff >= 5){
+                    $message = "Vous ne pouvez plus augmenter votre taux de productivité, il est déja élevé !";
+                }
+                else{
+                    $this->updateIndicator("caisse",$entreprise_id,-1*$price);
+                    $this->updateIndicator("productivity_coeff",$entreprise_id,0.5);
+                    $message = "Votre taux de productivité a augmenté !, vous pouvez produire plus rapidement.";
+                }    
+            break;
+            case 'hse':
+
+            break;
+            case 'maintenance':
+                $machines_health = $this->getIndicator("machines_health",$entreprise_id)["value"];
+                if($machines_health > 0.9){
+                    $message = "Vous ne pouvez plus augmentez la fiabilité de vos machines, elle est assez faible !";
+                }
+                else{
+                    $this->updateIndicator("machines_health",$entreprise_id,0.05);
+                    $this->updateIndicator("caisse",$entreprise_id,-1*$price);
+                    $message = "Vos machines sont maintenant plus fiables ! Vous pouvez les vendre plus chère.";
+                }
+            break;
+        }
+        $notification = [
+            "type" => "Information",
+            "entreprise_id" => $entreprise_id,
+            "message" => $message,
+            "title" => "Information"
+        ];
+        event(new NewNotification($notification));
+        return Response::json(["message" => $message ],200);
+    }
+
+
+
+    public function testFunc(){
+        //$this->resetIndicator("busy_machines",1);
     }
 
 }

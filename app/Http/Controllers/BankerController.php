@@ -8,10 +8,11 @@ use App\Models\Entreprise;
 use Illuminate\Support\Facades\DB;
 use App\Events\LoanCreated;
 use App\Events\NewNotification;
-
+use App\Traits\HelperTrait;
 
 class BankerController extends Controller
 {
+    use HelperTrait;
     function showDashboard(){
     	//$loans = loans::all();
     	//return view("dashboard",["departments"=>$departments]);
@@ -23,9 +24,15 @@ class BankerController extends Controller
             ->select("*",'loans.created_at as loan_creation','loans.id as loan_id')
             ->join('users','users.id','=','loans.entreprise_id')
             ->where('loans.entreprise_id',$request->entreprise_id)->orderBy('loan_creation', 'desc')->get();
-            
-            return $loans;
-        }
+            return collect($loans)->map(function($loan){
+                return [
+                    "loan_id" => $loan->loan_id,
+                    "amount" => $loan->amount,
+                    "status" => $this->parseLoanStatus($loan->status),
+                    "loan_creation" => $loan->loan_creation
+                ];
+            });
+            }
         $loans = DB::table('loans')->where('status','pending')
         ->select("*",'loans.created_at as loan_creation','loans.id as loan_id')
         ->join('users','users.id','=','loans.entreprise_id')->orderBy('loan_creation', 'desc')->get();

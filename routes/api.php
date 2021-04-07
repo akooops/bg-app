@@ -31,6 +31,11 @@ Route::prefix("entreprise")->group(function(){
 	Route::get("/commands",[EntrepriseController::class,"getEntrepriseCommands"]);
 	Route::get("/stock",[EntrepriseController::class,"getStock"]);
 	Route::get("/production/indicators",[EntrepriseController::class,"getProdIndicators"]);
+    Route::post("/machine/buy",[EntrepriseController::class,"buyMachine"]);
+     Route::post("/machine/sell",[EntrepriseController::class,"sellMachine"]);
+    Route::post("/production/apply-action",[EntrepriseController::class,"applyProdAction"]); 
+    Route::get("/marketing/indicators",[MarketingController::class,"getMarketingIndicators"]);
+
 
 });
 
@@ -62,6 +67,7 @@ Route::prefix("loan")->group(function(){
 Route::prefix("marketing")->group(function(){
     Route::post('/create', [MarketingController::class,"createAd"]);
     Route::get('/get', [MarketingController::class,"getAd"]);
-    Route::post('/update', [MarketingController::class,"updateAd"]);
 });
-Route::get("/products",[EntrepriseController::class,"getProducts"]);
+
+
+Route::get("/test",[EntrepriseController::class,"testFunc"]);

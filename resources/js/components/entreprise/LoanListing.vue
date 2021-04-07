@@ -51,15 +51,16 @@
                 <tbody>
                     <tr v-for="loan in loans" v-bind:key="loan.loan_id" class="bg-white lg:hover:bg-gray-100 flex lg:table-row flex-row lg:flex-row flex-wrap lg:flex-no-wrap mb-10 lg:mb-0">
                         <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
-                            Banque Sponsor 
+                            Banque locale
                         </td>
-                        <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
+                        <td class="w-full lg:w-auto p-3 font-bold text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
                             {{loan.amount}}
                         </td>
                         <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
                             {{loan.loan_creation}}
                         </td>
-                        <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
+                        <td class="w-full lg:w-auto p-3 font-bold text-center border border-b block lg:table-cell relative lg:static"
+                        :class="status=='En attente'?'text-yellow-600':status=='Rejettée'?' text-red-700':'text-green-600'">
                             {{loan.status}}
                         </td>
                     </tr>
@@ -120,7 +121,7 @@ export default {
             this.loans.unshift({
                 amount : this.amount,
                 loan_creation: new Date().toLocaleString(),
-                status : "pending"
+                status : "En attente"
             })
     	})
 		}

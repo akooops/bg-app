@@ -55,6 +55,7 @@ class Product extends Resource
             Number::make("Prix Min","price_min"),
             Number::make("Prix Max","price_max"),
             Number::make("Nombre de Machines","machine_units"),
+            Text::make("Coef publicité","ad_coef"),
             Number::make("Nombre d'Employés","labor_units"),    
             AttachMany::make("Raw Materials","RawMaterials","App\Nova\RawMaterial")->showCounts()->help("Sélectionnez des matieres premiers pour les ajouter à ce produit"),
             BelongsToMany::make('RawMaterials')->fields(function () {

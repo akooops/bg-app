@@ -14,7 +14,10 @@
 		<div v-if = "show_decision_center == false">
 		<div v-if = "show_stat_cards" class = "flex flex-wrap w-full justify-between py-3">
 			<StatCard title = "Chiffre d'Affaire" color = "text-green-500"  icon = "fa-money" :value = "indicators['ca'].value"></StatCard>
-			<StatCard title = "Machines" color = "text-gray-600" icon = "fa-cogs" :value = "indicators['machines'].value"></StatCard>
+			<StatCard title = "Machines" color = "text-gray-600" icon = "fa-cogs" :value = "indicators['machines'].value" 
+			:second-value = "indicators['busy_machines'].value +  ' occupées.'"
+
+			></StatCard>
 			<StatCard title = "Nb. Employés" color = "text-indigo-600"  icon = "fa-users" :value = "indicators['nb_workers_prod'].value"></StatCard>
 		</div>
 		<div v-if = "page_index == 'prod_stats'">
@@ -75,13 +78,13 @@
                         <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
                             {{prod.sold * prod.price}} UM
                         </td>
-                        <td :class = "prod.status == 'pending' ? 'text-yellow-500':'text-green-500'" class="w-full lg:w-auto p-3 text-center border border-b block lg:table-cell relative lg:static">
+                        <td :class = "prod.status_code == 'pending' ? 'text-yellow-500':'text-green-500'" class="w-full lg:w-auto p-3 text-center border border-b block lg:table-cell relative lg:static">
                             {{prod.status}}
                         </td>
                          <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
                             <button @click = "sell(prod)" v-if = "prod.status_code == 'completed' && prod.sold < prod.quantity"   class="bg-green-400 hover:bg-green-800  text-white py-2 px-4 rounded"  >Vendre</button>
-                            <p v-if = "prod.status_code == 'pending'">Vous ne pouvez pas vendre.</p>
-                            <p v-if = "prod.sold >= prod.quantity">Vous ne pouvez pas vendre.</p>
+                            <p v-if = "prod.status_code == 'pending'">Vous ne pouvez pas vendre encore.</p>
+                            <p v-if = "prod.sold >= prod.quantity">Vous ne pouvez plus vendre.</p>
                         </td>
                     </tr>
                 </tbody>
@@ -100,7 +103,7 @@
             </Modal>
 		</div>
 	<div v-if = "page_index == 'decision_center'" >
-		<ProdCenter :user = "user" :products = "products" :indicators="indicators"></ProdCenter>
+		<ProdCenter @prodLaunched = "updateProdData" :user = "user" :products = "products" :indicators="indicators"></ProdCenter>
 	</div>
 	</div>
 
@@ -207,14 +210,44 @@ export default {
 				price: this.sell_info.price
 			}
 			axios.post("/api/production/sell",data).then((resp)=>{
-				console.log(resp.data.message)
+				this.show_selling_info = false
 			})
+		},
+		updateProdData(){
+			this.getProdNumbers()
+			this.getProductions()
 		}
 	},
 	mounted(){
-		this.getProdNumbers()
+		this.updateProdData()
 		this.getMarketDemands()
-		this.getProductions()
+		
+		window.Echo.channel("entreprise_"+this.user.id)
+    	.listen('NewNotification', (e) => {
+        if(e.notification.type=='ProductionSold'){
+        	this.updateProdData()
+            this.$forceUpdate()
+            
+        }
+        if(e.notification.type=='ProductionDone'){
+        	this.updateProdData()
+            this.$forceUpdate()  
+        }
+        if(e.notification.type=='ProductionLaunched'){
+        	this.updateProdData()
+            this.$forceUpdate()  
+        }
+        if(e.notification.type=='MachineBought'){
+        	this.updateProdData()
+            this.$forceUpdate()  
+        }
+        if(e.notification.type=='MachineSold'){
+        	this.updateProdData()
+            this.$forceUpdate()  
+        }
+
+
+    })
 	}
 
 }
