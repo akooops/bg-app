@@ -37,14 +37,17 @@ class MonthlyCosts implements ShouldQueue
         foreach ($entreprises as $entreprise) {
             //Removing salary costs
             $workers = $this->getIndicator('nb_workers',$entreprise->id);
-            $this->updateIndicator('caisses',$entreprise->id,-$workers*$salary);
+            $this->updateIndicator('caisse',$entreprise->id,-$workers*$salary);
             //Increasing loan_rate for the non-paid loans
+            //I should change this
+            /*
             $loans = Loan::where('entreprise_id',$entreprise->id)->where('status','accepted')->where('payment_status',0)->get();
             foreach($loans as $loan){
                 $loan->ratio+= 0.01;
                 $loan->save();
                 $this->updateIndicator('dettes',$entreprise->id,0.01*$loan->remaining_amount);
             }
+            */
 
         }
         

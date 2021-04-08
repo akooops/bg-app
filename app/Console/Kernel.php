@@ -40,8 +40,6 @@ class Kernel extends ConsoleKernel
                 nova_set_setting_value("current_date", $value);
                 $data = [
                     "time" =>$this->parseDateToSimulationDate($value),
-                    "dettes" => '',
-                    "caisse" => '',
                 ];
                 event(new SimulationDateChanged($data));
             }

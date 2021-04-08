@@ -9,10 +9,13 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-class SimulationDateChanged implements ShouldBroadcast
+
+class NavbarDataChanged implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-    public $date;
+    public $caisse;
+    public $dettes;
+    public $entreprise_id;
     /**
      * Create a new event instance.
      *
@@ -20,8 +23,10 @@ class SimulationDateChanged implements ShouldBroadcast
      */
     public function __construct($data)
     {
-        $this->date = $data['date'];
-        }
+        $this->caisse = $data['caisse'];
+        $this->dettes = $data['dettes'];
+        $this->entreprise_id = $data['entreprise_id'];
+    }
 
     /**
      * Get the channels the event should broadcast on.
@@ -30,6 +35,6 @@ class SimulationDateChanged implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('simulation_date');
+        return new Channel('entreprise_'.$this->entreprise_id);
     }
 }

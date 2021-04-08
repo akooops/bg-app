@@ -15,9 +15,9 @@ class MarketingController extends Controller
     use IndicatorTrait, HelperTrait;
     public function getAd(Request $request){
         $ads = DB::table('ads')
-        ->select("*",'ads.created_at as ad_creation','ads.id as ad_id','ads.type as ad_type')
+        ->select("*",'ads.id as ad_id','ads.type as ad_type')
         ->join('users','users.id','=','ads.entreprise_id')
-        ->where('ads.entreprise_id',$request->entreprise_id)->orderBy('ad_creation', 'desc')->get();
+        ->where('ads.entreprise_id',$request->entreprise_id)->orderBy('creation_date', 'desc')->get();
         $ads = collect($ads)->map(function($ad){
             return [
                 "entreprise_id" => $ad->entreprise_id,
@@ -25,6 +25,7 @@ class MarketingController extends Controller
                 "status" => $this->parseAdStatus($ad->status),
                 "days" => $ad->days,
                 "result" => $ad->result,
+                "creation_date" => $ad->creation_date,
                 "amount" => $ad->amount
             ];
         });
@@ -51,18 +52,18 @@ class MarketingController extends Controller
             "amount" => $request->total_amount,
             "days" => $request->days,
             "result" => $request->result,
+            "creation_date" => (int) $this->getSimulationTime(),
             "status" => "pending"
         ]);
-        $delay = round($request->days*30,0);
         //Calculating the real result 
-        $result = random_int(0.8*$request->result,1.2*$request->result);
+        $result = random_int(0.85*$request->result,1.15*$request->result);
         // Calculating the {type} presence
         $nb_subscribers = $this->getIndicator('nb_subscribers',$request->entreprise_id)["value"];
         $presence = round($result/$nb_subscribers,0);
-        $this->updateIndicator('caisse',$request->entreprise_id,-1000*$request->total_amount);
+        $this->updateIndicator('caisse',$request->entreprise_id,-$request->total_amount);
         // Process it with delayed queue to send a notif when it's done
-        UpdateAdStatus::dispatch($new_ad,$result,$presence)->delay(now()->addMinutes($delay));
-        return response()->json("Votre campagne publicitaire a commencé ! cette page va se recharger automatiquement dans 5 secondes", 200);
+        UpdateAdStatus::dispatch($new_ad,$result,$presence)->delay(now()->addMinutes($request->days));
+        return response()->json("Votre campagne publicitaire a commencé ! cette page va se recharger automatiquement dans 4 secondes", 200);
     }
     public function getMarketingIndicators(Request $request){
         // Return production useful indicators

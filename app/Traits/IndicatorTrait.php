@@ -6,7 +6,7 @@ use App\Models\Entreprise;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\DB;
-use App\Events\SimulationDateChanged;
+use App\Events\NavbarDataChanged;
 use App\traits\HelperTrait;
 trait IndicatorTrait{
     use HelperTrait;
@@ -28,11 +28,11 @@ trait IndicatorTrait{
         }
         if($indicator_code=='dettes' || $indicator_code=='caisse'){
             $data = [
-                "date" => $this->getSimulationtime(),
+                "entreprise_id" => $entreprise_id,
                 "dettes" => $this->getIndicator("dettes",$entreprise_id)['value'],
                 "caisse" => $this->getIndicator("caisse",$entreprise_id)['value'],
             ];
-            event(new SimulationDateChanged($data));
+            event(new NavbarDataChanged($data));
         }
     }
     public function resetIndicator($indicator_code,$entreprise_id){

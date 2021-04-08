@@ -107,9 +107,12 @@
                             {{loan.remaining_amount}}
                         </td>
                         <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
-                            <button @click="openPayModal(loan)" class=" rounded text-white"
-                            :class="loan.payment_status==1?'bg-gray-600':'bg-green-400 hover:bg-green-800'"
+                            <button v-if=" loan.status=='Acceptée/Partiellement acceptée'" @click="openPayModal(loan)" class=" rounded text-white"
+                            :class="loan.payment_status==1 ?'bg-gray-600':'bg-green-400 hover:bg-green-800'"
                             :disabled="loan.payment_status==1"
+                             >Payer la dette</button>
+                            <button v-else @click="openPayModal(loan)" class="bg-gray-600 rounded text-white"
+                            :disabled="true"
                              >Payer la dette</button>
                         </td>
                     </tr>
