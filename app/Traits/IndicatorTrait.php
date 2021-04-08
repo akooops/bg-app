@@ -28,7 +28,7 @@ trait IndicatorTrait{
         }
         if($indicator_code=='dettes' || $indicator_code=='caisse'){
             $data = [
-                "time" => $this->getSimulationtime(),
+                "date" => $this->getSimulationtime(),
                 "dettes" => $this->getIndicator("dettes",$entreprise_id)['value'],
                 "caisse" => $this->getIndicator("caisse",$entreprise_id)['value'],
             ];
