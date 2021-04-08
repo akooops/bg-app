@@ -23,8 +23,7 @@ class MarketingController extends Controller
                 "entreprise_id" => $ad->entreprise_id,
                 "ad_type" => $this->parseAdType($ad->ad_type),
                 "status" => $this->parseAdStatus($ad->status),
-                "start_date" => $ad->start_date,
-                "end_date" => $ad->end_date,
+                "days" => $ad->days,
                 "result" => $ad->result,
                 "amount" => $ad->amount
             ];
@@ -36,8 +35,7 @@ class MarketingController extends Controller
         $request->validate([
             'type' => 'required|string|max:255',
             'total_amount' => 'required',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date',
+            'days' => 'required',
         ]);
         //Must check if 
         /*

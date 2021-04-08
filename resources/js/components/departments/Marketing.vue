@@ -69,8 +69,7 @@
                     <tr>
                         <th class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">Type de campagne</th>
                         <th class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">Montant</th>
-                        <th class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">Date début</th>
-                        <th class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">Date fin</th>
+                        <th class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">Durée en jours</th>
                          <th class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">Statut</th>
                          <th class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">Résultat prévisionnel/Réel</th>
                     </tr>
@@ -84,10 +83,7 @@
                             {{ad.amount}}
                         </td>
                         <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
-                            {{ad.start_date}}
-                        </td>
-                         <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
-                            {{ad.end_date}}
+                            {{ad.days}}
                         </td>
                         <td class="w-full lg:w-auto p-3 font-bold text-center border border-b block lg:table-cell relative lg:static"
                         :class="ad.status=='Terminé'?'text-green-600':'text-yellow-500'">
@@ -153,13 +149,13 @@ export default {
         if(this.notValidated()){
             return 0
         }
-        return parseInt(this.ad_coef*this.type_coef[this.new_ad.type]*this.new_ad.amount*this.days*50)
+        return parseInt(this.ad_coef*this.type_coef[this.new_ad.type]*this.new_ad.amount*this.new_ad.days*50)
     },
     total_amount(){
         if(this.notValidated()){
             return 0
         }
-        return this.new_ad.amount*this.days
+        return this.new_ad.amount*this.new_ad.days
     }
  },
  methods:{
