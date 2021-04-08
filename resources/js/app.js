@@ -2,6 +2,11 @@ require('./bootstrap');
 
 import Vue from "vue"
 
+axios.defaults.withCredentials = true
+let local_url = "http://10.42.0.1:8000"
+
+axios.defaults.baseURL = local_url
+
 Vue.component('departmentcard', require('./components/DepartmentCard.vue').default);
 // Departments
 Vue.component('approvdepartment', require('./components/departments/ApprovDepartment.vue').default);
@@ -12,7 +17,11 @@ Vue.component('stock', require('./components/departments/ui/Stock.vue').default)
 Vue.component('entrepriseloanlisting', require('./components/entreprise/LoanListing.vue').default);
 Vue.component('notification', require('./components/Notification.vue').default);
 Vue.component('marketing', require('./components/departments/Marketing.vue').default);
+
 Vue.component('finance', require('./components/departments/Finance.vue').default);
+
+Vue.component('humanressource', require('./components/departments/HumanRessource.vue').default);
+
 
 //Banker components
 Vue.component('loanlisting', require('./components/banker/LoanListing.vue').default);

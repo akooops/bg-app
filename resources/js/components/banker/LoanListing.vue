@@ -24,7 +24,7 @@
                             {{loan.debt_ratio}}
                         </td>
                         <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
-                            <input type="text" v-model="loans[key].ratio"/>
+                            <input type="text" placeholder="En % ex:1 " v-model="loans[key].ratio"/>
                         </td>
                         <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
                             <input type="text" v-model="loans[key].amount"/>

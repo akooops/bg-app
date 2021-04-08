@@ -51,6 +51,7 @@ class EntrepriseController extends Controller
         $ad_coef = 0.8;
         return view("departments.marketing",["products"=>$products,"ad_coef"=>$ad_coef]); 
     }
+
     function showFinance(Request $request){
         $products = Product::all();
         $entreprises = Entreprise::all();
@@ -60,6 +61,10 @@ class EntrepriseController extends Controller
     function getProducts(Request $request){
         $products = Product::all();
         return $products;
+    }
+
+    function showHr(Request $request){
+        return view("departments.hr"); 
     }
 
 
@@ -390,6 +395,20 @@ class EntrepriseController extends Controller
         return $sorted;
 
 
+    }
+
+
+    public function getNavbarData(Request $request){
+        $time = $this->getSimulationTime();
+        if($request->type=='entreprise'){
+            $caisse = $this->getIndicator("caisse",$request->entreprise_id)['value'];
+            $dettes = $this->getIndicator("dettes",$request->entreprise_id)['value'];
+        }
+        else{
+            $caisse = '';
+            $dettes = '';
+        }
+        return ["time"=>$time,"caisse"=>$caisse,"dettes"=> $dettes];
     }
 
     public function testFunc(){

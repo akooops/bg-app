@@ -13,15 +13,19 @@ class SimulationDateChanged implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
     public $date;
+    public $dettes;
+    public $caisse;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($date)
+    public function __construct($data)
     {
-        $this->date = $date;
-    }
+        $this->date = $data['date'];
+        $this->dettes = $data["dettes"];
+        $this->caisse = $data["caisse"];
+        }
 
     /**
      * Get the channels the event should broadcast on.

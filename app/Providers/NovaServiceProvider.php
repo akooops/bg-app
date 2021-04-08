@@ -8,7 +8,7 @@ use Laravel\Nova\Nova;
 use Laravel\Nova\NovaApplicationServiceProvider;
 use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\DateTime;
-
+use Laravel\Nova\Fields\Number;
 class NovaServiceProvider extends NovaApplicationServiceProvider
 {
     /**
@@ -20,12 +20,14 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
     {
         parent::boot();
         \OptimistDigital\NovaSettings\NovaSettings::addSettingsFields([
+            Number::make('Salaire des employés de production','salary_production'),
             Boolean::make('Simulation en cours ?','game_started'),
             DateTime::make('Date début de la simulation','start_date'),
             DateTime::make('Date courante de la simulation','current_date'),
         ],[
             'start_date' => 'datetime',
-            'current_date' => 'datetime'
+            'current_date' => 'datetime',
+            'salary_production' => 'float'
         ],"Général");
     }
 

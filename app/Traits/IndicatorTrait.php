@@ -6,9 +6,10 @@ use App\Models\Entreprise;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\DB;
-
+use App\Events\SimulationDateChanged;
+use App\Traits\HelperTrait;
 trait IndicatorTrait{
-
+    use HelperTrait;
 	public function updateIndicator($indicator_code,$entreprise_id,$value){
         $indicator = DB::table("indicators")->where("code","=",$indicator_code)->first();
         $entrep_indicator = DB::table("entreprise_indicator")->where("entreprise_id","=",$entreprise_id)->where("indicator_id","=",$indicator->id);
@@ -24,6 +25,14 @@ trait IndicatorTrait{
         else{
             $entrep_indicator->increment("value",$value);
             
+        }
+        if($indicator_code=='dettes' || $indicator_code=='caisse'){
+            $data = [
+                "time" => $this->getSimulationtime(),
+                "dettes" => $this->getIndicator("dettes",$entreprise_id)['value'],
+                "caisse" => $this->getIndicator("caisse",$entreprise_id)['value'],
+            ];
+            event(new SimulationDateChanged($data));
         }
     }
     public function resetIndicator($indicator_code,$entreprise_id){
