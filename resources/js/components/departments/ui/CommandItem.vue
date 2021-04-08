@@ -3,7 +3,7 @@
 		<td class="py-3 px-6 text-left whitespace-nowrap">
                       <div class="flex items-center">
                           <select v-model = "commandItem['material']" class = "w-full rounded" >
-                            <option  v-for = "mp in materials">
+                            <option :value = "mp.name" :key = "mp.name" v-for = "mp in materials">
                               {{mp.name}}
                             </option>
                           </select>
@@ -60,9 +60,15 @@ export default {
       ddl: {
         min: null,
         max: null
-      }
+      },
+      filtered_materials: []
 		}
 	},
+  watch:{
+    'commandItem.material': function(n,o){
+      this.filtered_materials = this.materials.filter(m=>m.name != n)
+    }
+  },
 	computed:{
 		supplierDelay(){
 			if(this.commandItem.supplier != ""){
@@ -73,9 +79,6 @@ export default {
 			}
 
 		},
-    filtered_materials(){
-      return this.materials.filter((mat) => mat.name != this.commandItem.material)
-    },
 		materialPrice(){
 			if(this.commandItem.material != "" && this.commandItem.supplier != ""){
 				let material = this.materials.find((item) => this.commandItem.material == item.name)
@@ -100,9 +103,10 @@ export default {
 	},
 	methods:{
 		deleteRow(){
+      this.$emit("deleteRow",{index:this.index})
       this.$destroy();
       this.$el.parentNode.removeChild(this.$el);
-			this.$emit("deleteRow",this.index)
+			
 		},
     getItemData(){
       this.commandItem.price = this.materialPrice
@@ -111,7 +115,10 @@ export default {
       this.commandItem.ddl_max = this.ddl.max
       return this.commandItem
     }
-	}
+	},
+  created(){
+    this.filtered_materials = this.materials
+  }
 
 	};
 </script>

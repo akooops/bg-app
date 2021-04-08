@@ -38,7 +38,7 @@
                   :key = "i"
                   :ref = "i"
                   :index = "i"
-                  
+                  @deleteRow = "deleteItem($event)"
                   ></CommandItem>
 
               
@@ -104,8 +104,11 @@ export default{
                 this.message = "Une erreur s'est produite"
               })
             },
-            deleteItem(index){
-
+            deleteItem(e){
+              console.log("Row should be deleted")
+              this.num_commands -= 1;
+              delete this.$refs[e.index]
+              this.$forceUpdate()
             }
             
         },

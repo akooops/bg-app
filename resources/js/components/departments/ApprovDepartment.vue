@@ -38,7 +38,7 @@
             {{cmd.num_items}}                       </td>
 
             <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
-              {{cmd.created}}
+             Jour n° {{cmd.created}}
             </td>
             <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
               <span :class = "cmd.status == 'confirmed' ? 'text-green-500':'text-yellow-500'">{{getStatus(cmd.status)}}</span> 
@@ -113,7 +113,14 @@ export default{
   mounted(){
     this.getCommands()
     console.log(this.user)
-
-  }
+    window.Echo.channel("entreprise_"+this.user.id)
+      .listen('NewNotification', (e) => {
+    if(e.notification.type=='CommandAccepted'){
+          this.getCommands()
+          this.$forceUpdate()
+            
+    }
+  });
+}
 }
 </script>

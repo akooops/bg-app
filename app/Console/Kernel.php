@@ -6,6 +6,7 @@ use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use App\Traits\HelperTrait;
 use App\Events\SimulationDateChanged;
+use App\Jobs\DailyStats;
 class Kernel extends ConsoleKernel
 {
     use HelperTrait;
@@ -39,9 +40,10 @@ class Kernel extends ConsoleKernel
                 nova_set_setting_value("current_date", $value);
                 $date = $this->parseDateToSimulationDate($value);
                 event(new SimulationDateChanged($date));
-                dd("Incremented date successfuly");
+                //dd("Incremented date successfuly");
             }
         })->everyMinute(); 
+        $schedule->job(new DailyStats)->everyMinute();
         // $schedule->command('inspire')->hourly();
     }
 

@@ -65,7 +65,7 @@
 				<p>Dans cette section vous pouvez lancer des actions pour améliorer l'état de vos usines et votre productivité. </p>
 				<select v-model = "action.value">
 					<option value = "5s">Appliquer les 5S</option>
-					<option value = "hse">Effectuer un audit HSI</option>
+					<option value = "audit">Effectuer un audit qualité</option>
 					<option value = "maintenance">Lancer une maintenance générale</option>
 				</select>
 				<button
@@ -176,7 +176,7 @@ export default{
 				value: "",
 				price: {
 					'5s': 20000,
-					'hse': 35000,
+					'audit': 35000,
 					'maintenance': 5000 * this.indicators["machines"]["value"]
 				},
 				phrase: "",
@@ -313,9 +313,9 @@ export default{
 					this.action.phrase = "Vous allez lancer une amélioration en appliquant les 5S, celà vous coutera " + this.action.price['5s'] + " DA"
 					this.action.result_phrase = "Vous pourrez produire plus rapidement !"
 					break;
-				case 'hse':
-					this.action.phrase = "Vous allez lancer une amélioration en suivant la norme ISO 45001 (HSE), celà vous coutera " + this.action.price['hse'] + " DA"
-					this.action.result_phrase = "Vous pourrez produire plus rapidement !"
+				case 'audit':
+					this.action.phrase = "Vous allez lancer un audit qualité en suivant la norme ISO 9001, celà vous coutera " + this.action.price['audit'] + " DA"
+					this.action.result_phrase = "Votre taux de rebut sera plus faible."
 					break;
 				case 'maintenance':
 					this.action.phrase = "Vous allez lancer une maintenance générale, celà vous coutera " + this.action.price['maintenance'] +" DA"
@@ -332,7 +332,7 @@ export default{
 				'price':price,
 				'entreprise_id':this.user.id
 			}).then(resp=>{
-				this.action.show_info = true
+				this.action.show_info = false
 			})
 		}
 

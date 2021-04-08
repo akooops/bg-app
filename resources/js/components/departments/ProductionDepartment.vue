@@ -24,7 +24,8 @@
 		<h1  class = "text-lg font-extrabold "> Analyse de la Demande</h1>
 		<div v-if = "show_market_demand" class = "flex flex-wrap bg-white justify-center items-center my-3">
 		<div v-for = "(prod,i) in prod_data" class = "w-1/2 rounded  mt-2">
-			<h2 class = "font-extrabold text-lg px-2">Demande Prévisionelle - {{products[i].name}} </h2>
+			<h2 class = "font-extrabold text-lg px-2">Demande Prévisionelle - {{products[i].name}} :  </h2>
+			<h3 class = "px-3 font-bold">{{products[i].left_demand}} demandes restante (mensuelle)</h3>
 			<LineGraph
 			:x-data = "prod.prices"
 			:y-data = "prod.demand"
@@ -125,9 +126,10 @@ export default {
 		ProdCenter,
 		Modal
 	},
-	props: ["products","user"],
+	props: ["user"],
 	data(){
 		return {
+			products: [],
 			market_demand: [],
 			id_list: [1,2,3,4],
 			prod_data: [],
@@ -213,19 +215,27 @@ export default {
 				this.show_selling_info = false
 			})
 		},
+		getProducts(){
+			axios.get("/api/products").then(resp=>{
+				this.products = resp.data
+			})
+		},
+
 		updateProdData(){
 			this.getProdNumbers()
 			this.getProductions()
+			this.getProducts()
 		}
 	},
 	mounted(){
 		this.updateProdData()
 		this.getMarketDemands()
-		
+		this.getProducts()
 		window.Echo.channel("entreprise_"+this.user.id)
     	.listen('NewNotification', (e) => {
         if(e.notification.type=='ProductionSold'){
         	this.updateProdData()
+        	this.getProducts()
             this.$forceUpdate()
             
         }
@@ -238,14 +248,17 @@ export default {
             this.$forceUpdate()  
         }
         if(e.notification.type=='MachineBought'){
-        	this.updateProdData()
+        	this.getProdNumbers()
             this.$forceUpdate()  
         }
         if(e.notification.type=='MachineSold'){
-        	this.updateProdData()
+        	this.getProdNumbers()
             this.$forceUpdate()  
         }
-
+        if(e.notification.type=='Information'){
+        	this.getProdNumbers()
+            this.$forceUpdate()  
+        }
 
     })
 	}

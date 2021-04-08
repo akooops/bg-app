@@ -44,6 +44,56 @@ trait IndicatorTrait{
             "phase" => $entrep_indicator->phase
         ];
         return $resp;
+    }
+
+    // Specific functions
+
+   
+
+    public function getMarketShare(Request $request){
+        $entreprise_id = $request->entreprise_id;
+        $products = Product::all();
+        $entreprises = Entreprise::all();
+        $prod_names = $products->map(function($p){
+            return $p->name;
+        })->toArray();
+        $market_share_prod = 0;
+        $values = [];
+        foreach ($products as $prod) {
+            $key = "ca_".$prod->id;
+            $value = $this->getIndicator($key,$entreprise_id)["value"];
+            $total = 0;
+            foreach ($entreprises as $entrep) {
+                $total += $this->getIndicator($key,$entrep->id)["value"];
+            }
+            $market_share_prod = round($value/$total,3);
+            array_push($values,$market_share_prod);
+        }
+        $resp = ["names" => $prod_names, "values" => $values];
+        return $resp;
+    }
+    public function getProductMarketShare(Request $request){
+        $product_id = $request->product_id;
+        $entreprises = Entreprise::all();
+        $key = "ca_".$product_id;
+        $total = 0;
+        $data = [];
+        foreach ($entreprises as $entrep) {
+            $value = $this->getIndicator($key,$entrep->id)["value"];
+            $total += $value;
+        }
+        foreach ($entreprises as $entrep) {
+            $value = $this->getIndicator($key,$entrep->id)["value"];
+           
+            $prod_share = round($value/$total,3);
+            $prod_share = ["name" => $entrep->name, "value" => $prod_share]; 
+            array_push($data,$prod_share);
+        }
+        return $data;
+    }
+
+    public function getDailySalesProfit(Request $request){
+
     }	
 
 }

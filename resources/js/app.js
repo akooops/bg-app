@@ -12,15 +12,20 @@ Vue.component('stock', require('./components/departments/ui/Stock.vue').default)
 Vue.component('entrepriseloanlisting', require('./components/entreprise/LoanListing.vue').default);
 Vue.component('notification', require('./components/Notification.vue').default);
 Vue.component('marketing', require('./components/departments/Marketing.vue').default);
+Vue.component('finance', require('./components/departments/Finance.vue').default);
 
 //Banker components
 Vue.component('loanlisting', require('./components/banker/LoanListing.vue').default);
 // Supplier components
 Vue.component('allcommands', require('./components/supplier/AllCommands.vue').default)
 Vue.component('singlecommand', require('./components/supplier/SingleCommand.vue').default);
+
 //Simulation Time
 Vue.component('simulationtime', require('./components/SimulationTime.vue').default);
 
+
+//Leaderboard
+Vue.component('leaderboard', require('./components/Leaderboard.vue').default)
 
 const app = new Vue({
    el: '#app',
