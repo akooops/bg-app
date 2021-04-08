@@ -89,7 +89,7 @@ class SupplierController extends Controller
 
     }
     AddToStock::dispatch($stocks,$full_cost,$entreprise_id)
-    ->delay(now()->addSeconds($delay));
+    ->delay(now()->addMinutes($delay));
     return Response::json(["message" => "La commande a été validé
       , vous serez renvoyé vers le dashboard dans 4 secondes "],200);
 }

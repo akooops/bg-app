@@ -86,7 +86,7 @@
 				<p class = "my-1 mx-4" >Prix (Unitaire)</p>
 				<input class = "mx-4 w-2/3" v-model = "launch_data.price" type = "number"/>
 				<div class = "h-auto ">
-				<button :disabled = "can_produce == false" @click = "launchProduction" class = "bg-blue-400 mx-4 my-2 py-1 px-4 text-white" v-if = "can_produce">Lancer ! </button>
+				<button :diabled = "can_produce == false" @click = "launchProduction" class = "bg-blue-400 mx-4 my-2 py-1 px-4 text-white" >Lancer ! </button>
 				<p class = "text-red-500" v-if = "can_produce== false">{{can_produce_msg}}</p>
 			</div>
 				
@@ -107,7 +107,7 @@
 					<h2 class = "text-sm font-bold">Remarques: </h2>					<p class = "text-xs font-bold">- Les prévisions sont calculés dans le cas ou toutes la quantité produite est vendue</p>
 					<p class="text-xs font-bold">- Votre taux de rebut est de {{indicators["reject_rate"].value * 100}}%, pour le réduire, lancez une étude AMDEC.</p>
 					<p>
-					<button @click = "launch_prod_modal=false" class = "bg-gray-500 justify-end px-3 py-1 text-white rounded my-1" >Fermer</button></p>
+					<button  @click = "launch_prod_modal=false" class = "bg-gray-500 justify-end px-3 py-1 text-white rounded my-1" >Fermer</button></p>
 				</div>
 			</div>
 			</template>	
@@ -257,7 +257,7 @@ export default{
 			}).then((resp)=>{
 				console.log(resp)
 				this.stock = resp.data
-				this.verifyProd()
+				//this.verifyProd()
 			})
 		},
 		verifyProd(){
