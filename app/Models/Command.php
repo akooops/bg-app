@@ -15,6 +15,8 @@ class Command extends Model
         'raw_material_id',
         'price',
         'quantity',
-        'status'
+        'status',
+        'creation_date',
+        'item_id'
     ];
 }

@@ -15,9 +15,10 @@
         <svg class="fill-current h-6 w-6 text-red-500" role="button"    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>  Close</title><path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10    11.819l-2.651 3.029a1.2 1.2 0 1   1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1     1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697    1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"/></svg>
       </span>
     </div>
-    <div v class="w-full bg-white shadow-md rounded my-2">
+    <p class = "text-lg" v-if = "commands.length == 0">Vous n'avez pas de commandes encore, veuillez créer une commande.</p>
+    <div v-else class="w-full bg-white shadow-md rounded my-2">
       
-      <table class="min-w-max w-full table-auto">
+      <table   class="min-w-max w-full table-auto">
         <thead>
           <tr>
             <th class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">Numéro</th>
@@ -38,7 +39,7 @@
             {{cmd.num_items}}                       </td>
 
             <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
-             Jour n° {{cmd.created}}
+             Jour N° {{cmd.created}}
             </td>
             <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
               <span :class = "cmd.status == 'confirmed' ? 'text-green-500':'text-yellow-500'">{{getStatus(cmd.status)}}</span> 
@@ -116,6 +117,11 @@ export default{
     window.Echo.channel("entreprise_"+this.user.id)
       .listen('NewNotification', (e) => {
     if(e.notification.type=='CommandAccepted'){
+          this.getCommands()
+          this.$forceUpdate()
+            
+    }
+    if(e.notification.type=='CommandDelivered'){
           this.getCommands()
           this.$forceUpdate()
             

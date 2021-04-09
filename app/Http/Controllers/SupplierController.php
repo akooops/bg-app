@@ -10,6 +10,7 @@ use App\Models\Supplier;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Response;
 use App\Jobs\AddToStock;
+use App\Events\NewNotification;
 class SupplierController extends Controller
 {
     public function getAllCommands(Request $request){
@@ -20,7 +21,7 @@ class SupplierController extends Controller
     	$grp_commands = $commands->groupBy("command_id");
     	//dd($grp_commands);
     	$commands_data = $grp_commands->map(function($cmd){
-    		$entreprise = Entreprise::find($cmd[0]->entreprise_id)->first()->name;
+    		$entreprise = Entreprise::find($cmd[0]->entreprise_id)->name;
     		$num_items = count($cmd);
     		$status = "pending";
     		$data = [
@@ -28,7 +29,7 @@ class SupplierController extends Controller
     			"name" => $entreprise,
     			"num_items" => count($cmd),
     			"status" => "pending",
-    			"created" => $cmd[0]->created_at->toDateTimeString()
+    			"created" => $cmd[0]->creation_date
     		];
     		return $data;
 
@@ -48,7 +49,8 @@ class SupplierController extends Controller
     			"name" => $material->name,
     			"price" => $material->price,
     			"quantity" => $item["quantity"],
-    			"status" => $item["status"]
+    			"status" => $item["status"],
+                "item_id" => $item["item_id"]
     		];
     		return $item_data;
     	});
@@ -74,7 +76,8 @@ class SupplierController extends Controller
              "status"=> "confirmed",
              "supplier_id"=>$supplier_id,
              "entreprise_id" => $entreprise_id,
-         ], ["command_id","raw_material_id"],["price","status"]);
+             "item_id"=>$item["item_id"]
+         ], ["command_id","raw_material_id","item_id"],["price","status"]);
           $stock_item = [
             "raw_material_id"=>$material->id,
             "quantity" => $item["quantity"],
@@ -90,6 +93,13 @@ class SupplierController extends Controller
     }
     AddToStock::dispatch($stocks,$full_cost,$entreprise_id)
     ->delay(now()->addMinutes($delay));
+    $notification = [
+            "type" => "CommandAccpeted",
+            "entreprise_id" => $entreprise_id,
+            "message" => "Votre commande a été validée par les fournisseurs pour un coût total de ". $full_cost . " DA, elle sera livré dans ".$delay . " jours",
+            "title" => "Commande Acceptée"
+        ];
+        event(new NewNotification($notification));
     return Response::json(["message" => "La commande a été validé
       , vous serez renvoyé vers le dashboard dans 4 secondes "],200);
 }

@@ -17,6 +17,7 @@ class Ad extends Model
         'days',
         "status",
         "type",
+        'creation_date',
     ];
 
     public function entreprises(){

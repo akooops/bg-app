@@ -22,9 +22,9 @@ class BankerController extends Controller
         
         if($request->entreprise_id!=null){
             $loans = DB::table('loans')
-            ->select("*",'loans.created_at as loan_creation','loans.id as loan_id')
+            ->select("*",'loans.id as loan_id')
             ->join('users','users.id','=','loans.entreprise_id')
-            ->where('loans.entreprise_id',$request->entreprise_id)->orderBy('loan_creation', 'desc')->get();
+            ->where('loans.entreprise_id',$request->entreprise_id)->orderBy('creation_date', 'desc')->get();
           
             return collect($loans)->map(function($loan){
                 return [
@@ -33,15 +33,15 @@ class BankerController extends Controller
                     "status" => $this->parseLoanStatus($loan->status),
                     "ratio"  => $loan->ratio,
                     "debt_ratio" => $this->getIndicator('debt_ratio',$loan->entreprise_id)['value'],
-                    "loan_creation" => $this->parseDateToSimulationDate(Carbon::parse($loan->loan_creation)),
+                    "loan_creation" => $loan->creation_date,
                     "payment_status" => $loan->payment_status,
                     "remaining_amount" => $loan->remaining_amount
                 ];
             });
         }
         $loans = DB::table('loans')->where('status','pending')
-        ->select("*",'loans.created_at as loan_creation','loans.id as loan_id')
-        ->join('users','users.id','=','loans.entreprise_id')->orderBy('loan_creation', 'desc')->get();
+        ->select("*",'loans.id as loan_id')
+        ->join('users','users.id','=','loans.entreprise_id')->orderBy('creation_date', 'desc')->get();
         return collect($loans)->map(function($loan){
             return [
                 "name" => $loan->name,
@@ -49,7 +49,7 @@ class BankerController extends Controller
                 "amount" => $loan->amount,
                 "status" => $this->parseLoanStatus($loan->status),
                 "debt_ratio" => $this->getIndicator('debt_ratio',$loan->entreprise_id)['value'],
-                "loan_creation" => $loan->loan_creation,
+                "loan_creation" => $loan->creation_date,
             ];
         });
     }
@@ -59,8 +59,9 @@ class BankerController extends Controller
             "banker_id" => Banker::first()->id,
             "status"    => "pending",
             "amount" => $request->amount,
-            "remaining_amount" => $request->amount,
+            "remaining_amount" => 0,
             "payment_status" => 0,
+            "creation_date" => (int) $this->getSimulationTime(),
         ]);
         $data = [
             "name" => Entreprise::find($request->entreprise_id)->name,
@@ -68,7 +69,7 @@ class BankerController extends Controller
             "loan_id" => $new_loan->id,
             "amount" => $request->amount,
             "debt_ratio" => $this->getIndicator('debt_ratio',$request->entreprise_id)['value'],
-            "loan_creation" =>  $this->parseDateToSimulationDate(nova_get_setting('current_date')),
+            "creation_date" => (int) $this->getSimulationTime(),
         ];
         event(new LoanCreated($data));
         return response()->json("Votre demande a été envoyée avec succès, vous serez rediriger dans 4 secondes", 200);
@@ -79,8 +80,8 @@ class BankerController extends Controller
         $loan->amount = $request->amount;
         $loan->status = $request->status;
         $loan->ratio = $request->ratio;
-        $loan->remaining_amount = $request->amount*(1+0.01*$loan->ratio);
         if($loan->status=="accepted"){
+            $loan->remaining_amount = $request->amount*(1+0.01*$loan->ratio);
             $loan->payment_status = false;
             $this->updateIndicator('caisse',$loan->entreprise_id,$request->amount);
             $this->updateIndicator('dettes',$loan->entreprise_id,$request->amount*(1+0.01*$request->ratio));
@@ -109,6 +110,6 @@ class BankerController extends Controller
         $loan->save();
         $this->updateIndicator("caisse",$request->entreprise_id,-$request->refund_amount);
         $this->updateIndicator("dettes",$request->entreprise_id,-$request->refund_amount);
-        return response()->json("Votre virement a été envoyé à la banque avec succès", 200);
+        return response()->json("Votre virement a été envoyé à la banque avec succès, vous serez rederiger dans 3 secondes", 200);
     }
 }

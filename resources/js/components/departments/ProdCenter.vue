@@ -86,7 +86,7 @@
 				<p class = "my-1 mx-4" >Prix (Unitaire)</p>
 				<input class = "mx-4 w-2/3" v-model = "launch_data.price" type = "number"/>
 				<div class = "h-auto ">
-				<button :diabled = "can_produce == false" @click = "launchProduction" class = "bg-blue-400 mx-4 my-2 py-1 px-4 text-white" >Lancer ! </button>
+				<button :diabled = "can_produce == false" v-if = "can_produce==true" @click = "launchProduction" class = "bg-blue-400 mx-4 my-2 py-1 px-4 text-white" >Lancer ! </button>
 				<p class = "text-red-500" v-if = "can_produce== false">{{can_produce_msg}}</p>
 			</div>
 				
@@ -97,7 +97,7 @@
 					<p>Pour un lot:</p>
 					<p>- Machines x <span class = "text-blue-700 font-bold">{{selectedProd.machine_units}}</span> et 
 					 Employés x <span class = "text-blue-700 font-bold">{{selectedProd.labor_units}}</span></p>
-					 <p v-for = "material in selectedProd.raw_materials">- {{material.name}} x <span class = "text-blue-700 font-bold"> {{material.pivot.quantity}} </span></p>
+					 <p v-for = "material in selectedProd.raw_materials">- {{material.name}} x <span class = "text-blue-700 font-bold"> {{material.pivot.quantity}} </span> KG</p>
 					<h2 class = "font-bold text-lg">Prévisions: </h2>
 					<p>- Chiffre d'Affaire Estimé : <span class = "font-bold text-indigo-500"> {{salesRevenues}} UM</span></p>
 					<p>- Coût Total Estimé : <span class = "font-bold text-red-500"> {{totalCost}} UM</span></p>
@@ -257,7 +257,7 @@ export default{
 			}).then((resp)=>{
 				console.log(resp)
 				this.stock = resp.data
-				//this.verifyProd()
+				this.verifyProd()
 			})
 		},
 		verifyProd(){
@@ -268,13 +268,18 @@ export default{
 					let stock_material = this.stock.find((item)=>{
 						return item.id == material.pivot.raw_material_id
 					})
+					if(stock_material == undefined){
+						resp = false
+						this.can_produce_msg = "Pas assez de matière " + material.name + " vous ne pouvez pas lancer la production !"
+						break;
+					}
 					console.log(stock_material)
 					if(material.pivot.quantity < stock_material.quantity){
 						continue
 					}
 					else{
 						resp = false
-						this.can_produce_msg = "Pas assez de matière " + material.name + "vous ne pouvez pas lancer la production !"
+						this.can_produce_msg = "Pas assez de matière " + material.name + " vous ne pouvez pas lancer la production !"
 						break;
 					}
 				}

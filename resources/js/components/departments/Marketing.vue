@@ -7,12 +7,13 @@
 		<p v-if="error_message!=''" class="text-red-600">{{error_message}}</p>
 		<div class="relative h-10 input-component mb-3">
 			<label for="amount" class=" left-2 transition-all bg-white px-1">
-				Budget journalier en KDA
+				Budget journalier en DA
 			</label>
 			<input
 				id="amount"
-				type="text"
+				type="number"
 				name="amount"
+                :min="0"
 				v-model="new_ad.amount"
 				class="h-full w-full rounded-sm"
 			/>
@@ -34,13 +35,14 @@
 				id="days"
 				type="number"
 				name="days"
+                :min="0"
 				v-model="new_ad.days"
 				class="h-full w-full rounded-sm"
 			/>
         </div>
         <p>Le résultat prévisionnel journalier: <span class="text-green-600">{{predictedFollowers}} abonnés/jour</span> </p>
         <p>Le résultat prévisionnel total: <span class="text-green-600">{{totalPredictedFollowers}} abonnés</span> </p>
-        <p>Le montant total de cette campagne s'élève à <span class="text-yellow-500">{{total_amount}} KDA</span></p>
+        <p>Le montant total de cette campagne s'élève à <span class="text-yellow-500">{{total_amount}} DA</span></p>
 		<div class="flex">
 		<button class="bg-green-400 hover:bg-green-800  text-white px-3 py-2 rounded w-1/2 mt-4 mr-2"  @click="createAd">Créer</button>
 		<button class="bg-gray-200 active:bg-gray-600 hover:bg-gray-400 text-back px-3 py-2 rounded w-1/2 mt-4" @click="closeModal">Annuler</button>
@@ -143,13 +145,13 @@ export default {
         if(this.new_ad.amount == null || this.new_ad.type == null){
             return 0
         }
-        return parseInt(this.ad_coef*this.type_coef[this.new_ad.type]*this.new_ad.amount*50)
+        return parseInt(this.ad_coef*this.type_coef[this.new_ad.type]*this.new_ad.amount*0.5)
     },
     totalPredictedFollowers(){
         if(this.notValidated()){
             return 0
         }
-        return parseInt(this.ad_coef*this.type_coef[this.new_ad.type]*this.new_ad.amount*this.new_ad.days*50)
+        return parseInt(this.ad_coef*this.type_coef[this.new_ad.type]*this.new_ad.amount*this.new_ad.days*0.5)
     },
     total_amount(){
         if(this.notValidated()){
@@ -220,18 +222,16 @@ export default {
  mounted(){
    this.getAds()
    this.getIndicators()
-    /*
     window.Echo.channel("entreprise_"+this.entreprise.id)
     .listen('NewNotification', (e) => {
         if(e.notification.type=='AdStatusChanged'){
             let index = this.ads.findIndex(ad => ad.ad_id == e.notification.data.id)
-            this.ads[index].amount = e.notification.data.amount
+            this.ads[index].result = e.notification.data.result
             this.ads[index].status = e.notification.data.status
             this.$forceUpdate()
             //this.ads.unshift(e.notification.data)
         }
     })
-    */
  }
 }
 </script>

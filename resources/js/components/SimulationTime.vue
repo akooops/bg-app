@@ -54,9 +54,16 @@ mounted(){
     window.Echo.channel("simulation_date")
     .listen('SimulationDateChanged', (e) => {
         this.time = e.date
-        this.caisse = e.caisse!=''?e.caisse : this.caisse
-        this.dettes = e.dettes!=''?e.dettes : this.dettes
     })
+    if(this.user.type=="entreprise"){
+         window.Echo.channel("entreprise_"+this.user.id)
+    .listen('NavbarDataChanged', (e) => {
+        console.log(e)
+        this.caisse = e.caisse
+        this.dettes = e.dettes
+    })
+    }
+   
 }
 }
 </script>

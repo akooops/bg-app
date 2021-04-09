@@ -59,7 +59,7 @@ class EntrepriseController extends Controller
     }
 
     function getProducts(Request $request){
-        $products = Product::all();
+        $products = Product::with('rawMaterials')->get()->all();
         return $products;
     }
 
@@ -76,16 +76,17 @@ class EntrepriseController extends Controller
         $commands_data = collect($commands)->map(function($cmd){
             $data = [
                 "command_id" => $cmd[0]["command_id"],
-                "created" => $this->parseDateToSimulationDate(Carbon::parse($cmd[0]["created_at"])),
+                "created" => $cmd[0]["creation_date"],
                 "num_items" => count($cmd),
                 "status" => $this->getCommandStatus($cmd)
             ];
             $data["details"] = collect($cmd)->map(function($item){
                 $material = RawMaterial::find($item["raw_material_id"]);
+                //dd($item["raw_material_id"]);
                 $supplier = Supplier::find($item["supplier_id"]);
                 $quantity = $item["quantity"];
                 $price = $item["price"];
-                $phrase = $item["quantity"] . " ". $material->unit . " de ". $material->name ." Chez " . $supplier->name . ", Prix: ". $price . " DA / Status : ". $this->parseCommandStatus($item["status"]);
+                $phrase = $item["quantity"] . " unités " . " de ". $material->name ." Chez " . $supplier->name . ", Prix: ". $price . " DA / Status : ". $this->parseCommandStatus($item["status"]);
                  
                 return ["material" => $material->name,"unit" => $material->unit, "supplier" => $supplier->name, "quantity" =>$quantity, "price" => $price, "status" => $item["status"] , "phrase" => $phrase];
             });
@@ -119,6 +120,7 @@ class EntrepriseController extends Controller
         if($last_cmd != null){
             $cmd_id = $last_cmd->command_id  + 1;
         }
+        //dd($request->command);
         $command_items = [];
         for ($i=0; $i < count($request["command"]); $i++) {
             
@@ -126,6 +128,7 @@ class EntrepriseController extends Controller
             //dd($cmd);
             $supplier_id = Supplier::where("name",$cmd["supplier"])->first()->id;
             $material_id = RawMaterial::where("name",$cmd["material"])->first()->id;
+            $item_id = $cmd["item_id"];
             //dd($cmd_id);
             $cmd_item = [
             "command_id"=> $cmd_id,
@@ -135,9 +138,12 @@ class EntrepriseController extends Controller
             "status"=> "pending",
             "price"=> $cmd["price"],
             "quantity" => $cmd["quantity"],
+            "creation_date"=> $this->getSimulationTime(),
+            "item_id" => $item_id
             ];
             array_push($command_items, $cmd_item);
         }
+        //dd($command_items);
         $command_items = collect($command_items);
         // Logic to split command into suppliers
         $supp_command_items = $command_items->groupBy("supplier_id");
@@ -149,7 +155,7 @@ class EntrepriseController extends Controller
             "name" => Entreprise::find($entreprise_id)->name,
             "status" => "pending",
             "num_items" => count($supp_cmd),
-            "created" =>  (new \DateTime())->format('Y-m-d H:i:s')
+            "creation_date" => $supp_cmd[0]["creation_date"]
             ];
             $supp_cmd->map(function($supp_cmd_item){
                 Command::create($supp_cmd_item);
