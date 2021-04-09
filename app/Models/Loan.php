@@ -15,7 +15,9 @@ class Loan extends Model
         'amount',
         "payment_status",
         "remaining_amount",
-        "creation_date"
+        "creation_date",
+        "deadline",
+        'days',
     ];
     public function entreprises(){
         return $this->belongsTo('App\Models\Entreprise','entreprise_id','id');

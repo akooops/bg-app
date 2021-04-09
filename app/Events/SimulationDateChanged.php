@@ -20,7 +20,7 @@ class SimulationDateChanged implements ShouldBroadcast
      */
     public function __construct($data)
     {
-        $this->date = $data['date'];
+        $this->date = $data;
         }
 
     /**

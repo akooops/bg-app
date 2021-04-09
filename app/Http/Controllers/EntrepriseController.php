@@ -48,11 +48,15 @@ class EntrepriseController extends Controller
     }
     function showMarketing(Request $request){
         $products = Product::all();
+        $caisse = $this->getIndicator('caisse',auth()->user()->id)["value"];
         $ad_coef = 0.8;
-        return view("departments.marketing",["products"=>$products,"ad_coef"=>$ad_coef]); 
+        return view("departments.marketing",["products"=>$products,
+        "ad_coef"=>$ad_coef, "caisse"=>$caisse]); 
     }
     function showHr(Request $request){
-        return view("departments.hr"); 
+        $caisse = $this->getIndicator('caisse',auth()->user()->id)["value"];
+        return view("departments.hr",["workshop_price"=>nova_get_setting('workshop_price',''),
+        "salary"=>nova_get_setting("salary_production",''), "caisse"=> $caisse]); 
     }
 
     function getEntrepriseCommands(Request $request){
