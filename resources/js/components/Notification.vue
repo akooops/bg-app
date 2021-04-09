@@ -1,8 +1,9 @@
 <template>
   <div v-if="new_notification" class="shadow-lg rounded-lg bg-white m-8 p-4 notification-box mx-16 flex">
-    <i class="fas fa-info-circle mt-1 mr-3 fa-2x"></i>
+    <i v-if="notification.status=='warning'" class="fas fa-exclamation-circle mt-1 mr-3 fa-2x text-yellow-600"></i>
+    <i v-else class="fas fa-info-circle mt-1 mr-3 fa-2x"></i>
     <div class="w-full"> 
-        <div class="text-sm pb-2 font-bold">
+        <div class="text-sm pb-2 font-bold" :class="notification.status=='warning'?'text-yellow-700':''">
           {{notification.title}}
           <span class="float-right" @click="new_notification=null">
             <svg

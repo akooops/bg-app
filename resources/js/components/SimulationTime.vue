@@ -58,7 +58,6 @@ mounted(){
     if(this.user.type=="entreprise"){
          window.Echo.channel("entreprise_"+this.user.id)
     .listen('NavbarDataChanged', (e) => {
-        console.log(e)
         this.caisse = e.caisse
         this.dettes = e.dettes
     })

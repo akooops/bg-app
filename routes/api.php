@@ -39,6 +39,8 @@ Route::prefix("entreprise")->group(function(){
     Route::get("/hr/indicators",[HrController::class,"getHrIndicators"]);
     Route::post("/hr/hire",[HrController::class,"hireWorkers"]);
     Route::post("/hr/launch-workshop",[HrController::class,"launchWorkshop"]);
+    Route::post("/hr/prime-workers",[HrController::class,"primeWorkers"]);
+    
 });
 
 Route::prefix("demand")->group(function(){

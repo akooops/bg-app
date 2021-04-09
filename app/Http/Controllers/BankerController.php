@@ -35,7 +35,8 @@ class BankerController extends Controller
                     "debt_ratio" => $this->getIndicator('debt_ratio',$loan->entreprise_id)['value'],
                     "loan_creation" => $loan->creation_date,
                     "payment_status" => $loan->payment_status,
-                    "remaining_amount" => $loan->remaining_amount
+                    "remaining_amount" => $loan->remaining_amount,
+                    "deadline" => $loan->deadline
                 ];
             });
         }
@@ -79,9 +80,11 @@ class BankerController extends Controller
         $loan = Loan::find($request->loan_id);
         $loan->amount = $request->amount;
         $loan->status = $request->status;
-        $loan->ratio = $request->ratio;
         if($loan->status=="accepted"){
+            $loan->deadline = $request->deadline;
+            $loan->ratio = $request->ratio;
             $loan->remaining_amount = $request->amount*(1+0.01*$loan->ratio);
+            $loan->days = $request->deadline + $loan->creation_date;
             $loan->payment_status = false;
             $this->updateIndicator('caisse',$loan->entreprise_id,$request->amount);
             $this->updateIndicator('dettes',$loan->entreprise_id,$request->amount*(1+0.01*$request->ratio));

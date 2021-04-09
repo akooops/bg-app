@@ -56,7 +56,7 @@
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 bg-white overflow-hidden sm:rounded-lg p-6 bg-white ">
             <div v-if="ads.length==0" class="text-center">
-                <p>Il semble que vous n'aviez pas encore créer votre première compagne publicitaire</p>
+                <p>Il semble que vous n'aviez pas encore créer votre première campagne publicitaire</p>
                 <button class="bg-green-400 hover:bg-green-800  text-white px-3 py-2 rounded w-1/2 mt-4 mr-2"  @click="openModal">Créer ma première compagne publicitaire</button>
             </div>
             <div v-else >
@@ -71,6 +71,7 @@
                     <tr>
                         <th class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">Type de campagne</th>
                         <th class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">Montant</th>
+                        <th class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">Jour de création</th>
                         <th class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">Durée en jours</th>
                          <th class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">Statut</th>
                          <th class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">Résultat prévisionnel/Réel</th>
@@ -83,6 +84,9 @@
                         </td>
                         <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
                             {{ad.amount}}
+                        </td>
+                         <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
+                            {{ad.creation_date}}
                         </td>
                         <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
                             {{ad.days}}
@@ -110,7 +114,7 @@
 import Modal from '../Modal.vue'
 import StatCard from './ui/StatCard.vue';
 export default {
- props:['entreprise','ad_coef'],
+ props:['entreprise','ad_coef','caisse'],
  components:{ Modal,StatCard },
  name:"Marketing",
  data(){
@@ -194,6 +198,10 @@ export default {
     },
 	createAd(){
 		if(!this.notValidated()){
+            if(this.caisse<this.total_amount){
+                this.error_message = 'Vos disponibilités ne vous permet pas de lancer la formation'
+                return ''
+            }
             this.new_ad.entreprise_id = this.entreprise.id
 			this.new_ad.result = this.predictedFollowers
             this.new_ad.total_amount = this.total_amount
@@ -203,15 +211,8 @@ export default {
                 this.modal=false
                 location.reload()
             }, 5000);
-		
-            /*
-            this.ads.unshift({
-                amount : this.amount,
-                ad_creation: new Date().toLocaleString(),
-                status : "pending"
-            })
-            */
     	})
+
 		}
 		else{
 			this.error_message = "Veuillez remplire tous les champs"
@@ -231,6 +232,8 @@ export default {
             this.$forceUpdate()
             //this.ads.unshift(e.notification.data)
         }
+    }).listen('NavbarDataChanged', (e) => {
+        this.caisse = e.caisse
     })
  }
 }

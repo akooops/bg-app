@@ -10,6 +10,7 @@ use App\Events\SimulationDateChanged;
 use App\Jobs\DailyStats;
 
 use App\Jobs\MonthlyCosts;
+use App\Jobs\PenaltyLoan;
 
 class Kernel extends ConsoleKernel
 {
@@ -42,13 +43,11 @@ class Kernel extends ConsoleKernel
                     $value = nova_get_setting("start_date")->addDays(1); 
                 }
                 nova_set_setting_value("current_date", $value);
-                $data = [
-                    "time" =>$this->parseDateToSimulationDate($value),
-                ];
-                event(new SimulationDateChanged($data));
+                event(new SimulationDateChanged($this->parseDateToSimulationDate($value)));
             }
         })->everyMinute(); 
         $schedule->job(new MonthlyCosts)->everyThirtyMinutes();
+        $schedule->job(new PenaltyLoan)->everyMinute();
         //$schedule->job(new DailyStats)->everyMinute();
         // $schedule->command('inspire')->hourly();
     }

@@ -77,6 +77,7 @@
                         <th class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">Date de creation</th>
                         <th class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">Statut</th>
                         <th class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">Taux d'interet</th>
+                        <th class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">Delai en jours</th>
                         <th class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">Payé? </th>
                         <th class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">Montant restant </th>
                         <th class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">Action </th>
@@ -99,6 +100,9 @@
                         </td>
                         <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
                             {{loan.ratio}} %
+                        </td>
+                        <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
+                            {{loan.deadline}} 
                         </td>
                         <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
                             {{loan.payment_status==1?'Payé':'Non'}}
@@ -202,7 +206,7 @@ export default {
         }
         else{
             axios.post('/api/loan/pay',{loan_id:this.selected_loan.loan_id,refund_amount:this.refund_amount,entreprise_id:this.entreprise.id}).then((resp)=>{
-            this.message = resp.data.pay_messsage
+            this.pay_message = resp.data.pay_messsage
             setTimeout(function() {
                 window.location.href ='/entreprise/dashboard'
             }, 4000);
