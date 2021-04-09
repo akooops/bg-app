@@ -163,8 +163,8 @@ export default{
 			machine:{
 				show_transaction_modal: false,
 				transaction:'',
-				buy_price: 10000,
-				sell_price: 8000 * this.indicators["machines_health"].value
+				buy_price: 40000,
+				sell_price: 35000 * this.indicators["machines_health"].value
 			},
 			can_produce_msg: "",
 			can_produce: true,
@@ -175,9 +175,9 @@ export default{
 			action:{
 				value: "",
 				price: {
-					'5s': 20000,
-					'audit': 35000,
-					'maintenance': 5000 * this.indicators["machines"]["value"]
+					'5s': 40000,
+					'audit': 60000,
+					'maintenance': 15000 * this.indicators["machines"]["value"]
 				},
 				phrase: "",
 				result_phrase: "",
@@ -208,7 +208,7 @@ export default{
 		totalCost(){
 
 
-			return this.launch_data.quantity*(this.selectedProd.machine_units * 25 + this.selectedProd.labor_units * 45)
+			return this.launch_data.quantity*(this.selectedProd.machine_units * 2000 + this.selectedProd.labor_units * 200)
 		},
 		profit(){
 			return this.salesRevenues - this.totalCost

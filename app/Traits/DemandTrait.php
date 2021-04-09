@@ -67,7 +67,7 @@ trait DemandTrait{
         	$demand = $demand + $ss*$demand/$social_importance_coeff;
     	case 2:
     		$ss = $this->socialInfluence($entreprise_id,[2,2,3,4]);
-        	$social_importance_coeff = 0.8; 
+        	$social_importance_coeff = 1; 
         	$demand = round(25000*exp(-1*$price/150));
         	$demand = $demand + $ss*$demand/$social_importance_coeff;
         	break;
@@ -134,6 +134,24 @@ trait DemandTrait{
         	"stock" => $quantity - $demand
         ];
         return $resp;
+    }
+
+    public function getAvgPrice(Request $request){
+    	$prod_id = $request->product_id;
+    	$productions =  DB::table("productions")->where("product_id","=",$prod_id)->latest("creation_date")->limit(10)->get();
+    	$avg = 0;
+    	if($productions->count() < 5){
+    		$product = Product::find($prod_id);
+    		//dd($product);
+    		$price_max = $product->price_max;
+    		$price_min = $product->price_min;
+    		$avg = $price_min + ($price_max-$price_min)/2;
+    	}
+    	else{
+    		$avg = $productions->avg("price");
+    	}
+
+    	return $avg;
     }		
 
 }

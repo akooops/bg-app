@@ -57,7 +57,7 @@ Route::prefix("production")->group(function(){
     Route::post('/launch', [EntrepriseController::class,"launchProduction"]);
     Route::get('/all', [EntrepriseController::class,"getAllProductions"]);
     Route::post("/sell",[EntrepriseController::class,"sellProd"]);
-    
+    Route::get("/avg-price",[EntrepriseController::class,"getAvgPrice"]);
 });
 
 
