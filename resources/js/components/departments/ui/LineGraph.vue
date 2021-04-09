@@ -48,7 +48,8 @@ export default {
         series: [{
           data: [],
           type: 'line',
-          areaStyle: {}
+          smooth: true,
+          areaStyle: {},
         }]
       }
     }

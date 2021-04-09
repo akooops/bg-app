@@ -6,6 +6,9 @@ use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use App\Traits\HelperTrait;
 use App\Events\SimulationDateChanged;
+
+use App\Jobs\DailyStats;
+
 use App\Jobs\MonthlyCosts;
 use App\Jobs\PenaltyLoan;
 
@@ -29,7 +32,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->call(function () {
+          $schedule->call(function () {
             //Checking if the simulation started
             $game_status = nova_get_setting("game_started",null);
             if($game_status == "1"){
@@ -45,6 +48,7 @@ class Kernel extends ConsoleKernel
         })->everyMinute(); 
         $schedule->job(new MonthlyCosts)->everyThirtyMinutes();
         $schedule->job(new PenaltyLoan)->everyMinute();
+        //$schedule->job(new DailyStats)->everyMinute();
         // $schedule->command('inspire')->hourly();
     }
 

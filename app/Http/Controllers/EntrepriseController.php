@@ -17,7 +17,7 @@ use App\Traits\DemandTrait;
 use App\Traits\IndicatorTrait;
 use App\Jobs\ProductionScheduler;
 use App\Events\NewNotification;
-
+use Carbon\Carbon;
 class EntrepriseController extends Controller
 {
     use HelperTrait, DemandTrait, IndicatorTrait;
@@ -53,11 +53,24 @@ class EntrepriseController extends Controller
         return view("departments.marketing",["products"=>$products,
         "ad_coef"=>$ad_coef, "caisse"=>$caisse]); 
     }
+
+    function showFinance(Request $request){
+        $products = Product::all();
+        $entreprises = Entreprise::all();
+        return view("departments.finance",["products"=>$products,"entreprises"=>$entreprises]); 
+    }
+
+    function getProducts(Request $request){
+        $products = Product::with('rawMaterials')->get()->all();
+        return $products;
+    }
+
     function showHr(Request $request){
         $caisse = $this->getIndicator('caisse',auth()->user()->id)["value"];
         return view("departments.hr",["workshop_price"=>nova_get_setting('workshop_price',''),
         "salary"=>nova_get_setting("salary_production",''), "caisse"=> $caisse]); 
     }
+
 
     function getEntrepriseCommands(Request $request){
         $entreprise_id = $request->entreprise_id;
@@ -67,16 +80,17 @@ class EntrepriseController extends Controller
         $commands_data = collect($commands)->map(function($cmd){
             $data = [
                 "command_id" => $cmd[0]["command_id"],
-                "created" => $cmd[0]["created_at"],
+                "created" => $cmd[0]["creation_date"],
                 "num_items" => count($cmd),
                 "status" => $this->getCommandStatus($cmd)
             ];
             $data["details"] = collect($cmd)->map(function($item){
                 $material = RawMaterial::find($item["raw_material_id"]);
+                //dd($item["raw_material_id"]);
                 $supplier = Supplier::find($item["supplier_id"]);
                 $quantity = $item["quantity"];
                 $price = $item["price"];
-                $phrase = $item["quantity"] . " ". $material->unit . " de ". $material->name ." Chez " . $supplier->name . ", Prix: ". $price . " DA / Status : ". $this->parseCommandStatus($item["status"]);
+                $phrase = $item["quantity"] . " unités " . " de ". $material->name ." Chez " . $supplier->name . ", Prix: ". $price . " DA / Status : ". $this->parseCommandStatus($item["status"]);
                  
                 return ["material" => $material->name,"unit" => $material->unit, "supplier" => $supplier->name, "quantity" =>$quantity, "price" => $price, "status" => $item["status"] , "phrase" => $phrase];
             });
@@ -110,6 +124,7 @@ class EntrepriseController extends Controller
         if($last_cmd != null){
             $cmd_id = $last_cmd->command_id  + 1;
         }
+        //dd($request->command);
         $command_items = [];
         for ($i=0; $i < count($request["command"]); $i++) {
             
@@ -117,6 +132,7 @@ class EntrepriseController extends Controller
             //dd($cmd);
             $supplier_id = Supplier::where("name",$cmd["supplier"])->first()->id;
             $material_id = RawMaterial::where("name",$cmd["material"])->first()->id;
+            $item_id = $cmd["item_id"];
             //dd($cmd_id);
             $cmd_item = [
             "command_id"=> $cmd_id,
@@ -126,9 +142,12 @@ class EntrepriseController extends Controller
             "status"=> "pending",
             "price"=> $cmd["price"],
             "quantity" => $cmd["quantity"],
+            "creation_date"=> $this->getSimulationTime(),
+            "item_id" => $item_id
             ];
             array_push($command_items, $cmd_item);
         }
+        //dd($command_items);
         $command_items = collect($command_items);
         // Logic to split command into suppliers
         $supp_command_items = $command_items->groupBy("supplier_id");
@@ -140,7 +159,7 @@ class EntrepriseController extends Controller
             "name" => Entreprise::find($entreprise_id)->name,
             "status" => "pending",
             "num_items" => count($supp_cmd),
-            "created" =>  (new \DateTime())->format('Y-m-d H:i:s')
+            "creation_date" => $supp_cmd[0]["creation_date"]
             ];
             $supp_cmd->map(function($supp_cmd_item){
                 Command::create($supp_cmd_item);
@@ -246,11 +265,14 @@ class EntrepriseController extends Controller
         // Remove from stock and update production table
         DB::table("stock")->where("entreprise_id","=",$entreprise_id)->where("product_id","=",$product_id)->decrement("quantity",$sold_quantity);
         DB::table("productions")->where("id","=",$production_id)->increment("sold",$sold_quantity);
+         DB::table("products")->where("id","=",$product_id)->decrement("left_demand",$sold_quantity);
         // Update indicators: 
         // Increase caisse
         $sales = $sold_quantity * $price ;
+        $ca_key = "ca_".$product_id;
         $profit_value = $sales- $dist_cost;
         $this->updateIndicator("caisse",$entreprise_id,$profit_value);
+        $this->updateIndicator($ca_key,$entreprise_id,$sales);
         $this->updateIndicator("ca",$entreprise_id,$sales);
         $this->updateIndicator("dist_cost",$entreprise_id,$dist_cost);
         $message = "Vous avez vendu ".$sold_quantity." unités et vous avez généré un chiffre d'affaire de ".$sales. " UM";
@@ -320,8 +342,16 @@ class EntrepriseController extends Controller
                     $message = "Votre taux de productivité a augmenté !, vous pouvez produire plus rapidement.";
                 }    
             break;
-            case 'hse':
-
+            case 'audit':
+                $reject_rate = $this->getIndicator("reject_rate",$entreprise_id)["value"];
+                if($reject_rate < 0.01){
+                    $message = "Vous ne pouvez plus réduire vos taux de rebuts.";
+                }
+                else{
+                    $this->updateIndicator("reject_rate",$entreprise_id,-0.01);
+                    $this->updateIndicator("caisse",$entreprise_id,-1*$price);
+                    $message = "Votre taux de rebut est maintenant plus faible.";
+                }
             break;
             case 'maintenance':
                 $machines_health = $this->getIndicator("machines_health",$entreprise_id)["value"];
@@ -345,6 +375,38 @@ class EntrepriseController extends Controller
         return Response::json(["message" => $message ],200);
     }
 
+    public function getFinanceIndicators(Request $request){
+        $keys = ["ca","caisse"];
+        $entreprise_id = $request->entreprise_id;
+        $resp = [];
+        foreach ($keys as $ind) {
+            $value = $this->getIndicator($ind,$entreprise_id);
+            $resp[$ind] = $value;
+        }
+        return $resp;
+    }
+
+    public function getRanking(Request $request){
+        $entreprises = Entreprise::all();
+        $rankings = collect([]);
+        foreach ($entreprises as $entrep) {
+            $entreprise_id = $entrep->id;
+            //dd($entreprise_id);
+            $data = [
+                "entreprise_name"=>$entrep->name,
+            ];
+            $caisse = $this->getIndicator("caisse",$entreprise_id)["value"];
+            $dettes = $this->getIndicator("dettes",$entreprise_id)["value"];
+            $profit = $caisse - $dettes;
+            $data["profit"] = $profit;
+            $rankings->push($data);
+        }
+        $sorted = $rankings->sortByDesc("profit")->values();
+        return $sorted;
+
+
+    }
+
 
     public function getNavbarData(Request $request){
         $time = $this->getSimulationTime();
@@ -358,6 +420,7 @@ class EntrepriseController extends Controller
         }
         return ["time"=>$time,"caisse"=>$caisse,"dettes"=> $dettes];
     }
+
     public function testFunc(){
         //$this->resetIndicator("busy_machines",1);
     }

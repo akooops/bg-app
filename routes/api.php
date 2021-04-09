@@ -74,6 +74,19 @@ Route::prefix("marketing")->group(function(){
     Route::get('/get', [MarketingController::class,"getAd"]);
 });
 
+
+Route::prefix("indicator")->group(function(){
+    Route::get('/market-share-prod', [EntrepriseController::class,"getProductMarketShare"]);
+    Route::get('/market-share', [EntrepriseController::class,"getMarketShare"]);
+     Route::get('/finance', [EntrepriseController::class,"getFinanceIndicators"]);
+});
+
 Route::get('/navbar', [EntrepriseController::class,"getNavbarData"]);
 
+
+
+
+Route::get('/time', [EntrepriseController::class,"getSimulationTime"]);
+Route::get('/products', [EntrepriseController::class,"getProducts"]);
+Route::get('/ranking', [EntrepriseController::class,"getRanking"]);
 Route::get("/test",[EntrepriseController::class,"testFunc"]);

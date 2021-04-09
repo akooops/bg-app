@@ -16,26 +16,24 @@ trait DemandTrait{
 		switch ($prod_id) {
     	case 1:
         	$demand = $prices->map(function($p){
-        		return round(700 - 10*$p);
+        		return round(7600 - 57.5*$p);
         	});
         	break;
     	case 2:
         	$demand = $prices->map(function($p){
-        		return round(500*exp(-$p/20));
+        		return round(25000*exp(-1*$p/150));
         	});
         	break;
     	case 3:
         	$demand = $prices->map(function($p){
-        		$alpha = -1.25;
-        		$c = 500;
-        		return round($c*$p**($alpha));
+        		
+        		return round(6800 - 8 * $p**2);
         	});
         	break;
         case 4:
         	$demand = $prices->map(function($p){
-        		$alpha = -1.75;
-        		$c = 400;
-        		return round($c*$p**($alpha));
+        	
+        		return round(7700-0.57*$p**1.75);
         	});
         	break;
 		}
@@ -64,29 +62,26 @@ trait DemandTrait{
 		switch ($prod_id) {
     	case 1:
     		$ss = $this->socialInfluence($entreprise_id,[1,1,1,1]);
-        	$social_importance_coeff = 2; 
-        	$demand = 700 - 10*$price;
+        	$social_importance_coeff = 4; 
+        	$demand = 7600 - 57.5*$price;
         	$demand = $demand + $ss*$demand/$social_importance_coeff;
     	case 2:
-    		$ss = $this->socialInfluence($entreprise_id,[1,1,1,1]);
-        	$social_importance_coeff = 2; 
-        	$demand = round(500*exp(-$price/20));
+    		$ss = $this->socialInfluence($entreprise_id,[2,2,3,4]);
+        	$social_importance_coeff = 0.8; 
+        	$demand = round(25000*exp(-1*$price/150));
         	$demand = $demand + $ss*$demand/$social_importance_coeff;
         	break;
     	case 3:
     		$ss = $this->socialInfluence($entreprise_id,[1,1,1,1]);
-    		$alpha = -1.25;
-        	$c = 500;
+    		
         	$social_importance_coeff = 2; // Bigger is less important
-        	$demand = $c*$price**($alpha);
+        	$demand = 6800 - 8 * $price**2;
         	$demand = $demand + $ss*$demand/$social_importance_coeff;
         	break;
         case 4:
         	$ss = $this->socialInfluence($entreprise_id,[1,1,1,1]);
-        	$alpha = -1.75;
-        	$c = 600;
         	$social_importance_coeff = 2; 
-        	$demand = $c*$price**($alpha);
+        	$demand = 7700-0.57*$price**1.75;
         	$demand = $demand + $ss*$demand/$social_importance_coeff;
         	break;
 		}

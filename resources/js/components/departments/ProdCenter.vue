@@ -65,7 +65,7 @@
 				<p>Dans cette section vous pouvez lancer des actions pour améliorer l'état de vos usines et votre productivité. </p>
 				<select v-model = "action.value">
 					<option value = "5s">Appliquer les 5S</option>
-					<option value = "hse">Effectuer un audit HSI</option>
+					<option value = "audit">Effectuer un audit qualité</option>
 					<option value = "maintenance">Lancer une maintenance générale</option>
 				</select>
 				<button
@@ -86,7 +86,7 @@
 				<p class = "my-1 mx-4" >Prix (Unitaire)</p>
 				<input class = "mx-4 w-2/3" v-model = "launch_data.price" type = "number"/>
 				<div class = "h-auto ">
-				<button :disabled = "can_produce == false" @click = "launchProduction" class = "bg-blue-400 mx-4 my-2 py-1 px-4 text-white" v-if = "can_produce">Lancer ! </button>
+				<button :diabled = "can_produce == false" v-if = "can_produce==true" @click = "launchProduction" class = "bg-blue-400 mx-4 my-2 py-1 px-4 text-white" >Lancer ! </button>
 				<p class = "text-red-500" v-if = "can_produce== false">{{can_produce_msg}}</p>
 			</div>
 				
@@ -97,7 +97,7 @@
 					<p>Pour un lot:</p>
 					<p>- Machines x <span class = "text-blue-700 font-bold">{{selectedProd.machine_units}}</span> et 
 					 Employés x <span class = "text-blue-700 font-bold">{{selectedProd.labor_units}}</span></p>
-					 <p v-for = "material in selectedProd.raw_materials">- {{material.name}} x <span class = "text-blue-700 font-bold"> {{material.pivot.quantity}} </span></p>
+					 <p v-for = "material in selectedProd.raw_materials">- {{material.name}} x <span class = "text-blue-700 font-bold"> {{material.pivot.quantity}} </span> KG</p>
 					<h2 class = "font-bold text-lg">Prévisions: </h2>
 					<p>- Chiffre d'Affaire Estimé : <span class = "font-bold text-indigo-500"> {{salesRevenues}} UM</span></p>
 					<p>- Coût Total Estimé : <span class = "font-bold text-red-500"> {{totalCost}} UM</span></p>
@@ -107,7 +107,7 @@
 					<h2 class = "text-sm font-bold">Remarques: </h2>					<p class = "text-xs font-bold">- Les prévisions sont calculés dans le cas ou toutes la quantité produite est vendue</p>
 					<p class="text-xs font-bold">- Votre taux de rebut est de {{indicators["reject_rate"].value * 100}}%, pour le réduire, lancez une étude AMDEC.</p>
 					<p>
-					<button @click = "launch_prod_modal=false" class = "bg-gray-500 justify-end px-3 py-1 text-white rounded my-1" >Fermer</button></p>
+					<button  @click = "launch_prod_modal=false" class = "bg-gray-500 justify-end px-3 py-1 text-white rounded my-1" >Fermer</button></p>
 				</div>
 			</div>
 			</template>	
@@ -176,7 +176,7 @@ export default{
 				value: "",
 				price: {
 					'5s': 20000,
-					'hse': 35000,
+					'audit': 35000,
 					'maintenance': 5000 * this.indicators["machines"]["value"]
 				},
 				phrase: "",
@@ -268,13 +268,18 @@ export default{
 					let stock_material = this.stock.find((item)=>{
 						return item.id == material.pivot.raw_material_id
 					})
+					if(stock_material == undefined){
+						resp = false
+						this.can_produce_msg = "Pas assez de matière " + material.name + " vous ne pouvez pas lancer la production !"
+						break;
+					}
 					console.log(stock_material)
 					if(material.pivot.quantity < stock_material.quantity){
 						continue
 					}
 					else{
 						resp = false
-						this.can_produce_msg = "Pas assez de matière " + material.name + "vous ne pouvez pas lancer la production !"
+						this.can_produce_msg = "Pas assez de matière " + material.name + " vous ne pouvez pas lancer la production !"
 						break;
 					}
 				}
@@ -313,9 +318,9 @@ export default{
 					this.action.phrase = "Vous allez lancer une amélioration en appliquant les 5S, celà vous coutera " + this.action.price['5s'] + " DA"
 					this.action.result_phrase = "Vous pourrez produire plus rapidement !"
 					break;
-				case 'hse':
-					this.action.phrase = "Vous allez lancer une amélioration en suivant la norme ISO 45001 (HSE), celà vous coutera " + this.action.price['hse'] + " DA"
-					this.action.result_phrase = "Vous pourrez produire plus rapidement !"
+				case 'audit':
+					this.action.phrase = "Vous allez lancer un audit qualité en suivant la norme ISO 9001, celà vous coutera " + this.action.price['audit'] + " DA"
+					this.action.result_phrase = "Votre taux de rebut sera plus faible."
 					break;
 				case 'maintenance':
 					this.action.phrase = "Vous allez lancer une maintenance générale, celà vous coutera " + this.action.price['maintenance'] +" DA"
@@ -332,7 +337,7 @@ export default{
 				'price':price,
 				'entreprise_id':this.user.id
 			}).then(resp=>{
-				this.action.show_info = true
+				this.action.show_info = false
 			})
 		}
 

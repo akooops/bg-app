@@ -9,22 +9,25 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
-
+use App\Traits\IndicatorTrait;
+use App\Events\NewNotification;
 
 class AddToStock implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels,IndicatorTrait;
     public $stock_items;
     public $cost;
+    public $entreprise_id;
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($stock_items,$cost)
+    public function __construct($stock_items,$cost,$entreprise_id)
     {
         $this->stock_items = $stock_items;
         $this->cost = $cost;
+        $this->entreprise_id = $entreprise_id;
     }
 
     /**
@@ -34,6 +37,8 @@ class AddToStock implements ShouldQueue
      */
     public function handle()
     {
+        $entreprise_id = $this->entreprise_id;
+        $cost = $this->cost;
         foreach ($this->stock_items as $stock_item) {
             $stock = DB::table("raw_materials_stock")->where("raw_material_id","=",$stock_item["raw_material_id"])->where("entreprise_id","=",$stock_item["entreprise_id"]);
             //dd(count($stock->get()->toArray()));
@@ -46,5 +51,18 @@ class AddToStock implements ShouldQueue
                 $stock->increment("quantity",$quant);
             }
         }
+        //dd("working until now");
+        $this->updateIndicator("raw_materials_cost",$entreprise_id,$cost);
+        $this->updateIndicator("caisse",$entreprise_id,-1*$cost);
+  
+        $message = "Votre commande a été livrée";
+
+        $notification = [
+            "type" => "CommandAccepted",
+            "entreprise_id" => $entreprise_id,
+            "message" => $message,
+            "title" => "Commande Livrée"
+        ];
+        event(new NewNotification($notification));
     }
 }
