@@ -211,7 +211,7 @@ export default{
 		totalCost(){
 
 
-			return this.launch_data.quantity*(this.selectedProd.machine_units * 2000 + this.selectedProd.labor_units * 200)
+			return this.launch_data.quantity*(this.selectedProd.machine_units * 500 ) + 500
 		},
 		profit(){
 			return this.salesRevenues - this.totalCost

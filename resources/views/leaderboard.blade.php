@@ -9,7 +9,7 @@
         <div class=" mx-auto sm:px-6 lg:px-8">
             
                 <div class = "w-full px-3">
-                   <Leaderboard></Leaderboard>
+                   <Leaderboard ></Leaderboard>
                 </div>
                 
             </div>

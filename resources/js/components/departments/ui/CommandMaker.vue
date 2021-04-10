@@ -42,10 +42,10 @@
                   {{cmd.ddl_min}}j - {{cmd.ddl_max}}j
                   </td>
                    <td class="py-3 px-6 text-left">
-                      {{cmd.quantity}}
+                      {{cmd.quantity}} KG
                   </td>
                   <td class = "text-center">
-                      {{cmd.price}}
+                      {{cmd.price}} DA/KG
                   </td>
                   <td class = "text-center">
                     {{cmd.total_price}}
@@ -94,8 +94,8 @@
         </select>
         <p>Quantité : </p>
         <input type = "number" min = "0" placeholder = "Quantité en unité" v-model = "commandItem.quantity" >
-        <p>Prix Unitaire : {{materialPrice}} </p>
-        <p> Prix Total : {{totalPrice}} </p>
+        <p>Prix Unitaire : {{materialPrice}} DA/KG</p>
+        <p> Prix Total : {{totalPrice}} DA</p>
         <p>Délai de Livraison: {{supplierDelay}}</p>
         <button @click = "addRow" class = "px-2 py-3 bg-green-400 text-white w-40" >Ajouter</button>
         <button @click = "show_add_modal=false" class = "px-2 py-3 bg-gray-300  w-40" >Fermer</button>

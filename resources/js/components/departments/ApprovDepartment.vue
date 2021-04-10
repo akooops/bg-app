@@ -127,10 +127,6 @@ export default{
             
     }
   });
-         window.Echo.channel("entreprise_"+this.user.id)
-    .listen('NavbarDataChanged', (e) => {
-        this.caisse = e.caisse
-    })
 }
 }
 </script>
