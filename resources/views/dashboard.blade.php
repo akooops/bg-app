@@ -22,7 +22,7 @@
 		</div>
 		<div class="p-3 text-center">
 			<h3 class=" text-lg font-extrabold mb-4 truncate-2nd">
-				<a class="hover:text-blue-500" href="">Banque de développement local</a>
+				<a class="hover:text-blue-500" href="">Banque locale</a>
 			</h3>
 			<a href="/entreprise/loans"
 			class = "bg-green-400 text-white px-3 py-1 rounded text-center"> S'endetter </a>

@@ -191,8 +191,6 @@ export default{
 				"machines": this.launch_data.quantity*this.selectedProd.machine_units,
 				"labor": this.launch_data.quantity*this.selectedProd.labor_units
 			}
-			console.log(this.prod_factors)
-			console.log(this.indicators)
 			this.can_produce = false
 			this.verifyProd()		
 		},
@@ -233,6 +231,11 @@ export default{
 				"machines": this.prod_factors.machines,
 				"labor": this.prod_factors.labor
 			}
+			if(this.caisse<this.data.totalCost){
+				this.show_error=true
+				this.message = "Vos disponibilités ne suffisent pas pour lancer la production"
+				return ''
+			}
 			axios.post("/api/production/launch",data).then(resp=>{
 				this.show_success= true
 				this.message = resp.data.message
@@ -258,7 +261,6 @@ export default{
 				entreprise_id: this.user.id
 			}
 			}).then((resp)=>{
-				console.log(resp)
 				this.stock = resp.data
 				this.verifyProd()
 			})
@@ -281,7 +283,6 @@ export default{
 						this.can_produce_msg = "Pas assez de matière " + material.name + " vous ne pouvez pas lancer la production !"
 						break;
 					}
-					console.log(stock_material)
 					if(material.pivot.quantity < stock_material.quantity){
 						continue
 					}
@@ -305,6 +306,12 @@ export default{
 		},
 		confirmMachineTransaction(type){
 			if(this.machine.transaction == "buy"){
+				if(this.machine.buy_price>this.caisse){
+					this.show_error=true
+					this.message = "Vos disponibilités ne suffisent pas pour acheter des machines"
+					this.machine.show_transaction_modal = false
+					return ''
+				}
 				axios.post("/api/entreprise/machine/buy",{
 					entreprise_id: this.user.id,
 					price: this.machine.buy_price 
@@ -341,6 +348,12 @@ export default{
 		},
 		confirmAction(){
 			let price = this.action.price[this.action.value]
+			if(price>this.caisse){
+					this.show_error=true
+					this.message = "Vos disponibilités ne suffisent pas pour acheter des machines"
+					this.action.show_info = false
+					return ''
+				}
 			axios.post("/api/entreprise/production/apply-action",{
 				'type':this.action.value,
 				'price':price,

@@ -18,6 +18,7 @@ class Loan extends Model
         "creation_date",
         "deadline",
         'days',
+        "ratio"
     ];
     public function entreprises(){
         return $this->belongsTo('App\Models\Entreprise','entreprise_id','id');

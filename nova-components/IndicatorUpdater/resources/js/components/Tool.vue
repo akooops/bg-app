@@ -18,7 +18,7 @@
             <select v-model="data.selected_entreprise" class="w-full form-control form-input form-input-bordered pl-2"> 
                 <option  v-for="entreprise in entreprises" :key="entreprise.id" :value="entreprise.id">{{entreprise.name}}</option>
             </select>
-             <div class="flex mt-4  mb-1">
+            <div class="flex mt-4  mb-1">
                 <input type="checkbox" @change="replaceChanged" :checked="data.replace" class="focus:ring-gray-500 h-4 w-4 text-gray-600 border-gray-150 rounded"> 
                 <label class="ml-3">Mettre la valeur a la place ? (décochez si vous voulez incrementer)</label>
             </div>
@@ -26,6 +26,13 @@
             <input v-model="data.value" type="text" name="value" class="w-full form-control form-input form-input-bordered pl-2"/>
             <p class="mt-4  mb-1">Entrez la valeur à ajouter/diminuer pour cet indicateur</p>
             <input v-model="data.increment" type="text" name="increment" class="w-full form-control form-input form-input-bordered pl-2"/>
+            <div class="flex mt-4  mb-1">
+                <input type="checkbox" @change="rateChanged" :checked="data.has_rate" class="focus:ring-gray-500 h-4 w-4 text-gray-600 border-gray-150 rounded"> 
+                <label class="ml-3">Diminuer avec un pourcentage ?</label>
+            </div>
+            <p class="mt-4  mb-1">Entrez le pourcentage:</p>
+            <p class="mb-1 " style="text-color:red">Warning: le pourcentage est utilisé dans le cas d'update de toutes les entreprises, il est calculé avec la formule (100-x)*0.01</p>
+            <input v-model="data.rate" type="text" name="value" class="w-full form-control form-input form-input-bordered pl-2"/>
             <div class="flex mt-4  mb-1">
                 <input type="checkbox" @change="checkboxChanged" :checked="data.has_notification" class="focus:ring-gray-500 h-4 w-4 text-gray-600 border-gray-150 rounded"> 
                 <label class="ml-3">Envoyer une notification ?</label>
@@ -66,6 +73,8 @@ export default {
                 all_entreprises:false,
                 value:null,
                 replace:false,
+                has_rate:false,
+                rate:null,
             }
            
         }
@@ -86,6 +95,9 @@ export default {
         },
         replaceChanged(){
             this.data.replace=!this.data.replace
+        },
+        rateChanged(){
+            this.data.has_rate=!this.data.has_rate
         },
         update(){
          Nova.request().post('/nova-vendor/indicator-updater/update-indicator', this.data).then(({data}) => {

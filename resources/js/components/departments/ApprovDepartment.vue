@@ -113,7 +113,6 @@ export default{
   },
   mounted(){
     this.getCommands()
-    console.log(this.user)
     window.Echo.channel("entreprise_"+this.user.id)
       .listen('NewNotification', (e) => {
     if(e.notification.type=='CommandAccepted'){
@@ -126,8 +125,7 @@ export default{
           this.$forceUpdate()
             
     }
-  });
-         window.Echo.channel("entreprise_"+this.user.id)
+  })
     .listen('NavbarDataChanged', (e) => {
         this.caisse = e.caisse
     })

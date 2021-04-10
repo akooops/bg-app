@@ -77,8 +77,8 @@ module.exports = __webpack_require__(14);
 
 Nova.booting(function (Vue, router, store) {
   router.addRoutes([{
-    name: 'indicator-updater',
-    path: '/indicator-updater',
+    name: 'indicator-explorer',
+    path: '/indicator-explorer',
     component: __webpack_require__(2)
   }]);
 });
@@ -169,7 +169,7 @@ exports = module.exports = __webpack_require__(5)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\r\n/* Scoped Styles */\r\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\r\n/* Scoped Styles */\r\n", ""]);
 
 // exports
 
@@ -667,56 +667,20 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     metaInfo: function metaInfo() {
         return {
-            title: 'IndicatorUpdater'
+            title: 'IndicatorExplorer'
+
         };
     },
     data: function data() {
         return {
+            loaded: false,
+            selected_indicator: null,
             indicators: [],
-            entreprises: [],
-            data: {
-                has_notification: false,
-                notification_type: '',
-                title: '',
-                description: '',
-                selected_indicator: null,
-                selected_entreprise: null,
-                increment: null,
-                all_entreprises: false,
-                value: null,
-                replace: false,
-                has_rate: false,
-                rate: null
-            }
-
+            data: []
         };
     },
 
@@ -730,16 +694,15 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
                         switch (_context.prev = _context.next) {
                             case 0:
                                 _context.next = 2;
-                                return Nova.request().get("/nova-vendor/indicator-updater/indicators");
+                                return Nova.request().get("/nova-vendor/indicator-explorer/get-indicators");
 
                             case 2:
                                 _ref2 = _context.sent;
                                 data = _ref2.data;
 
-                                this.indicators = data['indicators'];
-                                this.entreprises = data['entreprises'];
+                                this.indicators = data;
 
-                            case 6:
+                            case 5:
                             case 'end':
                                 return _context.stop();
                         }
@@ -753,21 +716,14 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 
             return getIndicators;
         }(),
-        checkboxChanged: function checkboxChanged() {
-            this.data.has_notification = !this.data.has_notification;
-        },
-        allChanged: function allChanged() {
-            this.data.all_entreprises = !this.data.all_entreprises;
-        },
-        replaceChanged: function replaceChanged() {
-            this.data.replace = !this.data.replace;
-        },
-        rateChanged: function rateChanged() {
-            this.data.has_rate = !this.data.has_rate;
-        },
-        update: function update() {
-            Nova.request().post('/nova-vendor/indicator-updater/update-indicator', this.data).then(function (_ref3) {
+        getEntrepriseIndicators: function getEntrepriseIndicators() {
+            var _this = this;
+
+            Nova.request().post('/nova-vendor/indicator-explorer/entreprise-indicators', { indicator_id: this.selected_indicator }).then(function (_ref3) {
                 var data = _ref3.data;
+
+                _this.data = data;
+                _this.loaded = true;
             });
         }
     },
@@ -1588,7 +1544,7 @@ var render = function() {
   return _c(
     "div",
     [
-      _c("heading", { staticClass: "mb-6" }, [_vm._v("Indicator Updater")]),
+      _c("heading", { staticClass: "mb-6" }, [_vm._v("Indicator Explorer")]),
       _vm._v(" "),
       _c(
         "card",
@@ -1598,7 +1554,7 @@ var render = function() {
         },
         [
           _c("p", { staticClass: "text-left" }, [
-            _vm._v("Choisissez l'indicateur a modifier")
+            _vm._v("Choisissez l'indicateur à afficher")
           ]),
           _vm._v(" "),
           _c(
@@ -1608,28 +1564,29 @@ var render = function() {
                 {
                   name: "model",
                   rawName: "v-model",
-                  value: _vm.data.selected_indicator,
-                  expression: "data.selected_indicator"
+                  value: _vm.selected_indicator,
+                  expression: "selected_indicator"
                 }
               ],
               staticClass:
                 "w-full form-control form-input form-input-bordered pl-2",
               on: {
-                change: function($event) {
-                  var $$selectedVal = Array.prototype.filter
-                    .call($event.target.options, function(o) {
-                      return o.selected
-                    })
-                    .map(function(o) {
-                      var val = "_value" in o ? o._value : o.value
-                      return val
-                    })
-                  _vm.$set(
-                    _vm.data,
-                    "selected_indicator",
-                    $event.target.multiple ? $$selectedVal : $$selectedVal[0]
-                  )
-                }
+                change: [
+                  function($event) {
+                    var $$selectedVal = Array.prototype.filter
+                      .call($event.target.options, function(o) {
+                        return o.selected
+                      })
+                      .map(function(o) {
+                        var val = "_value" in o ? o._value : o.value
+                        return val
+                      })
+                    _vm.selected_indicator = $event.target.multiple
+                      ? $$selectedVal
+                      : $$selectedVal[0]
+                  },
+                  _vm.getEntrepriseIndicators
+                ]
               }
             },
             _vm._l(_vm.indicators, function(indicator) {
@@ -1642,306 +1599,57 @@ var render = function() {
             0
           ),
           _vm._v(" "),
-          _c("div", { staticClass: "flex mt-4  mb-1" }, [
-            _c("input", {
-              staticClass:
-                "focus:ring-gray-500 h-4 w-4 text-gray-600 border-gray-150 rounded",
-              attrs: { type: "checkbox" },
-              domProps: { checked: _vm.data.all_entreprises },
-              on: { change: _vm.allChanged }
-            }),
-            _vm._v(" "),
-            _c("label", { staticClass: "ml-3" }, [
-              _vm._v("Changer l'indicateur pour toutes les entreprises?")
-            ])
-          ]),
-          _vm._v(" "),
-          _c("p", { staticClass: "text-left" }, [
-            _vm._v("Choisissez l'entreprise")
-          ]),
-          _vm._v(" "),
-          _c(
-            "select",
-            {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.data.selected_entreprise,
-                  expression: "data.selected_entreprise"
-                }
-              ],
-              staticClass:
-                "w-full form-control form-input form-input-bordered pl-2",
-              on: {
-                change: function($event) {
-                  var $$selectedVal = Array.prototype.filter
-                    .call($event.target.options, function(o) {
-                      return o.selected
-                    })
-                    .map(function(o) {
-                      var val = "_value" in o ? o._value : o.value
-                      return val
-                    })
-                  _vm.$set(
-                    _vm.data,
-                    "selected_entreprise",
-                    $event.target.multiple ? $$selectedVal : $$selectedVal[0]
-                  )
-                }
-              }
-            },
-            _vm._l(_vm.entreprises, function(entreprise) {
-              return _c(
-                "option",
-                { key: entreprise.id, domProps: { value: entreprise.id } },
-                [_vm._v(_vm._s(entreprise.name))]
-              )
-            }),
-            0
-          ),
-          _vm._v(" "),
-          _c("div", { staticClass: "flex mt-4  mb-1" }, [
-            _c("input", {
-              staticClass:
-                "focus:ring-gray-500 h-4 w-4 text-gray-600 border-gray-150 rounded",
-              attrs: { type: "checkbox" },
-              domProps: { checked: _vm.data.replace },
-              on: { change: _vm.replaceChanged }
-            }),
-            _vm._v(" "),
-            _c("label", { staticClass: "ml-3" }, [
-              _vm._v(
-                "Mettre la valeur a la place ? (décochez si vous voulez incrementer)"
-              )
-            ])
-          ]),
-          _vm._v(" "),
-          _c("p", { staticClass: "mt-4  mb-1" }, [
-            _vm._v("Entrez la valeur à mettre pour cet indicateur")
-          ]),
-          _vm._v(" "),
-          _c("input", {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.data.value,
-                expression: "data.value"
-              }
-            ],
-            staticClass:
-              "w-full form-control form-input form-input-bordered pl-2",
-            attrs: { type: "text", name: "value" },
-            domProps: { value: _vm.data.value },
-            on: {
-              input: function($event) {
-                if ($event.target.composing) {
-                  return
-                }
-                _vm.$set(_vm.data, "value", $event.target.value)
-              }
-            }
-          }),
-          _vm._v(" "),
-          _c("p", { staticClass: "mt-4  mb-1" }, [
-            _vm._v("Entrez la valeur à ajouter/diminuer pour cet indicateur")
-          ]),
-          _vm._v(" "),
-          _c("input", {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.data.increment,
-                expression: "data.increment"
-              }
-            ],
-            staticClass:
-              "w-full form-control form-input form-input-bordered pl-2",
-            attrs: { type: "text", name: "increment" },
-            domProps: { value: _vm.data.increment },
-            on: {
-              input: function($event) {
-                if ($event.target.composing) {
-                  return
-                }
-                _vm.$set(_vm.data, "increment", $event.target.value)
-              }
-            }
-          }),
-          _vm._v(" "),
-          _c("div", { staticClass: "flex mt-4  mb-1" }, [
-            _c("input", {
-              staticClass:
-                "focus:ring-gray-500 h-4 w-4 text-gray-600 border-gray-150 rounded",
-              attrs: { type: "checkbox" },
-              domProps: { checked: _vm.data.has_rate },
-              on: { change: _vm.rateChanged }
-            }),
-            _vm._v(" "),
-            _c("label", { staticClass: "ml-3" }, [
-              _vm._v("Diminuer avec un pourcentage ?")
-            ])
-          ]),
-          _vm._v(" "),
-          _c("p", { staticClass: "mt-4  mb-1" }, [
-            _vm._v("Entrez le pourcentage:")
-          ]),
-          _vm._v(" "),
-          _c(
-            "p",
-            { staticClass: "mb-1 ", staticStyle: { "text-color": "red" } },
-            [
-              _vm._v(
-                "Warning: le pourcentage est utilisé dans le cas d'update de toutes les entreprises, il est calculé avec la formule (100-x)*0.01"
-              )
-            ]
-          ),
-          _vm._v(" "),
-          _c("input", {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.data.rate,
-                expression: "data.rate"
-              }
-            ],
-            staticClass:
-              "w-full form-control form-input form-input-bordered pl-2",
-            attrs: { type: "text", name: "value" },
-            domProps: { value: _vm.data.rate },
-            on: {
-              input: function($event) {
-                if ($event.target.composing) {
-                  return
-                }
-                _vm.$set(_vm.data, "rate", $event.target.value)
-              }
-            }
-          }),
-          _vm._v(" "),
-          _c("div", { staticClass: "flex mt-4  mb-1" }, [
-            _c("input", {
-              staticClass:
-                "focus:ring-gray-500 h-4 w-4 text-gray-600 border-gray-150 rounded",
-              attrs: { type: "checkbox" },
-              domProps: { checked: _vm.data.has_notification },
-              on: { change: _vm.checkboxChanged }
-            }),
-            _vm._v(" "),
-            _c("label", { staticClass: "ml-3" }, [
-              _vm._v("Envoyer une notification ?")
-            ])
-          ]),
-          _vm._v(" "),
-          _c("p", { staticClass: "mt-4  mb-1" }, [
-            _vm._v("Type de la notification")
-          ]),
-          _vm._v(" "),
-          _c(
-            "select",
-            {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.data.notification_type,
-                  expression: "data.notification_type"
-                }
-              ],
-              staticClass:
-                "w-full form-control form-input form-input-bordered pl-2",
-              on: {
-                change: function($event) {
-                  var $$selectedVal = Array.prototype.filter
-                    .call($event.target.options, function(o) {
-                      return o.selected
-                    })
-                    .map(function(o) {
-                      var val = "_value" in o ? o._value : o.value
-                      return val
-                    })
-                  _vm.$set(
-                    _vm.data,
-                    "notification_type",
-                    $event.target.multiple ? $$selectedVal : $$selectedVal[0]
-                  )
-                }
-              }
-            },
-            [
-              _c("option", { attrs: { value: "warning" } }, [
-                _vm._v("Warning")
-              ]),
-              _vm._v(" "),
-              _c("option", { attrs: { value: "normal" } }, [_vm._v("Normal")])
-            ]
-          ),
-          _vm._v(" "),
-          _c("p", { staticClass: "mt-4 mb-1" }, [
-            _vm._v("Titre de la notification")
-          ]),
-          _vm._v(" "),
-          _c("input", {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.data.title,
-                expression: "data.title"
-              }
-            ],
-            staticClass:
-              "w-full form-control form-input form-input-bordered pl-2",
-            attrs: { type: "text" },
-            domProps: { value: _vm.data.title },
-            on: {
-              input: function($event) {
-                if ($event.target.composing) {
-                  return
-                }
-                _vm.$set(_vm.data, "title", $event.target.value)
-              }
-            }
-          }),
-          _vm._v(" "),
-          _c("p", { staticClass: "mt-4  mb-1" }, [
-            _vm._v("Description de la notification")
-          ]),
-          _vm._v(" "),
-          _c("input", {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.data.description,
-                expression: "data.description"
-              }
-            ],
-            staticClass:
-              "w-full form-control form-input form-input-bordered pl-2  mb-3",
-            attrs: { type: "text" },
-            domProps: { value: _vm.data.description },
-            on: {
-              input: function($event) {
-                if ($event.target.composing) {
-                  return
-                }
-                _vm.$set(_vm.data, "description", $event.target.value)
-              }
-            }
-          }),
-          _vm._v(" "),
-          _c(
-            "button",
-            {
-              staticClass: "btn btn-default btn-primary mr-4",
-              on: { click: _vm.update }
-            },
-            [_vm._v("Send")]
-          )
+          _vm.loaded
+            ? _c("table", { staticClass: "mt-4" }, [
+                _c("thead", [
+                  _c("tr", [
+                    _c(
+                      "th",
+                      {
+                        staticClass:
+                          "p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300  "
+                      },
+                      [_vm._v("Entreprise")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "th",
+                      {
+                        staticClass:
+                          "p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 "
+                      },
+                      [_vm._v("Valeur")]
+                    )
+                  ])
+                ]),
+                _vm._v(" "),
+                _c(
+                  "tbody",
+                  _vm._l(_vm.data, function(datum) {
+                    return _c("tr", { key: datum.id }, [
+                      _c(
+                        "th",
+                        {
+                          staticClass:
+                            "p-3 font-bold text-gray-600 border border-gray-300  "
+                        },
+                        [_vm._v(" " + _vm._s(datum.name))]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "th",
+                        {
+                          staticClass:
+                            "p-3 font-bold  text-gray-600 border border-gray-300 "
+                        },
+                        [_vm._v(_vm._s(datum.value))]
+                      )
+                    ])
+                  }),
+                  0
+                )
+              ])
+            : _vm._e()
         ]
       )
     ],

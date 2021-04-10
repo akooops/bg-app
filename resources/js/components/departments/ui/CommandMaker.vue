@@ -88,7 +88,7 @@
           </select>
         <p>Fournisseur : </p>
         <select v-model = "commandItem['supplier']" class = "w-full rounded" >
-          <option   v-for = "supp in suppliers">
+          <option   v-for = "supp in suppliers" :key="supp.id">
             {{supp.name}}
           </option>
         </select>
@@ -186,11 +186,15 @@ export default{
       this.show_add_modal = false
     },
     sendCommand(){
-      //Change this
-      let total = 255
+      this.show_error = false
+      this.show_success = false
+      var total = 0;
+      this.commands.forEach(item => {
+          total += item.total_price;
+      });
       if(total>this.caisse){
         this.show_error=true
-        this.message = 'Vos disponibilités ne suffisent pas pour financier cette commande'
+        this.message = 'Vos disponibilités ne suffisent pas pour payer cette commande'
         return ''
       }
       axios.post("/api/command/create",
