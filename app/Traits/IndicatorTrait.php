@@ -46,6 +46,43 @@ trait IndicatorTrait{
         
     }
 
+    public function getFinanceIndicators(Request $request){
+        $cost_keys = ["prod_cost","dist_cost","raw_materials_cost"];
+        $ca_keys = ["ca_1","ca_2","ca_3","ca_4","ca"];
+        $other_keys = ["caisse","dettes","debt_ratio"];
+        $data = [];
+        $costs = [];
+        $ca = [];
+        $other = [];
+        foreach ($cost_keys as $ind) {
+            $ind = $this->getIndicator($ind,$request->entreprise_id);
+            $value = $ind["value"];
+            $name = $ind["name"];
+            array_push($costs,["name"=>$name,"value"=>$value]);
+        }
+        foreach ($ca_keys as $ind) {
+            $ind = $this->getIndicator($ind,$request->entreprise_id);
+            $value = $ind["value"];
+            $name = $ind["name"];
+            array_push($ca,["name"=>$name,"value"=>$value]);
+        }
+        foreach ($other_keys as $ind) {
+            $ind = $this->getIndicator($ind,$request->entreprise_id);
+            $value = $ind["value"];
+            $name = $ind["name"];
+            array_push($other,["name"=>$name,"value"=>$value]);
+        }
+        $resp = [
+            "costs" => $costs,
+            "ca" => $ca,
+            "other" => $other
+        ];
+        return $resp;
+
+
+
+    }
+
     public function getIndicator($indicator_code,$entreprise_id){
         $indicator = DB::table("indicators")->where("code","=",$indicator_code)->first();
         $entrep_indicator = DB::table("entreprise_indicator")->where("entreprise_id","=",$entreprise_id)->where("indicator_id","=",$indicator->id)->first();

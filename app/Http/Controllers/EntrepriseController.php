@@ -374,7 +374,7 @@ class EntrepriseController extends Controller
         event(new NewNotification($notification));
         return Response::json(["message" => $message ],200);
     }
-
+    /*
     public function getFinanceIndicators(Request $request){
         $keys = ["ca","caisse"];
         $entreprise_id = $request->entreprise_id;
@@ -385,7 +385,7 @@ class EntrepriseController extends Controller
         }
         return $resp;
     }
-
+    */
     public function getRanking(Request $request){
         $entreprises = Entreprise::all();
         $rankings = collect([]);

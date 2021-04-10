@@ -30,7 +30,7 @@ export default {
   components: {
     VChart
   },
-  props: ["xData","yData","unit"],
+  props: ["xData","yData","unit","width"],
   data() {
     return {
       option:{
@@ -50,6 +50,7 @@ export default {
           data: [],
           type: 'bar',
           showBackground: true,
+          barWidth: this.width,
           backgroundStyle: {
               color: 'rgba(180, 180, 180, 0.25)'
           }
@@ -73,7 +74,7 @@ export default {
 
 <style scoped>
 .chart {
-  height: 350px;
+  height: 400px;
   padding-left: 2.5rem;
 
 }

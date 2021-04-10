@@ -58,7 +58,7 @@ class AddToStock implements ShouldQueue
         $message = "Votre commande a été livrée";
 
         $notification = [
-            "type" => "CommandAccepted",
+            "type" => "CommandDelivered",
             "entreprise_id" => $entreprise_id,
             "message" => $message,
             "title" => "Commande Livrée"

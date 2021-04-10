@@ -25,7 +25,7 @@
 		<div v-if = "show_market_demand" class = "flex flex-wrap bg-white justify-center items-center my-3">
 		<div v-for = "(prod,i) in prod_data" class = "w-1/2 rounded  mt-2">
 			<h2 class = "font-extrabold text-lg px-2">Demande Prévisionelle - {{products[i].name}} :  </h2>
-			<h3 class = "px-3 font-bold">{{products[i].left_demand}} demandes restante (mensuelle) / Prix Moy. : {{prod.avg_price}} DA </h3>
+			<h3 class = "px-3 font-bold">{{products[i].left_demand}} demandes restante (mensuelle). </h3>
 			<button @click = "showProductDescription(i)" class = "bg-green-400 mx-2 my-1 text-white px-3 py-1 rounded">Afficher la Déscription</button> 
 			<LineGraph
 			:x-data = "prod.prices"
@@ -41,6 +41,7 @@
 						<p>- Machines x <span class = "text-blue-700 font-bold">{{product_info.machine_units}}</span> et 
 					 Employés x <span class = "text-blue-700 font-bold">{{product_info.labor_units}}</span></p>
 					 <p v-for = "material in product_info.raw_materials">- {{material.name}} x <span class = "text-blue-700 font-bold"> {{material.pivot.quantity}} </span> KG</p>
+					 <p><span class = "font-bold">Prix Moyen </span> : {{product_info["avg_price"]}} DA (Moyenne basée sur les 10 dernières productions lancées dans le jeu.) </p>
 						<button class = "bg-gray-300 px-3 py-1 rounded my-1" @click = "show_product_info =false">Fermer</button>
 					</div>            		
             	</template>
@@ -176,7 +177,8 @@ export default {
 		showProductDescription(i){
 			let product = this.products[i]
 			this.product_info = product
-			this.show_product_info = true
+			//this.show_product_info = true
+			this.getAvgPrice(this.products[i])
 		},
 		getProdNumbers(){
 			// Numbers to show in cards
@@ -210,8 +212,8 @@ export default {
 		getAvgPrice(product){
 			
 				axios.get("/api/production/avg-price",{params: {product_id:product.id}}).then(resp=>{
-					let product = this.products.find(item => item.name == product.name)
-					product["avg_price"] = resp.data
+					this.product_info["avg_price"] = resp.data
+					this.show_product_info = true
 				});
 			
 		},
@@ -249,7 +251,7 @@ export default {
 		getProducts(){
 			axios.get("/api/products").then(resp=>{
 				this.products = resp.data
-				this.getAvgPrice()
+				
 			})
 		},
 
