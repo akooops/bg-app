@@ -68,7 +68,7 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(1);
-module.exports = __webpack_require__(11);
+module.exports = __webpack_require__(14);
 
 
 /***/ }),
@@ -96,7 +96,7 @@ var normalizeComponent = __webpack_require__(8)
 /* script */
 var __vue_script__ = __webpack_require__(9)
 /* template */
-var __vue_template__ = __webpack_require__(10)
+var __vue_template__ = __webpack_require__(13)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -169,7 +169,7 @@ exports = module.exports = __webpack_require__(5)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\r\n/* Scoped Styles */\r\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\r\n/* Scoped Styles */\r\n", ""]);
 
 // exports
 
@@ -632,12 +632,26 @@ module.exports = function normalizeComponent (
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator__ = __webpack_require__(10);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator__);
 
 
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -680,13 +694,18 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
     data: function data() {
         return {
             indicators: [],
+            entreprises: [],
             data: {
                 has_notification: false,
                 notification_type: '',
                 title: '',
                 description: '',
                 selected_indicator: null,
-                value: null
+                selected_entreprise: null,
+                increment: null,
+                all_entreprises: false,
+                value: null,
+                replace: false
             }
 
         };
@@ -708,9 +727,10 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
                                 _ref2 = _context.sent;
                                 data = _ref2.data;
 
-                                this.indicators = data;
+                                this.indicators = data['indicators'];
+                                this.entreprises = data['entreprises'];
 
-                            case 5:
+                            case 6:
                             case 'end':
                                 return _context.stop();
                         }
@@ -725,7 +745,13 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
             return getIndicators;
         }(),
         checkboxChanged: function checkboxChanged() {
-            this.has_notification = !this.has_notification;
+            this.data.has_notification = !this.data.has_notification;
+        },
+        allChanged: function allChanged() {
+            this.data.all_entreprises = !this.data.all_entreprises;
+        },
+        replaceChanged: function replaceChanged() {
+            this.data.replace = !this.data.replace;
         },
         update: function update() {
             Nova.request().post('/nova-vendor/indicator-updater/update-indicator', this.data).then(function (_ref3) {
@@ -762,235 +788,11 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 /* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    [
-      _c("heading", { staticClass: "mb-6" }, [_vm._v("Indicator Updater")]),
-      _vm._v(" "),
-      _c(
-        "card",
-        {
-          staticClass:
-            "bg-90 flex flex-col items-center justify-center bg-white",
-          staticStyle: { "min-height": "300px" }
-        },
-        [
-          _c("p", [_vm._v("Choisissez l'indicateur a modifier")]),
-          _vm._v(" "),
-          _c(
-            "select",
-            {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.data.selected_indicator,
-                  expression: "data.selected_indicator"
-                }
-              ],
-              on: {
-                change: function($event) {
-                  var $$selectedVal = Array.prototype.filter
-                    .call($event.target.options, function(o) {
-                      return o.selected
-                    })
-                    .map(function(o) {
-                      var val = "_value" in o ? o._value : o.value
-                      return val
-                    })
-                  _vm.$set(
-                    _vm.data,
-                    "selected_indicator",
-                    $event.target.multiple ? $$selectedVal : $$selectedVal[0]
-                  )
-                }
-              }
-            },
-            _vm._l(_vm.indicators, function(indicator) {
-              return _c(
-                "option",
-                { key: indicator.code, domProps: { value: indicator.id } },
-                [_vm._v(_vm._s(indicator.name))]
-              )
-            }),
-            0
-          ),
-          _vm._v(" "),
-          _c("p", [_vm._v("Entrez la valeur à mettre pour cet indicateur")]),
-          _vm._v(" "),
-          _c("input", {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.data.value,
-                expression: "data.value"
-              }
-            ],
-            staticClass:
-              "w-full form-control form-input form-input-bordered pl-2",
-            attrs: { type: "text", name: "value" },
-            domProps: { value: _vm.data.value },
-            on: {
-              input: function($event) {
-                if ($event.target.composing) {
-                  return
-                }
-                _vm.$set(_vm.data, "value", $event.target.value)
-              }
-            }
-          }),
-          _vm._v(" "),
-          _c("div", { staticClass: "flex" }, [
-            _c("input", {
-              staticClass:
-                "focus:ring-gray-500 h-4 w-4 text-gray-600 border-gray-150 rounded",
-              attrs: { type: "checkbox" },
-              domProps: { checked: _vm.data.has_notification },
-              on: { change: _vm.checkboxChanged }
-            }),
-            _vm._v(" "),
-            _c("label", { staticClass: "ml-3" }, [
-              _vm._v("Envoyer une notification ?")
-            ])
-          ]),
-          _vm._v(" "),
-          _c("p", [_vm._v("Type de la notification")]),
-          _vm._v(" "),
-          _c(
-            "select",
-            {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.data.notification_type,
-                  expression: "data.notification_type"
-                }
-              ],
-              on: {
-                change: function($event) {
-                  var $$selectedVal = Array.prototype.filter
-                    .call($event.target.options, function(o) {
-                      return o.selected
-                    })
-                    .map(function(o) {
-                      var val = "_value" in o ? o._value : o.value
-                      return val
-                    })
-                  _vm.$set(
-                    _vm.data,
-                    "notification_type",
-                    $event.target.multiple ? $$selectedVal : $$selectedVal[0]
-                  )
-                }
-              }
-            },
-            [
-              _c("option", { attrs: { value: "warning" } }, [
-                _vm._v("Warning")
-              ]),
-              _vm._v(" "),
-              _c("option", { attrs: { value: "normal" } }, [_vm._v("Normal")])
-            ]
-          ),
-          _vm._v(" "),
-          _c("p", [_vm._v("Titre de la notification")]),
-          _vm._v(" "),
-          _c("input", {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.data.title,
-                expression: "data.title"
-              }
-            ],
-            staticClass:
-              "w-full form-control form-input form-input-bordered pl-2",
-            attrs: { type: "text" },
-            domProps: { value: _vm.data.title },
-            on: {
-              input: function($event) {
-                if ($event.target.composing) {
-                  return
-                }
-                _vm.$set(_vm.data, "title", $event.target.value)
-              }
-            }
-          }),
-          _vm._v(" "),
-          _c("p", [_vm._v("Description de la notification")]),
-          _vm._v(" "),
-          _c("input", {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.data.description,
-                expression: "data.description"
-              }
-            ],
-            staticClass:
-              "w-full form-control form-input form-input-bordered pl-2",
-            attrs: { type: "text" },
-            domProps: { value: _vm.data.description },
-            on: {
-              input: function($event) {
-                if ($event.target.composing) {
-                  return
-                }
-                _vm.$set(_vm.data, "description", $event.target.value)
-              }
-            }
-          }),
-          _vm._v(" "),
-          _c(
-            "button",
-            {
-              staticClass: "btn btn-default btn-primary mr-4",
-              on: { click: _vm.update }
-            },
-            [_vm._v("Send")]
-          )
-        ]
-      )
-    ],
-    1
-  )
-}
-var staticRenderFns = []
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-68ff5483", module.exports)
-  }
-}
+module.exports = __webpack_require__(11);
+
 
 /***/ }),
 /* 11 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 12 */,
-/* 13 */,
-/* 14 */,
-/* 15 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(16);
-
-
-/***/ }),
-/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -1015,7 +817,7 @@ var oldRuntime = hadRuntime && g.regeneratorRuntime;
 // Force reevalutation of runtime.js.
 g.regeneratorRuntime = undefined;
 
-module.exports = __webpack_require__(17);
+module.exports = __webpack_require__(12);
 
 if (hadRuntime) {
   // Restore the original runtime.
@@ -1031,7 +833,7 @@ if (hadRuntime) {
 
 
 /***/ }),
-/* 17 */
+/* 12 */
 /***/ (function(module, exports) {
 
 /**
@@ -1762,6 +1564,342 @@ if (hadRuntime) {
   (function() { return this })() || Function("return this")()
 );
 
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _c("heading", { staticClass: "mb-6" }, [_vm._v("Indicator Updater")]),
+      _vm._v(" "),
+      _c(
+        "card",
+        {
+          staticClass: "bg-90 flex flex-col  bg-white p-6",
+          staticStyle: { "min-height": "300px" }
+        },
+        [
+          _c("p", { staticClass: "text-left" }, [
+            _vm._v("Choisissez l'indicateur a modifier")
+          ]),
+          _vm._v(" "),
+          _c(
+            "select",
+            {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.data.selected_indicator,
+                  expression: "data.selected_indicator"
+                }
+              ],
+              staticClass:
+                "w-full form-control form-input form-input-bordered pl-2",
+              on: {
+                change: function($event) {
+                  var $$selectedVal = Array.prototype.filter
+                    .call($event.target.options, function(o) {
+                      return o.selected
+                    })
+                    .map(function(o) {
+                      var val = "_value" in o ? o._value : o.value
+                      return val
+                    })
+                  _vm.$set(
+                    _vm.data,
+                    "selected_indicator",
+                    $event.target.multiple ? $$selectedVal : $$selectedVal[0]
+                  )
+                }
+              }
+            },
+            _vm._l(_vm.indicators, function(indicator) {
+              return _c(
+                "option",
+                { key: indicator.code, domProps: { value: indicator.id } },
+                [_vm._v(_vm._s(indicator.name))]
+              )
+            }),
+            0
+          ),
+          _vm._v(" "),
+          _c("div", { staticClass: "flex mt-4  mb-1" }, [
+            _c("input", {
+              staticClass:
+                "focus:ring-gray-500 h-4 w-4 text-gray-600 border-gray-150 rounded",
+              attrs: { type: "checkbox" },
+              domProps: { checked: _vm.data.all_entreprises },
+              on: { change: _vm.allChanged }
+            }),
+            _vm._v(" "),
+            _c("label", { staticClass: "ml-3" }, [
+              _vm._v("Changer l'indicateur pour toutes les entreprises?")
+            ])
+          ]),
+          _vm._v(" "),
+          _c("p", { staticClass: "text-left" }, [
+            _vm._v("Choisissez l'entreprise")
+          ]),
+          _vm._v(" "),
+          _c(
+            "select",
+            {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.data.selected_entreprise,
+                  expression: "data.selected_entreprise"
+                }
+              ],
+              staticClass:
+                "w-full form-control form-input form-input-bordered pl-2",
+              on: {
+                change: function($event) {
+                  var $$selectedVal = Array.prototype.filter
+                    .call($event.target.options, function(o) {
+                      return o.selected
+                    })
+                    .map(function(o) {
+                      var val = "_value" in o ? o._value : o.value
+                      return val
+                    })
+                  _vm.$set(
+                    _vm.data,
+                    "selected_entreprise",
+                    $event.target.multiple ? $$selectedVal : $$selectedVal[0]
+                  )
+                }
+              }
+            },
+            _vm._l(_vm.entreprises, function(entreprise) {
+              return _c(
+                "option",
+                { key: entreprise.id, domProps: { value: entreprise.id } },
+                [_vm._v(_vm._s(entreprise.name))]
+              )
+            }),
+            0
+          ),
+          _vm._v(" "),
+          _c("div", { staticClass: "flex mt-4  mb-1" }, [
+            _c("input", {
+              staticClass:
+                "focus:ring-gray-500 h-4 w-4 text-gray-600 border-gray-150 rounded",
+              attrs: { type: "checkbox" },
+              domProps: { checked: _vm.data.replace },
+              on: { change: _vm.replaceChanged }
+            }),
+            _vm._v(" "),
+            _c("label", { staticClass: "ml-3" }, [
+              _vm._v(
+                "Mettre la valeur a la place ? (décochez si vous voulez incrementer)"
+              )
+            ])
+          ]),
+          _vm._v(" "),
+          _c("p", { staticClass: "mt-4  mb-1" }, [
+            _vm._v("Entrez la valeur à mettre pour cet indicateur")
+          ]),
+          _vm._v(" "),
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.data.value,
+                expression: "data.value"
+              }
+            ],
+            staticClass:
+              "w-full form-control form-input form-input-bordered pl-2",
+            attrs: { type: "text", name: "value" },
+            domProps: { value: _vm.data.value },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.$set(_vm.data, "value", $event.target.value)
+              }
+            }
+          }),
+          _vm._v(" "),
+          _c("p", { staticClass: "mt-4  mb-1" }, [
+            _vm._v("Entrez la valeur à ajouter/diminuer pour cet indicateur")
+          ]),
+          _vm._v(" "),
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.data.increment,
+                expression: "data.increment"
+              }
+            ],
+            staticClass:
+              "w-full form-control form-input form-input-bordered pl-2",
+            attrs: { type: "text", name: "increment" },
+            domProps: { value: _vm.data.increment },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.$set(_vm.data, "increment", $event.target.value)
+              }
+            }
+          }),
+          _vm._v(" "),
+          _c("div", { staticClass: "flex mt-4  mb-1" }, [
+            _c("input", {
+              staticClass:
+                "focus:ring-gray-500 h-4 w-4 text-gray-600 border-gray-150 rounded",
+              attrs: { type: "checkbox" },
+              domProps: { checked: _vm.data.has_notification },
+              on: { change: _vm.checkboxChanged }
+            }),
+            _vm._v(" "),
+            _c("label", { staticClass: "ml-3" }, [
+              _vm._v("Envoyer une notification ?")
+            ])
+          ]),
+          _vm._v(" "),
+          _c("p", { staticClass: "mt-4  mb-1" }, [
+            _vm._v("Type de la notification")
+          ]),
+          _vm._v(" "),
+          _c(
+            "select",
+            {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.data.notification_type,
+                  expression: "data.notification_type"
+                }
+              ],
+              staticClass:
+                "w-full form-control form-input form-input-bordered pl-2",
+              on: {
+                change: function($event) {
+                  var $$selectedVal = Array.prototype.filter
+                    .call($event.target.options, function(o) {
+                      return o.selected
+                    })
+                    .map(function(o) {
+                      var val = "_value" in o ? o._value : o.value
+                      return val
+                    })
+                  _vm.$set(
+                    _vm.data,
+                    "notification_type",
+                    $event.target.multiple ? $$selectedVal : $$selectedVal[0]
+                  )
+                }
+              }
+            },
+            [
+              _c("option", { attrs: { value: "warning" } }, [
+                _vm._v("Warning")
+              ]),
+              _vm._v(" "),
+              _c("option", { attrs: { value: "normal" } }, [_vm._v("Normal")])
+            ]
+          ),
+          _vm._v(" "),
+          _c("p", { staticClass: "mt-4 mb-1" }, [
+            _vm._v("Titre de la notification")
+          ]),
+          _vm._v(" "),
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.data.title,
+                expression: "data.title"
+              }
+            ],
+            staticClass:
+              "w-full form-control form-input form-input-bordered pl-2",
+            attrs: { type: "text" },
+            domProps: { value: _vm.data.title },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.$set(_vm.data, "title", $event.target.value)
+              }
+            }
+          }),
+          _vm._v(" "),
+          _c("p", { staticClass: "mt-4  mb-1" }, [
+            _vm._v("Description de la notification")
+          ]),
+          _vm._v(" "),
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.data.description,
+                expression: "data.description"
+              }
+            ],
+            staticClass:
+              "w-full form-control form-input form-input-bordered pl-2  mb-3",
+            attrs: { type: "text" },
+            domProps: { value: _vm.data.description },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.$set(_vm.data, "description", $event.target.value)
+              }
+            }
+          }),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-default btn-primary mr-4",
+              on: { click: _vm.update }
+            },
+            [_vm._v("Send")]
+          )
+        ]
+      )
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-68ff5483", module.exports)
+  }
+}
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
 
 /***/ })
 /******/ ]);

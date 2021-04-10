@@ -53,7 +53,10 @@ class EntrepriseController extends Controller
         return view("departments.marketing",["products"=>$products,
         "ad_coef"=>$ad_coef, "caisse"=>$caisse]); 
     }
-
+    function showLoans(Request $request){
+        $caisse = $this->getIndicator('caisse',auth()->user()->id)["value"];
+        return view('loans',["caisse"=>$caisse]);
+    }
     function showFinance(Request $request){
         $products = Product::all();
         $entreprises = Entreprise::all();

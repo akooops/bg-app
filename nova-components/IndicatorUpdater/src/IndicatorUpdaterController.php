@@ -11,18 +11,28 @@ class IndicatorUpdaterController
 {
     public function getIndicators(NovaRequest $request)
     {
-       $indicators = DB::table('indicators')->get();
-
-       return response()->json($indicators);
+       $data=[
+        "indicators" => DB::table('indicators')->get(),
+        "entreprises" => Entreprise::get()
+       ];
+       return response()->json($data);
     }
 
     public function updateIndicators(NovaRequest $request)
     {
-        DB::table('entreprise_indicator')->where('indicator_id',$request->selected_indicator)->update(['value'=>$request->value]);
-        if($request->has_notification==true){
+        $indicator = DB::table('entreprise_indicator')->where('indicator_id',$request->selected_indicator);
+        if($request->all_entreprises==false){
+            $indicator = $indicator->where('entreprise_id',$request->selected_entreprise);
+        }
+        if($request->replace==false){
+            $indicator->increment('value',(int)$request->increment);
+        }
+        else{
+            $indicator->update(["value"=>(int)$request->value]);
+        }
+        if($request->has_notification==true && $request->all_entreprise==true){
         $entreprises = Entreprise::get();
         foreach($entreprises as $entreprise){
-           
                 $notification = [
                     "type" => "NewNotif",
                     "status" => $request->notification_type,
@@ -34,6 +44,18 @@ class IndicatorUpdaterController
                 event(new NewNotification($notification));
             }
         }
+        else{
+            $notification = [
+                "type" => "NewNotif",
+                "status" => $request->notification_type,
+                "entreprise_id" => $request->selected_entreprise,
+                "data" => [],
+                "message" => $request->description,
+                "title" => $request->title,
+            ];
+            event(new NewNotification($notification));
+        }
+
          return response()->json("Success", 200);
         
     }

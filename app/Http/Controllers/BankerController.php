@@ -73,7 +73,7 @@ class BankerController extends Controller
             "creation_date" => (int) $this->getSimulationTime(),
         ];
         event(new LoanCreated($data));
-        return response()->json("Votre demande a été envoyée avec succès, vous serez rederiger dans 4 secondes", 200);
+        return response()->json("Votre demande a été envoyée avec succès, vous serez redirigé dans 4 secondes", 200);
 
     }
     function updateLoan(Request $request){
@@ -113,6 +113,6 @@ class BankerController extends Controller
         $loan->save();
         $this->updateIndicator("caisse",$request->entreprise_id,-$request->refund_amount);
         $this->updateIndicator("dettes",$request->entreprise_id,-$request->refund_amount);
-        return response()->json("Votre virement a été envoyé à la banque avec succès, vous serez rederiger dans 3 secondes", 200);
+        return response()->json("Votre virement a été envoyé à la banque avec succès, vous serez redirigé dans 3 secondes", 200);
     }
 }

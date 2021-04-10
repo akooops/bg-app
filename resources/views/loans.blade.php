@@ -4,5 +4,5 @@
             {{ __("Liste des demandes d'endettements") }}
         </h2>
     </x-slot>
-<EntrepriseLoanListing v-bind:entreprise="{{auth()->user()}}"/>
+<EntrepriseLoanListing v-bind:entreprise="{{auth()->user()}}" :caisse="{{$caisse}}"/>
 </x-app-layout>

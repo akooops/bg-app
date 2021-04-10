@@ -58,7 +58,7 @@ class MonthlyCosts implements ShouldQueue
                     "status"    => "accepted",
                     "amount" => $difference,
                     "remaining_amount" => $difference,
-                    "rate" => 4,
+                    "ratio" => 4,
                     "payment_status" => 0,
                     "creation_date" => (int) $this->getSimulationTime(),
                     "deadline"=> 15,

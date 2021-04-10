@@ -137,7 +137,7 @@
 import Modal from '../Modal.vue'
 
 export default {
- props:['entreprise'],
+ props:['entreprise','caisse'],
  components:{ Modal },
  name:"EntrepriseLoanListing",
  data(){
@@ -177,8 +177,10 @@ export default {
         this.pay_loan_modal = true
     },
     closePayModal(){
-         this.selected_loan = null
+        this.selected_loan = null
         this.pay_loan_modal = false
+        this.pay_error_message = ''
+        this.pay_message =''
     },
     openModal(){
 		this.loan_modal = true
@@ -208,15 +210,22 @@ export default {
 		
 	},
     payLoan(){
+        this.pay_error_message = ''
+        this.pay_message =''
         if(this.refund_amount>this.selected_loan.remaining_amount || this.refund_amount<=0){
             this.pay_error_message = 'Le montant à rembourser doit etre superieur à 0 et inferieur aux dettes restantes'
+            return ''
+        }
+        if(this.caisse<this.refund_amount){
+            this.pay_error_message = 'Vos disponibilités ne suffisent pas pour rembourser le montant saisi'
+            return ''
         }
         else{
             this.sent_payment=true
             axios.post('/api/loan/pay',{loan_id:this.selected_loan.loan_id,refund_amount:this.refund_amount,entreprise_id:this.entreprise.id}).then((resp)=>{
             this.pay_message = resp.data
             setTimeout(function() {
-                window.location.href ='/entreprise/dashboard'
+                window.location.href ='/entreprise/loans'
             }, 4000);
         })
         }
@@ -230,6 +239,9 @@ export default {
         if(e.notification.type=='LoanStatusChanged'){
             this.getLoans()
         }
+    })
+    .listen('NavbarDataChanged', (e) => {
+        this.caisse = e.caisse
     })
  }
 }

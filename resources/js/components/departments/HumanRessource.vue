@@ -66,7 +66,7 @@
                 <div class="flex">
                 <button class="bg-green-400 hover:bg-green-800  text-white px-3 py-2 rounded w-1/2 mt-4 mr-2"
                 :class="prime_sent?'bg-gray-800 ':'bg-green-400 hover:bg-green-800'" :disabled="prime_sent"
-                  @click="primeWorkers" >Recruter</button>
+                  @click="primeWorkers" >Valider</button>
                 <button class="bg-gray-200 active:bg-gray-600 hover:bg-gray-400 text-back px-3 py-2 rounded w-1/2 mt-4" @click="closePrimeModal">Annuler</button>
 		        </div>
             </template>
@@ -141,21 +141,29 @@ methods:{
         },
     closeWorkersModal(){
         this.workers_modal = false
+        this.message= ''
+        this.error_message =''
     },
     openWorkShopModal(){
         this.workshop_modal = true
         },
     closeWorkShopModal(){
         this.workshop_modal = false
+        this.message= ''
+        this.error_message =''
     },
      openPrimeModal(){
         this.prime_modal = true
     },
     closePrimeModal(){
         this.prime_modal = false
+        this.message= ''
+        this.error_message =''
     },
     
     launchWorkshop(){
+        this.message= ''
+        this.error_message =''
         if(this.workshop_price*this.indicators['nb_workers']['value']>this.caisse){
             this.error_message = 'Vos disponibilités ne vous permettent pas de lancer la formation'
             return ''
@@ -173,6 +181,8 @@ methods:{
         })
     },
     primeWorkers(){
+           this.message= ''
+        this.error_message =''
           if(this.prime*this.indicators['nb_workers']['value']>this.caisse){
             this.error_message = 'Vos disponibilités ne vous permettent pas de donner cette prime'
             return ''
@@ -186,6 +196,8 @@ methods:{
         })
     },
     hireWorker(){
+        this.message= ''
+        this.error_message =''
         if(this.workers>1 && this.workers<5){
               this.hire_sent=true
             axios.post('/api/entreprise/hr/hire',{workers:this.workers,entreprise_id:this.entreprise.id}).then((resp)=>{

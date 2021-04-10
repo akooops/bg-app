@@ -38,9 +38,7 @@ Route::prefix("entreprise")->middleware(["auth","entreprise"])->group(function()
 
 	Route::get('/command/create',[EntrepriseController::class,"showCommandMaker"])->name("approv");
 	Route::get('/stock',[EntrepriseController::class,"showStock"])->name("stock");
-    Route::get('/loans',function(){
-        return view('loans');
-    })->name("loans");
+    Route::get('/loans',[EntrepriseController::class,"showLoans"])->name("loans");
 
 });
 
