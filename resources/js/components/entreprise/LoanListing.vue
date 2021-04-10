@@ -23,7 +23,9 @@
 			<label>Je veillerai, moi le representant de l'entreprise <span class="font-bold">{{entreprise.name}}</span>  à honorer les termes du contrat.</label>
 		</div>
 		<div class="flex">
-		<button class="bg-green-400 hover:bg-green-800  text-white px-3 py-2 rounded w-1/2 mt-4 mr-2"  @click="createLoan" :disabled="sent">S'endetter</button>
+		<button class="text-white px-3 py-2 rounded w-1/2 mt-4 mr-2" 
+        :class="sent?'bg-gray-800 ':'bg-green-400 hover:bg-green-800'" :disabled="sent"
+         @click="createLoan" >S'endetter</button>
 		<button class="bg-gray-200 active:bg-gray-600 hover:bg-gray-400 text-back px-3 py-2 rounded w-1/2 mt-4" @click="closeModal">Annuler</button>
 		</div>
 	</template>
@@ -53,7 +55,8 @@
 			<p>Le montant restant après le paiement de <span class="text-green-600">{{refund_amount}}</span> est {{selected_loan.remaining_amount-refund_amount}}</p>
 		</div>
 		<div class="flex">
-		<button class="  text-white px-3 py-2 rounded w-1/2 mt-4 mr-2" :class="sent?'bg-green-400 hover:bg-green-800':'bg-gray-800 '" @click="payLoan">Payer</button>
+		<button class="  text-white px-3 py-2 rounded w-1/2 mt-4 mr-2" 
+        :class="sent_payment?'bg-gray-800 ':'bg-green-400 hover:bg-green-800'" :disabled="sent_payment" @click="payLoan">Payer</button>
 		<button class="bg-gray-200 active:bg-gray-600 hover:bg-gray-400 text-back px-3 py-2 rounded w-1/2 mt-4" @click="closePayModal">Annuler</button>
 		</div>
 	</template>
@@ -152,6 +155,7 @@ export default {
         pay_error_message:'',
         pay_message:'',
         sent:false,
+        sent_payment:false,
     }
  },
  computed:{
@@ -189,9 +193,10 @@ export default {
 	},
 	createLoan(){
 		if(this.amount!=null && this.accept){
+             this.sent = true
 			axios.post("/api/loan/create",{entreprise_id:this.entreprise.id,amount:this.amount}).then(resp=>{
 			this.message = resp.data
-            this.sent = true
+           
             setTimeout(function() {
                 window.location.href ='/entreprise/loans'
             }, 4000);
@@ -207,8 +212,9 @@ export default {
             this.pay_error_message = 'Le montant à rembourser doit etre superieur à 0 et inferieur aux dettes restantes'
         }
         else{
+            this.sent_payment=true
             axios.post('/api/loan/pay',{loan_id:this.selected_loan.loan_id,refund_amount:this.refund_amount,entreprise_id:this.entreprise.id}).then((resp)=>{
-            this.pay_message = resp.data.pay_messsage
+            this.pay_message = resp.data
             setTimeout(function() {
                 window.location.href ='/entreprise/dashboard'
             }, 4000);
