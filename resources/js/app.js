@@ -5,7 +5,7 @@ import Vue from "vue"
 axios.defaults.withCredentials = true
 let local_url = "http://10.42.0.1:8000"
 let localhost = "http://localhost:8000"
-axios.defaults.baseURL = localhost
+axios.defaults.baseURL = local_url
 
 Vue.component('departmentcard', require('./components/DepartmentCard.vue').default);
 // Departments
