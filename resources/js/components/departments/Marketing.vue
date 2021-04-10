@@ -199,7 +199,7 @@ export default {
 	createAd(){
 		if(!this.notValidated()){
             if(this.caisse<this.total_amount){
-                this.error_message = 'Vos disponibilités ne vous permet pas de lancer la formation'
+                this.error_message = 'Vos disponibilités ne vous permettent pas de lancer la campagne'
                 return ''
             }
             this.new_ad.entreprise_id = this.entreprise.id

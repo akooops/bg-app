@@ -35,8 +35,8 @@ class MonthlyCosts implements ShouldQueue
      */
     public function handle()
     {
-        $salary = nova_get_setting('salary_production');
-        $mp_stock_price = nova_get_setting('mp_stock_price');
+        $salary =(int) nova_get_setting('salary_production');
+        $mp_stock_price =(int) nova_get_setting('mp_stock_price');
         $entreprises = Entreprise::get(); 
         foreach ($entreprises as $entreprise) {
             $caisse = $this->getIndicator('caisse',$entreprise->id)['value'];

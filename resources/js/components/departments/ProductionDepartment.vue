@@ -25,7 +25,7 @@
 		<div v-if = "show_market_demand" class = "flex flex-wrap bg-white justify-center items-center my-3">
 		<div v-for = "(prod,i) in prod_data" class = "w-1/2 rounded  mt-2">
 			<h2 class = "font-extrabold text-lg px-2">Demande Prévisionelle - {{products[i].name}} :  </h2>
-			<h3 class = "px-3 font-bold">{{products[i].left_demand}} demandes restante (mensuelle)</h3>
+			<h3 class = "px-3 font-bold">{{products[i].left_demand}} demandes restantes (mensuelle)</h3>
 			<LineGraph
 			:x-data = "prod.prices"
 			:y-data = "prod.demand"
