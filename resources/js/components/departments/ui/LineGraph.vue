@@ -37,10 +37,12 @@ export default {
         xAxis: {
           type: 'category',
           boundaryGap: false,
-          data: []
+          data: [],
+          name: 'Prix'
         },
         yAxis: {
-          type: 'value'
+          type: 'value',
+          name: 'Unités'
         },
         tooltip:{
           show:true

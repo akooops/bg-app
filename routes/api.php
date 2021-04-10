@@ -40,6 +40,7 @@ Route::prefix("entreprise")->group(function(){
     Route::post("/hr/hire",[HrController::class,"hireWorkers"]);
     Route::post("/hr/launch-workshop",[HrController::class,"launchWorkshop"]);
     Route::post("/hr/prime-workers",[HrController::class,"primeWorkers"]);
+   
     
 });
 
@@ -59,7 +60,7 @@ Route::prefix("production")->group(function(){
     Route::post('/launch', [EntrepriseController::class,"launchProduction"]);
     Route::get('/all', [EntrepriseController::class,"getAllProductions"]);
     Route::post("/sell",[EntrepriseController::class,"sellProd"]);
-    
+    Route::get("/avg-price",[EntrepriseController::class,"getAvgPrice"]);
 });
 
 

@@ -163,8 +163,8 @@ export default{
 			machine:{
 				show_transaction_modal: false,
 				transaction:'',
-				buy_price: 10000,
-				sell_price: 8000 * this.indicators["machines_health"].value
+				buy_price: 40000,
+				sell_price: 35000 * this.indicators["machines_health"].value
 			},
 			can_produce_msg: "",
 			can_produce: true,
@@ -175,9 +175,9 @@ export default{
 			action:{
 				value: "",
 				price: {
-					'5s': 20000,
-					'audit': 35000,
-					'maintenance': 5000 * this.indicators["machines"]["value"]
+					'5s': 40000,
+					'audit': 60000,
+					'maintenance': 15000 * this.indicators["machines"]["value"]
 				},
 				phrase: "",
 				result_phrase: "",
@@ -195,6 +195,9 @@ export default{
 			console.log(this.indicators)
 			this.can_produce = false
 			this.verifyProd()		
+		},
+		'launch_data.price':function(){
+			this.verifyProd()
 		}
 	},
 	computed:{
@@ -208,7 +211,7 @@ export default{
 		totalCost(){
 
 
-			return this.launch_data.quantity*(this.selectedProd.machine_units * 25 + this.selectedProd.labor_units * 45)
+			return this.launch_data.quantity*(this.selectedProd.machine_units * 2000 + this.selectedProd.labor_units * 200)
 		},
 		profit(){
 			return this.salesRevenues - this.totalCost
@@ -262,6 +265,11 @@ export default{
 		},
 		verifyProd(){
 			let resp =  true
+			if(this.launch_data.price > this.selectedProd.price_max || this.launch_data.price < this.selectedProd.price_min){
+				resp = false
+				this.can_produce_msg = "Le prix doit être entre " + this.selectedProd.price_min + " DA - " + this.selectedProd.price_max + " DA"
+			}
+			else{
 			let free_machines = this.indicators["machines"].value - this.indicators["busy_machines"].value
 			if(this.prod_factors.machines <=  free_machines && this.prod_factors.labor <= this.indicators["nb_workers_prod"].value){
 				for(const material of this.selectedProd.raw_materials){
@@ -287,6 +295,7 @@ export default{
 			else{
 				resp = false
 				this.can_produce_msg = "Pas assez de machines ou d'employés, vous ne pouvez pas lancer la production !"
+			}
 			}
 			this.can_produce = resp
 		},

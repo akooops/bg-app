@@ -13,7 +13,7 @@
 		</div>
 		<div v-if = "show_decision_center == false">
 		<div v-if = "show_stat_cards" class = "flex flex-wrap w-full justify-between py-3">
-			<StatCard title = "Chiffre d'Affaire" color = "text-green-500"  icon = "fa-money" :value = "indicators['ca'].value"></StatCard>
+			<StatCard title = "Chiffre d'Affaire" color = "text-green-500"  icon = "fa-dollar" :value = "indicators['ca'].value"></StatCard>
 			<StatCard title = "Machines" color = "text-gray-600" icon = "fa-cogs" :value = "indicators['machines'].value" 
 			:second-value = "indicators['busy_machines'].value +  ' occupées.'"
 
@@ -25,12 +25,27 @@
 		<div v-if = "show_market_demand" class = "flex flex-wrap bg-white justify-center items-center my-3">
 		<div v-for = "(prod,i) in prod_data" class = "w-1/2 rounded  mt-2">
 			<h2 class = "font-extrabold text-lg px-2">Demande Prévisionelle - {{products[i].name}} :  </h2>
-			<h3 class = "px-3 font-bold">{{products[i].left_demand}} demandes restantes (mensuelle)</h3>
+			<h3 class = "px-3 font-bold">{{products[i].left_demand}} demandes restante (mensuelle). </h3>
+			<button @click = "showProductDescription(i)" class = "bg-green-400 mx-2 my-1 text-white px-3 py-1 rounded">Afficher la Déscription</button> 
 			<LineGraph
 			:x-data = "prod.prices"
 			:y-data = "prod.demand"
 			></LineGraph>
 		</div>
+		   <Modal v-if = "show_product_info">
+            	<template v-slot:content>
+            		<div class = "w-full">
+						<h1 class = "text-lg font-bold">Détails - {{product_info.name}}</h1>
+						<p>{{product_info.description}}</p>
+						<p class = "font-bold "> Pour produire un lot de 100 unités de ce produit vous avez besoin de : </p>
+						<p>- Machines x <span class = "text-blue-700 font-bold">{{product_info.machine_units}}</span> et 
+					 Employés x <span class = "text-blue-700 font-bold">{{product_info.labor_units}}</span></p>
+					 <p v-for = "material in product_info.raw_materials">- {{material.name}} x <span class = "text-blue-700 font-bold"> {{material.pivot.quantity}} </span> KG</p>
+					 <p><span class = "font-bold">Prix Moyen </span> : {{product_info["avg_price"]}} DA (Moyenne basée sur les 10 dernières productions lancées dans le jeu.) </p>
+						<button class = "bg-gray-300 px-3 py-1 rounded my-1" @click = "show_product_info =false">Fermer</button>
+					</div>            		
+            	</template>
+            </Modal>
 		</div>
 		</div>
 		<div v-if = "page_index == 'production_list'" class = "w-full">
@@ -79,7 +94,7 @@
                         <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
                             {{prod.sold * prod.price}} UM
                         </td>
-                        <td :class = "prod.status_code == 'pending' ? 'text-yellow-500':'text-green-500'" class="w-full lg:w-auto p-3 text-center border border-b block lg:table-cell relative lg:static">
+                        <td :class = "prod.status_code == 'pending' ? 'text-yellow-500':'text-green-500'" class="w-full lg:w-auto p-3 text-center border border-b block lg:table-cell relative lg:static">(
                             {{prod.status}}
                         </td>
                          <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
@@ -102,6 +117,7 @@
             		</div>
             	</template>
             </Modal>
+
 		</div>
 	<div v-if = "page_index == 'decision_center'" >
 		<ProdCenter @prodLaunched = "updateProdData" :user = "user" :products = "products" :indicators="indicators"></ProdCenter>
@@ -145,7 +161,10 @@ export default {
 				stock_quant:0,
 				price: 0
 			},
-			show_selling_info: false
+			show_selling_info: false,
+			show_product_info: false,
+			product_info: null,
+			average_prices: []
 		}
 	},
 	computed:{
@@ -155,6 +174,12 @@ export default {
 		}
 	},
 	methods:{
+		showProductDescription(i){
+			let product = this.products[i]
+			this.product_info = product
+			//this.show_product_info = true
+			this.getAvgPrice(this.products[i])
+		},
 		getProdNumbers(){
 			// Numbers to show in cards
 			axios.get("/api/entreprise/production/indicators",{params:{
@@ -183,6 +208,14 @@ export default {
 			}}).then(resp => {
 				this.productions = resp.data.reverse()
 			})
+		},
+		getAvgPrice(product){
+			
+				axios.get("/api/production/avg-price",{params: {product_id:product.id}}).then(resp=>{
+					this.product_info["avg_price"] = resp.data
+					this.show_product_info = true
+				});
+			
 		},
 		sell(prod){
 			console.log(prod)
@@ -218,14 +251,18 @@ export default {
 		getProducts(){
 			axios.get("/api/products").then(resp=>{
 				this.products = resp.data
+				
 			})
 		},
 
 		updateProdData(){
 			this.getProdNumbers()
 			this.getProductions()
-			this.getProducts()
+		    this.getProducts()
 		}
+	},
+	beforeMount(){
+		this.getProducts()
 	},
 	mounted(){
 		this.updateProdData()
