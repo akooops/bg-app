@@ -20,7 +20,9 @@
                 <p class="mt-10">Le salaire mensuel d'un seul employé est fixé a : <span class="text-yellow-600 font-bold">{{salary}}</span></p>
                 <p>Le salaire pour le nombre d'employé choisis est fixé a : <span class="text-green-700 font-bold">{{salary*workers}}</span></p>
                 <div class="flex">
-                <button class="bg-green-400 hover:bg-green-800  text-white px-3 py-2 rounded w-1/2 mt-4 mr-2"  @click="hireWorker">Recruter</button>
+                <button class="text-white px-3 py-2 rounded w-1/2 mt-4 mr-2"
+                :class="hire_sent?'bg-gray-800 ':'bg-green-400 hover:bg-green-800'" :disabled="hire_sent"
+                  @click="hireWorker">Recruter</button>
                 <button class="bg-gray-200 active:bg-gray-600 hover:bg-gray-400 text-back px-3 py-2 rounded w-1/2 mt-4" @click="closeWorkersModal">Annuler</button>
 		        </div>
             </template>
@@ -34,7 +36,9 @@
                 <p class="mt-6">Le prix de la formation est fixé a : <span class="text-green-700 font-bold">{{workshop_price}} /personne</span></p>
                 <p class="mt-4">Le prix total est fixé à: <span class="text-green-700 font-bold">{{workshop_price*indicators['nb_workers']['value']}} </span></p>
                 <div class="flex">
-                <button class="bg-green-400 hover:bg-green-800  text-white px-3 py-2 rounded w-1/2 mt-4 mr-2"  @click="launchWorkshop">Lancer la formation</button>
+                <button class="text-white px-3 py-2 rounded w-1/2 mt-4 mr-2" 
+                :class="workshop_sent?'bg-gray-800 ':'bg-green-400 hover:bg-green-800'" :disabled="workshop_sent"
+                 @click="launchWorkshop">Lancer la formation</button>
                 <button class="bg-gray-200 active:bg-gray-600 hover:bg-gray-400 text-back px-3 py-2 rounded w-1/2 mt-4" @click="closeWorkShopModal">Annuler</button>
 		        </div>
             </template>
@@ -60,7 +64,9 @@
                 <p class="mt-10">Le montant total est  : <span class="text-yellow-600 font-bold">{{prime*indicators['nb_workers']['value']}}</span></p>
                 <p class="mt-10">L'humeur des employés augmentera avec  : <span class="text-green-600 font-bold">+{{expected_mood}}</span></p>
                 <div class="flex">
-                <button class="bg-green-400 hover:bg-green-800  text-white px-3 py-2 rounded w-1/2 mt-4 mr-2"  @click="primeWorkers">Recruter</button>
+                <button class="bg-green-400 hover:bg-green-800  text-white px-3 py-2 rounded w-1/2 mt-4 mr-2"
+                :class="prime_sent?'bg-gray-800 ':'bg-green-400 hover:bg-green-800'" :disabled="prime_sent"
+                  @click="primeWorkers" >Recruter</button>
                 <button class="bg-gray-200 active:bg-gray-600 hover:bg-gray-400 text-back px-3 py-2 rounded w-1/2 mt-4" @click="closePrimeModal">Annuler</button>
 		        </div>
             </template>
@@ -113,6 +119,9 @@ data(){
         workshop_modal:false,
         prime_modal:false,
         prime:null,
+        prime_sent:false,
+        workshop_sent:false,
+        hire_sent:false,
         }
 },
 computed:{
@@ -155,6 +164,7 @@ methods:{
             this.error_message = "Vous allez perdre de l'argent car le coefficient de productivité a atteint son maximum"
             return ''
         }
+        this.workshop_sent=true
         axios.post('/api/entreprise/hr/launch-workshop',{entreprise_id:this.entreprise.id}).then((resp)=>{
             this.message = resp.data
              setTimeout(function() {
@@ -169,6 +179,7 @@ methods:{
         }
         axios.post('/api/entreprise/hr/prime-workers',{entreprise_id:this.entreprise.id,prime:this.prime,mood:this.expected_mood}).then((resp)=>{
             this.message = resp.data
+            this.prime_sent = true
              setTimeout(function() {
                   window.location.href ='/entreprise/department/Ressources Humaines'
                 }, 3000);
@@ -176,6 +187,7 @@ methods:{
     },
     hireWorker(){
         if(this.workers>1 && this.workers<5){
+              this.hire_sent=true
             axios.post('/api/entreprise/hr/hire',{workers:this.workers,entreprise_id:this.entreprise.id}).then((resp)=>{
             this.message = resp.data.message
              setTimeout(function() {

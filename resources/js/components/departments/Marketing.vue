@@ -44,7 +44,9 @@
         <p>Le résultat prévisionnel total: <span class="text-green-600">{{totalPredictedFollowers}} abonnés</span> </p>
         <p>Le montant total de cette campagne s'élève à <span class="text-yellow-500">{{total_amount}} DA</span></p>
 		<div class="flex">
-		<button class="bg-green-400 hover:bg-green-800  text-white px-3 py-2 rounded w-1/2 mt-4 mr-2"  @click="createAd">Créer</button>
+		<button class=" text-white px-3 py-2 rounded w-1/2 mt-4 mr-2" 
+        :class="sent?'bg-gray-800':'bg-green-400 hover:bg-green-800 '"
+         @click="createAd" :disabled="sent">Créer</button>
 		<button class="bg-gray-200 active:bg-gray-600 hover:bg-gray-400 text-back px-3 py-2 rounded w-1/2 mt-4" @click="closeModal">Annuler</button>
 		</div>
 	</template>
@@ -140,7 +142,8 @@ export default {
             "fa-hashtag",
             "fa-tv",
             "fa-calendar-week"
-        ]
+        ],
+        sent:false,
         
     }
  },
@@ -207,6 +210,7 @@ export default {
             this.new_ad.total_amount = this.total_amount
             axios.post("/api/marketing/create",this.new_ad).then(resp=>{
             this.message = resp.data
+            this.sent= true
             setTimeout(function() {
                 this.modal=false
                 location.reload()
