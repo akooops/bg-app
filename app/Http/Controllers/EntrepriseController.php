@@ -403,12 +403,14 @@ class EntrepriseController extends Controller
             ];
             $caisse = $this->getIndicator("caisse",$entreprise_id)["value"];
             $dettes = $this->getIndicator("dettes",$entreprise_id)["value"];
+            $sf = $this->getIndicator("score_final",$entreprise_id)["value"];
             $profit = $caisse - $dettes;
             $data["profit"] = $profit;
+            $data["score"] = $sf;
             $rankings->push($data);
         }
         $sorted = $rankings->sortByDesc("profit")->values();
-        return $sorted;
+        return ["list" => $sorted,"meta"=>nova_get_setting("show_final_score","")];
 
 
     }

@@ -13,7 +13,7 @@
 		</div>
 		<div v-if = "show_decision_center == false">
 		<div v-if = "show_stat_cards" class = "flex flex-wrap w-full justify-between py-3">
-			<StatCard title = "Chiffre d'Affaire" color = "text-green-500"  icon = "fa-dollar" :value = "indicators['ca'].value"></StatCard>
+			<StatCard title = "Chiffre d'Affaire" color = "text-green-500"  icon = "fa-coins" :value = "indicators['ca'].value"></StatCard>
 			<StatCard title = "Machines" color = "text-gray-600" icon = "fa-cogs" :value = "indicators['machines'].value" 
 			:second-value = "indicators['busy_machines'].value +  ' occupées.'"
 

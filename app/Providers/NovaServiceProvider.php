@@ -29,12 +29,14 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
             Boolean::make('Simulation en cours ?','game_started'),
             DateTime::make('Date début de la simulation','start_date'),
             DateTime::make('Date courante de la simulation','current_date'),
+            Boolean::make('Afficher le score finale','show_final_score')
         ],[
             'start_date' => 'datetime',
             'current_date' => 'datetime',
             'salary_production' => 'float',
             'workshop_price' => 'float',
-            'mp_stock_price' => 'float'
+            'mp_stock_price' => 'float',
+            'show_final_score'=> 'boolean'
         ],"Général");
     }
 

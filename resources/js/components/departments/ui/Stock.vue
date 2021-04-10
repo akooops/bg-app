@@ -20,7 +20,7 @@
                             {{item.material}}
                         </td>
                         <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b font-extrabold block lg:table-cell relative lg:static">
-                            {{item.quantity}}  </td>
+                            {{item.quantity}} KG </td>
 
                         
                     </tr>

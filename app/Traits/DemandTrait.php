@@ -16,24 +16,24 @@ trait DemandTrait{
 		switch ($prod_id) {
     	case 1:
         	$demand = $prices->map(function($p){
-        		return round(7600 - 57.5*$p);
+        		return round(3000 - 20*$p);
         	});
         	break;
     	case 2:
         	$demand = $prices->map(function($p){
-        		return round(25000*exp(-1*$p/150));
+        		return round(10000*exp(-1*$p/150));
         	});
         	break;
     	case 3:
         	$demand = $prices->map(function($p){
         		
-        		return round(6800 - 8 * $p**2);
+        		return round(3000 - 1.75 * $p**2);
         	});
         	break;
         case 4:
         	$demand = $prices->map(function($p){
         	
-        		return round(7700-0.57*$p**1.75);
+        		return round(2000-0.12*$p**1.75);
         	});
         	break;
 		}
@@ -63,25 +63,25 @@ trait DemandTrait{
     	case 1:
     		$ss = $this->socialInfluence($entreprise_id,[1,1,1,1]);
         	$social_importance_coeff = 4; 
-        	$demand = 7600 - 57.5*$price;
+        	$demand = 3000 - 20*$price;
         	$demand = $demand + $ss*$demand/$social_importance_coeff;
     	case 2:
     		$ss = $this->socialInfluence($entreprise_id,[2,2,3,4]);
         	$social_importance_coeff = 1; 
-        	$demand = round(25000*exp(-1*$price/150));
+        	$demand = round(10000*exp(-1*$price/150));
         	$demand = $demand + $ss*$demand/$social_importance_coeff;
         	break;
     	case 3:
     		$ss = $this->socialInfluence($entreprise_id,[1,1,1,1]);
     		
         	$social_importance_coeff = 2; // Bigger is less important
-        	$demand = 6800 - 8 * $price**2;
+        	$demand = 3000 - 1.75 * $price**2;
         	$demand = $demand + $ss*$demand/$social_importance_coeff;
         	break;
         case 4:
         	$ss = $this->socialInfluence($entreprise_id,[1,1,1,1]);
         	$social_importance_coeff = 2; 
-        	$demand = 7700-0.57*$price**1.75;
+        	$demand = 2000-0.12*$price**1.75;
         	$demand = $demand + $ss*$demand/$social_importance_coeff;
         	break;
 		}

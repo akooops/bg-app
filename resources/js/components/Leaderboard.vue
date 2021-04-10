@@ -5,15 +5,18 @@
 			<vue-letter-avatar :name='listing[0].entreprise_name' size='40' :rounded='true' />
 			<p class = "font-extrabold my-2 text-white text-6xl">{{listing[0].entreprise_name}}</p>
 			<p class = "font-extrabold my-1 text-white text-4xl">Profit : {{listing[0].profit}} DA</p>
+			<p  v-if = "show_score"  class = "font-extrabold my-1 text-white text-4xl">Score Final {{listing[0].score}} Pts</p>
 		</div>
 		<div class = "flex flex-col mx-2 items-center justify-start w-1/2 h-screen ">
 		  <div class = "w-full h-12 px-3 flex flex-nowrap items-center justify-between  my-2 rounded-md mx-4 " >
 				<h2 class = "font-bold">Entreprise</h2>
 				<h2 class = "text-lg font-extrabold">Profit</h2>
+				<h2 v-if = "show_score" class = "text-lg font-extrabold">Score Final</h2>
 			</div>
 			<div class = "w-full h-20 px-3 flex flex-nowrap items-center justify-between bg-gray-200 my-2 rounded-md mx-4 hover:bg-green-500 hover:text-white " v-for = "item in listing">
 				<h2 class = "font-bold">{{item.entreprise_name}}</h2>
 				<h2 class = "text-lg  font-extrabold">{{item.profit}} DA</h2>
+				<h2 v-if = "show_score" class = "text-lg font-extrabold">{{item.score}} Pts</h2>
 			</div>
 		</div>
 	</div>
@@ -23,20 +26,33 @@
 
 	export default{
 		name: "LeaderBoard",
+		props: ["showFs"],
 		data(){
 			return {
-				listing: []
+				listing: [],
+				show_score: false
 			}
 		},
 		methods:{
 			getListing(){
 				axios.get("/api/ranking").then((resp)=>{
-					this.listing = resp.data
+					this.listing = resp.data.list
+					this.show_score = resp.data.meta
 				});
 			}
 		},
 		beforeMount(){
 			this.getListing()
+		},
+		mounted(){
+			/*
+			if(this.showFs == false){
+				this.show_score = false
+			}
+			else{
+				this.show_score = true
+			}
+			*/
 		}
 	}
 </script>

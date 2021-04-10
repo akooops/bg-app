@@ -65,6 +65,7 @@ class ProductionScheduler implements ShouldQueue
         $materials->map(function($mat) use ($entreprise_id){
             $mat_id = $mat->id;
             $quant_mat = $mat->pivot->quantity;
+            $quant_mat = round(($this->production["quantity"]/100) * $quant_mat);
             
             DB::table("raw_materials_stock")->where("entreprise_id","=",$entreprise_id)->where("raw_material_id","=",$mat_id)->decrement("quantity",$quant_mat);
         });
