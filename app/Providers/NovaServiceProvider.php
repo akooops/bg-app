@@ -9,6 +9,8 @@ use Laravel\Nova\NovaApplicationServiceProvider;
 use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\Number;
+use Manou\IndicatorUpdater\IndicatorUpdater;
+
 class NovaServiceProvider extends NovaApplicationServiceProvider
 {
     /**
@@ -94,7 +96,10 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
     public function tools()
     {
         return [
+            new IndicatorUpdater,
             new \OptimistDigital\NovaSettings\NovaSettings,
+            
+
         ];
     }
 

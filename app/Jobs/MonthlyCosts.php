@@ -35,8 +35,8 @@ class MonthlyCosts implements ShouldQueue
      */
     public function handle()
     {
-        $salary = nova_get_setting('salary_production');
-        $mp_stock_price = nova_get_setting('mp_stock_price');
+        $salary =(int) nova_get_setting('salary_production');
+        $mp_stock_price =(int) nova_get_setting('mp_stock_price');
         $entreprises = Entreprise::get(); 
         foreach ($entreprises as $entreprise) {
             $caisse = $this->getIndicator('caisse',$entreprise->id)['value'];
@@ -70,8 +70,8 @@ class MonthlyCosts implements ShouldQueue
                     "status" => "warning",
                     "entreprise_id" => $entreprise->id,
                     "data" => [],
-                    "message" => "Vos disponibilités ne suffisent pas pour payer les charge de ce mois, une nouvelle dette s'est ajoutée automatiquement" ,
-                    "title" => "Manque disponibilités"
+                    "message" => "Vos disponibilités ne suffisent pas pour payer les charges de ce mois, une nouvelle dette s'est ajoutée automatiquement" ,
+                    "title" => "Manque de disponibilités"
                 ];
                 event(new NewNotification($notification));
             }

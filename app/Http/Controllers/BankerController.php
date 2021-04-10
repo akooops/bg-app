@@ -49,7 +49,7 @@ class BankerController extends Controller
                 "loan_id" => $loan->loan_id,
                 "amount" => $loan->amount,
                 "status" => $this->parseLoanStatus($loan->status),
-                "debt_ratio" => $this->getIndicator('debt_ratio',$loan->entreprise_id)['value'],
+                "debt_ratio" => round($this->getIndicator('debt_ratio',$loan->entreprise_id)['value'],2),
                 "loan_creation" => $loan->creation_date,
             ];
         });
@@ -69,11 +69,11 @@ class BankerController extends Controller
             "status" => "pending",
             "loan_id" => $new_loan->id,
             "amount" => $request->amount,
-            "debt_ratio" => $this->getIndicator('debt_ratio',$request->entreprise_id)['value'],
+            "debt_ratio" => round($this->getIndicator('debt_ratio',$request->entreprise_id)['value'],2),
             "creation_date" => (int) $this->getSimulationTime(),
         ];
         event(new LoanCreated($data));
-        return response()->json("Votre demande a été envoyée avec succès, vous serez rediriger dans 4 secondes", 200);
+        return response()->json("Votre demande a été envoyée avec succès, vous serez rederiger dans 4 secondes", 200);
 
     }
     function updateLoan(Request $request){
@@ -93,7 +93,7 @@ class BankerController extends Controller
         //Calculating the newest debt ratio and loan_rate 
         $old_ratio = $this->getIndicator('debt_ratio',$loan->entreprise_id)['value'];
         $debt_ratio = round($this->getIndicator('dettes',$loan->entreprise_id)['value']/ $this->getIndicator('caisse',$loan->entreprise_id)['value'],2);
-        $this->updateIndicator('debt_ratio',$loan->entreprise_id,$debt_ratio-$old_ratio);
+        $this->updateIndicator('debt_ratio',$loan->entreprise_id,round($debt_ratio-$old_ratio,2));
         $notification = [
             "type" => "LoanStatusChanged",
             "entreprise_id" => $loan->entreprise_id,

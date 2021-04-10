@@ -49,8 +49,8 @@ class PenaltyLoan
                     "status" => "warning",
                     "entreprise_id" => $loan->entreprise_id,
                     "data" => [],
-                    "message" => "Le taux d'interet de votre dette a augmenté il est déromais ".$loan->ratio. " %" ,
-                    "title" => "Retard endettement"
+                    "message" => "Le taux d'intérêt de votre dette a augmenté, il est désormais ".$loan->ratio. " %" ,
+                    "title" => "Retard d'endettement"
                 ];
                 event(new NewNotification($notification));
             }

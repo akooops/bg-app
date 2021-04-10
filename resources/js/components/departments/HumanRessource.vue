@@ -148,11 +148,11 @@ methods:{
     
     launchWorkshop(){
         if(this.workshop_price*this.indicators['nb_workers']['value']>this.caisse){
-            this.error_message = 'Vos disponibilités ne vous permet pas de lancer la formation'
+            this.error_message = 'Vos disponibilités ne vous permettent pas de lancer la formation'
             return ''
         }
         if(this.indicators['productivit_coeff'].value+0.25>1){
-            this.error_message = "Vous allez perdre de l'argent car le coefficient de prodictivité a atteint son maximum"
+            this.error_message = "Vous allez perdre de l'argent car le coefficient de productivité a atteint son maximum"
             return ''
         }
         axios.post('/api/entreprise/hr/launch-workshop',{entreprise_id:this.entreprise.id}).then((resp)=>{
@@ -164,7 +164,7 @@ methods:{
     },
     primeWorkers(){
           if(this.prime*this.indicators['nb_workers']['value']>this.caisse){
-            this.error_message = 'Vos disponibilités ne vous permet pas de donner cette prime'
+            this.error_message = 'Vos disponibilités ne vous permettent pas de donner cette prime'
             return ''
         }
         axios.post('/api/entreprise/hr/prime-workers',{entreprise_id:this.entreprise.id,prime:this.prime,mood:this.expected_mood}).then((resp)=>{
@@ -184,7 +184,7 @@ methods:{
         })
         }
         else{
-            this.error_message="Le nombre d'employés à recruter doit etre superieur à 0 et inferieur à 5"
+            this.error_message="Le nombre d'employés à recruter doit être supérieur à 0 et inférieur à 5"
         }
         
     },
