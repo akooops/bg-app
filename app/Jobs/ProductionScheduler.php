@@ -75,7 +75,7 @@ class ProductionScheduler implements ShouldQueue
 
         $this->resetIndicator("busy_machines",$entreprise_id);
         
-        $message = "La production de ".$this->production["quantity"]." unités de ".$product->name." est terminé.";
+        $message = "La production de ".$this->production["quantity"]." unités de ".$product->name." est terminée.";
         $notification = [
             "type" => "ProductionDone",
             "entreprise_id" => $entreprise_id,

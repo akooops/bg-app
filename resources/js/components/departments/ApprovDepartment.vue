@@ -84,7 +84,7 @@ export default{
       show_details_modal: false
     }
   },
-  props:["materials","suppliers","user"],
+  props:["materials","suppliers","user","caisse"],
   computed:{
   },
   methods:{
@@ -127,6 +127,10 @@ export default{
             
     }
   });
+         window.Echo.channel("entreprise_"+this.user.id)
+    .listen('NavbarDataChanged', (e) => {
+        this.caisse = e.caisse
+    })
 }
 }
 </script>

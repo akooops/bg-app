@@ -47,7 +47,7 @@ class UpdateAdStatus implements ShouldQueue
             "entreprise_id" => $this->ad->entreprise_id,
             "data" =>  $this->ad,
             "message" => "Votre campagne publicitaire sur  "
-            . $this->parseAdType($this->ad->type) ." est terminée, veuillez consulter votre département Marketing",
+            . $this->parseAdType($this->ad->type) ." est terminée. Veuillez consulter votre département Marketing.",
             "title" => "Campagne publicitaire"
         ];
         $this->updateIndicator('nb_subscribers',$this->ad->entreprise_id,$this->result);

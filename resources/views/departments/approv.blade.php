@@ -20,6 +20,7 @@
                     :materials = "{{$materials}}"
                     :suppliers = "{{$suppliers}}" 
                     :user = "{{auth()->user()}}"
+                    :caisse="{{$caisse}}"
                     ></ApprovDepartment>
                 </div>
                 

@@ -147,7 +147,7 @@ import Modal from "../Modal"
 export default{
 	name: "ProdCenter",
 	components:{Modal},
-	props: ["products","indicators","user"],
+	props: ["products","indicators","user","caisse"],
 	data(){
 		return {
 			launch_prod_modal: false,
@@ -355,6 +355,10 @@ export default{
 	},
 	mounted(){
 		this.getStock()
+		 window.Echo.channel("entreprise_"+this.user.id)
+    .listen('NavbarDataChanged', (e) => {
+        this.caisse = e.caisse
+    })
 	}
 }
 </script>
