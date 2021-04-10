@@ -76,11 +76,11 @@
         <div class="flex">
             <StatCard class="mr-5 h-72" v-for="(key,id) in stat_indicators" v-bind:key="id" :title="indicators[key].name" color="text-green-500"  :icon="icons[id]" :value="indicators[key].value"></StatCard>
             <div class="h-72 w-72 shadow-md rounded-lg text-center mr-5">
-                <speedo-meter  :data="[{value:indicators['workers_mood'].value,name:''}]" class=" "></speedo-meter>
+                <speedo-meter  :data="[{value:indicators['workers_mood'].value,name:''}]" class=" h-64"></speedo-meter>
                 <p class="">Humeur des employés</p>
             </div>
-            <div class="h-72 w-72 shadow-md rounded-lg text-center">
-                <speedo-meter :data="[{value:indicators['productivity_coeff'].value,name:''}]" class=" "></speedo-meter>
+            <div class="h-72  w-72 shadow-md rounded-lg text-center">
+                <speedo-meter :data="[{value:indicators['productivity_coeff'].value,name:''}]"  class=" h-64"></speedo-meter>
                 <p class="">Productivité</p>
             </div>
         </div>
@@ -160,7 +160,7 @@ methods:{
             this.error_message = 'Vos disponibilités ne vous permettent pas de lancer la formation'
             return ''
         }
-        if(this.indicators['productivit_coeff'].value+0.25>1){
+        else if(this.indicators['productivity_coeff'].value+0.25>1){
             this.error_message = "Vous allez perdre de l'argent car le coefficient de productivité a atteint son maximum"
             return ''
         }

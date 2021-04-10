@@ -29,18 +29,21 @@ class EntrepriseController extends Controller
     function showDptApprov(Request $request){
     	$raw_materials = RawMaterial::all();
     	$suppliers = Supplier::all();
-    	return view("departments.approv",["materials"=>$raw_materials,"suppliers"=>$suppliers]); 
+        $caisse = $this->getIndicator('caisse',auth()->user()->id)['value'];
+    	return view("departments.approv",["materials"=>$raw_materials,"suppliers"=>$suppliers,"caisse"=>$caisse]); 
     }
         // Departments view routes
     function showDptProduction(Request $request){
         $products = Product::all();
         $products = $products->load('rawMaterials');
-        return view("departments.production",["products"=>$products]); 
+        $caisse = $this->getIndicator('caisse',auth()->user()->id)['value'];
+        return view("departments.production",["products"=>$products,"caisse"=>$caisse]); 
     }
     function showCommandMaker(Request $request){
         $raw_materials = RawMaterial::all();
         $suppliers = Supplier::all();
-        return view("departments.widgets.command_maker",["materials"=>$raw_materials,"suppliers"=>$suppliers]); 
+        $caisse = $this->getIndicator('caisse',auth()->user()->id)['value'];
+        return view("departments.widgets.command_maker",["materials"=>$raw_materials,"suppliers"=>$suppliers,"caisse"=>$caisse]); 
     }
     function showStock(Request $request){
         $products = Product::all()->toArray();
@@ -166,7 +169,7 @@ class EntrepriseController extends Controller
             });
             event(new CommandCreated($command,$supplier_id));
         });
-        return Response::json(["message"=>"Votre commande à été envoyée aux fournisseurs, vous serez redirigé vers le département d'approvisionnement dans 4 secondes"],200);
+        return Response::json(["message"=>"Votre commande à été envoyée aux fournisseurs, vous serez redirigé vers le département d'approvisionnement dans 4 secondes."],200);
     }
 
     public function getStock(Request $request){
@@ -275,7 +278,7 @@ class EntrepriseController extends Controller
         $this->updateIndicator($ca_key,$entreprise_id,$sales);
         $this->updateIndicator("ca",$entreprise_id,$sales);
         $this->updateIndicator("dist_cost",$entreprise_id,$dist_cost);
-        $message = "Vous avez vendu ".$sold_quantity." unités et vous avez généré un chiffre d'affaire de ".$sales. " UM";
+        $message = "Vous avez vendu ".$sold_quantity." unités et vous avez généré un chiffre d'affaires de ".$sales." DA";
         $notification = [
             "type" => "ProductionSold",
             "entreprise_id" => $entreprise_id,

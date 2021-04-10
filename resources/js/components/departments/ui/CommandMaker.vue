@@ -133,7 +133,7 @@ export default{
       filtered_materials: [],
     }
   },
-  props:["materials","suppliers","user"],
+  props:["materials","suppliers","user","caisse"],
   computed:{
     supplierDelay(){
       if(this.commandItem.supplier != ""){
@@ -186,8 +186,13 @@ export default{
       this.show_add_modal = false
     },
     sendCommand(){
-      
-      console.log(this.command)
+      //Change this
+      let total = 255
+      if(total>this.caisse){
+        this.show_error=true
+        this.message = 'Vos disponibilités ne suffisent pas pour financier cette commande'
+        return ''
+      }
       axios.post("/api/command/create",
       {
         command: this.commands,
@@ -211,7 +216,10 @@ export default{
 
   },
   mounted(){
-    console.log(this.user)
+         window.Echo.channel("entreprise_"+this.user.id)
+    .listen('NavbarDataChanged', (e) => {
+        this.caisse = e.caisse
+    })
 
   }
 }

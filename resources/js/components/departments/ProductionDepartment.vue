@@ -120,7 +120,7 @@
 
 		</div>
 	<div v-if = "page_index == 'decision_center'" >
-		<ProdCenter @prodLaunched = "updateProdData" :user = "user" :products = "products" :indicators="indicators"></ProdCenter>
+		<ProdCenter @prodLaunched = "updateProdData" :user = "user" :products = "products" :indicators="indicators" :caisse="caisse"></ProdCenter>
 	</div>
 	</div>
 
@@ -142,7 +142,7 @@ export default {
 		ProdCenter,
 		Modal
 	},
-	props: ["user"],
+	props: ["user","caisse"],
 	data(){
 		return {
 			products: [],
@@ -297,6 +297,11 @@ export default {
             this.$forceUpdate()  
         }
 
+
+    })
+    	    window.Echo.channel("entreprise_"+this.user.id)
+    .listen('NavbarDataChanged', (e) => {
+        this.caisse = e.caisse
     })
 	}
 

@@ -13,6 +13,7 @@
                     :materials = "{{$materials}}"
                     :suppliers = "{{$suppliers}}" 
                     :user = "{{auth()->user()}}"
+                    :caisse = "{{$caisse}}"
                     ></CommandMaker>
                 
             </div>

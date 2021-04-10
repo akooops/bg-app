@@ -24,7 +24,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
         \OptimistDigital\NovaSettings\NovaSettings::addSettingsFields([
             Number::make('Salaire des employés de production','salary_production'),
             Number::make('Prix de la formation','workshop_price'),
-            Number::make('Prix de la manutention des MP','mp_stock_price'),
+            Number::make('Prix de la manutention des MP','mp_stock_price')->step('0.1'),
             Boolean::make('Simulation en cours ?','game_started'),
             DateTime::make('Date début de la simulation','start_date'),
             DateTime::make('Date courante de la simulation','current_date'),
@@ -96,7 +96,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
     public function tools()
     {
         return [
-            new IndicatorUpdater,
+           // new IndicatorUpdater,
             new \OptimistDigital\NovaSettings\NovaSettings,
             
 

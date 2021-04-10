@@ -17,7 +17,7 @@
                 <div class = "w-full px-3">
                     <ProductionDepartment
                     :products = "{{$products}}"
-                    
+                    :caisse="{{$caisse}}"
                     :user = "{{auth()->user()}}"
                     ></ProductionDepartment>
                 </div>
