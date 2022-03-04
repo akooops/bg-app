@@ -31,14 +31,20 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
 
         $request->session()->regenerate();
-        
-        if(Auth::user()->type=='supplier'){
+
+        if(Auth::user()->type == 'supplier') {
             return redirect()->intended(RouteServiceProvider::SUPPLIER_HOME);
         }
-        if(Auth::user()->type == 'banker'){
+
+        if(Auth::user()->type == 'banker') {
             return redirect()->intended(RouteServiceProvider::BANKER_HOME);
         }
-        return redirect()->intended(RouteServiceProvider::HOME);
+
+        if(Auth::user()->type == 'entreprise') {
+            return redirect()->intended(RouteServiceProvider::ENTREPRISE_HOME);
+        }
+
+        return redirect()->intended(RouteServiceProvider::ADMIN_HOME);
     }
 
     /**

@@ -2,9 +2,11 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
 use App\Models\Indicator;
 use App\Observers\IndicatorObserver;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\ServiceProvider;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -25,5 +27,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Indicator::observe(IndicatorObserver::class);
+
+        Schema::defaultStringLength(191);
     }
 }

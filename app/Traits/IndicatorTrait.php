@@ -13,10 +13,12 @@ use App\Events\NavbarDataChanged;
 
 trait IndicatorTrait{
     use HelperTrait;
-	public function updateIndicator($indicator_code,$entreprise_id,$value){
+
+	public function updateIndicator($indicator_code, $entreprise_id, $value) {
         $indicator = DB::table("indicators")->where("code","=",$indicator_code)->first();
-        $entrep_indicator = DB::table("entreprise_indicator")->where("entreprise_id","=",$entreprise_id)->where("indicator_id","=",$indicator->id);
-        if(count($entrep_indicator->get()->toArray()) == 0){
+        $entrep_indicator = DB::table("entreprise_indicator")->where("entreprise_id", "=", $entreprise_id)->where("indicator_id","=",$indicator->id);
+
+        if(count($entrep_indicator->get()->toArray()) == 0) {
             // Create indicator
             DB::table("entreprise_indicator")->insert([
                 "indicator_id" =>  $indicator->id,
@@ -25,11 +27,13 @@ trait IndicatorTrait{
                 "phase" => 0
             ]);
         }
-        else{
+
+        else {
             $entrep_indicator->increment("value",$value);
-            
+
         }
-        if($indicator_code=='dettes' || $indicator_code=='caisse'){
+
+        if($indicator_code=='dettes' || $indicator_code=='caisse') {
             $data = [
                 "entreprise_id" => $entreprise_id,
                 "dettes" => $this->getIndicator("dettes",$entreprise_id)['value'],
@@ -38,12 +42,10 @@ trait IndicatorTrait{
             event(new NavbarDataChanged($data));
         }
     }
-    public function resetIndicator($indicator_code,$entreprise_id){
+    public function resetIndicator($indicator_code,$entreprise_id) {
         $indicator = DB::table("indicators")->where("code","=",$indicator_code)->first();
         $entrep_indicator = DB::table("entreprise_indicator")->where("entreprise_id","=",$entreprise_id)->where("indicator_id","=",$indicator->id);
         $entrep_indicator->update(["value" => $indicator->starting_value]);
-            
-        
     }
 
     public function getFinanceIndicators(Request $request){
@@ -54,39 +56,41 @@ trait IndicatorTrait{
         $costs = [];
         $ca = [];
         $other = [];
+
         foreach ($cost_keys as $ind) {
             $ind = $this->getIndicator($ind,$request->entreprise_id);
             $value = $ind["value"];
             $name = $ind["name"];
             array_push($costs,["name"=>$name,"value"=>$value]);
         }
+
         foreach ($ca_keys as $ind) {
             $ind = $this->getIndicator($ind,$request->entreprise_id);
             $value = $ind["value"];
             $name = $ind["name"];
             array_push($ca,["name"=>$name,"value"=>$value]);
         }
+
         foreach ($other_keys as $ind) {
             $ind = $this->getIndicator($ind,$request->entreprise_id);
             $value = $ind["value"];
             $name = $ind["name"];
             array_push($other,["name"=>$name,"value"=>$value]);
         }
+
         $resp = [
             "costs" => $costs,
             "ca" => $ca,
             "other" => $other
         ];
+
         return $resp;
-
-
-
     }
 
     public function getIndicator($indicator_code,$entreprise_id){
         $indicator = DB::table("indicators")->where("code","=",$indicator_code)->first();
         $entrep_indicator = DB::table("entreprise_indicator")->where("entreprise_id","=",$entreprise_id)->where("indicator_id","=",$indicator->id)->first();
-        
+
         $resp = [
             "name" => $indicator->name,
             "value" => $entrep_indicator->value,
@@ -97,7 +101,7 @@ trait IndicatorTrait{
 
     // Specific functions
 
-   
+
 
     public function getMarketShare(Request $request){
         $entreprise_id = $request->entreprise_id;
@@ -133,9 +137,9 @@ trait IndicatorTrait{
         }
         foreach ($entreprises as $entrep) {
             $value = $this->getIndicator($key,$entrep->id)["value"];
-           
+
             $prod_share = round($value/$total,3);
-            $prod_share = ["name" => $entrep->name, "value" => $prod_share]; 
+            $prod_share = ["name" => $entrep->name, "value" => $prod_share];
             array_push($data,$prod_share);
         }
         return $data;
@@ -143,6 +147,6 @@ trait IndicatorTrait{
 
     public function getDailySalesProfit(Request $request){
 
-    }	
+    }
 
 }

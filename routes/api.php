@@ -28,66 +28,66 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 //Route::post("/commands/create",[EntrepriseController::class,"createCommand"]);
 
-Route::prefix("entreprise")->group(function(){
-	Route::get("/commands",[EntrepriseController::class,"getEntrepriseCommands"]);
-	Route::get("/stock",[EntrepriseController::class,"getStock"]);
-	Route::get("/production/indicators",[EntrepriseController::class,"getProdIndicators"]);
-    Route::post("/machine/buy",[EntrepriseController::class,"buyMachine"]);
-    Route::post("/machine/sell",[EntrepriseController::class,"sellMachine"]);
-    Route::post("/production/apply-action",[EntrepriseController::class,"applyProdAction"]); 
-    Route::get("/marketing/indicators",[MarketingController::class,"getMarketingIndicators"]);
-    Route::get("/hr/indicators",[HrController::class,"getHrIndicators"]);
-    Route::post("/hr/hire",[HrController::class,"hireWorkers"]);
-    Route::post("/hr/launch-workshop",[HrController::class,"launchWorkshop"]);
-    Route::post("/hr/prime-workers",[HrController::class,"primeWorkers"]);
-   
-    
+Route::prefix("entreprise")->group(function () {
+	Route::get("/commands", [EntrepriseController::class, "getEntrepriseCommands"]);
+	Route::get("/stock", [EntrepriseController::class, "getStock"]);
+	Route::get("/production/indicators", [EntrepriseController::class, "getProdIndicators"]);
+    Route::post("/machine/buy", [EntrepriseController::class, "buyMachine"]);
+    Route::post("/machine/sell", [EntrepriseController::class, "sellMachine"]);
+    Route::post("/production/apply-action", [EntrepriseController::class, "applyProdAction"]);
+    Route::get("/marketing/indicators", [MarketingController::class, "getMarketingIndicators"]);
+    Route::get("/hr/indicators", [HrController::class, "getHrIndicators"]);
+    Route::post("/hr/hire", [HrController::class, "hireWorkers"]);
+    Route::post("/hr/launch-workshop", [HrController::class, "launchWorkshop"]);
+    Route::post("/hr/prime-workers", [HrController::class, "primeWorkers"]);
+
+
 });
 
-Route::prefix("demand")->group(function(){
-	Route::get("/prev",[EntrepriseController::class,"getProductDemandPrev"]);
-    Route::get("/real",[EntrepriseController::class,"getProductDemandReal"]);
+Route::prefix("demand")->group(function() {
+	Route::get("/prev",[EntrepriseController::class, "getProductDemandPrev"]);
+    Route::get("/real",[EntrepriseController::class, "getProductDemandReal"]);
 });
 
-Route::prefix("command")->group(function(){
-    Route::post('/create', [EntrepriseController::class,"createCommand"]);
-    Route::get('/get/all', [SupplierController::class,"getAllCommands"]);
-    Route::get('/get', [SupplierController::class,"getCommand"]);
-    Route::post('/validate', [SupplierController::class,"validateCommand"]);
+Route::prefix("command")->group(function() {
+    Route::post('/create', [EntrepriseController::class, "createCommand"]);
+    Route::get('/get/all', [SupplierController::class, "getAllCommands"]);
+    Route::get('/get', [SupplierController::class, "getCommand"]);
+    Route::post('/validate', [SupplierController::class, "validateCommand"]);
 });
 
-Route::prefix("production")->group(function(){
-    Route::post('/launch', [EntrepriseController::class,"launchProduction"]);
-    Route::get('/all', [EntrepriseController::class,"getAllProductions"]);
-    Route::post("/sell",[EntrepriseController::class,"sellProd"]);
-    Route::get("/avg-price",[EntrepriseController::class,"getAvgPrice"]);
+Route::prefix("production")->group(function() {
+    Route::post('/launch', [EntrepriseController::class, "launchProduction"]);
+    Route::get('/all', [EntrepriseController::class, "getAllProductions"]);
+    Route::post("/sell", [EntrepriseController::class, "sellProd"]);
+    Route::get("/avg-price", [EntrepriseController::class, "getAvgPrice"]);
 });
 
 
-Route::prefix("loan")->group(function(){
-    Route::post('/create', [BankerController::class,"createLoan"]);
-    Route::get('/get', [BankerController::class,"getLoan"]);
-    Route::post('/pay', [BankerController::class,"payLoan"]);
-    Route::post('/update', [BankerController::class,"updateLoan"]);
+Route::prefix("loan")->group(function() {
+    Route::post('/create', [BankerController::class, "createLoan"]);
+    Route::get('/get', [BankerController::class, "getLoan"]);
+    Route::post('/pay', [BankerController::class, "payLoan"]);
+    Route::post('/update', [BankerController::class, "updateLoan"]);
 });
 Route::prefix("marketing")->group(function(){
-    Route::post('/create', [MarketingController::class,"createAd"]);
-    Route::get('/get', [MarketingController::class,"getAd"]);
+    Route::post('/create', [MarketingController::class, "createAd"]);
+    Route::get('/get', [MarketingController::class, "getAd"]);
 });
 
 
 Route::prefix("indicator")->group(function(){
-    Route::get('/market-share-prod', [EntrepriseController::class,"getProductMarketShare"]);
-    Route::get('/market-share', [EntrepriseController::class,"getMarketShare"]);
-     Route::get('/finance', [EntrepriseController::class,"getFinanceIndicators"]);
+    Route::get('/market-share-prod', [EntrepriseController::class, "getProductMarketShare"]);
+    Route::get('/market-share', [EntrepriseController::class, "getMarketShare"]);
+     Route::get('/finance', [EntrepriseController::class, "getFinanceIndicators"]);
 });
 
-Route::get('/navbar', [EntrepriseController::class,"getNavbarData"]);
+Route::get('/navbar', [EntrepriseController::class, "getNavbarData"]);
 
 
 
 
-Route::get('/time', [EntrepriseController::class,"getSimulationTime"]);
-Route::get('/products', [EntrepriseController::class,"getProducts"]);
-Route::get('/ranking', [EntrepriseController::class,"getRanking"]);
-Route::get("/test",[EntrepriseController::class,"testFunc"]);
+Route::get('/time', [EntrepriseController::class, "getSimulationTime"]);
+Route::get('/products', [EntrepriseController::class, "getProducts"]);
+Route::get('/ranking', [EntrepriseController::class, "getRanking"]);
+Route::get("/test", [EntrepriseController::class, "testFunc"]);

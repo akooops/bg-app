@@ -26,6 +26,7 @@ class User extends Authenticatable
         'entreprise' => Entreprise::class,
         'banker' => Banker::class,
         'supplier' => Supplier::class,
+        'admin' => Admin::class
     ];
 
     /**

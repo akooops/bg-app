@@ -13,7 +13,8 @@ use App\Traits\HelperTrait;
 class MarketingController extends Controller
 {
     use IndicatorTrait, HelperTrait;
-    public function getAd(Request $request){
+
+    public function getAd(Request $request) {
         $ads = DB::table('ads')
         ->select("*",'ads.id as ad_id','ads.type as ad_type')
         ->join('users','users.id','=','ads.entreprise_id')
@@ -31,6 +32,7 @@ class MarketingController extends Controller
         });
         return $ads;
     }
+
     public function createAd(Request $request){
         //Validating Data depending on the ad type
         $request->validate([
@@ -38,14 +40,16 @@ class MarketingController extends Controller
             'total_amount' => 'required',
             'days' => 'required',
         ]);
-        //Must check if 
+
+        //Must check if
         /*
         $entrep=Entreprise::find($request->entrepris_id);
         if($request->amount>=$entrep->){
             return response()->json("Vos disponbilités ne suffisent pas a financier votre campagne publicitaire !", 404);
         }
         */
-        // Saving the expected result 
+
+        // Saving the expected result
         $new_ad = Ad::create([
             "entreprise_id" => $request->entreprise_id,
             "type" => $request->type,
@@ -55,16 +59,20 @@ class MarketingController extends Controller
             "creation_date" => (int) $this->getSimulationTime(),
             "status" => "pending"
         ]);
-        //Calculating the real result 
-        $result = random_int(0.85*$request->result,1.15*$request->result);
+
+        //Calculating the real result
+        $result = random_int(0.85*$request->result, 1.15*$request->result);
+
         // Calculating the {type} presence
-        $nb_subscribers = $this->getIndicator('nb_subscribers',$request->entreprise_id)["value"];
-        $presence = round($result/$nb_subscribers,0);
-        $this->updateIndicator('caisse',$request->entreprise_id,-$request->total_amount);
+        $nb_subscribers = $this->getIndicator('nb_subscribers', $request->entreprise_id)["value"];
+        $presence = round($result/$nb_subscribers, 0);
+        $this->updateIndicator('caisse', $request->entreprise_id, -$request->total_amount);
+
         // Process it with delayed queue to send a notif when it's done
         UpdateAdStatus::dispatch($new_ad,$result,$presence)->delay(now()->addMinutes($request->days));
         return response()->json("Votre campagne publicitaire a commencé ! cette page va se recharger automatiquement dans 4 secondes", 200);
     }
+
     public function getMarketingIndicators(Request $request){
         // Return production useful indicators
         $keys = ["nb_subscribers","social_presence","media_presence","events_presence"];

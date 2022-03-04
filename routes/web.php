@@ -1,9 +1,10 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\EntrepriseController;
 use App\Models\Command;
 use App\Models\Entreprise;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\EntrepriseController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,7 +18,7 @@ use App\Models\Entreprise;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect("/login");
 });
 
 
@@ -25,8 +26,8 @@ Route::get('/', function () {
 
 
 Route::prefix("entreprise")->middleware(["auth","entreprise"])->group(function(){
-	
-	Route::get('/dashboard',[EntrepriseController::class,"showDashboard"])->name("dashboard");
+
+	Route::get('/dashboard', [EntrepriseController::class,"showDashboard"])->name("dashboard");
 
 	Route::get('/department/Approvisionnement',[EntrepriseController::class,"showDptApprov"])->name("approv");
 	Route::get('/department/Production',[EntrepriseController::class,"showDptProduction"])->name("production");
@@ -43,7 +44,7 @@ Route::prefix("entreprise")->middleware(["auth","entreprise"])->group(function()
 });
 
 Route::prefix("supplier")->middleware(["auth","supplier"])->group(function(){
-	
+
 	Route::get('/dashboard', function () {
     	return view('supplier.dashboard');
 	})->name('supplier_dashboard');
@@ -57,7 +58,7 @@ Route::get('/logout',function(){
 	Auth::logout();
 	return redirect("/login");
   });
-  
+
 Route::get('/banker/dashboard', function () {
     return view('banker.dashboard');
 })->middleware(['auth','banker'])->name('banker_dashboard');

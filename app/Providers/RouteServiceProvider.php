@@ -17,9 +17,10 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    public const HOME = '/entreprise/dashboard';
+    public const ENTREPRISE_HOME = '/entreprise/dashboard';
     public const BANKER_HOME = '/banker/dashboard';
     public const SUPPLIER_HOME = '/supplier/dashboard';
+    public const ADMIN_HOME = '/kairos-jerem';
     /**
      * The controller namespace for the application.
      *

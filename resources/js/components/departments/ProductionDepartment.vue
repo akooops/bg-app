@@ -8,13 +8,13 @@
     		<button @click = "page_index = 'production_list'" :class = "page_index == 'production_list'? 'border-b-2 border-indigo-600 text-indigo-600 font-semibold':'text-gray-700 hover:text-black'" class="inline-block px-4 py-2 focus:outline-none text-lg" href="#">Productions</button>
 
     		<button @click = "page_index = 'decision_center'" :class = "page_index == 'decision_center'? 'border-b-2 border-indigo-600 text-indigo-600 font-semibold':'text-gray-700 hover:text-black'" class="inline-block px-4 py-2 focus:outline-none text-lg" href="#">Centre de décision</button>
-    		
+
   		</nav>
 		</div>
 		<div v-if = "show_decision_center == false">
 		<div v-if = "show_stat_cards" class = "flex flex-wrap w-full justify-between py-3">
 			<StatCard title = "Chiffre d'Affaire" color = "text-green-500"  icon = "fa-coins" :value = "indicators['ca'].value"></StatCard>
-			<StatCard title = "Machines" color = "text-gray-600" icon = "fa-cogs" :value = "indicators['machines'].value" 
+			<StatCard title = "Machines" color = "text-gray-600" icon = "fa-cogs" :value = "indicators['machines'].value"
 			:second-value = "indicators['busy_machines'].value +  ' occupées.'"
 
 			></StatCard>
@@ -22,28 +22,29 @@
 		</div>
 		<div v-if = "page_index == 'prod_stats'">
 		<h1  class = "text-lg font-extrabold "> Analyse de la Demande</h1>
+
 		<div v-if = "show_market_demand" class = "flex flex-wrap bg-white justify-center items-center my-3">
-		<div v-for = "(prod,i) in prod_data" class = "w-1/2 rounded  mt-2">
-			<h2 class = "font-extrabold text-lg px-2">Demande Prévisionelle - {{products[i].name}} :  </h2>
-			<h3 class = "px-3 font-bold">{{products[i].left_demand}} demandes restante (mensuelle). </h3>
-			<button @click = "showProductDescription(i)" class = "bg-green-400 mx-2 my-1 text-white px-3 py-1 rounded">Afficher la Déscription</button> 
-			<LineGraph
-			:x-data = "prod.prices"
-			:y-data = "prod.demand"
-			></LineGraph>
-		</div>
+			<div v-for = "(prod,i) in prod_data" class = "w-1/2 rounded  mt-2">
+				<h2 class = "font-extrabold text-lg px-2">Demande Prévisionelle - {{products[i].name}} :  </h2>
+				<h3 class = "px-3 font-bold">{{products[i].left_demand}} demandes restante (mensuelle). </h3>
+				<button @click = "showProductDescription(i)" class = "bg-green-400 mx-2 my-1 text-white px-3 py-1 rounded">Afficher la Déscription</button>
+				<LineGraph
+				:x-data = "prod.prices"
+				:y-data = "prod.demand"
+				></LineGraph>
+			</div>
 		   <Modal v-if = "show_product_info">
             	<template v-slot:content>
             		<div class = "w-full">
 						<h1 class = "text-lg font-bold">Détails - {{product_info.name}}</h1>
 						<p>{{product_info.description}}</p>
 						<p class = "font-bold "> Pour produire un lot de 100 unités de ce produit vous avez besoin de : </p>
-						<p>- Machines x <span class = "text-blue-700 font-bold">{{product_info.machine_units}}</span> et 
+						<p>- Machines x <span class = "text-blue-700 font-bold">{{product_info.machine_units}}</span> et
 					 Employés x <span class = "text-blue-700 font-bold">{{product_info.labor_units}}</span></p>
 					 <p v-for = "material in product_info.raw_materials">- {{material.name}} x <span class = "text-blue-700 font-bold"> {{material.pivot.quantity}} </span> KG</p>
 					 <p><span class = "font-bold">Prix Moyen </span> : {{product_info["avg_price"]}} DA (Moyenne basée sur les 10 dernières productions lancées dans le jeu.) </p>
 						<button class = "bg-gray-300 px-3 py-1 rounded my-1" @click = "show_product_info =false">Fermer</button>
-					</div>            		
+					</div>
             	</template>
             </Modal>
 		</div>
@@ -77,13 +78,13 @@
                             {{prod.product}}
                         </td>
                         <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
-                            {{prod.quantity}}                       
+                            {{prod.quantity}}
                         </td>
                         <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
-                            {{prod.sold}}                       
+                            {{prod.sold}}
                         </td>
                         <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
-                            {{prod.quantity - prod.sold}}                       
+                            {{prod.quantity - prod.sold}}
                         </td>
                         <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
                             {{prod.price}}
@@ -190,9 +191,9 @@ export default {
 			});
 		},
 		async getMarketDemands(){
-			
+
 			for (var i = 1; i < 5; i++) {
-				let resp = await axios.get("/api/demand/prev",{params:{
+				let resp = await axios.get("/api/demand/prev", {params: {
 					product_id: i
 				}})
 				this.prod_data.push(resp.data)
@@ -210,12 +211,12 @@ export default {
 			})
 		},
 		getAvgPrice(product){
-			
+
 				axios.get("/api/production/avg-price",{params: {product_id:product.id}}).then(resp=>{
 					this.product_info["avg_price"] = resp.data
 					this.show_product_info = true
 				});
-			
+
 		},
 		sell(prod){
 			console.log(prod)
@@ -251,7 +252,7 @@ export default {
 		getProducts(){
 			axios.get("/api/products").then(resp=>{
 				this.products = resp.data
-				
+
 			})
 		},
 
@@ -265,6 +266,7 @@ export default {
 		this.getProducts()
 	},
 	mounted(){
+        console.log('Test')
 		this.updateProdData()
 		this.getMarketDemands()
 		this.getProducts()
@@ -274,27 +276,27 @@ export default {
         	this.updateProdData()
         	this.getProducts()
             this.$forceUpdate()
-            
+
         }
         if(e.notification.type=='ProductionDone'){
         	this.updateProdData()
-            this.$forceUpdate()  
+            this.$forceUpdate()
         }
         if(e.notification.type=='ProductionLaunched'){
         	this.updateProdData()
-            this.$forceUpdate()  
+            this.$forceUpdate()
         }
         if(e.notification.type=='MachineBought'){
         	this.getProdNumbers()
-            this.$forceUpdate()  
+            this.$forceUpdate()
         }
         if(e.notification.type=='MachineSold'){
         	this.getProdNumbers()
-            this.$forceUpdate()  
+            this.$forceUpdate()
         }
         if(e.notification.type=='Information'){
         	this.getProdNumbers()
-            this.$forceUpdate()  
+            this.$forceUpdate()
         }
 
 

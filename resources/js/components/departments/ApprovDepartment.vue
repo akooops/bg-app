@@ -17,7 +17,7 @@
     </div>
     <p class = "text-lg" v-if = "commands.length == 0">Vous n'avez pas de commandes encore, veuillez créer une commande.</p>
     <div v-else class="w-full bg-white shadow-md rounded my-2">
-      
+
       <table   class="min-w-max w-full table-auto">
         <thead>
           <tr>
@@ -42,7 +42,7 @@
              Jour N° {{cmd.created}}
             </td>
             <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
-              <span :class = "cmd.status == 'confirmed' ? 'text-green-500':'text-yellow-500'">{{getStatus(cmd.status)}}</span> 
+              <span :class = "cmd.status == 'confirmed' ? 'text-green-500':'text-yellow-500'">{{getStatus(cmd.status)}}</span>
             </td>
             <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
               <button  @click = "showDetails(cmd)" class="bg-green-400 hover:bg-green-800  text-white py-2 px-4 rounded"  >Détails</button>
@@ -57,13 +57,13 @@
 
           <p
           v-for = "item in current_command.details"
-          >- {{item.quantity}} {{item.unit}} de {{item.material}} chez <b>{{item.supplier}}</b> -  <span :class = "item.status == 'confirmed' ? 'text-green-500':'text-yellow-500'">{{getStatus(item.status)}}</span>  
+          >- {{item.quantity}} {{item.unit}} de {{item.material}} chez <b>{{item.supplier}}</b> -  <span :class = "item.status == 'confirmed' ? 'text-green-500':'text-yellow-500'">{{getStatus(item.status)}}</span>
           </p>
 
         <button class="bg-gray-200 active:bg-gray-600 hover:bg-gray-400 text-back px-3 py-2 rounded w-1/2 mt-4" @click="show_details_modal = false">Fermer</button>
-      
+
     </template>
-  </Modal>    
+  </Modal>
 </div>
 </template>
 
@@ -118,12 +118,12 @@ export default{
     if(e.notification.type=='CommandAccepted'){
           this.getCommands()
           this.$forceUpdate()
-            
+
     }
     if(e.notification.type=='CommandDelivered'){
           this.getCommands()
           this.$forceUpdate()
-            
+
     }
   })
     .listen('NavbarDataChanged', (e) => {

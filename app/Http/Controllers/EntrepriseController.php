@@ -21,49 +21,59 @@ use Carbon\Carbon;
 class EntrepriseController extends Controller
 {
     use HelperTrait, DemandTrait, IndicatorTrait;
-    function showDashboard(){
+    
+    function showDashboard() {
     	$departments = Department::all();
-    	return view("dashboard",["departments"=>$departments]);
+    	return view("dashboard", ["departments"=>$departments]);
     }
+
     // Departments view routes
-    function showDptApprov(Request $request){
+    function showDptApprov(Request $request) {
     	$raw_materials = RawMaterial::all();
     	$suppliers = Supplier::all();
-        $caisse = $this->getIndicator('caisse',auth()->user()->id)['value'];
-    	return view("departments.approv",["materials"=>$raw_materials,"suppliers"=>$suppliers,"caisse"=>$caisse]); 
+        $caisse = $this->getIndicator('caisse', auth()->user()->id)['value'];
+    	return view("departments.approv", ["materials" => $raw_materials, "suppliers" => $suppliers,
+                    "caisse" => $caisse]);
     }
-        // Departments view routes
-    function showDptProduction(Request $request){
+
+    // Departments view routes
+    function showDptProduction(Request $request) {
         $products = Product::all();
         $products = $products->load('rawMaterials');
-        $caisse = $this->getIndicator('caisse',auth()->user()->id)['value'];
-        return view("departments.production",["products"=>$products,"caisse"=>$caisse]); 
+        $caisse = $this->getIndicator('caisse', auth()->user()->id)['value'];
+        return view("departments.production",["products"=>$products,"caisse"=>$caisse]);
     }
+
     function showCommandMaker(Request $request){
         $raw_materials = RawMaterial::all();
         $suppliers = Supplier::all();
-        $caisse = $this->getIndicator('caisse',auth()->user()->id)['value'];
-        return view("departments.widgets.command_maker",["materials"=>$raw_materials,"suppliers"=>$suppliers,"caisse"=>$caisse]); 
+        $caisse = $this->getIndicator('caisse', auth()->user()->id)['value'];
+        return view("departments.widgets.command_maker", ["materials" => $raw_materials,
+                    "suppliers" => $suppliers, "caisse" => $caisse]);
     }
-    function showStock(Request $request){
+
+    function showStock(Request $request) {
         $products = Product::all()->toArray();
-        return view("departments.widgets.stock"); 
+        return view("departments.widgets.stock");
     }
+
     function showMarketing(Request $request){
         $products = Product::all();
         $caisse = $this->getIndicator('caisse',auth()->user()->id)["value"];
         $ad_coef = 0.8;
         return view("departments.marketing",["products"=>$products,
-        "ad_coef"=>$ad_coef, "caisse"=>$caisse]); 
+        "ad_coef"=>$ad_coef, "caisse"=>$caisse]);
     }
+
     function showLoans(Request $request){
         $caisse = $this->getIndicator('caisse',auth()->user()->id)["value"];
         return view('loans',["caisse"=>$caisse]);
     }
+
     function showFinance(Request $request){
         $products = Product::all();
         $entreprises = Entreprise::all();
-        return view("departments.finance",["products"=>$products,"entreprises"=>$entreprises]); 
+        return view("departments.finance",["products"=>$products,"entreprises"=>$entreprises]);
     }
 
     function getProducts(Request $request){
@@ -74,9 +84,8 @@ class EntrepriseController extends Controller
     function showHr(Request $request){
         $caisse = $this->getIndicator('caisse',auth()->user()->id)["value"];
         return view("departments.hr",["workshop_price"=>nova_get_setting('workshop_price',''),
-        "salary"=>nova_get_setting("salary_production",''), "caisse"=> $caisse]); 
+        "salary"=>nova_get_setting("salary_production",''), "caisse"=> $caisse]);
     }
-
 
     function getEntrepriseCommands(Request $request){
         $entreprise_id = $request->entreprise_id;
@@ -97,7 +106,7 @@ class EntrepriseController extends Controller
                 $quantity = $item["quantity"];
                 $price = $item["price"];
                 $phrase = $item["quantity"] . " unités " . " de ". $material->name ." Chez " . $supplier->name . ", Prix: ". $price . " DA / Status : ". $this->parseCommandStatus($item["status"]);
-                 
+
                 return ["material" => $material->name,"unit" => $material->unit, "supplier" => $supplier->name, "quantity" =>$quantity, "price" => $price, "status" => $item["status"] , "phrase" => $phrase];
             });
             return $data;
@@ -105,8 +114,6 @@ class EntrepriseController extends Controller
         $sorted_commands = $commands_data->sortByDesc("created");
         return $sorted_commands->toArray();
     }
-
-
 
     function getCommandStatus($cmd){
         // check if all items in a command are pending or accepted
@@ -133,7 +140,7 @@ class EntrepriseController extends Controller
         //dd($request->command);
         $command_items = [];
         for ($i=0; $i < count($request["command"]); $i++) {
-            
+
             $cmd =  $request["command"][$i];
             //dd($cmd);
             $supplier_id = Supplier::where("name",$cmd["supplier"])->first()->id;
@@ -161,7 +168,7 @@ class EntrepriseController extends Controller
             //dd($supp_cmd[0]);
             $supplier_id = $supp_cmd[0]["supplier_id"];
             $command = [
-            "id" => $cmd_id, 
+            "id" => $cmd_id,
             "name" => Entreprise::find($entreprise_id)->name,
             "status" => "pending",
             "num_items" => count($supp_cmd),
@@ -230,7 +237,7 @@ class EntrepriseController extends Controller
             "status"=> "pending"
         ];
         $prod_id = DB::table("productions")->insertGetId($production_data);
-        $this->updateIndicator("busy_machines",$entreprise_id,$machines); 
+        $this->updateIndicator("busy_machines",$entreprise_id,$machines);
         $prod_factors = [
             "machines" => $machines,
             "labor" => $labor
@@ -249,7 +256,7 @@ class EntrepriseController extends Controller
             return [
             "id" => $p->id,
             "product" => $product->name,
-            "price" => $p->price, 
+            "price" => $p->price,
             "quantity" => $p->quantity,
             "status" => $this->parseProductionStatus($p->status),
             "status_code" => $p->status,
@@ -272,7 +279,7 @@ class EntrepriseController extends Controller
         DB::table("stock")->where("entreprise_id","=",$entreprise_id)->where("product_id","=",$product_id)->decrement("quantity",$sold_quantity);
         DB::table("productions")->where("id","=",$production_id)->increment("sold",$sold_quantity);
          DB::table("products")->where("id","=",$product_id)->decrement("left_demand",$sold_quantity);
-        // Update indicators: 
+        // Update indicators:
         // Increase caisse
         $sales = $sold_quantity * $price ;
         $ca_key = "ca_".$product_id;
@@ -346,7 +353,7 @@ class EntrepriseController extends Controller
                     $this->updateIndicator("caisse",$entreprise_id,-1*$price);
                     $this->updateIndicator("productivity_coeff",$entreprise_id,0.5);
                     $message = "Votre taux de productivité a augmenté !, vous pouvez produire plus rapidement.";
-                }    
+                }
             break;
             case 'audit':
                 $reject_rate = $this->getIndicator("reject_rate",$entreprise_id)["value"];
