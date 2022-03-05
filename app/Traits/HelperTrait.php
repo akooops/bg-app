@@ -28,7 +28,7 @@ trait HelperTrait{
 		if($status == "done"){
 			return "Terminé";
 		}
-		
+
 		return "En cours";
 	}
 	public function parseAdType($type){
@@ -49,18 +49,13 @@ trait HelperTrait{
 		}
 		return "Rejettée";
 	}
-	public function parseDateToSimulationDate($date){
-		return $date->diffInDays(nova_get_setting("start_date"));
-	}
-	public function parseSimulationDateToDate($date){
-		return nova_get_setting("start_date")->addDays($date);
-	}
+
 	public function getSimulationTime(){
-		return $this->parseDateToSimulationDate(nova_get_setting('current_date'));
+		return nova_get_setting('current_date');
 	}
 	public function in_array_all($value, $array)
     {
         return (reset($array) == $value && count(array_unique($array)) == 1);
-    }	
+    }
 
 }

@@ -27,12 +27,10 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
             Number::make('Prix de la formation','workshop_price'),
             Number::make('Prix de la manutention des MP','mp_stock_price')->step('0.1'),
             Boolean::make('Simulation en cours ?','game_started'),
-            DateTime::make('Date début de la simulation','start_date'),
-            DateTime::make('Date courante de la simulation','current_date'),
+            Number::make('Jour début de la simulation','start_date'),
+            Number::make('Jour courant de la simulation','current_date'),
             Boolean::make('Afficher le score finale','show_final_score')
         ],[
-            'start_date' => 'datetime',
-            'current_date' => 'datetime',
             'salary_production' => 'float',
             'workshop_price' => 'float',
             'mp_stock_price' => 'float',
@@ -102,7 +100,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
            new IndicatorUpdater,
            new IndicatorExplorer,
             new \OptimistDigital\NovaSettings\NovaSettings,
-            
+
 
         ];
     }

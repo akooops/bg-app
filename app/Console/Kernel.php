@@ -35,17 +35,17 @@ class Kernel extends ConsoleKernel
           $schedule->call(function () {
             //Checking if the simulation started
             $game_status = nova_get_setting("game_started",null);
-            if($game_status == "1"){
+            if($game_status === "1"){
                 if(nova_get_setting("current_date") != null){
-                    $value = nova_get_setting("current_date")->addDays(1);
+                    $value = nova_get_setting("current_date") + 1;
                 }
                 else{
-                    $value = nova_get_setting("start_date")->addDays(1); 
+                    $value = nova_get_setting("start_date") + 1;
                 }
                 nova_set_setting_value("current_date", $value);
-                event(new SimulationDateChanged($this->parseDateToSimulationDate($value)));
+                event(new SimulationDateChanged($value));
             }
-        })->everyMinute(); 
+        })->everyMinute();
         $schedule->job(new MonthlyCosts)->everyThirtyMinutes();
         $schedule->job(new PenaltyLoan)->everyMinute();
         //$schedule->job(new DailyStats)->everyMinute();
