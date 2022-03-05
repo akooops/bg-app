@@ -1,62 +1,27 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+## Getting Started :
+To properly run a simulation you should launch several commands which are : 
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+1. The actual server using `php artisan serve`.
 
-## About Laravel
+2. Building the js, while developing you can use `npm run hot`, in prod you should use `npm run prod`.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+3. Launching the scheduler, `php artisan schedule:work`, the settings of the Scheduled jobs can be found in `app/Console/Kernel.php` which is responsible on running the following jobs :  
+    - Adding the game timer each minute (there will be no output in the cli).
+     
+    - Calculating and adding the penalty loans, it runs each minute but it will check if there's really a penalty, you will read 'Running scheduled command: App\Jobs\PenaltyLoan' in the cli.
+     
+    - Calculating and removing the monthly costs (salaries, etc.). The problem is that the job runs at half past (:30) or at :00. So imagine starting the simulation at 13:28, at 13:30 the monthly costs will be calculated, you can make a logic using the simulation day.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+4. In order to start the queues, you should run the command `php artisan queue:listen`, this command is responsible of firing events through sockets (indicating that the time changed, a request to a supplier has been made, etc).
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+5. Start Laravel echo server using `laravel-echo-server start`. The server is reponsible of subscribing the users to their channel (subscribing all users to the timer_change to listen to the changes, etc).
 
-## Learning Laravel
+6. For those who are using Windows, you should start the Redis server.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+In order to start a simulation you should tick the checkbox `Simulation en cours ?` in Nova. You can set the start date of the game by entering and int (it should be 1). 
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Before a simulation you should clear the queues using the command `php artisan queue:clear`.
 
-## Laravel Sponsors
+I think that you don't need the `php artisan queue:work` command. 
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
-
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/)**
-- **[OP.GG](https://op.gg)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Good Luck ! 
