@@ -18,10 +18,10 @@ To properly run a simulation you should launch several commands which are :
 
 6. For those who are using Windows, you should start the Redis server.
 
-In order to start a simulation you should tick the checkbox `Simulation en cours ?` in Nova. You can set the start date of the game by entering and int (it should be 1). 
+In order to start a simulation you should tick the checkbox `Simulation en cours ?` in Nova. You can set the start date of the game by entering an int (it should be 1). 
 
 Before a simulation you should clear the queues using the command `php artisan queue:clear`.
 
 I think that you don't need the `php artisan queue:work` command. 
 
-Good Luck ! 
+Good Luck ! Feel free to correct the typo
