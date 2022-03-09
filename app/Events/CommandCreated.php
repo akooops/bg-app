@@ -21,7 +21,7 @@ class CommandCreated implements ShouldBroadcast
      */
     public $command;
     public $id;
-    public function __construct($command,$id)
+    public function __construct($command, $id)
     {
         $this->command = $command;
         $this->id = $id;
