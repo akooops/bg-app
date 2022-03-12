@@ -52,20 +52,35 @@
                 title="Chiffre d'Affaire"
                 color="text-green-500"
                 icon="fa-coins"
-                :value="indicators['ca'].value"
+                :value="[indicators['ca'].value]"
             ></StatCard>
             <StatCard
                 title="Machines"
                 color="text-gray-600"
                 icon="fa-cogs"
-                :value="indicators['machines'].value"
-                :second-value="indicators['busy_machines'].value + ' occupées.'"
+                :value="[
+                    'Niveau 1: ' + indicators['nb_machines_lv1'].value,
+                    'Niveau 2: ' + indicators['nb_machines_lv2'].value,
+                    'Niveau 3: ' + indicators['nb_machines_lv3'].value,
+                ]"
+                :second-value="[
+                    indicators['nb_machines_lv1_busy'].value + ' occupées.',
+                    indicators['nb_machines_lv2_busy'].value + ' occupées.',
+                    indicators['nb_machines_lv3_busy'].value + ' occupées.',
+                ]"
             ></StatCard>
             <StatCard
                 title="Nb. Employés"
                 color="text-indigo-600"
                 icon="fa-users"
-                :value="indicators['nb_workers_prod'].value"
+                :value="[
+                    'Simple: ' + indicators['nb_workers_lv1'].value,
+                    'Expert: ' + indicators['nb_workers_lv2'].value,
+                ]"
+                :second-value="[
+                    indicators['nb_workers_lv1_busy'].value + ' occupés.',
+                    indicators['nb_workers_lv2_busy'].value + ' occupés.',
+                ]"
             ></StatCard>
         </div>
         <div v-if="page_index == 'prod_stats'">
@@ -452,7 +467,9 @@
                             :class="
                                 prod.status_code == 'pending'
                                     ? 'text-yellow-500'
-                                    : 'text-green-500'
+                                    : prod.status_code == 'completed'
+                                    ? 'text-green-500'
+                                    : 'text-black'
                             "
                             class="
                                 w-full
@@ -483,27 +500,19 @@
                         >
                             <button
                                 @click="sell(prod)"
-                                class="
-                                    bg-green-400
-                                    text-white
-                                    py-2
-                                    px-4
-                                    rounded
-                                "
+                                class="text-white py-2 px-4 rounded"
                                 v-bind:class="{
+                                    'bg-green-400':
+                                        prod.status_code == 'completed',
                                     'hover:bg-green-800':
-                                        prod.status_code == 'completed' &&
-                                        prod.sold < prod.quantity,
+                                        prod.status_code == 'completed',
+                                    'bg-blue-400': prod.status_code == 'sold',
                                 }"
-                                :disabled="
-                                    !(
-                                        prod.status_code == 'completed' &&
-                                        prod.sold < prod.quantity
-                                    )
-                                "
+                                v-if="prod.status_code == 'completed'"
+                                :disabled="prod.status_code == 'sold'"
                             >
                                 {{
-                                    prod.sold >= prod.quantity
+                                    prod.status_code == "sold"
                                         ? "Vendu!"
                                         : prod.status_code == "pending"
                                         ? "En attente"
@@ -682,8 +691,6 @@ export default {
                 });
         },
         sell(prod) {
-            // console.log('Prod')
-            // console.log(prod);
             let data = {
                 entreprise_id: this.user.id,
                 id: prod.id,
@@ -691,7 +698,6 @@ export default {
                 quantity: prod.quantity - prod.sold,
                 price: prod.price,
             };
-            // console.log(data);
             this.sell_info.production = data;
             axios
                 .get("/api/demand/real", {
@@ -741,6 +747,17 @@ export default {
         this.updateProdData();
         this.getMarketDemands();
         this.getProducts();
+        axios
+            .get("/api/navbar", {
+                params: {
+                    entreprise_id: this.user.id,
+                    type: this.user.type,
+                },
+            })
+            .then((resp) => {
+                this.caisse = resp.data["caisse"];
+            });
+
         window.Echo.channel("entreprise_" + this.user.id).listen(
             "NewNotification",
             (e) => {
@@ -766,6 +783,10 @@ export default {
                     this.$forceUpdate();
                 }
                 if (e.notification.type == "Information") {
+                    this.getProdNumbers();
+                    this.$forceUpdate();
+                }
+                if (e.notification.type == "TransactionFailed") {
                     this.getProdNumbers();
                     this.$forceUpdate();
                 }

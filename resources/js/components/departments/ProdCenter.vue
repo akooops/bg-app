@@ -247,23 +247,39 @@
                                         {{ prod.name }}
                                     </option>
                                 </select>
-                                <p class="my-1 mx-4">Quantité (en lot de 100 pièces):</p>
+                                <p class="my-1 mx-4">
+                                    Quantité (en lot de 100 pièces):
+                                </p>
                                 <input
                                     v-model="launch_data.quantity"
                                     class="mx-4 w-2/3"
                                     type="number"
+                                    min="1"
                                 />
                                 <p class="my-1 mx-4">Prix (Unitaire):</p>
                                 <input
                                     class="mx-4 w-2/3"
                                     v-model="launch_data.price"
                                     type="number"
+                                    :min="selectedProd.price_min"
+                                    :max="selectedProd.price_max"
+                                />
+                                <p class="my-1 mx-4">Niveau de machine:</p>
+                                <input
+                                    class="mx-4 w-2/3"
+                                    v-model="launch_data.machine_lvl"
+                                    type="number"
+                                    min="1"
+                                    max="3"
                                 />
                                 <div class="h-auto">
                                     <button
                                         :diabled="can_produce == false"
                                         v-if="can_produce == true"
-                                        @click="launchProduction"
+                                        @click="
+                                            launchProduction();
+                                            verifyProd();
+                                        "
                                         class="
                                             bg-blue-400
                                             mx-4
@@ -358,7 +374,14 @@
                                 </p>
                                 <p>
                                     <button
-                                        @click="launch_prod_modal = false"
+                                        @click="
+                                            launch_prod_modal = false;
+                                            launch_data.price =
+                                                selectedProd.price_min;
+                                            launch_data.quantity = 1;
+                                            launch_data.machine_lvl = 1;
+                                            verifyProd();
+                                        "
                                         class="
                                             bg-gray-500
                                             justify-end
@@ -380,11 +403,25 @@
                     <template v-slot:content>
                         <div class="w-full">
                             <p v-if="machine.transaction == 'buy'">
-                                Vous allez acheter une machine au prix de
-                                {{ machine.buy_price }}, voulez vous continuer ?
+                                Vous allez acheter
+                                <input
+                                    v-model="machine.transaction_nb"
+                                    class="w-28"
+                                    min="1"
+                                    type="number"
+                                />
+                                machine au prix de {{ machine.buy_price }},
+                                voulez vous continuer ?
                             </p>
                             <p v-if="machine.transaction == 'sell'">
-                                Vous allez vendre une machine au prix de
+                                Vous allez vendre
+                                <input
+                                    v-model="machine.transaction_nb"
+                                    class="w-28"
+                                    min="1"
+                                    type="number"
+                                />
+                                machine au prix de
                                 {{ machine.sell_price }} DA, voulez vous
                                 continuer ?
                             </p>
@@ -490,8 +527,9 @@ export default {
             launch_prod_modal: false,
             launch_data: {
                 prod_id: 1,
-                price: 0,
-                quantity: 0,
+                price: this.products.find((item) => item.id == 1).price_min,
+                quantity: 1,
+                machine_lvl: 1,
             },
             prod_factors: {
                 machines: 0,
@@ -502,6 +540,7 @@ export default {
                 transaction: "",
                 buy_price: 40000,
                 sell_price: 35000 * this.indicators["machines_health"].value,
+                transaction_nb: 1,
             },
             can_produce_msg: "",
             can_produce: true,
@@ -514,7 +553,8 @@ export default {
                 price: {
                     "5s": 40000,
                     audit: 60000,
-                    maintenance: 15000 * this.indicators["machines"]["value"],
+                    maintenance:
+                        15000 * this.indicators["nb_machines_lv1"]["value"],
                 },
                 phrase: "",
                 result_phrase: "",
@@ -523,17 +563,22 @@ export default {
         };
     },
     watch: {
-        "launch_data.quantity": function (new_val, old_val) {
-            this.prod_factors = {
-                machines:
-                    this.launch_data.quantity * this.selectedProd.machine_units,
-                labor:
-                    this.launch_data.quantity * this.selectedProd.labor_units,
-            };
+        "launch_data.prod_id": function () {
+            this.launch_data.price = this.selectedProd.price_min;
+            this.launch_data.quantity = 1;
+            this.can_produce = false;
+            this.verifyProd();
+        },
+        "launch_data.quantity": function () {
             this.can_produce = false;
             this.verifyProd();
         },
         "launch_data.price": function () {
+            this.can_produce = false;
+            this.verifyProd();
+        },
+        "launch_data.machine_lvl": function () {
+            this.can_produce = false;
             this.verifyProd();
         },
     },
@@ -567,16 +612,21 @@ export default {
     methods: {
         launchProduction() {
             let data = {
-                product_id: this.selectedProd.id,
-                entreprise_id: this.user.id,
-                quantity: this.launch_data.quantity,
-                price: this.launch_data.price,
-                cost: this.totalCost,
-                delay: this.prodDelay * 60,
-                machines: this.prod_factors.machines,
-                labor: this.prod_factors.labor,
+                product_id: this.selectedProd.id,                           // slected product id
+                entreprise_id: this.user.id,                                // this users's id
+                quantity: this.launch_data.quantity,                        // number of lots (100 units) to be produced
+                price: this.launch_data.price,                              // price of selling
+                cost: this.totalCost,                                       // cost of production
+                delay: this.prodDelay * 60 / this.launch_data.machine_lvl,  // time it takes to produce
+                machines: this.prod_factors.machines,                       // number of necessary free machines to produce
+                labor: this.prod_factors.labor,                             // number of necessary free workers to produce
+                machines_lvl: this.launch_data.machine_lvl,                 // selected machine level
             };
+
             if (this.caisse < data.cost) {
+                console.log(this.caisse);
+                console.log(data.cost);
+                this.launch_prod_modal = false;
                 this.show_error = true;
                 this.message =
                     "Vos disponibilités ne suffisent pas pour lancer la production";
@@ -585,18 +635,21 @@ export default {
             axios
                 .post("/api/production/launch", data)
                 .then((resp) => {
-                    this.show_success = true;
+                    if (resp.data.success) {
+                        this.show_success = true;
+                        this.show_error = false;
+                    } else {
+                        this.show_success = false;
+                        this.show_error = true;
+                    }
                     this.message = resp.data.message;
                     this.launch_prod_modal = false;
-                    this.launch_data = {
-                        prod_id: 1,
-                        price: 0,
-                        quantity: 0,
-                    };
-                    this.prod_factors = {
-                        machines: 0,
-                        labor: 0,
-                    };
+
+                    this.launch_data.price = this.selectedProd.price_min;
+                    this.launch_data.quantity = 1;
+                    this.launch_data.machine_lvl = 1;
+                    this.verifyProd();
+
                     this.$emit("prodLaunched");
                 })
                 .catch((e) => {
@@ -619,6 +672,13 @@ export default {
                 });
         },
         verifyProd() {
+            this.prod_factors = {
+                machines:
+                    this.launch_data.quantity * this.selectedProd.machine_units,
+                labor:
+                    this.launch_data.quantity * this.selectedProd.labor_units,
+            };
+
             let resp = true;
             if (
                 this.launch_data.price > this.selectedProd.price_max ||
@@ -632,13 +692,35 @@ export default {
                     this.selectedProd.price_max +
                     " DA";
             } else {
-                let free_machines =
-                    this.indicators["machines"].value -
-                    this.indicators["busy_machines"].value;
+                let free_machines = 0;
+                let free_workers = 0;
+
+                if (this.launch_data.machine_lvl == 1) {
+                    free_machines =
+                        this.indicators["nb_machines_lv1"].value -
+                        this.indicators["nb_machines_lv1_busy"].value;
+                    free_workers =
+                        this.indicators["nb_workers_lv1"].value -
+                        this.indicators["nb_workers_lv1_busy"].value;
+                } else if (this.launch_data.machine_lvl == 2) {
+                    free_machines =
+                        this.indicators["nb_machines_lv2"].value -
+                        this.indicators["nb_machines_lv2_busy"].value;
+                    free_workers =
+                        this.indicators["nb_workers_lv1"].value -
+                        this.indicators["nb_workers_lv1_busy"].value;
+                } else if (this.launch_data.machine_lvl == 3) {
+                    free_machines =
+                        this.indicators["nb_machines_lv3"].value -
+                        this.indicators["nb_machines_lv3_busy"].value;
+                    free_workers =
+                        this.indicators["nb_workers_lv2"].value -
+                        this.indicators["nb_workers_lv2_busy"].value;
+                }
+
                 if (
                     this.prod_factors.machines <= free_machines &&
-                    this.prod_factors.labor <=
-                        this.indicators["nb_workers_prod"].value
+                    this.prod_factors.labor <= free_workers
                 ) {
                     for (const material of this.selectedProd.raw_materials) {
                         let stock_material = this.stock.find((item) => {
@@ -665,8 +747,21 @@ export default {
                     }
                 } else {
                     resp = false;
-                    this.can_produce_msg =
-                        "Pas assez de machines ou d'employés, vous ne pouvez pas lancer la production !";
+                    if (this.prod_factors.machines >= free_machines) {
+                        this.can_produce_msg =
+                            "Pas assez de machines libres, vous ne pouvez pas lancer la production !";
+                    } else {
+                        this.can_produce_msg =
+                            "Pas assez d'employés libres, vous ne pouvez pas lancer la production !";
+
+                        if (this.launch_data.machine_lvl == 3) {
+                            this.can_produce_msg = "Pas assez d'employés qualifiés libres pour utiliser des machines de niveau 3 !";
+
+                            if (free_workers == 0) {
+                                this.can_produce_msg = "Vous n'avez pas d'employés qualifiés pour utiliser des machines de niveau 3 !";
+                            }
+                        }
+                    }
                 }
             }
             this.can_produce = resp;
@@ -677,10 +772,15 @@ export default {
         },
         confirmMachineTransaction(type) {
             if (this.machine.transaction == "buy") {
-                if (this.machine.buy_price > this.caisse) {
+                if (
+                    this.machine.buy_price * this.machine.transaction_nb >
+                    this.caisse
+                ) {
                     this.show_error = true;
                     this.message =
-                        "Vos disponibilités ne suffisent pas pour acheter des machines";
+                        "Vos disponibilités ne suffisent pas pour acheter " +
+                        this.machine.transaction_nb +
+                        " machine(s)";
                     this.machine.show_transaction_modal = false;
                     return "";
                 }
@@ -688,18 +788,44 @@ export default {
                     .post("/api/entreprise/machine/buy", {
                         entreprise_id: this.user.id,
                         price: this.machine.buy_price,
+                        number: this.machine.transaction_nb,
                     })
                     .then((resp) => {
                         this.machine.show_transaction_modal = false;
+                        this.machine.transaction_nb = 1;
                     });
             } else if (this.machine.transaction == "sell") {
+                if (
+                    this.machine.transaction_nb >
+                    this.indicators["nb_machines_lv1"]["value"]
+                ) {
+                    this.show_error = true;
+                    this.message = "Pas assez de machines!";
+                    this.machine.transaction_nb = 1;
+                    this.machine.show_transaction_modal = false;
+                    return "";
+                } else if (
+                    this.machine.transaction_nb >
+                    this.indicators["nb_machines_lv1"]["value"] -
+                        this.indicators["nb_machines_lv1_busy"]["value"]
+                ) {
+                    this.show_error = true;
+                    this.message =
+                        "Vous ne pouvez pas vendre les machines en plein production";
+                    this.machine.transaction_nb = 1;
+                    this.machine.show_transaction_modal = false;
+                    return "";
+                }
+
                 axios
                     .post("/api/entreprise/machine/sell", {
                         entreprise_id: this.user.id,
                         price: this.machine.sell_price,
+                        number: this.machine.transaction_nb,
                     })
                     .then((resp) => {
                         this.machine.show_transaction_modal = false;
+                        this.machine.transaction_nb = 1;
                     });
             }
         },
@@ -754,12 +880,12 @@ export default {
     },
     mounted() {
         this.getStock();
-        window.Echo.channel("entreprise_" + this.user.id).listen(
-            "NavbarDataChanged",
-            (e) => {
-                this.caisse = e.caisse;
-            }
-        );
+        // window.Echo.channel("entreprise_" + this.user.id).listen(
+        //     "NavbarDataChanged",
+        //     (e) => {
+        //         this.caisse = e.caisse;
+        //     }
+        // );
     },
 };
 </script>

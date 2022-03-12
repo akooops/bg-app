@@ -237,8 +237,12 @@ class EntrepriseController extends Controller
     {
         // Return production useful indicators
         $keys = [
-            "machines", "busy_machines", "machines_health", "nb_workers_prod", "ca",
-            "reject_rate", "productivity_coeff", "dist_unit_cost"
+            "nb_machines_lv1", "nb_machines_lv1_busy",
+            "nb_machines_lv2", "nb_machines_lv2_busy",
+            "nb_machines_lv3", "nb_machines_lv3_busy",
+            "nb_workers_lv1", "nb_workers_lv1_busy",
+            "nb_workers_lv2", "nb_workers_lv2_busy",
+            "machines_health", "ca", "reject_rate", "productivity_coeff", "dist_unit_cost"
         ];
         $entreprise_id = $request->entreprise_id;
         $resp = [];
@@ -252,14 +256,77 @@ class EntrepriseController extends Controller
     public function launchProduction(Request $request)
     {
         $entreprise_id = $request->entreprise_id;
-        $product_id = $request->product_id;
-        $quantity = $request->quantity * 100;
-        $delay = $request->delay;
         $cost = $request->cost;
-        $machines = $request->machines;
-        $labor = $request->machines;
+
+        // Check if enough money to launch prod
+        $caisse = $this->getIndicator("caisse", $entreprise_id)["value"];
+        if ($cost > $caisse) {
+            $message = "Impossible de lancer la production: disponnibiltiés insuffisantes.";
+            return Response::json(["message" => $message, "success" => false], 200);
+        }
+
+        $product_id = $request->product_id;
+
+        // Check if enough raw materials to launch prod
+        $product = DB::table("raw_materials_products")->where("product_id", "=", $product_id)->orderBy("raw_material_id")->get();
+        $stock = DB::table("raw_materials_stock")->where("entreprise_id", "=", $entreprise_id)->orderBy("raw_material_id")->get();
+
+        $quantity = $request->quantity * 100; // should be divided by 100 for nb lots
+
+        for ($i = 0; $i < count($product); $i++) {
+            if ($product[$i]->quantity * $request->quantity > $stock[$i]->quantity) {
+                $message = "Pas assez de matière première " . $product[$i]->raw_material_id;
+                return Response::json(["message" => $message, "success" => false], 200);
+            }
+        }
+
+        $delay = $request->delay;
+
+
+        // Check if enough free machines to launch prod
+        $nb_machines_needed = $request->machines;
+
+        $machines_lvl = $request->machines_lvl;
+
+        $nb_machines = null;
+        $nb_busy_machines = null;
+        if ($machines_lvl == 1) {
+            $nb_machines = $this->getIndicator("nb_machines_lv1", $entreprise_id)["value"];
+            $nb_busy_machines = $this->getIndicator("nb_machines_lv1_busy", $entreprise_id)["value"];
+        } else if ($machines_lvl == 2) {
+            $nb_machines = $this->getIndicator("nb_machines_lv2", $entreprise_id)["value"];
+            $nb_busy_machines = $this->getIndicator("nb_machines_lv2_busy", $entreprise_id)["value"];
+        } else if ($machines_lvl == 3) {
+            $nb_machines = $this->getIndicator("nb_machines_lv3", $entreprise_id)["value"];
+            $nb_busy_machines = $this->getIndicator("nb_machines_lv3_busy", $entreprise_id)["value"];
+        }
+
+        if ($nb_machines - $nb_busy_machines < $nb_machines_needed) {
+            $message = "Impossible de lancer la production: machines libres insuffisantes.";
+            return Response::json(["message" => $message, "success" => false], 200);
+        }
+
+        $labor = $request->labor;
+
+        // Check if enough free workers to launch prod
+        $nb_workers = null;
+        $nb_busy_workers = null;
+        if ($machines_lvl == 1 || $machines_lvl == 2) {
+            $nb_workers = $this->getIndicator("nb_workers_lv1", $entreprise_id)["value"];
+            $nb_busy_workers = $this->getIndicator("nb_workers_lv1_busy", $entreprise_id)["value"];
+        } else if ($machines_lvl == 3) {
+            $nb_workers = $this->getIndicator("nb_workers_lv2", $entreprise_id)["value"];
+            $nb_busy_workers = $this->getIndicator("nb_workers_lv2_busy", $entreprise_id)["value"];
+        }
+
+        if ($nb_workers - $nb_busy_workers < $labor) {
+            $message = "Impossible de lancer la production: employés libres insuffisants.";
+            return Response::json(["message" =>$message, "success" => false], 200);
+        }
+
         $reject_rate = $this->getIndicator("reject_rate", $entreprise_id)["value"];
         $real_produced_quant = $quantity * (1 - $reject_rate);
+
         $production_data = [
             "entreprise_id" => $entreprise_id,
             "product_id" => $product_id,
@@ -268,19 +335,32 @@ class EntrepriseController extends Controller
             "price" => $request->price,
             "cost" => $cost,
             "name" => "", // Bug, should be removed from DB
-            "status" => "pending"
+            "status" => "pending",
+            "machines_lv1" => $machines_lvl == 1 ? $nb_machines_needed : 0,
+            "machines_lv2" => $machines_lvl == 2 ? $nb_machines_needed : 0,
+            "machines_lv3" => $machines_lvl == 3 ? $nb_machines_needed : 0,
+            "workers_lv1" => $machines_lvl == 1 || $machines_lvl == 2 ? $labor : 0,
+            "workers_lv2" => $machines_lvl == 3 ? $labor : 0,
         ];
+
         $prod_id = DB::table("productions")->insertGetId($production_data);
-        $this->updateIndicator("busy_machines", $entreprise_id, $machines);
-        $prod_factors = [
-            "machines" => $machines,
-            "labor" => $labor
-        ];
+
+        if ($machines_lvl == 1) {
+            $this->updateIndicator("nb_machines_lv1_busy", $entreprise_id, $nb_machines_needed);
+            $this->updateIndicator("nb_workers_lv1_busy", $entreprise_id, $labor);
+        } else if ($machines_lvl == 2) {
+            $this->updateIndicator("nb_machines_lv2_busy", $entreprise_id, $nb_machines_needed);
+            $this->updateIndicator("nb_workers_lv1_busy", $entreprise_id, $labor);
+        } else if ($machines_lvl == 3) {
+            $this->updateIndicator("nb_machines_lv3_busy", $entreprise_id, $nb_machines_needed);
+            $this->updateIndicator("nb_workers_lv2_busy", $entreprise_id, $labor);
+        }
+
         ProductionScheduler::dispatch($production_data, $prod_id)
             ->delay(now()->addSeconds($delay));
 
         // Schedule production;
-        return Response::json(["message" => "La production a été lancée !"], 200);
+        return Response::json(["message" =>"La production a été lancée !", "success" => true], 200);
     }
 
     function getAllProductions(Request $request)
@@ -312,9 +392,29 @@ class EntrepriseController extends Controller
         $stock_quantity = $request->stock;
         $production_id = $request->production_id;
 
+        $name = DB::table("products")->where("id", "=", $product_id)->first()->name;
+        $status = DB::table("productions")->where("id", "=", $production_id)->first()->status;
+
+        if ($status == 'sold') {
+            $message = "Vous avez déjà tout vendu pour cette production.";
+            $notification = [
+                "type" => "TransactionFailed",
+                "entreprise_id" => $entreprise_id,
+                "message" => $message,
+                "title" => "Production non vendue"
+            ];
+            event(new NewNotification($notification));
+            return Response::json(["message" => $message], 200);
+        }
+
         // Remove from stock and update production table
         DB::table("stock")->where("entreprise_id", "=", $entreprise_id)->where("product_id", "=", $product_id)->decrement("quantity", $sold_quantity);
+
         DB::table("productions")->where("id", "=", $production_id)->increment("sold", $sold_quantity);
+        if ($stock_quantity <= 0) {
+            DB::table("productions")->where("id", "=", $production_id)->update(["status" => "sold"]);
+        }
+
         DB::table("products")->where("id", "=", $product_id)->decrement("left_demand", $sold_quantity);
 
         // Update indicators:
@@ -326,7 +426,7 @@ class EntrepriseController extends Controller
         $this->updateIndicator($ca_key, $entreprise_id, $sales);
         $this->updateIndicator("ca", $entreprise_id, $sales);
         $this->updateIndicator("dist_cost", $entreprise_id, $dist_cost);
-        $message = "Vous avez vendu " . $sold_quantity . " unités et vous avez généré un chiffre d'affaires de " . $sales . " DA";
+        $message = "Vous avez vendu " . $sold_quantity . " unités de " . $name . " et vous avez généré un chiffre d'affaires de " . $sales . " DA";
         $notification = [
             "type" => "ProductionSold",
             "entreprise_id" => $entreprise_id,
@@ -341,12 +441,27 @@ class EntrepriseController extends Controller
     public function buyMachine(Request $request)
     {
         $entreprise_id = $request->entreprise_id;
-        $buy_price = 10000;
-        // update indicators
+        $number = $request->number;
+        // $buy_price = 10000;
+        $buy_price = $request->price * $number;
+
+        $caisse = $this->getIndicator("caisse", $entreprise_id)["value"];
+
+        if ($buy_price > $caisse) {
+            $message = "Impossible d'acheter " . $number . " machines: disponnibilités insuffisantes.";
+            $notification = [
+                "type" => "TransactionFailed",
+                "entreprise_id" => $entreprise_id,
+                "message" => $message,
+                "title" => "Echec de l'achat"
+            ];
+            event(new NewNotification($notification));
+            return Response::json(["message" => $message], 200);
+        }
 
         $this->updateIndicator("caisse", $entreprise_id, -1 * $buy_price);
-        $this->updateIndicator("machines", $entreprise_id, 1);
-        $message = "Vous avez acheté une machine au prix de " . $buy_price . " DA";
+        $this->updateIndicator("nb_machines_lv1", $entreprise_id, $number);
+        $message = "Vous avez acheté " . $number . " machines au prix de " . $buy_price . " DA";
         $notification = [
             "type" => "MachineBought",
             "entreprise_id" => $entreprise_id,
@@ -356,17 +471,48 @@ class EntrepriseController extends Controller
         event(new NewNotification($notification));
         return Response::json(["message" => $message], 200);
     }
+
     public function sellMachine(Request $request)
     {
         $entreprise_id = $request->entreprise_id;
-        $sell_price = 8000;
+        $number = $request->number;
+        // $sell_price = 8000;
+        $sell_price = $request->price * $number;
+
+        $nb_machines = $this->getIndicator("nb_machines_lv1", $entreprise_id)["value"];
+        $nb_busy_machines = $this->getIndicator("nb_machines_lv1_busy", $entreprise_id)["value"];
+
+        if ($nb_machines - $number <= 0) {
+            $message = "Vous ne pouvez pas vendre " . $number . " machines: vous n'en avez pas autant.";
+            $notification = [
+                "type" => "TransactionFailed",
+                "entreprise_id" => $entreprise_id,
+                "message" => $message,
+                "title" => "Echec de la vente"
+            ];
+            event(new NewNotification($notification));
+            return Response::json(["message" => $message], 200);
+        }
+
+        if ($nb_machines - $nb_busy_machines < $number) {
+            $message = "Vous ne pouvez pas vendre " . $number . " machines: les machines en production ne peuvent pas être venudes.";
+            $notification = [
+                "type" => "TransactionFailed",
+                "entreprise_id" => $entreprise_id,
+                "message" => $message,
+                "title" => "Echec de la vente"
+            ];
+            event(new NewNotification($notification));
+            return Response::json(["message" => $message], 200);
+        }
+
         $machines_health = $this->getIndicator("machines_health", $entreprise_id)["value"];
         $real_sell_price = $sell_price * $machines_health;
         // update indicators
 
         $this->updateIndicator("caisse", $entreprise_id, $real_sell_price);
-        $this->updateIndicator("machines", $entreprise_id, -1);
-        $message = "Vous avez vendu une machine au prix de " . $real_sell_price . " DA";
+        $this->updateIndicator("nb_machines_lv1", $entreprise_id, -1 * $number);
+        $message = "Vous avez vendu " . $number . " machines au prix de " . $real_sell_price * $number . " DA";
         $notification = [
             "type" => "MachineSold",
             "entreprise_id" => $entreprise_id,
@@ -382,7 +528,20 @@ class EntrepriseController extends Controller
         $type = $request->type;
         $price = $request->price;
         $entreprise_id = $request->entreprise_id;
-        $message = "";
+
+        $caisse = $this->getIndicator("caisse", $entreprise_id)["value"];
+        if ($price > $caisse) {
+            $message = "Impossible de lancer l'action: Pas assez de disponnibilités.";
+            $notification = [
+                "type" => "FailedTransaction",
+                "entreprise_id" => $entreprise_id,
+                "message" => $message,
+                "title" => "Échec de l'action"
+            ];
+            event(new NewNotification($notification));
+            return Response::json(["message" => $message], 200);
+        }
+
         switch ($type) {
             case '5s':
                 $prod_coeff = $this->getIndicator("productivity_coeff", $entreprise_id)["value"];
@@ -408,7 +567,7 @@ class EntrepriseController extends Controller
             case 'maintenance':
                 $machines_health = $this->getIndicator("machines_health", $entreprise_id)["value"];
                 if ($machines_health > 0.9) {
-                    $message = "Vous ne pouvez plus augmentez la fiabilité de vos machines, elle est assez faible !";
+                    $message = "Vous ne pouvez plus augmenter la fiabilité de vos machines, elle est assez faible !";
                 } else {
                     $this->updateIndicator("machines_health", $entreprise_id, 0.05);
                     $this->updateIndicator("caisse", $entreprise_id, -1 * $price);
@@ -475,6 +634,6 @@ class EntrepriseController extends Controller
 
     public function testFunc()
     {
-        //$this->resetIndicator("busy_machines",1);
+        //$this->resetIndicator("nb_machines_lv1_busy",1);
     }
 }

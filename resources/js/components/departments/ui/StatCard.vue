@@ -2,7 +2,7 @@
     <div
         class="
             w-72
-            h-24
+            h-28
             flex
             items-center
             rounded-lg
@@ -19,9 +19,9 @@
             <div>
                 <p
                     class="
-                        mb-2
+                        mb-1
                         text-sm
-                        font-medium
+                        font-small
                         text-gray-600
                         dark:text-gray-400
                     "
@@ -29,17 +29,16 @@
                     {{ title }}
                 </p>
                 <p
+                    v-for="(v, key) in value"
+                    :key="key"
                     class="
-                        text-lg
+                        text-md
                         font-semibold
                         text-gray-700
                         dark:text-gray-200
                     "
                 >
-                    {{ value }}
-                </p>
-                <p class="text-md text-gray-700 dark:text-gray-200">
-                    {{ secondValue }}
+                    {{ v }} <span v-if="secondValue != null" class="text-sm text-gray-700 dark:text-gray-200"> - {{ secondValue[key] }}</span>
                 </p>
             </div>
         </div>

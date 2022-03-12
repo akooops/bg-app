@@ -23,7 +23,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
     {
         parent::boot();
         \OptimistDigital\NovaSettings\NovaSettings::addSettingsFields([
-            Number::make('Salaire des employés de production','salary_production'),
+            Number::make('Salaire des employés (niveau 1)','salary_lv1'),
             Number::make('Prix de la formation','workshop_price'),
             Number::make('Prix de la manutention des MP','mp_stock_price')->step('0.1'),
             Boolean::make('Simulation en cours ?','game_started'),

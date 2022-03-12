@@ -16,11 +16,14 @@ trait HelperTrait{
 
 	public function parseProductionStatus($status){
 		if($status == "completed"){
-			return "Finis";
+			return "Fini";
 		}
-		elseif($status == "pending"){
+		else if($status == "pending"){
 			return "En Attente";
 		}
+        else if ($status == "sold") {
+            return "Vendu";
+        }
 
 	}
 
