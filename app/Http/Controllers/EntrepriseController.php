@@ -274,6 +274,10 @@ class EntrepriseController extends Controller
         $quantity = $request->quantity * 100; // should be divided by 100 for nb lots
 
         for ($i = 0; $i < count($product); $i++) {
+            if ($product[$i]->raw_material_id != $stock[$i]->raw_material_id) {
+                continue;
+            }
+
             if ($product[$i]->quantity * $request->quantity > $stock[$i]->quantity) {
                 $message = "Pas assez de matière première " . $product[$i]->raw_material_id;
                 return Response::json(["message" => $message, "success" => false], 200);
@@ -281,7 +285,6 @@ class EntrepriseController extends Controller
         }
 
         $delay = $request->delay;
-
 
         // Check if enough free machines to launch prod
         $nb_machines_needed = $request->machines;
@@ -311,17 +314,38 @@ class EntrepriseController extends Controller
         // Check if enough free workers to launch prod
         $nb_workers = null;
         $nb_busy_workers = null;
+
+        $nb_workers_lv1 = $this->getIndicator("nb_workers_lv1", $entreprise_id)["value"];
+        $nb_busy_workers_lv1 = $this->getIndicator("nb_workers_lv1_busy", $entreprise_id)["value"];
+
+        $nb_workers_lv2 = $this->getIndicator("nb_workers_lv2", $entreprise_id)["value"];
+        $nb_busy_workers_lv2 = $this->getIndicator("nb_workers_lv2_busy", $entreprise_id)["value"];
+
+        $nb_workers_lv1_to_use = null;
+        $nb_workers_lv2_to_use = null;
+
         if ($machines_lvl == 1 || $machines_lvl == 2) {
-            $nb_workers = $this->getIndicator("nb_workers_lv1", $entreprise_id)["value"];
-            $nb_busy_workers = $this->getIndicator("nb_workers_lv1_busy", $entreprise_id)["value"];
+            $nb_workers = $nb_workers_lv1 + $nb_workers_lv2;
+            $nb_busy_workers = $nb_busy_workers_lv1 + $nb_busy_workers_lv2;
+
+            if ($nb_workers_lv1 - $nb_busy_workers_lv1 >= $labor) {
+                $nb_workers_lv1_to_use = $labor;
+                $nb_workers_lv2_to_use = 0;
+            } else {
+                $nb_workers_lv1_to_use = $nb_workers_lv1 - $nb_busy_workers_lv1;
+                $nb_workers_lv2_to_use = $labor - ($nb_workers_lv1 - $nb_busy_workers_lv1);
+            }
         } else if ($machines_lvl == 3) {
-            $nb_workers = $this->getIndicator("nb_workers_lv2", $entreprise_id)["value"];
-            $nb_busy_workers = $this->getIndicator("nb_workers_lv2_busy", $entreprise_id)["value"];
+            $nb_workers = $nb_workers_lv2;
+            $nb_busy_workers = $nb_busy_workers_lv2;
+
+            $nb_workers_lv1_to_use = 0;
+            $nb_workers_lv2_to_use = $labor;
         }
 
         if ($nb_workers - $nb_busy_workers < $labor) {
             $message = "Impossible de lancer la production: employés libres insuffisants.";
-            return Response::json(["message" =>$message, "success" => false], 200);
+            return Response::json(["message" => $message, "success" => false], 200);
         }
 
         $reject_rate = $this->getIndicator("reject_rate", $entreprise_id)["value"];
@@ -339,28 +363,44 @@ class EntrepriseController extends Controller
             "machines_lv1" => $machines_lvl == 1 ? $nb_machines_needed : 0,
             "machines_lv2" => $machines_lvl == 2 ? $nb_machines_needed : 0,
             "machines_lv3" => $machines_lvl == 3 ? $nb_machines_needed : 0,
-            "workers_lv1" => $machines_lvl == 1 || $machines_lvl == 2 ? $labor : 0,
-            "workers_lv2" => $machines_lvl == 3 ? $labor : 0,
+            "workers_lv1" => $nb_workers_lv1_to_use,
+            "workers_lv2" => $nb_workers_lv2_to_use,
         ];
 
+        // Add production to database
         $prod_id = DB::table("productions")->insertGetId($production_data);
 
+        // Mark machines used as so in indicators
         if ($machines_lvl == 1) {
             $this->updateIndicator("nb_machines_lv1_busy", $entreprise_id, $nb_machines_needed);
-            $this->updateIndicator("nb_workers_lv1_busy", $entreprise_id, $labor);
         } else if ($machines_lvl == 2) {
             $this->updateIndicator("nb_machines_lv2_busy", $entreprise_id, $nb_machines_needed);
-            $this->updateIndicator("nb_workers_lv1_busy", $entreprise_id, $labor);
         } else if ($machines_lvl == 3) {
             $this->updateIndicator("nb_machines_lv3_busy", $entreprise_id, $nb_machines_needed);
-            $this->updateIndicator("nb_workers_lv2_busy", $entreprise_id, $labor);
         }
 
+        // Mark employees used as so in indicators
+        $this->updateIndicator("nb_workers_lv1_busy", $entreprise_id, $nb_workers_lv1_to_use);
+        $this->updateIndicator("nb_workers_lv2_busy", $entreprise_id, $nb_workers_lv2_to_use);
+
+        // Decrement stock of raw materials by quantity taken to produce this lot
+        for ($i = 0; $i < count($product); $i++) {
+            DB::table("raw_materials_stock")->where("entreprise_id", "=", $entreprise_id)
+                ->where("raw_material_id", "=", $product[$i]->raw_material_id)
+                ->decrement("quantity", $product[$i]->quantity * $request->quantity);
+        }
+
+        // Decrement caisse data before production ends
+        $this->updateIndicator("caisse", $entreprise_id, -1 * $cost);
+        // Increment production cost
+        $this->updateIndicator("prod_cost", $entreprise_id, $cost);
+
+        // Add delay to production
         ProductionScheduler::dispatch($production_data, $prod_id)
             ->delay(now()->addSeconds($delay));
 
         // Schedule production;
-        return Response::json(["message" =>"La production a été lancée !", "success" => true], 200);
+        return Response::json(["message" => "La production a été lancée !", "success" => true], 200);
     }
 
     function getAllProductions(Request $request)
@@ -393,9 +433,10 @@ class EntrepriseController extends Controller
         $production_id = $request->production_id;
 
         $name = DB::table("products")->where("id", "=", $product_id)->first()->name;
-        $status = DB::table("productions")->where("id", "=", $production_id)->first()->status;
+        $production = DB::table("productions")->where("id", "=", $production_id)->first();
+        $status = $production->status;
 
-        if ($status == 'sold') {
+        if ($status == 'sold' || $production->sold >= $production->quantity) {
             $message = "Vous avez déjà tout vendu pour cette production.";
             $notification = [
                 "type" => "TransactionFailed",
@@ -408,9 +449,11 @@ class EntrepriseController extends Controller
         }
 
         // Remove from stock and update production table
-        DB::table("stock")->where("entreprise_id", "=", $entreprise_id)->where("product_id", "=", $product_id)->decrement("quantity", $sold_quantity);
-
+        DB::table("stock")->where("entreprise_id", "=", $entreprise_id)->where("product_id", "=", $product_id)
+            ->decrement("quantity", $sold_quantity);
         DB::table("productions")->where("id", "=", $production_id)->increment("sold", $sold_quantity);
+
+        // Mark production as sold if no more in stock
         if ($stock_quantity <= 0) {
             DB::table("productions")->where("id", "=", $production_id)->update(["status" => "sold"]);
         }

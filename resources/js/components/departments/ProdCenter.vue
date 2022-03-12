@@ -99,7 +99,10 @@
                         les coûts de stock !
                     </p>
                     <button
-                        @click="launch_prod_modal = true"
+                        @click="
+                            verifyProd();
+                            launch_prod_modal = true;
+                        "
                         class="
                             bg-blue-500
                             text-white
@@ -527,7 +530,7 @@ export default {
             launch_prod_modal: false,
             launch_data: {
                 prod_id: 1,
-                price: this.products.find((item) => item.id == 1).price_min,
+                price: 0,
                 quantity: 1,
                 machine_lvl: 1,
             },
@@ -612,20 +615,18 @@ export default {
     methods: {
         launchProduction() {
             let data = {
-                product_id: this.selectedProd.id,                           // slected product id
-                entreprise_id: this.user.id,                                // this users's id
-                quantity: this.launch_data.quantity,                        // number of lots (100 units) to be produced
-                price: this.launch_data.price,                              // price of selling
-                cost: this.totalCost,                                       // cost of production
-                delay: this.prodDelay * 60 / this.launch_data.machine_lvl,  // time it takes to produce
-                machines: this.prod_factors.machines,                       // number of necessary free machines to produce
-                labor: this.prod_factors.labor,                             // number of necessary free workers to produce
-                machines_lvl: this.launch_data.machine_lvl,                 // selected machine level
+                product_id: this.selectedProd.id, // slected product id
+                entreprise_id: this.user.id, // this users's id
+                quantity: this.launch_data.quantity, // number of lots (100 units) to be produced
+                price: this.launch_data.price, // price of selling
+                cost: this.totalCost, // cost of production
+                delay: (this.prodDelay * 60) / this.launch_data.machine_lvl, // time it takes to produce
+                machines: this.prod_factors.machines, // number of necessary free machines to produce
+                labor: this.prod_factors.labor, // number of necessary free workers to produce
+                machines_lvl: this.launch_data.machine_lvl, // selected machine level
             };
 
             if (this.caisse < data.cost) {
-                console.log(this.caisse);
-                console.log(data.cost);
                 this.launch_prod_modal = false;
                 this.show_error = true;
                 this.message =
@@ -700,15 +701,19 @@ export default {
                         this.indicators["nb_machines_lv1"].value -
                         this.indicators["nb_machines_lv1_busy"].value;
                     free_workers =
-                        this.indicators["nb_workers_lv1"].value -
-                        this.indicators["nb_workers_lv1_busy"].value;
+                        this.indicators["nb_workers_lv1"].value +
+                        this.indicators["nb_workers_lv2"].value -
+                        this.indicators["nb_workers_lv1_busy"].value -
+                        this.indicators["nb_workers_lv2_busy"].value;
                 } else if (this.launch_data.machine_lvl == 2) {
                     free_machines =
                         this.indicators["nb_machines_lv2"].value -
                         this.indicators["nb_machines_lv2_busy"].value;
                     free_workers =
-                        this.indicators["nb_workers_lv1"].value -
-                        this.indicators["nb_workers_lv1_busy"].value;
+                        this.indicators["nb_workers_lv1"].value +
+                        this.indicators["nb_workers_lv2"].value -
+                        this.indicators["nb_workers_lv1_busy"].value -
+                        this.indicators["nb_workers_lv2_busy"].value;
                 } else if (this.launch_data.machine_lvl == 3) {
                     free_machines =
                         this.indicators["nb_machines_lv3"].value -
@@ -747,7 +752,7 @@ export default {
                     }
                 } else {
                     resp = false;
-                    if (this.prod_factors.machines >= free_machines) {
+                    if (this.prod_factors.machines > free_machines) {
                         this.can_produce_msg =
                             "Pas assez de machines libres, vous ne pouvez pas lancer la production !";
                     } else {
@@ -755,10 +760,12 @@ export default {
                             "Pas assez d'employés libres, vous ne pouvez pas lancer la production !";
 
                         if (this.launch_data.machine_lvl == 3) {
-                            this.can_produce_msg = "Pas assez d'employés qualifiés libres pour utiliser des machines de niveau 3 !";
+                            this.can_produce_msg =
+                                "Pas assez d'employés qualifiés libres pour utiliser des machines de niveau 3 !";
 
                             if (free_workers == 0) {
-                                this.can_produce_msg = "Vous n'avez pas d'employés qualifiés pour utiliser des machines de niveau 3 !";
+                                this.can_produce_msg =
+                                    "Vous n'avez pas d'employés qualifiés pour utiliser des machines de niveau 3 !";
                             }
                         }
                     }
@@ -878,14 +885,18 @@ export default {
                 });
         },
     },
-    mounted() {
-        this.getStock();
-        // window.Echo.channel("entreprise_" + this.user.id).listen(
-        //     "NavbarDataChanged",
-        //     (e) => {
-        //         this.caisse = e.caisse;
-        //     }
-        // );
+    created() {
+        axios
+            .get("/api/entreprise/stock", {
+                params: {
+                    entreprise_id: this.user.id,
+                },
+            })
+            .then((resp) => {
+                this.stock = resp.data;
+                this.launch_data.price = this.products.find((item) => item.id == 1).price_min;
+                this.verifyProd();
+            });
     },
 };
 </script>

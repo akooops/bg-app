@@ -707,9 +707,8 @@ export default {
                     this.sell_info.sold_quant = resp.data.demand;
                     this.sell_info.stock_quant = resp.data.stock;
                     this.sell_info.price = data.price;
+                    this.show_selling_info = true;
                 });
-
-            this.show_selling_info = true;
         },
         confirmSell() {
             let data = {
@@ -721,9 +720,9 @@ export default {
                 stock: this.sell_info.stock_quant,
                 price: this.sell_info.price,
             };
-            console.log(data);
+            // console.log(data);
             axios.post("/api/production/sell", data).then((resp) => {
-                console.log(resp.data.message);
+                // console.log(resp.data.message);
                 this.show_selling_info = false;
             });
         },
@@ -742,8 +741,7 @@ export default {
     beforeMount() {
         this.getProducts();
     },
-    mounted() {
-        // console.log("Test");
+    created() {
         this.updateProdData();
         this.getMarketDemands();
         this.getProducts();
@@ -757,7 +755,8 @@ export default {
             .then((resp) => {
                 this.caisse = resp.data["caisse"];
             });
-
+    },
+    mounted() {
         window.Echo.channel("entreprise_" + this.user.id).listen(
             "NewNotification",
             (e) => {

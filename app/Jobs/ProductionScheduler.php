@@ -61,19 +61,20 @@ class ProductionScheduler implements ShouldQueue
         // Remove from raw materials stock
         $product = Product::find($product_id);
 
-        $materials = $product->rawMaterials()->get();
+        // $materials = $product->rawMaterials()->get();
 
-        $materials->map(function ($mat) use ($entreprise_id) {
-            $mat_id = $mat->id;
-            $quant_mat = $mat->pivot->quantity;
-            $quant_mat = round(($this->production["quantity"] / 100) * $quant_mat);
+        // $materials->map(function ($mat) use ($entreprise_id) {
+        //     $mat_id = $mat->id;
+        //     $quant_mat = $mat->pivot->quantity;
+        //     $quant_mat = round(($this->production["quantity"] / 100) * $quant_mat);
 
-            DB::table("raw_materials_stock")->where("entreprise_id", "=", $entreprise_id)->where("raw_material_id", "=", $mat_id)->decrement("quantity", $quant_mat);
-        });
+        //     DB::table("raw_materials_stock")->where("entreprise_id", "=", $entreprise_id)->where("raw_material_id", "=", $mat_id)->decrement("quantity", $quant_mat);
+        // });
+
         // update indicators
 
-        $this->updateIndicator("caisse", $entreprise_id, -1 * $this->production["cost"]);
-        $this->updateIndicator("prod_cost", $entreprise_id, $this->production["cost"]);
+        // $this->updateIndicator("caisse", $entreprise_id, -1 * $this->production["cost"]);
+        // $this->updateIndicator("prod_cost", $entreprise_id, $this->production["cost"]);
 
         $this->updateIndicator("nb_machines_lv1_busy", $entreprise_id, -1 * $production->machines_lv1);
         $this->updateIndicator("nb_machines_lv2_busy", $entreprise_id, -1 * $production->machines_lv2);
