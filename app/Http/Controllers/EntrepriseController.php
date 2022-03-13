@@ -585,6 +585,7 @@ class EntrepriseController extends Controller
             return Response::json(["message" => $message], 200);
         }
 
+        $message = "Aucune action définie";
         switch ($type) {
             case '5s':
                 $prod_coeff = $this->getIndicator("productivity_coeff", $entreprise_id)["value"];

@@ -608,7 +608,7 @@ export default {
             return this.salesRevenues - this.totalCost;
         },
         prodDelay() {
-            let coeff = this.indicators["productivity_coeff"].value;
+            let coeff = this.indicators["productivity_coeff"].value * this.launch_data.machine_lvl;
             return this.launch_data.quantity / (coeff * 10);
         },
     },
@@ -620,7 +620,7 @@ export default {
                 quantity: this.launch_data.quantity, // number of lots (100 units) to be produced
                 price: this.launch_data.price, // price of selling
                 cost: this.totalCost, // cost of production
-                delay: (this.prodDelay * 60) / this.launch_data.machine_lvl, // time it takes to produce
+                delay: (this.prodDelay * 60), // time it takes to produce
                 machines: this.prod_factors.machines, // number of necessary free machines to produce
                 labor: this.prod_factors.labor, // number of necessary free workers to produce
                 machines_lvl: this.launch_data.machine_lvl, // selected machine level
@@ -886,17 +886,17 @@ export default {
         },
     },
     created() {
-        axios
-            .get("/api/entreprise/stock", {
-                params: {
-                    entreprise_id: this.user.id,
-                },
-            })
-            .then((resp) => {
-                this.stock = resp.data;
-                this.launch_data.price = this.products.find((item) => item.id == 1).price_min;
-                this.verifyProd();
-            });
+        // axios
+        //     .get("/api/entreprise/stock", {
+        //         params: {
+        //             entreprise_id: this.user.id,
+        //         },
+        //     })
+        //     .then((resp) => {
+        //         this.stock = resp.data;
+        //         this.launch_data.price = this.products.find((item) => item.id == 1).price_min;
+        //         this.verifyProd();
+        //     });
     },
 };
 </script>
