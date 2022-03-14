@@ -12,9 +12,10 @@ use App\Models\Loan;
 use App\Traits\HelperTrait;
 use App\Traits\IndicatorTrait;
 use App\Events\NewNotification;
-class PenaltyLoan 
+
+class PenaltyLoan
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels,HelperTrait,IndicatorTrait;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, HelperTrait, IndicatorTrait;
 
     /**
      * Create a new job instance.
@@ -33,23 +34,23 @@ class PenaltyLoan
      */
     public function handle()
     {
-        $loans = Loan::where('payment_status',0)->where('status','accepted')->get();
-        foreach($loans as $loan){
-            
+        $loans = Loan::where('payment_status', 0)->where('status', 'accepted')->get();
+        foreach ($loans as $loan) {
+
             $time = (int) $this->getSimulationtime();
-            if($loan->days < $time){
+            if ($loan->days < $time) {
                 $loan->days += $loan->deadline;
-                $debt = round(0.1*$loan->ratio*0.01*$loan->remaining_amount,2);
+                $debt = round(0.1 * $loan->ratio * 0.01 * $loan->remaining_amount, 2);
                 $loan->remaining_amount += $debt;
-                $this->updateIndicator('dettes',$loan->entreprise_id,$debt);
-                $loan->ratio += 0.1*$loan->ratio;
+                $this->updateIndicator('dettes', $loan->entreprise_id, $debt);
+                $loan->ratio += 0.1 * $loan->ratio;
                 $loan->save();
                 $notification = [
                     "type" => "LoanRateChanged",
                     "status" => "warning",
                     "entreprise_id" => $loan->entreprise_id,
                     "data" => [],
-                    "message" => "Le taux d'intérêt de votre dette a augmenté, il est désormais ".$loan->ratio. " %" ,
+                    "message" => "Le taux d'intérêt de votre dette a augmenté, il est désormais " . $loan->ratio . " %",
                     "title" => "Retard d'endettement"
                 ];
                 event(new NewNotification($notification));

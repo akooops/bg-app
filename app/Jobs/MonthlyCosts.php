@@ -14,6 +14,7 @@ use App\Models\Loan;
 use Illuminate\Support\Facades\DB;
 use App\Events\NewNotification;
 use App\Models\Banker;
+use App\Models\RawMaterial;
 
 class MonthlyCosts implements ShouldQueue
 {
@@ -36,23 +37,46 @@ class MonthlyCosts implements ShouldQueue
      */
     public function handle()
     {
-        $salary = (int) nova_get_setting('salary_lv1');
+        $salary_lv1 = (int) nova_get_setting('salary_lv1');
+        $salary_lv2 = (int) nova_get_setting('salary_lv2');
+
+        $pollution_machines_lv1_factor = nova_get_setting('machines_lv1_pollution');
+        $pollution_machines_lv2_factor = nova_get_setting('machines_lv2_pollution');
+        $pollution_machines_lv3_factor = nova_get_setting('machines_lv3_pollution');
+
+        $pollution_unit_cost = nova_get_setting('pollution_unit_cost');
+
         $mp_stock_price = (int) nova_get_setting('mp_stock_price');
+
         $entreprises = Entreprise::get();
         foreach ($entreprises as $entreprise) {
             $caisse = $this->getIndicator('caisse', $entreprise->id)['value'];
-            //Removing salary costs
             $cost = 0;
-            $workers = $this->getIndicator('nb_workers', $entreprise->id)['value'];
-            $cost += $workers * $salary;
-            //Removing stock costs
+
+            $salary_cost = 0;
+            $workers_lv1 = $this->getIndicator('nb_workers_lv1', $entreprise->id)['value'];
+            $workers_lv2 = $this->getIndicator('nb_workers_lv2', $entreprise->id)['value'];
+            $salary_cost += $workers_lv1 * $salary_lv1 + $workers_lv2 * $salary_lv2;
+
+            $stock_cost = 0;
             $raw_materials =  DB::table("raw_materials_stock")->where("entreprise_id", "=", $entreprise->id)->where('quantity', '<>', 0)->get();
             foreach ($raw_materials as $raw_material) {
-                $cost += $raw_material->quantity * $mp_stock_price;
+                $stock_cost += $raw_material->quantity * RawMaterial::find($raw_material->raw_material_id)->volume * $mp_stock_price;
             }
+
+            $pollution_cost = 0;
+            $machines_lv1 = $this->getIndicator('nb_machines_lv1', $entreprise->id)['value'];
+            $machines_lv2 = $this->getIndicator('nb_machines_lv2', $entreprise->id)['value'];
+            $machines_lv3 = $this->getIndicator('nb_machines_lv3', $entreprise->id)['value'];
+            $pollution_cost += $pollution_unit_cost *
+                ($machines_lv1 * $pollution_machines_lv1_factor +
+                 $machines_lv2 * $pollution_machines_lv2_factor +
+                 $machines_lv3 * $pollution_machines_lv3_factor);
+
+            $cost = (int) ($salary_cost + $stock_cost + $pollution_cost);
             if ($cost > $caisse) {
                 $difference = $cost - $caisse;
-                $this->updateIndicator("caisse", $entreprise->id, -$caisse);
+                $this->updateIndicator("caisse", $entreprise->id, -1 * $caisse);
                 $new_loan =  Loan::create([
                     "entreprise_id" => $entreprise->id,
                     "banker_id" => Banker::first()->id,
@@ -76,8 +100,32 @@ class MonthlyCosts implements ShouldQueue
                 ];
                 event(new NewNotification($notification));
             } else {
-                $this->updateIndicator('caisse', $entreprise->id, -$cost);
+                $this->updateIndicator('caisse', $entreprise->id, -1 * $cost);
+                $notification = [
+                    "type" => "MonthlyCosts",
+                    "status" => "info",
+                    "entreprise_id" => $entreprise->id,
+                    "data" => [],
+                    "message" => "Un mois est passé, vous payez:
+                                  Salaires ( " . $salary_cost . " DA )
+                                  - Stockage ( " . $stock_cost . " DA )
+                                  - Pollution ( " . $pollution_cost . " DA ). Total: " . $cost . " DA.",
+                    "title" => "Frais mensuels"
+                ];
+                event(new NewNotification($notification));
             }
+
+            $workers_mood_decay_rate = nova_get_setting('workers_mood_decay_rate');
+            $this->updateIndicator("workers_mood", $entreprise->id, -1 * $workers_mood_decay_rate);
+
+            $machines_lv1_durability = nova_get_setting('machines_lv1_durability');
+            $this->updateIndicator("machines_lv1_health", $entreprise->id, -1 * $machines_lv1_durability);
+
+            $machines_lv2_durability = nova_get_setting('machines_lv2_durability');
+            $this->updateIndicator("machines_lv2_health", $entreprise->id, -1 * $machines_lv2_durability);
+
+            $machines_lv3_durability = nova_get_setting('machines_lv3_durability');
+            $this->updateIndicator("machines_lv3_health", $entreprise->id, -1 * $machines_lv3_durability);
         }
     }
 }

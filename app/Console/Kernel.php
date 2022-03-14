@@ -45,8 +45,8 @@ class Kernel extends ConsoleKernel
                 event(new SimulationDateChanged($value));
             }
         })->everyMinute();
-        $schedule->job(new MonthlyCosts, 'monthly costs')->everyThirtyMinutes();
-        $schedule->job(new PenaltyLoan, 'penalty loan')->everyMinute();
+        $schedule->job(new MonthlyCosts)->everyThirtyMinutes();
+        $schedule->job(new PenaltyLoan)->everyMinute();
         //$schedule->job(new DailyStats)->everyMinute();
         // $schedule->command('inspire')->hourly();
     }

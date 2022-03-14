@@ -16,7 +16,8 @@ class RawMaterial extends Model
     protected $fillable = [
         'name',
         'price',
-        'unit'
+        'unit',
+        'volume'
     ];
     public function usedIn()
     {

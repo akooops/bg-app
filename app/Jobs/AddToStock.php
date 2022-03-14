@@ -14,7 +14,7 @@ use App\Events\NewNotification;
 
 class AddToStock implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels,IndicatorTrait;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, IndicatorTrait;
     public $stock_items;
     public $cost;
     public $entreprise_id;
@@ -23,7 +23,7 @@ class AddToStock implements ShouldQueue
      *
      * @return void
      */
-    public function __construct($stock_items,$cost,$entreprise_id)
+    public function __construct($stock_items, $cost, $entreprise_id)
     {
         $this->stock_items = $stock_items;
         $this->cost = $cost;
@@ -40,21 +40,20 @@ class AddToStock implements ShouldQueue
         $entreprise_id = $this->entreprise_id;
         $cost = $this->cost;
         foreach ($this->stock_items as $stock_item) {
-            $stock = DB::table("raw_materials_stock")->where("raw_material_id","=",$stock_item["raw_material_id"])->where("entreprise_id","=",$stock_item["entreprise_id"]);
+            $stock = DB::table("raw_materials_stock")->where("raw_material_id", "=", $stock_item["raw_material_id"])->where("entreprise_id", "=", $stock_item["entreprise_id"]);
             //dd(count($stock->get()->toArray()));
-            if(count($stock->get()->toArray()) == 0){
+            if (count($stock->get()->toArray()) == 0) {
                 DB::table("raw_materials_stock")->insert($stock_item);
-            }
-            else{
+            } else {
                 // update quant
                 $quant = $stock_item["quantity"];
-                $stock->increment("quantity",$quant);
+                $stock->increment("quantity", $quant);
             }
         }
         //dd("working until now");
-        $this->updateIndicator("raw_materials_cost",$entreprise_id,$cost);
-        $this->updateIndicator("caisse",$entreprise_id,-1*$cost);
-  
+        $this->updateIndicator("raw_materials_cost", $entreprise_id, $cost);
+        $this->updateIndicator("caisse", $entreprise_id, -1 * $cost);
+
         $message = "Votre commande a été livrée";
 
         $notification = [

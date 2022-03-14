@@ -237,12 +237,11 @@ class EntrepriseController extends Controller
     {
         // Return production useful indicators
         $keys = [
-            "nb_machines_lv1", "nb_machines_lv1_busy",
-            "nb_machines_lv2", "nb_machines_lv2_busy",
-            "nb_machines_lv3", "nb_machines_lv3_busy",
-            "nb_workers_lv1", "nb_workers_lv1_busy",
-            "nb_workers_lv2", "nb_workers_lv2_busy",
+            "nb_machines_lv1", "nb_machines_lv2", "nb_machines_lv3",
+            "nb_machines_lv1_busy", "nb_machines_lv2_busy", "nb_machines_lv3_busy",
             "machines_lv1_health", "machines_lv2_health", "machines_lv3_health",
+            "nb_workers_lv1", "nb_workers_lv2",
+            "nb_workers_lv1_busy", "nb_workers_lv2_busy",
             "ca", "reject_rate", "productivity_coeff", "dist_unit_cost"
         ];
         $entreprise_id = $request->entreprise_id;
@@ -295,12 +294,29 @@ class EntrepriseController extends Controller
         $nb_machines = null;
         $nb_busy_machines = null;
         if ($machines_lvl == 1) {
+            if ($this->getIndicator("machines_lv1_health", $entreprise_id) <= 0) {
+                $message = "Impossible de lancer la production: veuillez réparer vos machines.";
+                return Response::json(["message" => $message, "success" => false], 200);
+            }
+
             $nb_machines = $this->getIndicator("nb_machines_lv1", $entreprise_id)["value"];
             $nb_busy_machines = $this->getIndicator("nb_machines_lv1_busy", $entreprise_id)["value"];
-        } else if ($machines_lvl == 2) {
+        }
+        else if ($machines_lvl == 2) {
+            if ($this->getIndicator("machines_lv2_health", $entreprise_id) <= 0) {
+                $message = "Impossible de lancer la production: veuillez réparer vos machines.";
+                return Response::json(["message" => $message, "success" => false], 200);
+            }
+
             $nb_machines = $this->getIndicator("nb_machines_lv2", $entreprise_id)["value"];
             $nb_busy_machines = $this->getIndicator("nb_machines_lv2_busy", $entreprise_id)["value"];
-        } else if ($machines_lvl == 3) {
+        }
+        else if ($machines_lvl == 3) {
+            if ($this->getIndicator("machines_lv3_health", $entreprise_id) <= 0) {
+                $message = "Impossible de lancer la production: veuillez réparer vos machines.";
+                return Response::json(["message" => $message, "success" => false], 200);
+            }
+
             $nb_machines = $this->getIndicator("nb_machines_lv3", $entreprise_id)["value"];
             $nb_busy_machines = $this->getIndicator("nb_machines_lv3_busy", $entreprise_id)["value"];
         }
@@ -722,24 +738,39 @@ class EntrepriseController extends Controller
         return ["time" => $time, "caisse" => $caisse, "dettes" => $dettes];
     }
 
-    public function getMachinesPrices(Request $request)
+    public function getMachinesInfo(Request $request)
     {
         $entreprise_id = $request->entreprise_id;
 
-        $buy_p_lv1 = nova_get_setting("machines_lv1_price");
-        $buy_p_lv2 = nova_get_setting("machines_lv2_price");
-        $buy_p_lv3 = nova_get_setting("machines_lv3_price");
+        $buy_price_lv1 = nova_get_setting("machines_lv1_price");
+        $buy_price_lv2 = nova_get_setting("machines_lv2_price");
+        $buy_price_lv3 = nova_get_setting("machines_lv3_price");
+
+        $speed_lv1 = nova_get_setting("machines_lv1_speed");
+        $speed_lv2 = nova_get_setting("machines_lv2_speed");
+        $speed_lv3 = nova_get_setting("machines_lv3_speed");
+
+        $pollution_lv1 = nova_get_setting("machines_lv1_pollution");
+        $pollution_lv2 = nova_get_setting("machines_lv2_pollution");
+        $pollution_lv3 = nova_get_setting("machines_lv3_pollution");
+
+        $durability_lv1 = nova_get_setting("machines_lv1_durability");
+        $durability_lv2 = nova_get_setting("machines_lv2_durability");
+        $durability_lv3 = nova_get_setting("machines_lv3_durability");
 
         $health_lv1 = $this->getIndicator("machines_lv1_health", $entreprise_id)['value'];
         $health_lv2 = $this->getIndicator("machines_lv2_health", $entreprise_id)['value'];
         $health_lv3 = $this->getIndicator("machines_lv3_health", $entreprise_id)['value'];
 
-        $sell_p_lv1 = $buy_p_lv1 * $health_lv1;
-        $sell_p_lv2 = $buy_p_lv2 * $health_lv2;
-        $sell_p_lv3 = $buy_p_lv3 * $health_lv3;
+        $sell_price_lv1 = $buy_price_lv1 * $health_lv1;
+        $sell_price_lv2 = $buy_price_lv2 * $health_lv2;
+        $sell_price_lv3 = $buy_price_lv3 * $health_lv3;
 
-        return ["buy_p_lv1" => $buy_p_lv1, "buy_p_lv2" => $buy_p_lv2, "buy_p_lv3" => $buy_p_lv3,
-                "sell_p_lv1" => $sell_p_lv1, "sell_p_lv2" => $sell_p_lv2, "sell_p_lv3" => $sell_p_lv3,
-                "health_lv1" => $health_lv1, "health_lv2" => $health_lv2, "health_lv3" => $health_lv3,];
+        return ["buy_price_lv1" => $buy_price_lv1, "buy_price_lv2" => $buy_price_lv2, "buy_price_lv3" => $buy_price_lv3,
+                "sell_price_lv1" => $sell_price_lv1, "sell_price_lv2" => $sell_price_lv2, "sell_price_lv3" => $sell_price_lv3,
+                "speed_lv1" => $speed_lv1, "speed_lv2" => $speed_lv2, "speed_lv3" => $speed_lv3,
+                "pollution_lv1" => $pollution_lv1, "pollution_lv2" => $pollution_lv2, "pollution_lv3" => $pollution_lv3,
+                "durability_lv1" => $durability_lv1, "durability_lv2" => $durability_lv2, "durability_lv3" => $durability_lv3,
+            ];
     }
 }

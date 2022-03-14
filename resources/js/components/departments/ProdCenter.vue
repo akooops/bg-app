@@ -99,8 +99,10 @@
                         les coûts de stock !
                     </p>
                     <button
-                        @click="verifyProd();
-                                launch_prod_modal = true;"
+                        @click="
+                            verifyProd();
+                            launch_prod_modal = true;
+                        "
                         class="
                             bg-blue-500
                             text-white
@@ -148,7 +150,7 @@
                         >Attention à ne pas sur-estimer vos besoins en machines
                     </p>
                     <button
-                        @click="setMachineTransaction('buy')"
+                        @click="getMachineInfo('buy')"
                         class="
                             bg-blue-500
                             text-white
@@ -163,7 +165,7 @@
                         Acheter
                     </button>
                     <button
-                        @click="setMachineTransaction('sell')"
+                        @click="getMachineInfo('sell')"
                         class="
                             bg-blue-500
                             text-white
@@ -277,9 +279,7 @@
                                     <button
                                         :diabled="can_produce == false"
                                         v-if="can_produce == true"
-                                        @click="
-                                            launchProduction();
-                                        "
+                                        @click="launchProduction()"
                                         class="
                                             bg-blue-400
                                             mx-4
@@ -425,7 +425,7 @@
                                         ? machine.buy_price_lv2
                                         : machine.buy_price_lv3) *
                                     machine.transaction_nb
-                                }}, voulez vous continuer ?
+                                }} DA, voulez vous continuer ?
                             </p>
                             <p v-if="machine.transaction == 'sell'">
                                 Vous allez vendre
@@ -451,7 +451,7 @@
                                         ? machine.sell_price_lv2
                                         : machine.sell_price_lv3) *
                                     machine.transaction_nb
-                                }}, voulez vous continuer ?
+                                }} DA, voulez vous continuer ?
                             </p>
                             <div
                                 class="
@@ -566,15 +566,27 @@ export default {
             machine: {
                 show_transaction_modal: false,
                 transaction: "",
+
                 buy_price_lv1: 0,
                 buy_price_lv2: 0,
                 buy_price_lv3: 0,
+
                 sell_price_lv1: 0,
                 sell_price_lv2: 0,
                 sell_price_lv3: 0,
-                health_lv1: 1,
-                health_lv2: 1,
-                health_lv3: 1,
+
+                durability_lv1: 1,
+                durability_lv2: 1,
+                durability_lv3: 1,
+
+                speed_lv1: 1,
+                speed_lv2: 1,
+                speed_lv3: 1,
+
+                pollution_lv1: 1,
+                pollution_lv2: 1,
+                pollution_lv3: 1,
+
                 transaction_nb: 1,
                 transaction_lv: 1,
             },
@@ -600,7 +612,8 @@ export default {
     },
     watch: {
         "launch_data.prod_id": function () {
-            this.launch_data.price = (this.selectedProd.price_min + this.selectedProd.price_max) / 2;
+            this.launch_data.price =
+                (this.selectedProd.price_min + this.selectedProd.price_max) / 2;
             this.can_produce = false;
             this.verifyProd();
         },
@@ -641,8 +654,12 @@ export default {
         },
         prodDelay() {
             let coeff =
-                this.indicators["productivity_coeff"].value *
-                this.launch_data.machine_lvl;
+                this.indicators["productivity_coeff"].value /
+                (this.launch_data.machine_lvl == 1
+                    ? this.machine.speed_lv1
+                    : this.launch_data.machine_lvl == 2
+                    ? this.machine.speed_lv2
+                    : this.machine.speed_lv3);
             return this.launch_data.quantity / (coeff * 10);
         },
     },
@@ -815,26 +832,36 @@ export default {
             }
             this.can_produce = resp;
         },
-        setMachineTransaction(type) {
+        getMachineInfo(type) {
             axios
-                .post("/api/entreprise/machine/price", {
+                .post("/api/entreprise/machine/info", {
                     entreprise_id: this.user.id,
                 })
                 .then((resp) => {
-                    this.machine.buy_price_lv1 = resp.data.buy_p_lv1;
-                    this.machine.buy_price_lv2 = resp.data.buy_p_lv2;
-                    this.machine.buy_price_lv3 = resp.data.buy_p_lv3;
+                    this.machine.buy_price_lv1 = resp.data.buy_price_lv1;
+                    this.machine.buy_price_lv2 = resp.data.buy_price_lv2;
+                    this.machine.buy_price_lv3 = resp.data.buy_price_lv3;
 
-                    this.machine.sell_price_lv1 = resp.data.sell_p_lv1;
-                    this.machine.sell_price_lv2 = resp.data.sell_p_lv2;
-                    this.machine.sell_price_lv3 = resp.data.sell_p_lv3;
+                    this.machine.sell_price_lv1 = resp.data.sell_price_lv1;
+                    this.machine.sell_price_lv2 = resp.data.sell_price_lv2;
+                    this.machine.sell_price_lv3 = resp.data.sell_price_lv3;
 
-                    this.machine.health_lv1 = resp.data.health_lv1;
-                    this.machine.health_lv2 = resp.data.health_lv2;
-                    this.machine.health_lv3 = resp.data.health_lv3;
+                    this.machine.durability_lv1 = resp.data.durability_lv1;
+                    this.machine.durability_lv2 = resp.data.durability_lv2;
+                    this.machine.durability_lv3 = resp.data.durability_lv3;
 
-                    this.machine.transaction = type;
-                    this.machine.show_transaction_modal = true;
+                    this.machine.speed_lv1 = resp.data.speed_lv1;
+                    this.machine.speed_lv2 = resp.data.speed_lv2;
+                    this.machine.speed_lv3 = resp.data.speed_lv3;
+
+                    this.machine.pollution_lv1 = resp.data.pollution_lv1;
+                    this.machine.pollution_lv2 = resp.data.pollution_lv2;
+                    this.machine.pollution_lv3 = resp.data.pollution_lv3;
+
+                    if (type == "buy" || type == "sell") {
+                        this.machine.transaction = type;
+                        this.machine.show_transaction_modal = true;
+                    }
                 });
         },
         confirmMachineTransaction(type) {
@@ -948,10 +975,12 @@ export default {
         },
     },
     created() {
+        this.getMachineInfo();
         this.getStock();
         this.launch_data.prod_id = 1;
         this.launch_data.machine_lvl = 1;
-        this.launch_data.price = (this.selectedProd.price_min + this.selectedProd.price_max) / 2;
+        this.launch_data.price =
+            (this.selectedProd.price_min + this.selectedProd.price_max) / 2;
     },
 };
 </script>

@@ -2,11 +2,12 @@
 
 namespace App\Nova;
 
-use Illuminate\Http\Request;
 use Laravel\Nova\Fields\ID;
+use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Text;
-use Laravel\Nova\Http\Requests\NovaRequest;
+use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Currency;
+use Laravel\Nova\Http\Requests\NovaRequest;
 
 
 class RawMaterial extends Resource
@@ -51,6 +52,7 @@ class RawMaterial extends Resource
             Text::make('Unit')
                 ->rules('required', 'max:255'),
             Currency::make('Price')->currency('EUR'),
+            Number::make('Volume')->min(1),
         ];
     }
 

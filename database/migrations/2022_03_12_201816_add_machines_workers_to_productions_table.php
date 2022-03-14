@@ -31,7 +31,12 @@ class AddMachinesWorkersToProductionsTable extends Migration
     public function down()
     {
         Schema::table('productions', function (Blueprint $table) {
-            //
+            $table->dropColumn('machines_lv1');
+            $table->dropColumn('machines_lv2');
+            $table->dropColumn('machines_lv3');
+
+            $table->dropColumn('workers_lv1');
+            $table->dropColumn('workers_lv2');
         });
     }
 }

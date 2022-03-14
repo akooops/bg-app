@@ -23,11 +23,36 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
     {
         parent::boot();
         \OptimistDigital\NovaSettings\NovaSettings::addSettingsFields([
+            // Employees salaries
             Number::make('Salaire des employés (niveau 1)', 'salary_lv1'),
             Number::make('Salaire des employés (niveau 2)', 'salary_lv2'),
+
+            // Vitesse de réduction de l'humeur des employés
+            Number::make('Vitesse réduction humeur employés', 'workers_mood_decay_rate')->step('0.01'),
+
+            // Machines buying cost
             Number::make('Prix machines (niveau 1)', 'machines_lv1_price'),
             Number::make('Prix machines (niveau 2)', 'machines_lv2_price'),
             Number::make('Prix machines (niveau 3)', 'machines_lv3_price'),
+
+            // Machines speeds
+            Number::make('Vitesse machines (niveau 1)', 'machines_lv1_speed')->step('0.1'),
+            Number::make('Vitesse machines (niveau 2)', 'machines_lv2_speed')->step('0.1'),
+            Number::make('Vitesse machines (niveau 3)', 'machines_lv3_speed')->step('0.1'),
+
+            // Pollution units produced by machines for a defined period of time
+            Number::make('Pollution machines (niveau 1)', 'machines_lv1_pollution'),
+            Number::make('Pollution machines (niveau 2)', 'machines_lv2_pollution'),
+            Number::make('Pollution machines (niveau 3)', 'machines_lv3_pollution'),
+
+            // Machines durability (how much their lives decrement in a given amount of time)
+            Number::make('Durabilité machines (niveau 1)', 'machines_lv1_durability')->step('0.01'),
+            Number::make('Durabilité machines (niveau 2)', 'machines_lv2_durability')->step('0.01'),
+            Number::make('Durabilité machines (niveau 3)', 'machines_lv3_durability')->step('0.01'),
+
+            // Cost of a pollution unit
+            Number::make('Cout unitaire pollution', 'pollution_unit_cost'),
+
             Number::make('Prix de la formation', 'workshop_price'),
             Number::make('Prix de la manutention des MP', 'mp_stock_price')->step('0.1'),
             Boolean::make('Simulation en cours ?', 'game_started'),
@@ -37,9 +62,23 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
         ], [
             'salary_lv1' => 'float',
             'salary_lv2' => 'float',
+
+            'workers_mood_decay_rate' => 'float',
+
             'machines_lv1_price' => 'float',
             'machines_lv2_price' => 'float',
             'machines_lv3_price' => 'float',
+
+            'machines_lv1_pollution' => 'float',
+            'machines_lv2_pollution' => 'float',
+            'machines_lv3_pollution' => 'float',
+
+            'machines_lv1_durability' => 'float',
+            'machines_lv2_durability' => 'float',
+            'machines_lv3_durability' => 'float',
+
+            'pollution_unit_cost' => 'float',
+
             'workshop_price' => 'float',
             'mp_stock_price' => 'float',
             'show_final_score' => 'boolean'
