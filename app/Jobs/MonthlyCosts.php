@@ -115,17 +115,48 @@ class MonthlyCosts implements ShouldQueue
                 event(new NewNotification($notification));
             }
 
+            $workers_mood = $this->getIndicator("workers_mood", $entreprise->id)['value'];
             $workers_mood_decay_rate = nova_get_setting('workers_mood_decay_rate');
-            $this->updateIndicator("workers_mood", $entreprise->id, -1 * $workers_mood_decay_rate);
+            if ($workers_mood - $workers_mood_decay_rate >= 0) {
+                $this->updateIndicator("workers_mood", $entreprise->id, -1 * $workers_mood_decay_rate);
+            } else {
+                $this->updateIndicator("workers_mood", $entreprise->id, -1 * $workers_mood);
+            }
+
+            $machines_lv1_health = $this->getIndicator('machines_lv1_health', $entreprise->id)['value'];
 
             $machines_lv1_durability = nova_get_setting('machines_lv1_durability');
-            $this->updateIndicator("machines_lv1_health", $entreprise->id, -1 * $machines_lv1_durability);
+            if ($machines_lv1_health - $machines_lv1_durability > 0) {
+                $this->updateIndicator("machines_lv1_health", $entreprise->id, -1 * $machines_lv1_durability);
+            } else {
+                $this->updateIndicator("machines_lv1_health", $entreprise->id, -1 * $machines_lv1_health);
+            }
 
+            $machines_lv2_health = $this->getIndicator('machines_lv2_health', $entreprise->id)['value'];
             $machines_lv2_durability = nova_get_setting('machines_lv2_durability');
-            $this->updateIndicator("machines_lv2_health", $entreprise->id, -1 * $machines_lv2_durability);
+            if ($machines_lv2_health - $machines_lv2_durability > 0) {
+                $this->updateIndicator("machines_lv2_health", $entreprise->id, -1 * $machines_lv2_durability);
+            } else {
+                $this->updateIndicator("machines_lv2_health", $entreprise->id, -1 * $machines_lv2_health);
+            }
 
+            $machines_lv3_health = $this->getIndicator('machines_lv3_health', $entreprise->id)['value'];
             $machines_lv3_durability = nova_get_setting('machines_lv3_durability');
-            $this->updateIndicator("machines_lv3_health", $entreprise->id, -1 * $machines_lv3_durability);
+            if ($machines_lv3_health - $machines_lv3_durability > 0) {
+                $this->updateIndicator("machines_lv3_health", $entreprise->id, -1 * $machines_lv3_durability);
+            } else {
+                $this->updateIndicator("machines_lv3_health", $entreprise->id, -1 * $machines_lv3_health);
+            }
+
+            $notification = [
+                "type" => "MachinesWorkersUpdate",
+                "status" => "info",
+                "entreprise_id" => $entreprise->id,
+                "data" => [],
+                "message" => "mood and health decay",
+                "title" => "mood and health decay"
+            ];
+            event(new NewNotification($notification));
         }
     }
 }

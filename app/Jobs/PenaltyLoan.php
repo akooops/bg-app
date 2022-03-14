@@ -40,8 +40,8 @@ class PenaltyLoan
             $time = (int) $this->getSimulationtime();
             if ($loan->days < $time) {
                 $loan->days += $loan->deadline;
-                $debt = round(0.1 * $loan->ratio * 0.01 * $loan->remaining_amount, 2);
-                $loan->remaining_amount += $debt;
+                $debt = round(0.1 * $loan->ratio * 0.01 * $loan->remaining_amount);
+                $loan->remaining_amount = round($loan->remaining_amount + $debt);
                 $this->updateIndicator('dettes', $loan->entreprise_id, $debt);
                 $loan->ratio += 0.1 * $loan->ratio;
                 $loan->save();

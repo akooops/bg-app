@@ -38,7 +38,15 @@
                         dark:text-gray-200
                     "
                 >
-                    {{ v }} <span v-if="secondValue != null" class="text-sm text-gray-700 dark:text-gray-200"> - {{ secondValue[key] }}</span>
+                    {{ v }}
+                    <span
+                        v-if="secondValue != null"
+                        class="text-sm text-gray-700 dark:text-gray-200"
+                    >
+                        <span v-if="secondValue.length > key">
+                            - {{ secondValue[key] }}
+                        </span>
+                    </span>
                 </p>
             </div>
         </div>
@@ -56,6 +64,8 @@ export default {
         "change",
         "color",
         "secondValue",
+        ,
+        "thirdValue",
     ],
     mounted() {},
 };

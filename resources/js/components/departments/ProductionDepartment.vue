@@ -76,6 +76,7 @@
                 :value="[
                     'Simple: ' + indicators['nb_workers_lv1'].value,
                     'Expert: ' + indicators['nb_workers_lv2'].value,
+                    'Humeur: ' + Math.round(indicators['workers_mood'].value * 100) + '%',
                 ]"
                 :second-value="[
                     indicators['nb_workers_lv1_busy'].value + ' occupés.',
@@ -786,6 +787,10 @@ export default {
                     this.$forceUpdate();
                 }
                 if (e.notification.type == "TransactionFailed") {
+                    this.getProdNumbers();
+                    this.$forceUpdate();
+                }
+                if (e.notification.type == "MachinesWorkersUpdate") {
                     this.getProdNumbers();
                     this.$forceUpdate();
                 }

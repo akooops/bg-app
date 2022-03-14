@@ -242,6 +242,7 @@ class EntrepriseController extends Controller
             "machines_lv1_health", "machines_lv2_health", "machines_lv3_health",
             "nb_workers_lv1", "nb_workers_lv2",
             "nb_workers_lv1_busy", "nb_workers_lv2_busy",
+            'workers_mood',
             "ca", "reject_rate", "productivity_coeff", "dist_unit_cost"
         ];
         $entreprise_id = $request->entreprise_id;
