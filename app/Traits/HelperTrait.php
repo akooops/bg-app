@@ -56,6 +56,7 @@ trait HelperTrait{
 	public function getSimulationTime(){
 		return nova_get_setting('current_date');
 	}
+    
 	public function in_array_all($value, $array)
     {
         return (reset($array) == $value && count(array_unique($array)) == 1);

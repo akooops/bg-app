@@ -1,7 +1,7 @@
 <template>
     <div
         class="
-            w-72
+            w-80
             h-28
             flex
             items-center

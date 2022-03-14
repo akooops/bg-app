@@ -23,19 +23,27 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
     {
         parent::boot();
         \OptimistDigital\NovaSettings\NovaSettings::addSettingsFields([
-            Number::make('Salaire des employés (niveau 1)','salary_lv1'),
-            Number::make('Prix de la formation','workshop_price'),
-            Number::make('Prix de la manutention des MP','mp_stock_price')->step('0.1'),
-            Boolean::make('Simulation en cours ?','game_started'),
-            Number::make('Jour début de la simulation','start_date'),
-            Number::make('Jour courant de la simulation','current_date'),
-            Boolean::make('Afficher le score finale','show_final_score')
-        ],[
-            'salary_production' => 'float',
+            Number::make('Salaire des employés (niveau 1)', 'salary_lv1'),
+            Number::make('Salaire des employés (niveau 2)', 'salary_lv2'),
+            Number::make('Prix machines (niveau 1)', 'machines_lv1_price'),
+            Number::make('Prix machines (niveau 2)', 'machines_lv2_price'),
+            Number::make('Prix machines (niveau 3)', 'machines_lv3_price'),
+            Number::make('Prix de la formation', 'workshop_price'),
+            Number::make('Prix de la manutention des MP', 'mp_stock_price')->step('0.1'),
+            Boolean::make('Simulation en cours ?', 'game_started'),
+            Number::make('Jour début de la simulation', 'start_date'),
+            Number::make('Jour courant de la simulation', 'current_date'),
+            Boolean::make('Afficher le score finale', 'show_final_score')
+        ], [
+            'salary_lv1' => 'float',
+            'salary_lv2' => 'float',
+            'machines_lv1_price' => 'float',
+            'machines_lv2_price' => 'float',
+            'machines_lv3_price' => 'float',
             'workshop_price' => 'float',
             'mp_stock_price' => 'float',
-            'show_final_score'=> 'boolean'
-        ],"Général");
+            'show_final_score' => 'boolean'
+        ], "Général");
     }
 
     /**
@@ -46,9 +54,9 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
     protected function routes()
     {
         Nova::routes()
-                ->withAuthenticationRoutes()
-                ->withPasswordResetRoutes()
-                ->register();
+            ->withAuthenticationRoutes()
+            ->withPasswordResetRoutes()
+            ->register();
     }
 
     /**
@@ -97,8 +105,8 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
     public function tools()
     {
         return [
-           new IndicatorUpdater,
-           new IndicatorExplorer,
+            new IndicatorUpdater,
+            new IndicatorExplorer,
             new \OptimistDigital\NovaSettings\NovaSettings,
 
 

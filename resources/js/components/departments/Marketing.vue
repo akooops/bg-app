@@ -17,7 +17,7 @@
 				v-model="new_ad.amount"
 				class="h-full w-full rounded-sm"
 			/>
-			
+
 		</div>
 		<div class="mt-10 mb-3">
             <label class=" left-2 transition-all bg-white px-1">Type de campagne: </label>
@@ -44,7 +44,7 @@
         <p>Le résultat prévisionnel total: <span class="text-green-600">{{totalPredictedFollowers}} abonnés</span> </p>
         <p>Le montant total de cette campagne s'élève à <span class="text-yellow-500">{{total_amount}} DA</span></p>
 		<div class="flex">
-		<button class=" text-white px-3 py-2 rounded w-1/2 mt-4 mr-2" 
+		<button class=" text-white px-3 py-2 rounded w-1/2 mt-4 mr-2"
         :class="sent?'bg-gray-800':'bg-green-400 hover:bg-green-800 '"
          @click="createAd" :disabled="sent">Créer</button>
 		<button class="bg-gray-200 active:bg-gray-600 hover:bg-gray-400 text-back px-3 py-2 rounded w-1/2 mt-4" @click="closeModal">Annuler</button>
@@ -52,7 +52,7 @@
 	</template>
 	</Modal>
     <div class="flex">
-        <StatCard class="mr-3" v-for="(key,id) in Object.keys(indicators)" v-bind:key="id" :title="indicators[key].name" color="text-green-500"  :icon="icons[id]" :value="indicators[key].value"></StatCard>
+        <StatCard class="mr-3" v-for="(key,id) in Object.keys(indicators)" v-bind:key="id" :title="indicators[key].name" color="text-green-500"  :icon="icons[id]" :value="[indicators[key].value]"></StatCard>
     </div>
         <div v-if="mounted">
         <div class="py-12">
@@ -144,7 +144,7 @@ export default {
             "fa-calendar-week"
         ],
         sent:false,
-        
+
     }
  },
  computed:{
@@ -175,7 +175,7 @@ export default {
        this.mounted = true
     })
     .catch(function (error) {
-        
+
     });
     },
     getIndicators(){
@@ -221,7 +221,7 @@ export default {
 		else{
 			this.error_message = "Veuillez remplire tous les champs"
 		}
-		
+
 	}
  },
  mounted(){

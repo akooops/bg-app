@@ -242,7 +242,8 @@ class EntrepriseController extends Controller
             "nb_machines_lv3", "nb_machines_lv3_busy",
             "nb_workers_lv1", "nb_workers_lv1_busy",
             "nb_workers_lv2", "nb_workers_lv2_busy",
-            "machines_health", "ca", "reject_rate", "productivity_coeff", "dist_unit_cost"
+            "machines_lv1_health", "machines_lv2_health", "machines_lv3_health",
+            "ca", "reject_rate", "productivity_coeff", "dist_unit_cost"
         ];
         $entreprise_id = $request->entreprise_id;
         $resp = [];
@@ -485,13 +486,22 @@ class EntrepriseController extends Controller
     {
         $entreprise_id = $request->entreprise_id;
         $number = $request->number;
-        // $buy_price = 10000;
-        $buy_price = $request->price * $number;
+        $level = $request->level;
+
+        $buy_price = null;
+
+        if ($level == 1) {
+            $buy_price = nova_get_setting("machines_lv1_price");
+        } else if ($level == 2) {
+            $buy_price = nova_get_setting("machines_lv2_price");
+        } else if ($level == 3) {
+            $buy_price = nova_get_setting("machines_lv3_price");
+        }
 
         $caisse = $this->getIndicator("caisse", $entreprise_id)["value"];
 
-        if ($buy_price > $caisse) {
-            $message = "Impossible d'acheter " . $number . " machines: disponnibilités insuffisantes.";
+        if ($buy_price * $number > $caisse) {
+            $message = "Impossible d'acheter " . $number . " machine(s) de niveau " . $level . ": disponnibilités insuffisantes.";
             $notification = [
                 "type" => "TransactionFailed",
                 "entreprise_id" => $entreprise_id,
@@ -502,9 +512,17 @@ class EntrepriseController extends Controller
             return Response::json(["message" => $message], 200);
         }
 
-        $this->updateIndicator("caisse", $entreprise_id, -1 * $buy_price);
-        $this->updateIndicator("nb_machines_lv1", $entreprise_id, $number);
-        $message = "Vous avez acheté " . $number . " machines au prix de " . $buy_price . " DA";
+        $this->updateIndicator("caisse", $entreprise_id, -1 * $buy_price * $number);
+
+        if ($level == 1) {
+            $this->updateIndicator("nb_machines_lv1", $entreprise_id, $number);
+        } else if ($level == 2) {
+            $this->updateIndicator("nb_machines_lv2", $entreprise_id, $number);
+        } else if ($level == 3) {
+            $this->updateIndicator("nb_machines_lv3", $entreprise_id, $number);
+        }
+
+        $message = "Vous avez acheté " . $number . " machine(s) de niveau " . $level . " au prix de " . $buy_price * $number . " DA";
         $notification = [
             "type" => "MachineBought",
             "entreprise_id" => $entreprise_id,
@@ -519,14 +537,24 @@ class EntrepriseController extends Controller
     {
         $entreprise_id = $request->entreprise_id;
         $number = $request->number;
-        // $sell_price = 8000;
-        $sell_price = $request->price * $number;
+        $level = $request->level;
 
-        $nb_machines = $this->getIndicator("nb_machines_lv1", $entreprise_id)["value"];
-        $nb_busy_machines = $this->getIndicator("nb_machines_lv1_busy", $entreprise_id)["value"];
+        $nb_machines = null;
+        $nb_busy_machines = null;
 
-        if ($nb_machines - $number <= 0) {
-            $message = "Vous ne pouvez pas vendre " . $number . " machines: vous n'en avez pas autant.";
+        if ($level == 1) {
+            $nb_machines = $this->getIndicator("nb_machines_lv1", $entreprise_id)["value"];
+            $nb_busy_machines = $this->getIndicator("nb_machines_lv1_busy", $entreprise_id)["value"];
+        } else if ($level == 2) {
+            $nb_machines = $this->getIndicator("nb_machines_lv2", $entreprise_id)["value"];
+            $nb_busy_machines = $this->getIndicator("nb_machines_lv2_busy", $entreprise_id)["value"];
+        } else if ($level == 3) {
+            $nb_machines = $this->getIndicator("nb_machines_lv3", $entreprise_id)["value"];
+            $nb_busy_machines = $this->getIndicator("nb_machines_lv3_busy", $entreprise_id)["value"];
+        }
+
+        if ($nb_machines - $number < 0) {
+            $message = "Vous ne pouvez pas vendre " . $number . " machine(s) de niveau " . $level . ": vous n'en avez pas autant.";
             $notification = [
                 "type" => "TransactionFailed",
                 "entreprise_id" => $entreprise_id,
@@ -538,7 +566,7 @@ class EntrepriseController extends Controller
         }
 
         if ($nb_machines - $nb_busy_machines < $number) {
-            $message = "Vous ne pouvez pas vendre " . $number . " machines: les machines en production ne peuvent pas être venudes.";
+            $message = "Vous ne pouvez pas vendre " . $number . " machine(s) de niveau " . $level . ": les machines en production ne peuvent pas être venudes.";
             $notification = [
                 "type" => "TransactionFailed",
                 "entreprise_id" => $entreprise_id,
@@ -549,13 +577,31 @@ class EntrepriseController extends Controller
             return Response::json(["message" => $message], 200);
         }
 
-        $machines_health = $this->getIndicator("machines_health", $entreprise_id)["value"];
-        $real_sell_price = $sell_price * $machines_health;
-        // update indicators
+        $buy_price = null;
+        $sell_price = null;
 
-        $this->updateIndicator("caisse", $entreprise_id, $real_sell_price);
-        $this->updateIndicator("nb_machines_lv1", $entreprise_id, -1 * $number);
-        $message = "Vous avez vendu " . $number . " machines au prix de " . $real_sell_price * $number . " DA";
+        if ($level == 1) {
+            $buy_price = nova_get_setting("machines_lv1_price");
+            $sell_price = $buy_price * $this->getIndicator("machines_lv1_health", $entreprise_id)['value'];
+        } else if ($level == 2) {
+            $buy_price = nova_get_setting("machines_lv2_price");
+            $sell_price = $buy_price * $this->getIndicator("machines_lv2_health", $entreprise_id)['value'];
+        } else if ($level == 3) {
+            $buy_price = nova_get_setting("machines_lv3_price");
+            $sell_price = $buy_price * $this->getIndicator("machines_lv3_health", $entreprise_id)['value'];
+        }
+
+        $this->updateIndicator("caisse", $entreprise_id, $sell_price * $number);
+
+        if ($level == 1) {
+            $this->updateIndicator("nb_machines_lv1", $entreprise_id, -1 * $number);
+        } else if ($level == 2) {
+            $this->updateIndicator("nb_machines_lv2", $entreprise_id, -1 * $number);
+        } else if ($level == 3) {
+            $this->updateIndicator("nb_machines_lv3", $entreprise_id, -1 * $number);
+        }
+
+        $message = "Vous avez vendu " . $number . " machine(s) de niveau " . $level . " au prix de " . $sell_price * $number . " DA";
         $notification = [
             "type" => "MachineSold",
             "entreprise_id" => $entreprise_id,
@@ -676,8 +722,24 @@ class EntrepriseController extends Controller
         return ["time" => $time, "caisse" => $caisse, "dettes" => $dettes];
     }
 
-    public function testFunc()
+    public function getMachinesPrices(Request $request)
     {
-        //$this->resetIndicator("nb_machines_lv1_busy",1);
+        $entreprise_id = $request->entreprise_id;
+
+        $buy_p_lv1 = nova_get_setting("machines_lv1_price");
+        $buy_p_lv2 = nova_get_setting("machines_lv2_price");
+        $buy_p_lv3 = nova_get_setting("machines_lv3_price");
+
+        $health_lv1 = $this->getIndicator("machines_lv1_health", $entreprise_id)['value'];
+        $health_lv2 = $this->getIndicator("machines_lv2_health", $entreprise_id)['value'];
+        $health_lv3 = $this->getIndicator("machines_lv3_health", $entreprise_id)['value'];
+
+        $sell_p_lv1 = $buy_p_lv1 * $health_lv1;
+        $sell_p_lv2 = $buy_p_lv2 * $health_lv2;
+        $sell_p_lv3 = $buy_p_lv3 * $health_lv3;
+
+        return ["buy_p_lv1" => $buy_p_lv1, "buy_p_lv2" => $buy_p_lv2, "buy_p_lv3" => $buy_p_lv3,
+                "sell_p_lv1" => $sell_p_lv1, "sell_p_lv2" => $sell_p_lv2, "sell_p_lv3" => $sell_p_lv3,
+                "health_lv1" => $health_lv1, "health_lv2" => $health_lv2, "health_lv3" => $health_lv3,];
     }
 }
