@@ -33,7 +33,8 @@
         "echarts": "^5.0.2",
         "font-awesome": "^4.7.0",
         "laravel-echo-server": "^1.6.2",
-        "socket.io-client": "^2.3.0",
+        "socket.io-client": "^4.4.1",
+        "v-calendar": "^2.4.1",
         "vue": "^2.6.12",
         "vue-echarts": "^6.0.0-rc.4",
         "vuejs-datepicker": "^1.6.2"

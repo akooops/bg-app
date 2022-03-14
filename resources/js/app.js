@@ -1,6 +1,12 @@
 require('./bootstrap');
 
 import Vue from "vue"
+import VCalendar from 'v-calendar';
+
+// use the calendar component
+Vue.use(VCalendar);
+
+
 
 axios.defaults.withCredentials = false
 let local_url = "http://10.42.0.1:8000"
@@ -32,10 +38,12 @@ Vue.component('singlecommand', require('./components/supplier/SingleCommand.vue'
 //Simulation Time
 Vue.component('simulationtime', require('./components/SimulationTime.vue').default);
 
+Vue.component('getdate', require('./components/GetDate.vue').default);
 
 //Leaderboard
 Vue.component('leaderboard', require('./components/Leaderboard.vue').default)
 
 const app = new Vue({
    el: '#app',
+   
 });

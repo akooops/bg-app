@@ -40,6 +40,7 @@ Route::prefix("entreprise")->group(function () {
     Route::post("/hr/hire", [HrController::class, "hireWorkers"]);
     Route::post("/hr/launch-workshop", [HrController::class, "launchWorkshop"]);
     Route::post("/hr/prime-workers", [HrController::class, "primeWorkers"]);
+    
 
 
 });
@@ -83,6 +84,7 @@ Route::prefix("indicator")->group(function(){
 });
 
 Route::get('/navbar', [EntrepriseController::class, "getNavbarData"]);
+Route::get('/temps',[EntrepriseController::class,'getTime']);
 
 
 

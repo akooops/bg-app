@@ -26,7 +26,7 @@ class EntrepriseController extends Controller
     function showDashboard()
     {
         $departments = Department::all();
-        return view("dashboard", ["departments" => $departments]);
+        return view("dashboardtest", ["departments" => $departments]);
     }
 
     // Departments view routes
@@ -458,6 +458,13 @@ class EntrepriseController extends Controller
         $sorted = $rankings->sortByDesc("profit")->values();
         return ["list" => $sorted, "meta" => nova_get_setting("show_final_score", "")];
     }
+
+    public function getTime()
+    {
+        $temps=$this->getSimulationTime();
+
+        return ["temps" => $temps, "date"=>(Carbon::now())->addDays($temps)->format('d-m-Y')];
+    } 
 
 
     public function getNavbarData(Request $request)

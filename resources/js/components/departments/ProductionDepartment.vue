@@ -104,6 +104,7 @@
                     <LineGraph
                         :x-data="prod.prices"
                         :y-data="prod.demand"
+                        
                     ></LineGraph>
                 </div>
                 <Modal v-if="show_product_info">
