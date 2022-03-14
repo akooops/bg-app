@@ -2,7 +2,7 @@
     <div class="container mx-auto grid grid-cols-2 m-3">
 
    
-    <div class="col-span-1 w-3/5 ml-auto bg-white rounded-lg m-3">
+    <div class="col-span-1 w-3/5 ml-auto bg-white rounded-lg m-3 shadow-xl">
        <div class="flex m-4 gap-5">
            <img class="w-7 h-7" src="/images/dispo.png" alt="dispo">
            <span class="ubuntu self-end text-2xl font-semibold text-gray-500">Disponibilite</span>
@@ -22,7 +22,7 @@
     </div>
 
 
-    <div class="col-span-1 w-3/5 mr-auto bg-white rounded-lg m-3">
+    <div class="col-span-1 w-3/5 mr-auto bg-white rounded-lg m-3 shadow-xl">
         <div class="flex m-4 gap-5">
             <img class="w-7 h-7" src="/images/dette.png" alt="dispo">
             <span class="ubuntu self-end text-2xl font-semibold text-gray-500">Dettes</span>

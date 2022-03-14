@@ -1,21 +1,26 @@
 <template>
-<v-date-picker v-model="range" is-range />
+<v-date-picker  v-model="range" is-range />
 
 <script>
+let dt= new Date(2020, 0, 1);
+let ff= new Date(2020, 0, 7);
+
 
 export default {
-    
     name: "GetDate",
     props: ["user"],
     data() {
         
         return {
             time: null,
-            range: {
-                 start: new Date(2020, 0, 1),
-                 end: new Date(2020, 0, 5)
-                   }       
-            };
+            date:null,
+              range: {
+      start: dt,
+      end: df
+    }
+        };
+
+            
     },
    
     methods: {
@@ -23,8 +28,8 @@ export default {
             axios
                 .get("/api/temps")
                 .then((resp) => {
-                    this.days = resp.data["temps"];
-                    this.date = resp.data['date']
+                    this.time = resp.data["temps"];
+                    this.date = resp.data['date'];
                 });
         },
     },
@@ -33,7 +38,7 @@ export default {
         window.Echo.channel("simulation_date").listen(
             "SimulationDateChanged",
             (e) => {
-                this.days = e.date;
+                this.time = e.date;
             }
         );
      

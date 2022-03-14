@@ -7,7 +7,7 @@
                 
                 <div class="p-4">
                     <a href="{{ route('dashboard') }}">
-                        <svg width="67" height="71" viewBox="0 0 67 71" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                        <svg class="h-20 w-20 mb-3" viewBox="0 0 67 71" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                             <rect width="40" height="40" fill="url(#pattern0)"/>
                             <defs>
                             <pattern id="pattern0" patternContentUnits="objectBoundingBox" width="1" height="1">

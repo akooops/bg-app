@@ -1,47 +1,5 @@
 <x-app-layout>
-   
-    
 
-
-    {{-- side-list --}}
-<div class="overflow-hidden">
-
-    <div  class="bg-pink-500 float-left w-1/4 h-full absolute ">
-
-     <div class="container pt-5">
-         <ul class="relative">
-            <li class="relative">
-              <a class="flex pistache items-center text-sm py-4 px-6 h-12 overflow-hidden text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-gray-900 hover:bg-gray-100 transition duration-300 ease-in-out" href="#!" data-mdb-ripple="true" >
-                 
-                <h2 class="pistache text-2xl ubuntu">Dashboard</h2>
-            </a>
-            </li>
-            <li class="relative">
-              <a class="flex items-center text-sm py-4 px-6 h-12 overflow-hidden text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-gray-900 hover:bg-gray-100 transition duration-300 ease-in-out" href="#!" data-mdb-ripple="true" data-mdb-ripple-color="dark">
-                <h2 class="pistache text-2xl ubuntu">Banque</h2>
-
-              </a>
-            </li>
-            <li class="relative">
-              <a class="flex items-center text-sm py-4 px-6 h-12 overflow-hidden text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-gray-900 hover:bg-gray-100 transition duration-300 ease-in-out" href="#!" data-mdb-ripple="true" data-mdb-ripple-color="dark">
-                <h2 class="pistache text-2xl ubuntu">Classement</h2>
-
-              </a>
-            </li>
-          </ul>
-
-
-          <getdate v-bind:user="{{Auth()->user()}}"></getdate>
-
-          
-
-          
-
-        </div>
-
-
-
-    </div>
 
     
 
@@ -49,7 +7,6 @@
 
     {{-- departements --}}
 
-<div class="float-right container mx-auto  w-3/4 bg-gray-500 h-full " style="background-color: rgba(178, 208, 107, 0.04);">
 
 
     <simulationtime v-bind:user="{{Auth()->user()}}"></simulationtime>
@@ -95,10 +52,10 @@
    
         
     </div>
-</div>
 
 
-</div>
+
+
 
     {{-- <div class= "container h-full">
         

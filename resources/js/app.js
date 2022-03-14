@@ -3,6 +3,19 @@ require('./bootstrap');
 import Vue from "vue"
 import VCalendar from 'v-calendar';
 
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faBuildingColumns } from '@fortawesome/free-solid-svg-icons';
+import { faChartLine } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+
+library.add(faBuildingColumns);
+library.add(faChartLine);
+
+Vue.component('font-awesome-icon', FontAwesomeIcon);
+Vue.config.productionTip = false;
+
+
+
 // use the calendar component
 Vue.use(VCalendar);
 
