@@ -1,52 +1,46 @@
 <x-app-layout>
 
 
-    
-
-
-
     {{-- departements --}}
-
-
 
     <simulationtime v-bind:user="{{Auth()->user()}}"></simulationtime>
 
-
+ <div class="p-6 ml-7 text-3xl ubuntu text-gray-900 ">Département - Tableau de Bord</div>
 
   <div class="container mx-auto grid grid-cols-6  ">
-        <div class="w-4/5 mx-auto p-5 text-center bg-white rounded-xl m-6 col-span-2">
+        <div class="w-4/5 mx-auto p-5 text-center bg-white rounded-xl m-6 col-span-2 shadow-xl">
            
-             <img  class="mx-auto" src="/images/production.png" alt="">
+             <a href=""><img  class="mx-auto" src="/images/production.png" alt=""></a>
              <h2 class="mt-3 p-3 ubuntu text-2xl" style="color: #0B3434; ">Production</h2>
-             <button class=" rounded-3xl ubuntu p-3 btn-pistache mx-auto " >Acceder</button> 
+             <button class=" rounded-3xl ubuntu p-3 btn-pistache mx-auto text-white" >Acceder</button> 
             
         </div>
-        <div class="w-4/5 mx-auto p-5 text-center bg-white rounded-xl m-6 col-span-2">
+        <div class="w-4/5 mx-auto p-5 text-center bg-white rounded-xl m-6 col-span-2 shadow-xl">
            
             <img  class="mx-auto" src="/images/approv.png" alt="">
             <h2 class="mt-3 p-3 ubuntu text-2xl" style="color: #0B3434; ">Approvisement</h2>
-            <button class=" rounded-3xl ubuntu p-3 btn-pistache mx-auto " >Acceder</button> 
+            <button class=" rounded-3xl ubuntu p-3 btn-pistache mx-auto text-white" >Acceder</button> 
            
        </div>
-       <div class="w-4/5 mx-auto p-5 text-center bg-white rounded-xl m-6 col-span-2">
+       <div class="w-4/5 mx-auto p-5 text-center bg-white rounded-xl m-6 col-span-2 shadow-xl">
            
         <img  class="mx-auto" src="/images/marketing.png" alt="">
         <h2 class="mt-3 p-3 ubuntu text-2xl" style="color: #0B3434; ">Marketing</h2>
-        <button class=" rounded-3xl ubuntu p-3 btn-pistache mx-auto " >Acceder</button> 
+        <button class=" rounded-3xl ubuntu p-3 btn-pistache mx-auto text-white" >Acceder</button> 
        
    </div>
-   <div class="w-3/5 ml-auto p-5 text-center bg-white rounded-xl m-8 col-span-3">
+   <div class="w-3/5 ml-auto p-5 text-center bg-white rounded-xl m-8 col-span-3 shadow-xl">
            
     <img  class="mx-auto" src="/images/finance.png" alt="">
     <h2 class="mt-3 p-3 ubuntu text-2xl" style="color: #0B3434; ">Finance</h2>
-    <button class=" rounded-3xl ubuntu p-3 btn-pistache mx-auto " >Acceder</button> 
+    <button class=" rounded-3xl ubuntu p-3 btn-pistache mx-auto text-white" >Acceder</button> 
    
   </div>
-  <div class="w-3/5 mr-auto p-5 text-center bg-white rounded-xl m-8 col-span-3">
+  <div class="w-3/5 mr-auto p-5 text-center bg-white rounded-xl m-8 col-span-3 shadow-xl">
            
     <img  class="mx-auto" src="/images/rh.png" alt="">
     <h2 class="mt-3 p-3 ubuntu text-2xl" style="color: #0B3434; ">Humain Ressource</h2>
-    <button class=" rounded-3xl ubuntu p-3 btn-pistache mx-auto " >Acceder</button> 
+    <button class=" rounded-3xl ubuntu p-3 btn-pistache mx-auto text-white" >Acceder</button> 
    
   </div>
    

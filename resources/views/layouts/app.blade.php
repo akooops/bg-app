@@ -28,10 +28,15 @@
             <!-- Page Content -->
             <main>
             <notification v-bind:user="{{auth()->user()}}"></notification>
-            <div class="overflow-hidden">
-                <div  class="bg-gray-100 float-left w-1/5 h-full absolute grid grid-cols-1 content-evenly">
 
-                    <div class="container relative pt-5 ">
+            <div class="overflow-hidden">
+                {{-- side-barre --}}
+                <div  class="bg-gray-100 float-left w-1/5 h-full absolute grid grid-cols-1 content-evenly">
+                    <div class="container flex ">
+                    <img class="h-28 w-28 mx-auto" src="/images/bg.png" alt="">
+                     </div> 
+
+                    <div class="container relative  ">
                         <ul class="relative">
                            <li class=" my-3">
                              <a class="flex pistache gap-7 justify-center p-6 mx-auto items-center text-sm py-4 px-6 h-12 overflow-hidden  text-ellipsis whitespace-nowrap rounded hover:text-green-900 hover:bg-gray-100 transition duration-300 ease-in-out" href="#!" data-mdb-ripple="true" data-mdb-ripple-color="dark"  >
@@ -40,10 +45,10 @@
                                
                            </a>
                            </li>
-                           <li class="my-5">
+                           <li class="my-10">
                              <a class="flex justify-center gap-7 mx-auto pistache items-center text-sm py-4 px-6 h-12 overflow-hidden text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-green-900 hover:bg-gray-100 transition duration-300 ease-in-out" href="#!" data-mdb-ripple="true" data-mdb-ripple-color="dark">
                                
-                               <h2 class=" text-3xl ubuntu">Banque</h2>
+                               <h2 class=" text-3xl ubuntu">Banque Locale</h2>
                                <font-awesome-icon icon="fa-solid fa-building-columns" class="h-7 w-7"/>
                                
                
