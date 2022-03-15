@@ -1,5 +1,8 @@
 <template>
 <v-date-picker  v-model="range" is-range />
+</template>
+
+
 
 <script>
 let dt= new Date(2020, 0, 1);

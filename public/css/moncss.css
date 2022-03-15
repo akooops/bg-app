@@ -10,11 +10,11 @@
 
 
   .bg-pistache{
-    background-color: #B2D06B;
+    background-color: rgba(178, 208, 107, 1);
   }
 
   .pistache{
-    color: #B2D06B;
+    color: rgba(178, 208, 107, 1);
   }
 
   .bg-vert{
@@ -31,4 +31,22 @@
   
   .btn-pistache:hover{
     background-color: #eeffc7;
+  }
+
+
+  .vert-sombre{
+    color: rgba(11, 52, 52, 0.6);
+
+  }
+
+
+  .border-pistache{
+    border-left: 10px solid ;
+    border-color: rgba(178, 208, 107, 1) ;
+    
+  }
+
+  .margin-left-transparent{
+    border-left: 10px solid;
+    border-color: rgba(255, 255, 255, 0);
   }

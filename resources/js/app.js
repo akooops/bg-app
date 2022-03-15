@@ -26,7 +26,10 @@ let local_url = "http://10.42.0.1:8000"
 let localhost = "http://localhost:8000"
 axios.defaults.baseURL = localhost
 
-Vue.component('departmentcard', require('./components/DepartmentCard.vue').default);
+Vue.component('sidenavv', require('./components/SideBar.vue').default);
+
+
+
 // Departments
 Vue.component('approvdepartment', require('./components/departments/ApprovDepartment.vue').default);
 Vue.component('productiondepartment', require('./components/departments/ProductionDepartment.vue').default);
