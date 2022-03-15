@@ -1,10 +1,10 @@
 <template>
     <div class="flex">
         <p class="mr-12">
-            Disponibilités <span class="font-bold">{{ caisse }}</span>
+            Disponibilités <span class="font-bold">{{ Math.round(caisse) }}</span>
         </p>
         <p class="mr-12">
-            Dettes <span class="font-bold">{{ dettes }}</span>
+            Dettes <span class="font-bold">{{ Math.round(dettes) }}</span>
         </p>
         <p>
             Jour n° <span class="font-bold">{{ time }}</span>
@@ -61,8 +61,8 @@ export default {
         return {
             time: null,
             show_menu: false,
-            caisse: "",
-            dettes: "",
+            caisse: 0,
+            dettes: 0,
         };
     },
     methods: {

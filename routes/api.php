@@ -35,7 +35,7 @@ Route::prefix("entreprise")->group(function () {
     Route::post("/machine/buy", [EntrepriseController::class, "buyMachine"]);
     Route::post("/machine/sell", [EntrepriseController::class, "sellMachine"]);
     Route::post("/machine/info", [EntrepriseController::class, "getMachinesInfo"]);
-    Route::post("/production/apply-action", [EntrepriseController::class, "applyProdAction"]);
+    Route::post("/action/apply", [EntrepriseController::class, "applyProdAction"]);
     Route::get("/marketing/indicators", [MarketingController::class, "getMarketingIndicators"]);
     Route::get("/hr/indicators", [HrController::class, "getHrIndicators"]);
     Route::post("/hr/hire", [HrController::class, "hireWorkers"]);

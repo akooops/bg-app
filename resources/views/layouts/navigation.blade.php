@@ -26,14 +26,14 @@
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ml-6">
             <simulationtime class="mr-12" v-bind:user="{{Auth()->user()}}"></simulationtime>
-                
+
             </div>
 
             <!-- Hamburger -->
-         
+
         </div>
     </div>
 
     <!-- Responsive Navigation Menu -->
-  
+
 </nav>

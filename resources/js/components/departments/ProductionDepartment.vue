@@ -52,21 +52,26 @@
                 title="Chiffre d'Affaire"
                 color="text-green-500"
                 icon="fa-coins"
-                :value="[indicators['ca'].value]"
+                :value="[indicators['ca'].value.toString()]"
             ></StatCard>
             <StatCard
                 title="Machines"
                 color="text-gray-600"
                 icon="fa-cogs"
                 :value="[
-                    'Niveau 1: ' + indicators['nb_machines_lv1'].value,
-                    'Niveau 2: ' + indicators['nb_machines_lv2'].value,
-                    'Niveau 3: ' + indicators['nb_machines_lv3'].value,
+                    'Niv. 1: ' + indicators['nb_machines_lv1'].value,
+                    'Niv. 2: ' + indicators['nb_machines_lv2'].value,
+                    'Niv. 3: ' + indicators['nb_machines_lv3'].value,
                 ]"
                 :second-value="[
                     indicators['nb_machines_lv1_busy'].value + ' occupées.',
                     indicators['nb_machines_lv2_busy'].value + ' occupées.',
                     indicators['nb_machines_lv3_busy'].value + ' occupées.',
+                ]"
+                :third-value="[
+                    '(' + Math.round(indicators['machines_lv1_health'].value * Math.pow(10, 2)) * 100 / Math.pow(10, 2) + '%)',
+                    '(' + Math.round(indicators['machines_lv2_health'].value * Math.pow(10, 2)) * 100 / Math.pow(10, 2) + '%)',
+                    '(' + Math.round(indicators['machines_lv3_health'].value * Math.pow(10, 2)) * 100 / Math.pow(10, 2) + '%)',
                 ]"
             ></StatCard>
             <StatCard
@@ -739,13 +744,9 @@ export default {
             this.getProducts();
         },
     },
-    beforeMount() {
-        this.getProducts();
-    },
     created() {
         this.updateProdData();
         this.getMarketDemands();
-        this.getProducts();
         axios
             .get("/api/navbar", {
                 params: {

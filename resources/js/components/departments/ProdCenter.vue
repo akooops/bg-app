@@ -100,7 +100,7 @@
                     </p>
                     <button
                         @click="
-                            verifyProd();
+                            getStock();
                             launch_prod_modal = true;
                         "
                         class="
@@ -212,8 +212,14 @@
                         <option value="audit">
                             Effectuer un audit qualité
                         </option>
-                        <option value="maintenance">
-                            Lancer une maintenance générale
+                        <option value="maintenance_lv1">
+                            Réparer les machines de niveau 1
+                        </option>
+                        <option value="maintenance_lv2">
+                            Réparer les machines de niveau 2
+                        </option>
+                        <option value="maintenance_lv3">
+                            Réparer les machines de niveau 3
                         </option>
                     </select>
                     <button
@@ -356,7 +362,12 @@
                                 <p>
                                     - Durée de production :
                                     <span class="text-yellow-500 font-bold">
-                                        {{ prodDelay }} j</span
+                                        {{
+                                            Math.round(
+                                                prodDelay * Math.pow(10, 2)
+                                            ) / Math.pow(10, 2)
+                                        }}
+                                        j</span
                                     >
                                 </p>
 
@@ -377,7 +388,9 @@
                                         @click="
                                             launch_prod_modal = false;
                                             launch_data.price =
-                                                selectedProd.price_min;
+                                                (selectedProd.price_min +
+                                                    selectedProd.price_max) /
+                                                2;
                                             launch_data.quantity = 1;
                                             launch_data.machine_lvl = 1;
                                         "
@@ -425,7 +438,8 @@
                                         ? machine.buy_price_lv2
                                         : machine.buy_price_lv3) *
                                     machine.transaction_nb
-                                }} DA, voulez vous continuer ?
+                                }}
+                                DA, voulez vous continuer ?
                             </p>
                             <p v-if="machine.transaction == 'sell'">
                                 Vous allez vendre
@@ -451,7 +465,8 @@
                                         ? machine.sell_price_lv2
                                         : machine.sell_price_lv3) *
                                     machine.transaction_nb
-                                }} DA, voulez vous continuer ?
+                                }}
+                                DA, voulez vous continuer ?
                             </p>
                             <div
                                 class="
@@ -597,12 +612,22 @@ export default {
             show_error: false,
             message: "",
             action: {
-                value: "",
+                value: "5s",
                 price: {
                     "5s": 40000,
                     audit: 60000,
-                    maintenance:
-                        15000 * this.indicators["nb_machines_lv1"]["value"],
+                    maintenance_lv1:
+                        10000 *
+                        (1 - this.indicators["machines_lv1_health"]["value"]) *
+                        this.indicators["nb_machines_lv1"]["value"],
+                    maintenance_lv2:
+                        15000 *
+                        (1 - this.indicators["machines_lv2_health"]["value"]) *
+                        this.indicators["nb_machines_lv2"]["value"],
+                    maintenance_lb3:
+                        20000 *
+                        (1 - this.indicators["machines_lv3_health"]["value"]) *
+                        this.indicators["nb_machines_lv3"]["value"],
                 },
                 phrase: "",
                 result_phrase: "",
@@ -654,7 +679,7 @@ export default {
         },
         prodDelay() {
             let coeff =
-                this.indicators["productivity_coeff"].value /
+                (this.indicators["5s_day"].value < 30 ? 1.5 : 1) *
                 (this.launch_data.machine_lvl == 1
                     ? this.machine.speed_lv1
                     : this.launch_data.machine_lvl == 2
@@ -697,7 +722,11 @@ export default {
                     this.message = resp.data.message;
                     this.launch_prod_modal = false;
 
-                    this.launch_data.price = this.selectedProd.price_min;
+                    this.launch_data.prod_id = 1;
+                    this.launch_data.price =
+                        (this.selectedProd.price_min +
+                            this.selectedProd.price_max) /
+                        2;
                     this.launch_data.quantity = 1;
                     this.launch_data.machine_lvl = 1;
 
@@ -708,11 +737,15 @@ export default {
                 .catch((e) => {
                     this.show_error = true;
                     this.message =
-                        "Oops ! une erreur est survenue, veuillez infomrer un organisateur";
+                        "Oops ! Une erreur est survenue, veuillez infomrer un organisateur";
 
                     this.launch_prod_modal = false;
 
-                    this.launch_data.price = this.selectedProd.price_min;
+                    this.launch_data.prod_id = 1;
+                    this.launch_data.price =
+                        (this.selectedProd.price_min +
+                            this.selectedProd.price_max) /
+                        2;
                     this.launch_data.quantity = 1;
                     this.launch_data.machine_lvl = 1;
 
@@ -728,6 +761,15 @@ export default {
                 })
                 .then((resp) => {
                     this.stock = resp.data;
+
+                    this.launch_data.prod_id = 1;
+                    this.launch_data.machine_lvl = 1;
+                    this.launch_data.quantity = 1;
+                    this.launch_data.price =
+                        (this.selectedProd.price_min +
+                            this.selectedProd.price_max) /
+                        2;
+
                     this.verifyProd();
                 });
         },
@@ -865,6 +907,7 @@ export default {
                 });
         },
         confirmMachineTransaction(type) {
+            this.machine.show_transaction_modal = false;
             if (this.machine.transaction == "buy") {
                 if (
                     this.machine.buy_price * this.machine.transaction_nb >
@@ -888,6 +931,16 @@ export default {
                         this.machine.show_transaction_modal = false;
                         this.machine.transaction_nb = 1;
                         this.machine.transaction_lv = 1;
+
+                        if (resp.data.success) {
+                            this.show_success = true;
+                            this.show_error = false;
+                        } else {
+                            this.show_success = false;
+                            this.show_error = true;
+                        }
+
+                        this.message = resp.data.message;
                     });
             } else if (this.machine.transaction == "sell") {
                 if (
@@ -922,6 +975,16 @@ export default {
                         this.machine.show_transaction_modal = false;
                         this.machine.transaction_nb = 1;
                         this.machine.transaction_lv = 1;
+
+                        if (resp.data.success) {
+                            this.show_success = true;
+                            this.show_error = false;
+                        } else {
+                            this.show_success = false;
+                            this.show_error = true;
+                        }
+
+                        this.message = resp.data.message;
                     });
             }
         },
@@ -943,18 +1006,35 @@ export default {
                     this.action.result_phrase =
                         "Votre taux de rebut sera plus faible.";
                     break;
-                case "maintenance":
+                case "maintenance_lv1":
                     this.action.phrase =
-                        "Vous allez lancer une maintenance générale, celà vous coutera " +
-                        this.action.price["maintenance"] +
+                        "Vous allez réparer vos machines de niveau 1, celà vous coutera " +
+                        this.action.price["maintenance_lv1"] +
                         " DA";
                     this.action.result_phrase =
-                        "Vous pouvez vendre vos machines avec un prix plus élevé.";
+                        "Vous pouvez vendre vos machines de niveau 1 avec un prix plus élevé.";
+                    break;
+                case "maintenance_lv2":
+                    this.action.phrase =
+                        "Vous allez réparer vos machines de niveau 2, celà vous coutera " +
+                        this.action.price["maintenance_lv2"] +
+                        " DA";
+                    this.action.result_phrase =
+                        "Vous pouvez vendre vos machines de niveau 2 avec un prix plus élevé.";
+                    break;
+                case "maintenance_lv3":
+                    this.action.phrase =
+                        "Vous allez réparer vos machines de niveau 3, celà vous coutera " +
+                        this.action.price["maintenance_lv3"] +
+                        " DA";
+                    this.action.result_phrase =
+                        "Vous pouvez vendre vos machines de niveau 3 avec un prix plus élevé.";
                     break;
             }
             this.action.show_info = true;
         },
         confirmAction() {
+            this.action.show_info = false;
             let price = this.action.price[this.action.value];
             if (price > this.caisse) {
                 this.show_error = true;
@@ -964,23 +1044,29 @@ export default {
                 return "";
             }
             axios
-                .post("/api/entreprise/production/apply-action", {
+                .post("/api/entreprise/action/apply", {
                     type: this.action.value,
                     price: price,
                     entreprise_id: this.user.id,
                 })
                 .then((resp) => {
                     this.action.show_info = false;
+
+                    if (resp.data.success) {
+                        this.show_success = true;
+                        this.show_error = false;
+                    } else {
+                        this.show_success = false;
+                        this.show_error = true;
+                    }
+
+                    this.message = resp.data.message;
                 });
         },
     },
     created() {
         this.getMachineInfo();
         this.getStock();
-        this.launch_data.prod_id = 1;
-        this.launch_data.machine_lvl = 1;
-        this.launch_data.price =
-            (this.selectedProd.price_min + this.selectedProd.price_max) / 2;
     },
 };
 </script>

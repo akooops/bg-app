@@ -76,7 +76,7 @@ class MonthlyCosts implements ShouldQueue
             $cost = (int) ($salary_cost + $stock_cost + $pollution_cost);
             if ($cost > $caisse) {
                 $difference = $cost - $caisse;
-                $this->updateIndicator("caisse", $entreprise->id, -1 * $caisse);
+                $this->setIndicator("caisse", $entreprise->id, 0);
                 $new_loan =  Loan::create([
                     "entreprise_id" => $entreprise->id,
                     "banker_id" => Banker::first()->id,
@@ -120,32 +120,41 @@ class MonthlyCosts implements ShouldQueue
             if ($workers_mood - $workers_mood_decay_rate >= 0) {
                 $this->updateIndicator("workers_mood", $entreprise->id, -1 * $workers_mood_decay_rate);
             } else {
-                $this->updateIndicator("workers_mood", $entreprise->id, -1 * $workers_mood);
+                $this->setIndicator("workers_mood", $entreprise->id, 0);
             }
 
+            $nb_machines_lv1 = $this->getIndicator('nb_machines_lv1', $entreprise->id)['value'];
             $machines_lv1_health = $this->getIndicator('machines_lv1_health', $entreprise->id)['value'];
-
             $machines_lv1_durability = nova_get_setting('machines_lv1_durability');
-            if ($machines_lv1_health - $machines_lv1_durability > 0) {
-                $this->updateIndicator("machines_lv1_health", $entreprise->id, -1 * $machines_lv1_durability);
-            } else {
-                $this->updateIndicator("machines_lv1_health", $entreprise->id, -1 * $machines_lv1_health);
+            if ($nb_machines_lv1 > 0) {
+                if ($machines_lv1_health - $machines_lv1_durability > 0) {
+                    $this->updateIndicator("machines_lv1_health", $entreprise->id, -1 * $machines_lv1_durability);
+                } else {
+                    $this->setIndicator("machines_lv1_health", $entreprise->id, 0);
+                }
             }
-
+           
+            $nb_machines_lv2 = $this->getIndicator('nb_machines_lv2', $entreprise->id)['value'];
             $machines_lv2_health = $this->getIndicator('machines_lv2_health', $entreprise->id)['value'];
             $machines_lv2_durability = nova_get_setting('machines_lv2_durability');
-            if ($machines_lv2_health - $machines_lv2_durability > 0) {
-                $this->updateIndicator("machines_lv2_health", $entreprise->id, -1 * $machines_lv2_durability);
-            } else {
-                $this->updateIndicator("machines_lv2_health", $entreprise->id, -1 * $machines_lv2_health);
+            if ($nb_machines_lv2 > 0) {
+                if ($machines_lv2_health - $machines_lv2_durability > 0 && $nb_machines_lv2 > 0) {      
+                    $this->updateIndicator("machines_lv2_health", $entreprise->id, -1 * $machines_lv2_durability);
+                } else {
+                    $this->setIndicator("machines_lv2_health", $entreprise->id, 0);
+                }
             }
 
+            $nb_machines_lv3 = $this->getIndicator('nb_machines_lv3', $entreprise->id)['value'];
             $machines_lv3_health = $this->getIndicator('machines_lv3_health', $entreprise->id)['value'];
             $machines_lv3_durability = nova_get_setting('machines_lv3_durability');
-            if ($machines_lv3_health - $machines_lv3_durability > 0) {
-                $this->updateIndicator("machines_lv3_health", $entreprise->id, -1 * $machines_lv3_durability);
-            } else {
-                $this->updateIndicator("machines_lv3_health", $entreprise->id, -1 * $machines_lv3_health);
+
+            if ($nb_machines_lv3) {
+                if ($machines_lv3_health - $machines_lv3_durability > 0 && $nb_machines_lv3 > 0) {
+                    $this->updateIndicator("machines_lv3_health", $entreprise->id, -1 * $machines_lv3_durability);
+                } else {
+                    $this->setIndicator("machines_lv3_health", $entreprise->id, 0);
+                }
             }
 
             $notification = [
