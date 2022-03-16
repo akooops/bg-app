@@ -102,7 +102,10 @@ class EntrepriseController extends Controller
         $caisse = $this->getIndicator('caisse', auth()->user()->id)["value"];
         return view("departments.hr", [
             "workshop_price" => nova_get_setting('workshop_price', ''),
-            "salary" => nova_get_setting("salary_production", ''), "caisse" => $caisse
+            "salary_lv1" => nova_get_setting("salary_lv1"),
+            "salary_lv2" => nova_get_setting("salary_lv2"),
+            "bonus_coeff" => nova_get_setting("bonus_coeff"),
+            "caisse" => $caisse
         ]);
     }
 
@@ -320,8 +323,13 @@ class EntrepriseController extends Controller
             $nb_busy_machines = $this->getIndicator("nb_machines_lv3_busy", $entreprise_id)["value"];
         }
 
+        if ($nb_machines < $nb_machines_needed) {
+            $message = "Impossible de lancer la production: Machines insuffisantes.";
+            return Response::json(["message" => $message, "success" => false], 200);
+        }
+
         if ($nb_machines - $nb_busy_machines < $nb_machines_needed) {
-            $message = "Impossible de lancer la production: machines libres insuffisantes.";
+            $message = "Impossible de lancer la production: Machines libres insuffisantes.";
             return Response::json(["message" => $message, "success" => false], 200);
         }
 
@@ -458,7 +466,20 @@ class EntrepriseController extends Controller
                 "type" => "TransactionFailed",
                 "entreprise_id" => $entreprise_id,
                 "message" => $message,
-                "title" => "Production non vendue"
+                "title" => "Production déjà vendue"
+            ];
+            event(new NewNotification($notification));
+            return Response::json(["message" => $message], 200);
+        }
+
+        $left_demand = DB::table("products")->where("id", "=", $product_id)->get();
+        if ($left_demand <= 0) {
+            $message = "Il n'y a plus de demande sur le produit" . $name . "pour l'instant.";
+            $notification = [
+                "type" => "TransactionFailed",
+                "entreprise_id" => $entreprise_id,
+                "message" => $message,
+                "title" => "Pas de demande"
             ];
             event(new NewNotification($notification));
             return Response::json(["message" => $message], 200);
@@ -605,37 +626,37 @@ class EntrepriseController extends Controller
 
         if ($machines_health < 0.2) {
             $message = "Vous ne pouvez pas vendre des machines dont la santé est inférieure à 20%";
-            // $notification = [
-            //     "type" => "TransactionFailed",
-            //     "entreprise_id" => $entreprise_id,
-            //     "message" => $message,
-            //     "title" => "Echec de la vente"
-            // ];
-            // event(new NewNotification($notification));
+            $notification = [
+                "type" => "TransactionFailed",
+                "entreprise_id" => $entreprise_id,
+                "message" => $message,
+                "title" => "Echec de la vente"
+            ];
+            event(new NewNotification($notification));
             return Response::json(["message" => $message, "success" => false], 200);
         }
 
         if ($nb_machines - $number < 0) {
             $message = "Vous ne pouvez pas vendre " . $number . " machine(s) de niveau " . $level . ": vous n'en avez pas autant.";
-            // $notification = [
-            //     "type" => "TransactionFailed",
-            //     "entreprise_id" => $entreprise_id,
-            //     "message" => $message,
-            //     "title" => "Echec de la vente"
-            // ];
-            // event(new NewNotification($notification));
+            $notification = [
+                "type" => "TransactionFailed",
+                "entreprise_id" => $entreprise_id,
+                "message" => $message,
+                "title" => "Echec de la vente"
+            ];
+            event(new NewNotification($notification));
             return Response::json(["message" => $message, "success" => false], 200);
         }
 
         if ($nb_machines - $nb_busy_machines < $number) {
             $message = "Vous ne pouvez pas vendre " . $number . " machine(s) de niveau " . $level . ": les machines en production ne peuvent pas être venudes.";
-            // $notification = [
-            //     "type" => "TransactionFailed",
-            //     "entreprise_id" => $entreprise_id,
-            //     "message" => $message,
-            //     "title" => "Echec de la vente"
-            // ];
-            // event(new NewNotification($notification));
+            $notification = [
+                "type" => "TransactionFailed",
+                "entreprise_id" => $entreprise_id,
+                "message" => $message,
+                "title" => "Echec de la vente"
+            ];
+            event(new NewNotification($notification));
             return Response::json(["message" => $message, "success" => false], 200);
         }
 
@@ -657,10 +678,24 @@ class EntrepriseController extends Controller
 
         if ($level == 1) {
             $this->updateIndicator("nb_machines_lv1", $entreprise_id, -1 * $number);
-        } else if ($level == 2) {
+
+            if ($this->getIndicator("nb_machines_lv1", $entreprise_id) == 0) {
+                $this->setIndicator("machines_lv1_health", $entreprise_id, 1);
+            }
+        }
+        else if ($level == 2) {
             $this->updateIndicator("nb_machines_lv2", $entreprise_id, -1 * $number);
-        } else if ($level == 3) {
+
+            if ($this->getIndicator("nb_machines_lv2", $entreprise_id) == 0) {
+                $this->setIndicator("machines_lv2_health", $entreprise_id, 1);
+            }
+        }
+        else if ($level == 3) {
             $this->updateIndicator("nb_machines_lv3", $entreprise_id, -1 * $number);
+
+            if ($this->getIndicator("nb_machines_lv3", $entreprise_id) == 0) {
+                $this->setIndicator("machines_lv3_health", $entreprise_id, 1);
+            }
         }
 
         $message = "Vous avez vendu " . $number . " machine(s) de niveau " . $level . " au prix de " . $sell_price * $number . " DA";
@@ -721,7 +756,7 @@ class EntrepriseController extends Controller
                     ];
                     event(new NewNotification($notification));
                     return Response::json(["message" => $message, "success" => false], 200);
-                } 
+                }
                 else {
                     $this->updateIndicator("caisse", $entreprise_id, -1 * $price);
                     $this->setIndicator("5s_day", $entreprise_id, 0);
@@ -750,7 +785,7 @@ class EntrepriseController extends Controller
                     ];
                     event(new NewNotification($notification));
                     return Response::json(["message" => $message, "success" => false], 200);
-                } 
+                }
                 else {
                     $this->updateIndicator("reject_rate", $entreprise_id, -0.01);
                     $this->updateIndicator("caisse", $entreprise_id, -1 * $price);
@@ -791,7 +826,7 @@ class EntrepriseController extends Controller
                     ];
                     event(new NewNotification($notification));
                     return Response::json(["message" => $message, "success" => false], 200);
-                } 
+                }
                 else {
                     $this->setIndicator("machines_lv1_health", $entreprise_id, 0.9);
                     $this->updateIndicator("caisse", $entreprise_id, -1 * $price);

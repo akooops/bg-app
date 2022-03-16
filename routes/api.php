@@ -39,6 +39,7 @@ Route::prefix("entreprise")->group(function () {
     Route::get("/marketing/indicators", [MarketingController::class, "getMarketingIndicators"]);
     Route::get("/hr/indicators", [HrController::class, "getHrIndicators"]);
     Route::post("/hr/hire", [HrController::class, "hireWorkers"]);
+    Route::post("/hr/fire", [HrController::class, "fireWorkers"]);
     Route::post("/hr/launch-workshop", [HrController::class, "launchWorkshop"]);
     Route::post("/hr/prime-workers", [HrController::class, "primeWorkers"]);
 

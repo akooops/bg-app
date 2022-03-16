@@ -795,6 +795,35 @@ export default {
                     this.getProdNumbers();
                     this.$forceUpdate();
                 }
+                if (e.notification.type == "EmployeesHired") {
+                    this.getProdNumbers();
+                    this.$forceUpdate();
+                }
+
+                if (e.notification.type == "EmployeesTrained") {
+                    this.getProdNumbers();
+                    this.$forceUpdate();
+                }
+
+                if (e.notification.type == "EmployeesBonus") {
+                    this.getProdNumbers();
+                    this.$forceUpdate();
+                }
+
+                if (e.notification.type == "EmployeesFired") {
+                    this.getProdNumbers();
+                    this.$forceUpdate();
+                }
+
+                if (e.notification.type == "EmployeesQuitting") {
+                    this.getProdNumbers();
+                    this.$forceUpdate();
+                }
+
+                if (e.notification.type == "MachinesWorkersUpdate") {
+                    this.getProdNumbers();
+                    this.$forceUpdate();
+                }
             }
         );
 

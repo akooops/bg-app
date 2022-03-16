@@ -559,7 +559,7 @@
     </div>
 </template>
 
-<script>
+<script type="text/javascript">
 import Modal from "../Modal";
 export default {
     name: "ProdCenter",
