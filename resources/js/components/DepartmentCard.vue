@@ -1,17 +1,5 @@
 <template>
-    <div
-        class="
-            w-1/3
-            mr-3
-            my-2
-            max-w-sm
-            overflow-hidden
-            rounded
-            border
-            bg-white
-            shadow
-        "
-    >
+    <div class="w-full rounded-lg border bg-white shadow">
         <div class="relative">
             <div class="flex h-32 justify-center items-center">
                 <i :class="'fa ' + icon" class="text-blue-500 text-6xl"></i>
@@ -22,7 +10,7 @@
                 <a
                     class="hover:text-blue-500"
                     :href="'/entreprise/department/' + name"
-                    >Département {{ name }}</a
+                    >{{ name }}</a
                 >
             </h3>
 
