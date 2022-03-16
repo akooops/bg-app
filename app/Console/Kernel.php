@@ -74,7 +74,7 @@ class Kernel extends ConsoleKernel
                     $workers_mood = $this->getIndicator("workers_mood", $entreprise->id)["value"];
                     $workers_mood_th = nova_get_setting("mood_quitting_threshold");
 
-                    if ($workers_mood > $workers_mood_th && $workers_mood <= $workers_mood_th + 0.05) {
+                    if ($workers_mood - nova_get_setting('workers_mood_decay_rate') < $workers_mood_th) {
 
                         $notification = [
                             "type" => "MoodWarning",
