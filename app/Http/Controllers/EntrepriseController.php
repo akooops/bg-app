@@ -679,21 +679,21 @@ class EntrepriseController extends Controller
         if ($level == 1) {
             $this->updateIndicator("nb_machines_lv1", $entreprise_id, -1 * $number);
 
-            if ($this->getIndicator("nb_machines_lv1", $entreprise_id) == 0) {
+            if ($this->getIndicator("nb_machines_lv1", $entreprise_id)["value"] == 0) {
                 $this->setIndicator("machines_lv1_health", $entreprise_id, 1);
             }
         }
         else if ($level == 2) {
             $this->updateIndicator("nb_machines_lv2", $entreprise_id, -1 * $number);
 
-            if ($this->getIndicator("nb_machines_lv2", $entreprise_id) == 0) {
+            if ($this->getIndicator("nb_machines_lv2", $entreprise_id)["value"] == 0) {
                 $this->setIndicator("machines_lv2_health", $entreprise_id, 1);
             }
         }
         else if ($level == 3) {
             $this->updateIndicator("nb_machines_lv3", $entreprise_id, -1 * $number);
 
-            if ($this->getIndicator("nb_machines_lv3", $entreprise_id) == 0) {
+            if ($this->getIndicator("nb_machines_lv3", $entreprise_id)["value"] == 0) {
                 $this->setIndicator("machines_lv3_health", $entreprise_id, 1);
             }
         }
