@@ -13,7 +13,7 @@
             <div class="grid grid-rows-2 grid-cols-3 gap-x-6 gap-y-10 justify-between">
 
                 @foreach ($departments as $dpt)
-                <DepartmentCard name="{{ $dpt->name }}" icon="{{ $dpt->icon }}"></DepartmentCard>
+                <DepartmentCard name="{{ $dpt->name }}"></DepartmentCard>
                 @endforeach
 
             </div>

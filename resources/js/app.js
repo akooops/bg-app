@@ -1,6 +1,7 @@
 require("./bootstrap");
 
 import Vue from "vue";
+import VCalendar from "v-calendar";
 
 axios.defaults.withCredentials = false;
 let local_url = "http://10.42.0.1:8000";
@@ -77,6 +78,12 @@ Vue.component(
     "disponibility",
     require("./components/Disponibility.vue").default
 );
+
+Vue.component("calendar", require("./components/Calendar.vue").default);
+
+Vue.use(VCalendar, {
+    componentPrefix: "vc", // Use <vc-calendar /> instead of <v-calendar />
+});
 
 const app = new Vue({
     el: "#app",

@@ -27,16 +27,19 @@
         <!-- Page Content -->
         <main class='flex'>
             <!-- <notification v-bind:user="{{auth()->user()}}"></notification> -->
-            <div class="w-1/4 z-0 bg-white flex py-10 gap-10 flex-col min-h-screen">
-                <x-nav-link :href="route('dashboard')" :path='["/assets/icons/dashboard.svg"]' :active="request()->routeIs('dashboard')">
-                    {{ __('Dashboard') }}
-                </x-nav-link>
-                <x-nav-link href="/entreprise/loans" :path='["/assets/icons/banque.svg"]' :active="request()->routeIs('loans')">
-                    {{ __('Banque Locale') }}
-                </x-nav-link>
-                <x-nav-link href="/leaderboard" :path='["/assets/icons/classement.svg"]' :active="request()->routeIs('leaderboard')">
-                    {{ __('Classement') }}
-                </x-nav-link>
+            <div class="flex flex-col w-1/4 z-10 bg-white py-10 min-h-screen gap-10">
+                <div class=" flex gap-8 flex-col">
+                    <x-nav-link :href="route('dashboard')" :path='["/assets/icons/dashboard.svg"]' :active="request()->routeIs('dashboard')">
+                        {{ __('Dashboard') }}
+                    </x-nav-link>
+                    <x-nav-link href="/entreprise/loans" :path='["/assets/icons/banque.svg"]' :active="request()->routeIs('loans')">
+                        {{ __('Banque Locale') }}
+                    </x-nav-link>
+                    <x-nav-link href="/leaderboard" :path='["/assets/icons/classement.svg"]' :active="request()->routeIs('leaderboard')">
+                        {{ __('Classement') }}
+                    </x-nav-link>
+                </div>
+                <Calendar v-bind:user="{{ Auth()->user() }}"></Calendar>
             </div>
             {{ $slot }}
         </main>
