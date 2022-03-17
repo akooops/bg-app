@@ -85,7 +85,10 @@ export default {
         };
     },
     watch: {
-
+        "data": function() {
+            this.option.series.data = this.data;
+            this.$refs.chart.set
+        }
     },
     mounted() {
         this.option.series[0].data = this.data;

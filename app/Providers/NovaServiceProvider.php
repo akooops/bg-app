@@ -57,6 +57,11 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
             Number::make('Durabilité machines niveau 2', 'machines_lv2_durability')->step('0.01'),
             Number::make('Durabilité machines niveau 3', 'machines_lv3_durability')->step('0.01'),
 
+            // Production selling parameter
+            Number::make('Pourcentage de production à vendre', 'production_percentage_to_sell')->step('0.01'),
+
+            Number::make('Cout unitaire de distribution', 'dist_unit_cost'),
+
             // Cost of a pollution unit
             Number::make('Cout unitaire pollution', 'pollution_unit_cost'),
 
@@ -88,6 +93,9 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
             'machines_lv1_durability' => 'float',
             'machines_lv2_durability' => 'float',
             'machines_lv3_durability' => 'float',
+
+            'production_percentage_to_sell' => 'float',
+            'dist_unit_cost' => 'float',
 
             'pollution_unit_cost' => 'float',
 

@@ -1,6 +1,6 @@
  <template>
     <div class="w-full">
-        <div class="w-full">
+        <div v-if="indicators_loaded" class="w-full">
             <nav class="border-b text-sm flex justify-start">
                 <button
                     @click="page_index = 'prod_stats'"
@@ -52,7 +52,7 @@
                 title="Chiffre d'Affaire"
                 color="text-green-500"
                 icon="fa-coins"
-                :value="[indicators['ca'].value.toString()]"
+                :value="[indicators['ca'].value.toString() + ' DA']"
             ></StatCard>
             <StatCard
                 title="Machines"
@@ -69,9 +69,30 @@
                     indicators['nb_machines_lv3_busy'].value + ' occupées.',
                 ]"
                 :third-value="[
-                    '(' + Math.round(indicators['machines_lv1_health'].value * Math.pow(10, 2)) * 100 / Math.pow(10, 2) + '%)',
-                    '(' + Math.round(indicators['machines_lv2_health'].value * Math.pow(10, 2)) * 100 / Math.pow(10, 2) + '%)',
-                    '(' + Math.round(indicators['machines_lv3_health'].value * Math.pow(10, 2)) * 100 / Math.pow(10, 2) + '%)',
+                    '(' +
+                        (Math.round(
+                            indicators['machines_lv1_health'].value *
+                                Math.pow(10, 2)
+                        ) *
+                            100) /
+                            Math.pow(10, 2) +
+                        '%)',
+                    '(' +
+                        (Math.round(
+                            indicators['machines_lv2_health'].value *
+                                Math.pow(10, 2)
+                        ) *
+                            100) /
+                            Math.pow(10, 2) +
+                        '%)',
+                    '(' +
+                        (Math.round(
+                            indicators['machines_lv3_health'].value *
+                                Math.pow(10, 2)
+                        ) *
+                            100) /
+                            Math.pow(10, 2) +
+                        '%)',
                 ]"
             ></StatCard>
             <StatCard
@@ -81,7 +102,9 @@
                 :value="[
                     'Simple: ' + indicators['nb_workers_lv1'].value,
                     'Expert: ' + indicators['nb_workers_lv2'].value,
-                    'Humeur: ' + Math.round(indicators['workers_mood'].value * 100) + '%',
+                    'Humeur: ' +
+                        Math.round(indicators['workers_mood'].value * 100) +
+                        '%',
                 ]"
                 :second-value="[
                     indicators['nb_workers_lv1_busy'].value + ' occupés.',
@@ -180,12 +203,6 @@
         <div v-if="page_index == 'production_list'" class="w-full">
             <div classs="inline-flex w-full  items-center justify-between">
                 <h1 class="text-lg font-extrabold">Vos Productions</h1>
-                <button
-                    class="bg-blue-500 px-4 py-1 my-2 text-white"
-                    @click="getProductions"
-                >
-                    Actualiser
-                </button>
             </div>
             <table class="border-collapse w-full">
                 <thead>
@@ -473,8 +490,10 @@
                             :class="
                                 prod.status_code == 'pending'
                                     ? 'text-yellow-500'
-                                    : prod.status_code == 'completed'
+                                    : prod.status_code == 'sold'
                                     ? 'text-green-500'
+                                    : prod.status_code == 'selling'
+                                    ? 'text-blue-500'
                                     : 'text-black'
                             "
                             class="
@@ -506,16 +525,15 @@
                         >
                             <button
                                 @click="sell(prod)"
-                                class="text-white py-2 px-4 rounded"
-                                v-bind:class="{
-                                    'bg-green-400':
-                                        prod.status_code == 'completed',
-                                    'hover:bg-green-800':
-                                        prod.status_code == 'completed',
-                                    'bg-blue-400': prod.status_code == 'sold',
-                                }"
+                                class="
+                                    text-white
+                                    py-2
+                                    px-4
+                                    rounded
+                                    bg-green-400
+                                    hover:bg-green-800
+                                "
                                 v-if="prod.status_code == 'completed'"
-                                :disabled="prod.status_code == 'sold'"
                             >
                                 {{
                                     prod.status_code == "sold"
@@ -631,6 +649,7 @@ export default {
             product_info: null,
             average_prices: [],
             caisse: 0,
+            indicators_loaded: false,
         };
     },
     computed: {
@@ -660,6 +679,7 @@ export default {
                 .then((resp) => {
                     this.indicators = resp.data;
                     this.show_stat_cards = true;
+                    this.indicators_loaded = true;
                 });
         },
         async getMarketDemands() {
@@ -762,65 +782,22 @@ export default {
         window.Echo.channel("entreprise_" + this.user.id).listen(
             "NewNotification",
             (e) => {
-                if (e.notification.type == "ProductionSold") {
-                    this.updateProdData();
-                    this.getProducts();
-                    this.$forceUpdate();
-                }
-                if (e.notification.type == "ProductionDone") {
+                if (e.notification.type == "ProductionUpdate") {
                     this.updateProdData();
                     this.$forceUpdate();
                 }
-                if (e.notification.type == "ProductionLaunched") {
+
+                if (e.notification.type == "ActionUpdate") {
                     this.updateProdData();
                     this.$forceUpdate();
                 }
-                if (e.notification.type == "MachineBought") {
-                    this.getProdNumbers();
-                    this.$forceUpdate();
-                }
-                if (e.notification.type == "MachineSold") {
-                    this.getProdNumbers();
-                    this.$forceUpdate();
-                }
-                if (e.notification.type == "Information") {
-                    this.getProdNumbers();
-                    this.$forceUpdate();
-                }
-                if (e.notification.type == "TransactionFailed") {
-                    this.getProdNumbers();
-                    this.$forceUpdate();
-                }
-                if (e.notification.type == "MachinesWorkersUpdate") {
-                    this.getProdNumbers();
-                    this.$forceUpdate();
-                }
-                if (e.notification.type == "EmployeesHired") {
+
+                if (e.notification.type == "MachinesUpdate") {
                     this.getProdNumbers();
                     this.$forceUpdate();
                 }
 
-                if (e.notification.type == "EmployeesTrained") {
-                    this.getProdNumbers();
-                    this.$forceUpdate();
-                }
-
-                if (e.notification.type == "EmployeesBonus") {
-                    this.getProdNumbers();
-                    this.$forceUpdate();
-                }
-
-                if (e.notification.type == "EmployeesFired") {
-                    this.getProdNumbers();
-                    this.$forceUpdate();
-                }
-
-                if (e.notification.type == "EmployeesQuitting") {
-                    this.getProdNumbers();
-                    this.$forceUpdate();
-                }
-
-                if (e.notification.type == "MachinesWorkersUpdate") {
+                if (e.notification.type == "WorkersUpdate") {
                     this.getProdNumbers();
                     this.$forceUpdate();
                 }

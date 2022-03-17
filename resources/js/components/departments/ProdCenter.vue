@@ -606,7 +606,7 @@ export default {
                 transaction_lv: 1,
             },
             can_produce_msg: "",
-            can_produce: true,
+            can_produce: false,
             stock: {},
             show_success: false,
             show_error: false,

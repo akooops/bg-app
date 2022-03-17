@@ -37,6 +37,11 @@ class MonthlyCosts implements ShouldQueue
      */
     public function handle()
     {
+        $current_date = nova_get_setting("current_date");
+        if ($current_date % 30 != 0) {
+            return;
+        }
+
         $salary_lv1 = (int) nova_get_setting('salary_lv1');
         $salary_lv2 = (int) nova_get_setting('salary_lv2');
 
@@ -115,13 +120,7 @@ class MonthlyCosts implements ShouldQueue
                 event(new NewNotification($notification));
             }
 
-            $workers_mood = $this->getIndicator("workers_mood", $entreprise->id)['value'];
-            $workers_mood_decay_rate = nova_get_setting('workers_mood_decay_rate');
-            if ($workers_mood - $workers_mood_decay_rate >= 0) {
-                $this->updateIndicator("workers_mood", $entreprise->id, -1 * $workers_mood_decay_rate);
-            } else {
-                $this->setIndicator("workers_mood", $entreprise->id, 0);
-            }
+
 
             $nb_machines_lv1 = $this->getIndicator('nb_machines_lv1', $entreprise->id)['value'];
             $machines_lv1_health = $this->getIndicator('machines_lv1_health', $entreprise->id)['value'];
@@ -133,12 +132,12 @@ class MonthlyCosts implements ShouldQueue
                     $this->setIndicator("machines_lv1_health", $entreprise->id, 0);
                 }
             }
-           
+
             $nb_machines_lv2 = $this->getIndicator('nb_machines_lv2', $entreprise->id)['value'];
             $machines_lv2_health = $this->getIndicator('machines_lv2_health', $entreprise->id)['value'];
             $machines_lv2_durability = nova_get_setting('machines_lv2_durability');
             if ($nb_machines_lv2 > 0) {
-                if ($machines_lv2_health - $machines_lv2_durability > 0 && $nb_machines_lv2 > 0) {      
+                if ($machines_lv2_health - $machines_lv2_durability > 0 && $nb_machines_lv2 > 0) {
                     $this->updateIndicator("machines_lv2_health", $entreprise->id, -1 * $machines_lv2_durability);
                 } else {
                     $this->setIndicator("machines_lv2_health", $entreprise->id, 0);
@@ -158,12 +157,12 @@ class MonthlyCosts implements ShouldQueue
             }
 
             $notification = [
-                "type" => "MachinesWorkersUpdate",
+                "type" => "MachinesUpdate",
                 "status" => "info",
                 "entreprise_id" => $entreprise->id,
                 "data" => [],
-                "message" => "mood and health decay",
-                "title" => "mood and health decay"
+                "message" => "Santé des machines",
+                "title" => "La santé des machines décroit"
             ];
             event(new NewNotification($notification));
         }

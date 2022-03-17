@@ -85,7 +85,7 @@ class ProductionScheduler implements ShouldQueue
 
         $message = "La production de " . $this->production["quantity"] . " unités de " . $product->name . " est terminée.";
         $notification = [
-            "type" => "ProductionDone",
+            "type" => "ProductionUpdate",
             "entreprise_id" => $entreprise_id,
             "message" => $message,
             "title" => "Production Finie"

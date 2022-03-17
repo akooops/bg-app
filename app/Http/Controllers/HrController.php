@@ -41,7 +41,7 @@ class HrController extends Controller
 
         $message = "Début des protocoles de recrutement pour " . $nb_workers . " employé(s)";
         $notification = [
-            "type" => "EmployeesHired",
+            "type" => "WorkersUpdate",
             "entreprise_id" => $entreprise_id,
             "message" => $message,
             "title" => "Employés recrutés"
@@ -87,7 +87,7 @@ class HrController extends Controller
 
         $message = "Formation de " . $nb_workers_to_train . " employé(s) réussie!";
         $notification = [
-            "type" => "EmployeesTrained",
+            "type" => "WorkersUpdate",
             "entreprise_id" => $request->entreprise_id,
             "message" => $message,
             "title" => "Employés formés"
@@ -142,7 +142,7 @@ class HrController extends Controller
 
         $message = "Primes attribuées, l'humeur des employés augmente.";
         $notification = [
-            "type" => "EmployeesBonus",
+            "type" => "WorkersUpdate",
             "entreprise_id" => $request->entreprise_id,
             "message" => $message,
             "title" => "Primes attribuées"
@@ -200,7 +200,7 @@ class HrController extends Controller
 
         $message = "Licenciement de " . $nb_workers_lv1_to_fire . " employé(s) simple(s) et " . $nb_workers_lv2_to_fire . " employé(s) expert(s) réussi.";
         $notification = [
-            "type" => "EmployeesFired",
+            "type" => "WorkersUpdate",
             "entreprise_id" => $entreprise_id,
             "message" => $message,
             "title" => "Employés licenciés"

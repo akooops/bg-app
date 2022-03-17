@@ -680,32 +680,13 @@ export default {
         window.Echo.channel("entreprise_" + this.user.id).listen(
             "NewNotification",
             (e) => {
-                if (e.notification.type == "EmployeesHired") {
+
+                if (e.notification.type == "MachinesUpdate") {
                     this.getIndiators();
                     this.$forceUpdate();
                 }
 
-                if (e.notification.type == "EmployeesTrained") {
-                    this.getIndiators();
-                    this.$forceUpdate();
-                }
-
-                if (e.notification.type == "EmployeesBonus") {
-                    this.getIndiators();
-                    this.$forceUpdate();
-                }
-
-                if (e.notification.type == "EmployeesFired") {
-                    this.getIndiators();
-                    this.$forceUpdate();
-                }
-
-                if (e.notification.type == "EmployeesQuitting") {
-                    this.getIndiators();
-                    this.$forceUpdate();
-                }
-
-                if (e.notification.type == "MachinesWorkersUpdate") {
+                if (e.notification.type == "WorkersUpdate") {
                     this.getIndiators();
                     this.$forceUpdate();
                 }

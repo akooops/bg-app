@@ -449,21 +449,14 @@ class EntrepriseController extends Controller
     function sellProd(Request $request)
     {
         $entreprise_id = $request->entreprise_id;
-        $product_id = $request->product_id;
-        $dist_cost = $request->dist_cost;
-        $sold_quantity = $request->sold;
-        $price = $request->price;
-        $stock_quantity = $request->stock;
         $production_id = $request->production_id;
 
-        $name = DB::table("products")->where("id", "=", $product_id)->first()->name;
         $production = DB::table("productions")->where("id", "=", $production_id)->first();
         $status = $production->status;
-
-        if ($status == 'sold' || $production->sold >= $production->quantity) {
-            $message = "Vous avez déjà tout vendu pour cette production.";
+        if ($status == 'sold') {
+            $message = "Vous avez déjà tout vendu pour la production" . $production_id . "";
             $notification = [
-                "type" => "TransactionFailed",
+                "type" => "ProductionUpdate",
                 "entreprise_id" => $entreprise_id,
                 "message" => $message,
                 "title" => "Production déjà vendue"
@@ -472,11 +465,51 @@ class EntrepriseController extends Controller
             return Response::json(["message" => $message], 200);
         }
 
-        $left_demand = DB::table("products")->where("id", "=", $product_id)->get();
+        if ($status == 'selling') {
+            $message = "La production " . $production_id . " est déjà en vente.";
+            $notification = [
+                "type" => "ProductionUpdate",
+                "entreprise_id" => $entreprise_id,
+                "message" => $message,
+                "title" => "Production déjà vendue"
+            ];
+            event(new NewNotification($notification));
+            return Response::json(["message" => $message], 200);
+        }
+
+        DB::table("productions")->where("id", "=", $production_id)->update(["status" => "selling"]);
+
+        $message = "La production " . $production_id . " a été mise en vente.";
+        $notification = [
+            "type" => "ProductionUpdate",
+            "entreprise_id" => $entreprise_id,
+            "message" => $message,
+            "title" => "Production mise en vente"
+        ];
+        event(new NewNotification($notification));
+        return Response::json(["message" => $message], 200);
+
+        /*$name = DB::table("products")->where("id", "=", $product_id)->first()->name;
+        $production = DB::table("productions")->where("id", "=", $production_id)->first();
+        $status = $production->status;
+
+        if ($status == 'sold' || $production->sold >= $production->quantity) {
+            $message = "Vous avez déjà tout vendu pour cette production.";
+            $notification = [
+                "type" => "ProductionUpdate",
+                "entreprise_id" => $entreprise_id,
+                "message" => $message,
+                "title" => "Production déjà vendue"
+            ];
+            event(new NewNotification($notification));
+            return Response::json(["message" => $message], 200);
+        }
+
+        $left_demand = DB::table("products")->where("id", "=", $product_id)->first()->left_demand;
         if ($left_demand <= 0) {
             $message = "Il n'y a plus de demande sur le produit" . $name . "pour l'instant.";
             $notification = [
-                "type" => "TransactionFailed",
+                "type" => "ProductionUpdate",
                 "entreprise_id" => $entreprise_id,
                 "message" => $message,
                 "title" => "Pas de demande"
@@ -508,13 +541,13 @@ class EntrepriseController extends Controller
         $this->updateIndicator("dist_cost", $entreprise_id, $dist_cost);
         $message = "Vous avez vendu " . $sold_quantity . " unités de " . $name . " et vous avez généré un chiffre d'affaires de " . $sales . " DA";
         $notification = [
-            "type" => "ProductionSold",
+            "type" => "ProductionUpdate",
             "entreprise_id" => $entreprise_id,
             "message" => $message,
             "title" => "Production Vendue"
         ];
         event(new NewNotification($notification));
-        return Response::json(["message" => $message], 200);
+        return Response::json(["message" => $message], 200);*/
     }
 
     // Machine functions
@@ -538,13 +571,13 @@ class EntrepriseController extends Controller
 
         if ($buy_price * $number > $caisse) {
             $message = "Impossible d'acheter " . $number . " machine(s) de niveau " . $level . ": disponnibilités insuffisantes.";
-            // $notification = [
-            //     "type" => "TransactionFailed",
-            //     "entreprise_id" => $entreprise_id,
-            //     "message" => $message,
-            //     "title" => "Echec de l'achat"
-            // ];
-            // event(new NewNotification($notification));
+            $notification = [
+                "type" => "MachinesUpdate",
+                "entreprise_id" => $entreprise_id,
+                "message" => $message,
+                "title" => "Echec de l'achat de machine"
+            ];
+            event(new NewNotification($notification));
             return Response::json(["message" => $message, "success" => false], 200);
         }
 
@@ -591,7 +624,7 @@ class EntrepriseController extends Controller
 
         $message = "Vous avez acheté " . $number . " machine(s) de niveau " . $level . " au prix de " . $buy_price * $number . " DA." . $health_msg;
         $notification = [
-            "type" => "MachineBought",
+            "type" => "MachinesUpdate",
             "entreprise_id" => $entreprise_id,
             "message" => $message,
             "title" => "Machine Achetée"
@@ -627,10 +660,10 @@ class EntrepriseController extends Controller
         if ($machines_health < 0.2) {
             $message = "Vous ne pouvez pas vendre des machines dont la santé est inférieure à 20%";
             $notification = [
-                "type" => "TransactionFailed",
+                "type" => "MachinesUpdate",
                 "entreprise_id" => $entreprise_id,
                 "message" => $message,
-                "title" => "Echec de la vente"
+                "title" => "Échec de la vente de machine"
             ];
             event(new NewNotification($notification));
             return Response::json(["message" => $message, "success" => false], 200);
@@ -639,10 +672,10 @@ class EntrepriseController extends Controller
         if ($nb_machines - $number < 0) {
             $message = "Vous ne pouvez pas vendre " . $number . " machine(s) de niveau " . $level . ": vous n'en avez pas autant.";
             $notification = [
-                "type" => "TransactionFailed",
+                "type" => "MachinesUpdate",
                 "entreprise_id" => $entreprise_id,
                 "message" => $message,
-                "title" => "Echec de la vente"
+                "title" => "Échec de la vente de machine"
             ];
             event(new NewNotification($notification));
             return Response::json(["message" => $message, "success" => false], 200);
@@ -651,10 +684,10 @@ class EntrepriseController extends Controller
         if ($nb_machines - $nb_busy_machines < $number) {
             $message = "Vous ne pouvez pas vendre " . $number . " machine(s) de niveau " . $level . ": les machines en production ne peuvent pas être venudes.";
             $notification = [
-                "type" => "TransactionFailed",
+                "type" => "MachinesUpdate",
                 "entreprise_id" => $entreprise_id,
                 "message" => $message,
-                "title" => "Echec de la vente"
+                "title" => "Échec de la vente de machine"
             ];
             event(new NewNotification($notification));
             return Response::json(["message" => $message, "success" => false], 200);
@@ -700,7 +733,7 @@ class EntrepriseController extends Controller
 
         $message = "Vous avez vendu " . $number . " machine(s) de niveau " . $level . " au prix de " . $sell_price * $number . " DA";
         $notification = [
-            "type" => "MachineSold",
+            "type" => "MachinesUpdate",
             "entreprise_id" => $entreprise_id,
             "message" => $message,
             "title" => "Machine Vendue"
@@ -719,7 +752,7 @@ class EntrepriseController extends Controller
         if ($price > $caisse) {
             $message = "Impossible de lancer l'action: Disponnibilités insuffisantes.";
             $notification = [
-                "type" => "FailedTransaction",
+                "type" => "ActionUpdate",
                 "entreprise_id" => $entreprise_id,
                 "message" => $message,
                 "title" => "Échec de l'action"
@@ -733,12 +766,12 @@ class EntrepriseController extends Controller
             case '5s':
                 $mood = $this->getIndicator("workers_mood", $entreprise_id)["value"];
                 if ($mood < 0.5) {
-                    $message = "Vous ne pouvez pas relancer les 5S, vos employés manquent de motivation!";
+                    $message = "Impossible de lancer les 5S: Vos employés manquent de motivation!";
                     $notification = [
-                        "type" => "Information",
+                        "type" => "ActionUpdate",
                         "entreprise_id" => $entreprise_id,
                         "message" => $message,
-                        "title" => "Information"
+                        "title" => "5S"
                     ];
                     event(new NewNotification($notification));
                     return Response::json(["message" => $message, "success" => false], 200);
@@ -747,12 +780,12 @@ class EntrepriseController extends Controller
                 $day_5s = $this->getIndicator("5s_day", $entreprise_id)["value"];
 
                 if ($day_5s < 30) {
-                    $message = "Vous ne pouvez pas relancer les 5S, il vous en reste encore " . (30 - $day_5s) . " jour(s)!";
+                    $message = "Impossible de relancer les 5S: Il vous en reste encore " . (30 - $day_5s) . " jour(s)!";
                     $notification = [
-                        "type" => "Information",
+                        "type" => "ActionUpdate",
                         "entreprise_id" => $entreprise_id,
                         "message" => $message,
-                        "title" => "Information"
+                        "title" => "5S"
                     ];
                     event(new NewNotification($notification));
                     return Response::json(["message" => $message, "success" => false], 200);
@@ -763,10 +796,10 @@ class EntrepriseController extends Controller
 
                     $message = "Votre taux de productivité a augmenté, vous pouvez produire plus rapidement pendant 1 mois!";
                     $notification = [
-                        "type" => "Information",
+                        "type" => "ActionUpdate",
                         "entreprise_id" => $entreprise_id,
                         "message" => $message,
-                        "title" => "Information"
+                        "title" => "5S"
                     ];
                     event(new NewNotification($notification));
                     return Response::json(["message" => $message, "success" => true], 200);
@@ -778,10 +811,10 @@ class EntrepriseController extends Controller
                 if ($reject_rate < 0.01) {
                     $message = "Vous ne pouvez plus réduire vos taux de rebuts.";
                     $notification = [
-                        "type" => "Information",
+                        "type" => "ActionUpdate",
                         "entreprise_id" => $entreprise_id,
                         "message" => $message,
-                        "title" => "Information"
+                        "title" => "Audit"
                     ];
                     event(new NewNotification($notification));
                     return Response::json(["message" => $message, "success" => false], 200);
@@ -792,10 +825,10 @@ class EntrepriseController extends Controller
 
                     $message = "Votre taux de rebut est maintenant plus faible.";
                     $notification = [
-                        "type" => "Information",
+                        "type" => "ActionUpdate",
                         "entreprise_id" => $entreprise_id,
                         "message" => $message,
-                        "title" => "Information"
+                        "title" => "Audit"
                     ];
                     event(new NewNotification($notification));
                     return Response::json(["message" => $message, "success" => true], 200);
@@ -806,10 +839,10 @@ class EntrepriseController extends Controller
                 if ($nb_machines <= 0) {
                     $message = "Vous n'avez pas de machines de niveau 1!";
                     $notification = [
-                        "type" => "Information",
+                        "type" => "ActionUpdate",
                         "entreprise_id" => $entreprise_id,
                         "message" => $message,
-                        "title" => "Information"
+                        "title" => "Réparation machines niveau 1"
                     ];
                     event(new NewNotification($notification));
                     return Response::json(["message" => $message, "success" => false], 200);
@@ -819,10 +852,10 @@ class EntrepriseController extends Controller
                 if ($machines_health > 0.9) {
                     $message = "Vos machines de niveau 1 sont en bon état, vous ne pouvez pas les réparer plus que ça!";
                     $notification = [
-                        "type" => "Information",
+                        "type" => "ActionUpdate",
                         "entreprise_id" => $entreprise_id,
                         "message" => $message,
-                        "title" => "Information"
+                        "title" => "Réparation machines niveau 1"
                     ];
                     event(new NewNotification($notification));
                     return Response::json(["message" => $message, "success" => false], 200);
@@ -833,10 +866,10 @@ class EntrepriseController extends Controller
 
                     $message = "Vos machines de niveau 1 sont maintenant en meilleur état, vous pouvez les vendre plus cher!";
                     $notification = [
-                        "type" => "Information",
+                        "type" => "ActionUpdate",
                         "entreprise_id" => $entreprise_id,
                         "message" => $message,
-                        "title" => "Information"
+                        "title" => "Réparation machines niveau 1"
                     ];
                     event(new NewNotification($notification));
                     return Response::json(["message" => $message, "success" => true], 200);
@@ -847,10 +880,10 @@ class EntrepriseController extends Controller
                 if ($nb_machines <= 0) {
                     $message = "Vous n'avez pas de machines de niveau 2!";
                     $notification = [
-                        "type" => "Information",
+                        "type" => "ActionUpdate",
                         "entreprise_id" => $entreprise_id,
                         "message" => $message,
-                        "title" => "Information"
+                        "title" => "Réparation machines niveau 2"
                     ];
                     event(new NewNotification($notification));
                     return Response::json(["message" => $message, "success" => false], 200);
@@ -860,10 +893,10 @@ class EntrepriseController extends Controller
                 if ($machines_health > 0.9) {
                     $message = "Vos machines de niveau 2 sont en bon état, vous ne pouvez pas les réparer plus que ça!";
                     $notification = [
-                        "type" => "Information",
+                        "type" => "ActionUpdate",
                         "entreprise_id" => $entreprise_id,
                         "message" => $message,
-                        "title" => "Information"
+                        "title" => "Réparation machines niveau 2"
                     ];
                     event(new NewNotification($notification));
                     return Response::json(["message" => $message, "success" => false], 200);
@@ -873,10 +906,10 @@ class EntrepriseController extends Controller
 
                     $message = "Vos machines de niveau 2 sont maintenant en meilleur état, vous pouvez les vendre plus cher!";
                     $notification = [
-                        "type" => "Information",
+                        "type" => "ActionUpdate",
                         "entreprise_id" => $entreprise_id,
                         "message" => $message,
-                        "title" => "Information"
+                        "title" => "Réparation machines niveau 2"
                     ];
                     event(new NewNotification($notification));
                     return Response::json(["message" => $message, "success" => true], 200);
@@ -887,10 +920,10 @@ class EntrepriseController extends Controller
                 if ($nb_machines <= 0) {
                     $message = "Vous n'avez pas de machines de niveau 3!";
                     $notification = [
-                        "type" => "Information",
+                        "type" => "ActionUpdate",
                         "entreprise_id" => $entreprise_id,
                         "message" => $message,
-                        "title" => "Information"
+                        "title" => "Réparation machines niveau 3"
                     ];
                     event(new NewNotification($notification));
                     return Response::json(["message" => $message, "success" => false], 200);
@@ -900,10 +933,10 @@ class EntrepriseController extends Controller
                 if ($machines_health > 0.9) {
                     $message = "Vos machines de niveau 3 sont en bon état, vous ne pouvez pas les réparer plus que ça!";
                     $notification = [
-                        "type" => "Information",
+                        "type" => "ActionUpdate",
                         "entreprise_id" => $entreprise_id,
                         "message" => $message,
-                        "title" => "Information"
+                        "title" => "Réparation machines niveau 3"
                     ];
                     event(new NewNotification($notification));
                     return Response::json(["message" => $message, "success" => false], 200);
@@ -913,10 +946,10 @@ class EntrepriseController extends Controller
 
                     $message = "Vos machines de niveau 3 sont maintenant en meilleur état, vous pouvez les vendre plus cher!";
                     $notification = [
-                        "type" => "Information",
+                        "type" => "ActionUpdate",
                         "entreprise_id" => $entreprise_id,
                         "message" => $message,
-                        "title" => "Information"
+                        "title" => "Réparation machines niveau 3"
                     ];
                     event(new NewNotification($notification));
                     return Response::json(["message" => $message, "success" => true], 200);
