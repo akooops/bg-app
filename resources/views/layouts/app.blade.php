@@ -1,60 +1,50 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <!-- Fonts -->
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap">
+    <title>{{ config('app.name', 'Laravel') }}</title>
 
-        <!-- Styles -->
-        <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/all.css') }}">
-        <link rel="stylesheet" href="/css/moncss.css">
+    <!-- Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap">
 
-        <!-- Scripts -->
-        <script src="{{ mix('js/app.js') }}" defer></script>
-        <script src="{{ asset('js/fontawesome.min.js') }}" defer></script>
-       <!-- <script src="https://kit.fontawesome.com/97bf32ee89.js" crossorigin="anonymous"></script>-->
-    </head>
-    <body class="font-sans antialiased">
-        <div id="app" class="min-h-screen bg-gray-100">
-            @include('layouts.navigation')
+    <!-- Styles -->
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/all.css') }}">
+    <!-- Scripts -->
+    <script src="{{ mix('js/app.js') }}" defer></script>
+    <script src="{{ asset('js/fontawesome.min.js') }}" defer></script>
+    <!-- <script src="https://kit.fontawesome.com/97bf32ee89.js" crossorigin="anonymous"></script>-->
+</head>
 
-          
-            <!-- Page Content -->
-            <main>
-            <notification v-bind:user="{{auth()->user()}}"></notification>
+<body class="font-sans antialiased">
+    <div id="app" class="min-h-screen bg-vert bg-opacity-5">
+        @include('layouts.navigation')
 
-            <div class="overflow-hidden">
-                {{-- side-barre --}}
-                <div  class="bg-gray-100 float-left w-1/5 h-full absolute grid grid-cols-1 content-evenly">
-                    <div class="container flex ">
-                    <img class="h-28 w-28 mx-auto" src="/images/bg.png" alt="">
-                     </div> 
-
-                   {{-- sidebarr nav --}}
-                           
-                     <sidenavv class="mt-4"></sidenavv>
-
-                       <div class="container flex mx-auto relative justify-center ">
-                         <getdate v-bind:user="{{Auth()->user()}}" ></getdate>
-                       </div>
-               
-                   </div>
-
-                   <div class="float-right container mx-auto  w-4/5 bg-gray-500 h-full " style="background-color: rgba(178, 208, 107, 0.04);">
-                    {{ $slot }}
+        <!-- Page Content -->
+        <main class='flex'>
+            <!-- <notification v-bind:user="{{auth()->user()}}"></notification> -->
+            <div class="flex flex-col w-1/4 z-10  bg-white py-10 min-h-screen gap-10">
+                <div class=" flex gap-8 flex-col">
+                    <x-nav-link :href="route('dashboard')" :path='["/assets/icons/dashboard.svg", "/assets/icons/dashboard_inactive.svg"]' :active="request()->routeIs('dashboard')">
+                        {{ __('Dashboard') }}
+                    </x-nav-link>
+                    <x-nav-link href="/entreprise/loans" :path='["/assets/icons/banque.svg", "/assets/icons/banque_inactive.svg"]' :active="request()->routeIs('loans')">
+                        {{ __('Banque Locale') }}
+                    </x-nav-link>
+                    <x-nav-link href="/leaderboard" :path='["/assets/icons/classement.svg", "/assets/icons/classement_inactive.svg"]' :active="request()->routeIs('leaderboard')">
+                        {{ __('Classement') }}
+                    </x-nav-link>
                 </div>
+                <Calendar v-bind:user="{{ Auth()->user() }}"></Calendar>
             </div>
+            {{ $slot }}
+        </main>
+    </div>
+</body>
 
-
-                
-
-            </main>
-        </div>
-    </body>
 </html>
