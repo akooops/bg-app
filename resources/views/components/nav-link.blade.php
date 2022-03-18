@@ -8,7 +8,7 @@ $classes = ($active ?? false)
 
 <div {{ $attributes->merge(['class' => $classes]) }}>
     <!-- get path from props and add proper icons -->
-    <img src="{{ $path[0] ?? '' }}" alt="{{ $path[0] ?? 'dashboard' }} icon" class='w-6 h-6'>
+    <img src="{{ $active ? $path[0] : $path[1] }}" alt="{{ $path[0] ?? '' }} icon" class='w-6 h-6'>
     <a href="{{ $href }}">
         {{ $slot }}
     </a>

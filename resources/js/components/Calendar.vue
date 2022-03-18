@@ -16,9 +16,10 @@
             </div>
         </div>
         <vc-date-picker
+            ref="datepicker"
             color="orange"
-            :attributes="attributes"
             v-model="range"
+            :disabled-dates="{}"
             is-range
         ></vc-date-picker>
     </div>
@@ -30,10 +31,10 @@ export default {
     props: ["user"],
     data() {
         return {
-            time: 0,
+            time: 1,
             range: {
-                start: new Date(2020, 0, 1),
-                end: new Date(2020, 0, 7),
+                start: new Date(2022, 1, 7),
+                end: new Date(2022, 1, 13),
             },
         };
     },
@@ -51,8 +52,11 @@ export default {
                 });
         },
     },
+
     mounted() {
+        const datePicker = this.$refs.datepicker;
         this.getSimulationData();
+        datePicker.move(new Date(2022, 1, this.time));
         window.Echo.channel("simulation_date").listen(
             "SimulationDateChanged",
             (e) => {
