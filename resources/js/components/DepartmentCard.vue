@@ -16,7 +16,7 @@
 
             <a
                 :href="'/entreprise/department/' + name"
-                class="bg-vert text-white px-3 py-1 rounded-full text-sm hover:bg-white hover:text-vert transition-all border border-transparent hover:border-vert text-center"
+                class="bg-vert text-white px-3 py-2 rounded-full text-sm hover:bg-white hover:text-vert transition-all border border-transparent hover:border-vert text-center"
             >
                 Accéder
             </a>

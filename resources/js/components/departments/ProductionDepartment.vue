@@ -2,53 +2,67 @@
     <div class="w-full">
         <div class="w-full">
             <nav class="border-b text-sm flex justify-start">
-                <button
-                    @click="page_index = 'prod_stats'"
-                    :class="
-                        page_index == 'prod_stats'
-                            ? 'border-b-2 border-indigo-600 text-indigo-600 font-semibold'
-                            : 'text-gray-700 hover:text-black'
+                <button @click="page_index = 'prod_stats'"
+                    :class=" page_index == 'prod_stats'
+                            ? 'border-b-2 border-vert text-vert font-medium'
+                            : 'text-vN hover:text-black'
                     "
-                    class="inline-block px-4 py-2 focus:outline-none text-lg"
-                    href="#"
-                >
+                    class="inline-block px-4 py-2 focus:outline-none text-lg" href="#">
                     Statistiques
                 </button>
 
                 <!-- active -->
-                <button
-                    @click="page_index = 'production_list'"
-                    :class="
-                        page_index == 'production_list'
-                            ? 'border-b-2 border-indigo-600 text-indigo-600 font-semibold'
-                            : 'text-gray-700 hover:text-black'
+                <button  @click="page_index = 'production_list'"
+                    :class=" page_index == 'production_list'
+                           ? 'border-b-2 border-vert text-vert font-medium'
+                            : 'text-vN hover:text-black'
                     "
-                    class="inline-block px-4 py-2 focus:outline-none text-lg"
-                    href="#"
-                >
+                    class="inline-block px-4 py-2 focus:outline-none text-lg" href="#">
                     Productions
                 </button>
 
-                <button
-                    @click="page_index = 'decision_center'"
-                    :class="
-                        page_index == 'decision_center'
-                            ? 'border-b-2 border-indigo-600 text-indigo-600 font-semibold'
-                            : 'text-gray-700 hover:text-black'
+                <button @click="page_index = 'decision_center'"
+                    :class=" page_index == 'decision_center'
+                            ? 'border-b-2 border-vert text-vert font-medium'
+                            : 'text-vN hover:text-black'
                     "
-                    class="inline-block px-4 py-2 focus:outline-none text-lg"
-                    href="#"
+                    class="inline-block px-4 py-2 focus:outline-none text-lg" href="#"
                 >
                     Centre de décision
                 </button>
             </nav>
         </div>
 
-        <div
-            v-if="show_stat_cards"
-            class="flex flex-wrap w-full justify-between py-3"
-        >
-            <StatCard
+
+
+        <!-- stat cards  -->
+
+        <div v-if="show_stat_cards"  class="flex w-full justify-center gap-7 mt-2">
+
+           <div class="flex w-3/12 justify-evenly items-center rounded-xl text-vN font-semibold p-1 bg-gray-50" >
+               <img class="h-20 w-20" src="/assets/icons/employees.svg" alt="dsfsd">
+                <div class="flex flex-col gap-2  ">  
+                   <h1>Chiffre d'affaire</h1>
+                   <span class="mx-auto">{{indicators['ca'].value}} DA</span>
+               </div> 
+
+           </div >
+               
+           <div class="w-3/12 flex items-center  rounded-xl text-vN font-semibold justify-center p-1 bg-gray-50">
+                <img class="h-20 w-20" src="/assets/icons/machine.svg" alt="dsfsd">
+                <h1>Nombre de Machine</h1>
+                <button ><img class="h-8 w-6 " src="/assets/icons/chevron-down.svg" alt="dds"></button>
+            
+           </div>
+
+           <div class="w-3/12 flex items-center rounded-xl text-vN font-semibold justify-evenly p-1 bg-gray-50">
+                <img class="h-20 w-20" src="/assets/icons/employees.svg" alt="dsfsd">
+                <h1>Nombre d'employé</h1>
+                <button ><img class="h-8 w-6 " src="/assets/icons/chevron-down.svg" alt="dds"></button>
+            
+           </div>
+
+            <!-- <StatCard
                 title="Chiffre d'Affaire"
                 color="text-green-500"
                 icon="fa-coins"
@@ -66,7 +80,7 @@
                 color="text-indigo-600"
                 icon="fa-users"
                 :value="indicators['nb_workers_prod'].value"
-            ></StatCard>
+            ></StatCard> -->
         </div>
         <div v-if="page_index == 'prod_stats'">
             <h1 class="text-lg font-extrabold">Analyse de la Demande</h1>
@@ -569,13 +583,59 @@
             </Modal>
         </div>
         <div v-if="page_index == 'decision_center'">
-            <ProdCenter
+          <div class="container mx-auto flex gap-7 mt-7">
+             
+             <div class=" w-1/3 bg-white rounded-xl text-center flex flex-col pt-7 shadow-xl ">
+                      <img class="mx-auto h-16 w-16" src="/images/prod.png" alt="">
+                      <div class="mx-auto text-center p-8 text-vN flex-1">
+                            <h1 class="ubuntu text-2xl font-semibold mb-4">Lancer une production</h1>
+                            <p class="text-sm" >En lançant une production, vous produirez une quantité d'un produit que vous pourrez par la suite vendre.<br>
+
+                            <span class="text-yellow-500 font-semibold"> Astuce :</span> Planifiez bien votre production en amont pour eviter les coûts de stock !</p>
+                     </div>
+
+                     <button class="rounded-xl bg-vert text-white mx-auto py-2 px-11 mb-8 text-lg font-medium">Lancer</button>
+                  
+                  
+              </div>
+              
+              <div class="w-1/3 rounded-xl text-center pt-7 flex flex-col ">
+                      <img class="mx-auto h-16 w-16 " src="/images/machine.png" alt="">
+                      <div class="mx-auto text-center p-8 text-vN flex-1">
+                            <h1 class="ubuntu text-2xl font-semibold mb-4 ">Machine</h1>
+                            <p class="text-sm" >En achetant de nouvelles machines ou en réparant des anciennes machines vous pourrez produire plus de quantité. <br>
+
+                            <span class="text-yellow-500 font-semibold"> Astuce :</span> Attention à ne pas sur-estimer vos besoins en machines</p>
+                     </div>
+                   <div class="flex flex-col gap-3">
+                       <button class="rounded-xl bg-vert text-white mx-auto py-2 px-8 flex-1 text-lg font-medium">Acheter une machine</button>
+                       <button class="rounded-xl bg-vert text-white mx-auto py-2 px-8 flex-1 text-lg font-medium">Vendre une machine </button>
+                   </div>
+              </div>
+
+              
+                <div class="w-1/3 bg-white rounded-xl text-center flex flex-col pt-7 shadow-xl">
+                      <img class="mx-auto h-16 w-16 " src="/images/atelier.png" alt="">
+                      <div class="mx-auto text-center p-8 text-vN flex-1">
+                            <h1 class="ubuntu text-2xl font-semibold mb-4 ">Atelier</h1>
+                            <p class="text-sm" >Dans cette section vous pouvez lancer des actions pour améliorer l'état de vos usines et votre productivité.</p>
+
+                     </div>
+
+                     <button class="rounded-xl bg-vert text-white mx-auto py-2 px-11  mb-8 text-lg font-medium">Lancer</button>
+                     
+                </div>
+              
+          </div>
+
+
+            <!-- <ProdCenter
                 @prodLaunched="updateProdData"
                 :user="user"
                 :products="products"
                 :indicators="indicators"
                 :caisse="caisse"
-            ></ProdCenter>
+            ></ProdCenter> -->
         </div>
     </div>
 </template>

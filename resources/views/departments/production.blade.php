@@ -5,16 +5,14 @@
         </h2>
     </x-slot> -->
 
-    <div class="py-12">
+    <div class="">
         <div class=" mx-auto sm:px-6 lg:px-8">
-            <div class="flex flex-wrap   overflow-hidden  sm:rounded-lg">
+            <div class="flex flex-wrap sm:rounded-lg">
                 <div class="flex w-full justify-between items-center">
-                    <h1 class="text-xl mr-5  font-bold">Département Production: </h1>
-                    <div class="inline-flex">
-
-                    </div>
+                    <h1 class="text-xl font-bold mt-8 mb-4">Département Production: </h1>
+                    
                 </div>
-                <div class="w-full px-3">
+                <div class="w-full px-3 h-full">
                     <ProductionDepartment :products="{{$products}}" :caisse="{{$caisse}}" :user="{{auth()->user()}}"></ProductionDepartment>
                 </div>
 
