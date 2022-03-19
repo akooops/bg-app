@@ -366,105 +366,14 @@
                 </template>
             </Modal>
         </div>
-        <div v-if="page_index == 'decision_center'" class="flex gap-6 mt-10">
-            <div
-                class="flex-grow bg-white rounded-xl gap-6 text-center flex flex-col py-7 shadow-lg px-2"
-            >
-                <img class="mx-auto h-16 w-16" src="/images/prod.png" alt="" />
-                <div class="mx-auto text-center text-vN flex-1">
-                    <h1 class="text-2xl font-medium mb-4">
-                        Lancer une production
-                    </h1>
-                    <p class="text-sm text-nav text-opacity-80">
-                        En lançant une production, vous produirez une quantité
-                        d'un produit que vous pourrez par la suite vendre.<br />
-
-                        <span class="text-jaune font-medium"> Astuce :</span>
-                        Planifiez bien votre production en amont pour eviter les
-                        coûts de stock !
-                    </p>
-                </div>
-
-                <button
-                    class="rounded-xl bg-vert text-white mx-auto py-2 px-11 mb-8 text-lg font-medium"
-                >
-                    Lancer
-                </button>
-            </div>
-
-            <div
-                class="flex-grow border-2 rounded-xl gap-6 text-center flex flex-col py-7 shadow-lg px-2"
-            >
-                <img
-                    class="mx-auto h-16 w-16"
-                    src="/images/machine.png"
-                    alt=""
-                />
-                <div class="mx-auto text-center text-vN flex-1">
-                    <h1 class="text-2xl font-medium mb-4">Machine</h1>
-                    <p class="text-sm text-nav text-opacity-80">
-                        En achetant de nouvelles machines ou en réparant des
-                        anciennes machines vous pourrez produire plus de
-                        quantité. <br />
-                    </p>
-                    <p class="text-sm text-nav text-opacity-80 mt-2">
-                        <span class="text-jaune font-medium"> Astuce :</span>
-                        Attention à ne pas sur-estimer vos besoins en machines
-                    </p>
-                </div>
-                <div class="flex flex-col gap-3 mt-3">
-                    <button
-                        class="rounded-xl bg-vert text-white mx-auto py-2 px-11 text-lg font-medium"
-                    >
-                        Acheter une machine
-                    </button>
-                    <button
-                        class="rounded-xl bg-vert text-white mx-auto py-2 px-11 text-lg font-medium"
-                    >
-                        Vendre une machine
-                    </button>
-                </div>
-            </div>
-
-            <div
-                class="flex-grow bg-white rounded-xl gap-6 text-center flex flex-col py-7 shadow-lg px-2"
-            >
-                <img
-                    class="mx-auto h-16 w-16"
-                    src="/images/atelier.png"
-                    alt=""
-                />
-                <div class="mx-auto text-center text-vN flex-1">
-                    <h1 class="text-2xl font-medium mb-4">Atelier</h1>
-                    <p class="text-sm text-nav text-opacity-80">
-                        Dans cette section vous pouvez lancer des actions pour
-                        améliorer l'état de vos usines et votre productivité.
-                    </p>
-                </div>
-
-                <select
-                    class="rounded-md focus:border-vert focus:ring-0 w-5/6 mx-auto border-2 border-vert"
-                >
-                    <option value="5s">Appliquer les 5S</option>
-                    <option value="audit">Effectuer un audit qualité</option>
-                    <option value="maintenance">
-                        Lancer une maintenance générale
-                    </option>
-                </select>
-                <button
-                    class="rounded-xl bg-vert text-white mx-auto py-2 px-11 mb-8 text-lg font-medium"
-                >
-                    Lancer
-                </button>
-            </div>
-
-            <!-- <ProdCenter
+        <div v-if="page_index == 'decision_center'">
+            <ProdCenter
                 @prodLaunched="updateProdData"
                 :user="user"
                 :products="products"
                 :indicators="indicators"
                 :caisse="caisse"
-            ></ProdCenter> -->
+            ></ProdCenter>
         </div>
     </div>
 </template>

@@ -2,16 +2,7 @@
     <div class="w-full">
         <div
             v-if="show_success"
-            class="
-                my-2
-                bg-green-100
-                border border-green-400
-                text-green-700
-                px-4
-                py-3
-                rounded
-                relative
-            "
+            class="my-2 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative"
             role="alert"
         >
             <strong class="font-bold">{{ message }}</strong>
@@ -36,15 +27,7 @@
 
         <div
             v-if="show_error"
-            class="
-                bg-red-100
-                border border-red-400
-                text-red-700
-                px-4
-                py-3
-                rounded
-                relative
-            "
+            class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
             role="alert"
         >
             <strong class="font-bold">{{ message }}</strong>
@@ -67,422 +50,343 @@
             </span>
         </div>
 
-
-
-
-
-
-        
-        <div class="flex w-full flex-wrap">
+        <div class="flex gap-6 mt-10">
             <div
-                class="
-                    w-1/3
-                    mr-3
-                    my-2
-                    max-w-sm
-                    overflow-hidden
-                    rounded
-                    border
-                    bg-white
-                    shadow
-                "
+                class="flex-grow bg-white rounded-xl gap-6 text-center flex flex-col py-7 shadow-lg px-2"
             >
-                <div class="relative">
-                    <div class="flex h-24 justify-center items-center">
-                        <i class="fa fa-rocket text-green-300 text-6xl"></i>
-                    </div>
-                </div>
-                <div class="p-3 text-center">
-                    <h3 class="text-lg font-extrabold mb-4 truncate-2nd">
-                        Lancer une Production
-                    </h3>
-                    <p>
+                <img class="mx-auto h-16 w-16" src="/images/prod.png" alt="" />
+                <div class="mx-auto text-center text-vN flex-1">
+                    <h1 class="text-2xl font-medium mb-4">
+                        Lancer une production
+                    </h1>
+                    <p class="text-sm text-nav text-opacity-80">
                         En lançant une production, vous produirez une quantité
-                        d'un produit que vous pourrez par la suite vendre.
+                        d'un produit que vous pourrez par la suite vendre.<br />
+
+                        <span class="text-jaune font-medium"> Astuce :</span>
+                        Planifiez bien votre production en amont pour eviter les
+                        coûts de stock !
                     </p>
-                    <p>
-                        <span class="font-bold text-sm">Astuce : </span
-                        >Planifiez bien votre production en amont pour eviter
-                        les coûts de stock !
-                    </p>
-                    <button
-                        @click="launch_prod_modal = true"
-                        class="
-                            bg-blue-500
-                            text-white
-                            w-56
-                            my-2
-                            px-3
-                            py-1
-                            rounded
-                            text-center
-                        "
-                    >
-                        Lancer
-                    </button>
                 </div>
+
+                <button
+                    class="rounded-xl bg-vert text-white mx-auto py-2 px-11 mb-8 text-lg font-medium"
+                >
+                    Lancer
+                </button>
             </div>
+
             <div
-                class="
-                    w-1/3
-                    mr-3
-                    my-2
-                    max-w-sm
-                    overflow-hidden
-                    rounded
-                    border
-                    bg-white
-                    shadow
-                "
+                class="flex-grow border-2 rounded-xl gap-6 text-center flex flex-col py-7 shadow-lg px-2"
             >
-                <div class="relative">
-                    <div class="flex h-24 justify-center items-center">
-                        <i class="fa fa-cogs text-green-300 text-6xl"></i>
-                    </div>
-                </div>
-                <div class="p-3 text-center">
-                    <h3 class="text-lg font-extrabold mb-4 truncate-2nd">
-                        Machines
-                    </h3>
-                    <p>
+                <img
+                    class="mx-auto h-16 w-16"
+                    src="/images/machine.png"
+                    alt=""
+                />
+                <div class="mx-auto text-center text-vN flex-1">
+                    <h1 class="text-2xl font-medium mb-4">Machine</h1>
+                    <p class="text-sm text-nav text-opacity-80">
                         En achetant de nouvelles machines ou en réparant des
                         anciennes machines vous pourrez produire plus de
                         quantité.
+                        <br />
                     </p>
-                    <p>
-                        <span class="font-bold text-sm">Astuce : </span
-                        >Attention à ne pas sur-estimer vos besoins en machines
+                    <p class="text-sm text-nav text-opacity-80 mt-2">
+                        <span class="text-jaune font-medium"> Astuce :</span>
+                        Attention à ne pas sur-estimer vos besoins en machines
                     </p>
+                </div>
+                <div class="flex flex-col gap-3 mt-3">
                     <button
                         @click="setMachineTransaction('buy')"
-                        class="
-                            bg-blue-500
-                            text-white
-                            w-56
-                            my-2
-                            px-3
-                            py-1
-                            rounded
-                            text-center
-                        "
+                        class="rounded-xl bg-vert text-white mx-auto py-2 px-11 text-lg font-medium"
                     >
                         Acheter une machine
                     </button>
                     <button
                         @click="setMachineTransaction('sell')"
-                        class="
-                            bg-blue-500
-                            text-white
-                            w-56
-                            my-2
-                            px-3
-                            py-1
-                            rounded
-                            text-center
-                        "
+                        class="rounded-xl bg-vert text-white mx-auto py-2 px-11 text-lg font-medium"
                     >
                         Vendre une machine
                     </button>
                 </div>
             </div>
+
             <div
-                class="
-                    w-1/3
-                    mr-3
-                    my-2
-                    max-w-sm
-                    overflow-hidden
-                    rounded
-                    border
-                    bg-white
-                    shadow
-                "
+                class="flex-grow bg-white rounded-xl gap-6 text-center flex flex-col py-7 shadow-lg px-2"
             >
-                <div class="relative">
-                    <div class="flex h-24 justify-center items-center">
-                        <i class="fa fa-industry text-green-300 text-6xl"></i>
-                    </div>
-                </div>
-                <div class="p-3 text-center">
-                    <h3 class="text-lg font-extrabold mb-4 truncate-2nd">
-                        Ateliers
-                    </h3>
-                    <p>
+                <img
+                    class="mx-auto h-16 w-16"
+                    src="/images/atelier.png"
+                    alt=""
+                />
+                <div class="mx-auto text-center text-vN flex-1">
+                    <h1 class="text-2xl font-medium mb-4">Atelier</h1>
+                    <p class="text-sm text-nav text-opacity-80">
                         Dans cette section vous pouvez lancer des actions pour
                         améliorer l'état de vos usines et votre productivité.
                     </p>
-                    <select v-model="action.value">
-                        <option value="5s">Appliquer les 5S</option>
-                        <option value="audit">
-                            Effectuer un audit qualité
-                        </option>
-                        <option value="maintenance">
-                            Lancer une maintenance générale
-                        </option>
-                    </select>
-                    <button
-                        class="
-                            bg-blue-500
-                            text-white
-                            w-56
-                            my-2
-                            px-3
-                            py-1
-                            rounded
-                            text-center
-                        "
-                        @click="showActionInfo"
-                    >
-                        Appliquer
-                    </button>
                 </div>
-                <Modal v-if="launch_prod_modal">
-                    <template v-slot:content>
-                        <div class="w-full flex flex-wrap p-2">
-                            <div class="w-1/2">
-                                <h1><strong>Lancer une Production</strong></h1>
-                                <p class="my-1 mx-4">Produit :</p>
-                                <select
-                                    class="mx-4 w-1/3"
-                                    v-model="launch_data.prod_id"
-                                >
-                                    <option
-                                        :value="prod.id"
-                                        v-for="(prod, key) in products"
-                                        :key="key"
-                                    >
-                                        {{ prod.name }}
-                                    </option>
-                                </select>
-                                <p class="my-1 mx-4">Quantité (en lot de 100 pièces):</p>
-                                <input
-                                    v-model="launch_data.quantity"
-                                    class="mx-4 w-2/3"
-                                    type="number"
-                                />
-                                <p class="my-1 mx-4">Prix (Unitaire):</p>
-                                <input
-                                    class="mx-4 w-2/3"
-                                    v-model="launch_data.price"
-                                    type="number"
-                                />
-                                <div class="h-auto">
-                                    <button
-                                        :diabled="can_produce == false"
-                                        v-if="can_produce == true"
-                                        @click="launchProduction"
-                                        class="
-                                            bg-blue-400
-                                            mx-4
-                                            my-2
-                                            py-1
-                                            px-4
-                                            text-white
-                                        "
-                                    >
-                                        Lancer !
-                                    </button>
-                                    <p
-                                        class="text-red-500"
-                                        v-if="can_produce == false"
-                                    >
-                                        {{ can_produce_msg }}
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="w-1/2">
-                                <h1 class="font-bold text-xl">
-                                    Informations Importantes
-                                </h1>
-                                <h2 class="font-bold text-lg">Nécessite:</h2>
-                                <p>Pour un lot:</p>
-                                <p>
-                                    - Machines x
-                                    <span class="text-blue-700 font-bold">{{
-                                        selectedProd.machine_units
-                                    }}</span>
-                                    et Employés x
-                                    <span class="text-blue-700 font-bold">{{
-                                        selectedProd.labor_units
-                                    }}</span>
-                                </p>
-                                <p
-                                    v-for="(
-                                        material, key
-                                    ) in selectedProd.raw_materials"
-                                    :key="key"
-                                >
-                                    - {{ material.name }} x
-                                    <span class="text-blue-700 font-bold">
-                                        {{ material.pivot.quantity }}
-                                    </span>
-                                    KG
-                                </p>
-                                <h2 class="font-bold text-lg">Prévisions:</h2>
-                                <p>
-                                    - Chiffre d'Affaire Estimé :
-                                    <span class="font-bold text-indigo-500">
-                                        {{ salesRevenues }} UM</span
-                                    >
-                                </p>
-                                <p>
-                                    - Coût Total Estimé :
-                                    <span class="font-bold text-red-500">
-                                        {{ totalCost }} UM</span
-                                    >
-                                </p>
-                                <p>
-                                    - Profit Estimé :
-                                    <span
-                                        :class="
-                                            profit >= 0
-                                                ? 'text-green-500'
-                                                : 'text-red-400'
-                                        "
-                                        class="font-bold"
-                                    >
-                                        {{ profit }} UM</span
-                                    >
-                                </p>
-                                <p>
-                                    - Durée de production :
-                                    <span class="text-yellow-500 font-bold">
-                                        {{ prodDelay }} j</span
-                                    >
-                                </p>
 
-                                <h2 class="text-sm font-bold">Remarques:</h2>
-                                <p class="text-xs font-bold">
-                                    - Les prévisions sont calculées dans le cas
-                                    ou toute la quantité produite est vendue.
-                                </p>
-                                <p class="text-xs font-bold">
-                                    - Votre taux de rebut est de
-                                    {{
-                                        indicators["reject_rate"].value * 100
-                                    }}%, pour le réduire, lancez une étude
-                                    AMDEC.
-                                </p>
-                                <p>
-                                    <button
-                                        @click="launch_prod_modal = false"
-                                        class="
-                                            bg-gray-500
-                                            justify-end
-                                            px-3
-                                            py-1
-                                            text-white
-                                            rounded
-                                            my-1
-                                        "
-                                    >
-                                        Fermer
-                                    </button>
-                                </p>
-                            </div>
-                        </div>
-                    </template>
-                </Modal>
-                <Modal v-if="machine.show_transaction_modal">
-                    <template v-slot:content>
-                        <div class="w-full">
-                            <p v-if="machine.transaction == 'buy'">
-                                Vous allez acheter une machine au prix de
-                                {{ machine.buy_price }}, voulez vous continuer ?
-                            </p>
-                            <p v-if="machine.transaction == 'sell'">
-                                Vous allez vendre une machine au prix de
-                                {{ machine.sell_price }} DA, voulez vous
-                                continuer ?
-                            </p>
-                            <div
-                                class="
-                                    w-full
-                                    my-2
-                                    flex flex-wrap
-                                    items-center
-                                    px-10
-                                    space-x-4
-                                "
-                            >
-                                <button
-                                    @click="confirmMachineTransaction"
-                                    class="
-                                        bg-green-500
-                                        rounded
-                                        px-3
-                                        py-1
-                                        text-white
-                                    "
-                                >
-                                    Confirmer
-                                </button>
-                                <button
-                                    @click="
-                                        machine.show_transaction_modal = false
-                                    "
-                                    class="
-                                        bg-gray-500
-                                        rounded
-                                        px-3
-                                        py-1
-                                        text-white
-                                    "
-                                >
-                                    Annuler
-                                </button>
-                            </div>
-                        </div>
-                    </template>
-                </Modal>
-                <Modal v-if="action.show_info">
-                    <template v-slot:content>
-                        <div class="w-full">
-                            <p>{{ action.phrase }}</p>
-                            <p>
-                                <span class="font-bold">Résultat : </span
-                                >{{ action.result_phrase }}
-                            </p>
-                            <div
-                                class="
-                                    w-full
-                                    my-2
-                                    flex flex-wrap
-                                    items-center
-                                    px-10
-                                    space-x-4
-                                "
-                            >
-                                <button
-                                    @click="confirmAction"
-                                    class="
-                                        bg-green-500
-                                        rounded
-                                        px-3
-                                        py-1
-                                        text-white
-                                    "
-                                >
-                                    Confirmer
-                                </button>
-                                <button
-                                    @click="action.show_info = false"
-                                    class="
-                                        bg-gray-500
-                                        rounded
-                                        px-3
-                                        py-1
-                                        text-white
-                                    "
-                                >
-                                    Annuler
-                                </button>
-                            </div>
-                        </div>
-                    </template>
-                </Modal>
+                <select
+                    v-model="action.value"
+                    aria-placeholder="Choisissez une action"
+                    class="rounded-md focus:border-vert focus:ring-0 w-5/6 mx-auto border-vert"
+                    style="border-width: 1px"
+                >
+                    <option value="5s">Appliquer les 5S</option>
+                    <option value="audit">Effectuer un audit qualité</option>
+                    <option value="maintenance">
+                        Lancer une maintenance générale
+                    </option>
+                </select>
+                <button
+                    @click="showActionInfo"
+                    class="rounded-xl bg-vert text-white mx-auto py-2 px-11 mb-8 text-lg font-medium"
+                >
+                    Lancer
+                </button>
             </div>
         </div>
+        <Modal v-if="launch_prod_modal">
+            <template v-slot:content>
+                <div class="w-full flex flex-wrap p-2">
+                    <div class="w-1/2">
+                        <h1><strong>Lancer une Production</strong></h1>
+                        <p class="my-1 mx-4">Produit :</p>
+                        <select
+                            class="mx-4 w-1/3"
+                            v-model="launch_data.prod_id"
+                        >
+                            <option
+                                :value="prod.id"
+                                v-for="(prod, key) in products"
+                                :key="key"
+                            >
+                                {{ prod.name }}
+                            </option>
+                        </select>
+                        <p class="my-1 mx-4">
+                            Quantité (en lot de 100 pièces):
+                        </p>
+                        <input
+                            v-model="launch_data.quantity"
+                            class="mx-4 w-2/3"
+                            type="number"
+                        />
+                        <p class="my-1 mx-4">Prix (Unitaire):</p>
+                        <input
+                            class="mx-4 w-2/3"
+                            v-model="launch_data.price"
+                            type="number"
+                        />
+                        <div class="h-auto">
+                            <button
+                                :diabled="can_produce == false"
+                                v-if="can_produce == true"
+                                @click="launchProduction"
+                                class="bg-blue-400 mx-4 my-2 py-1 px-4 text-white"
+                            >
+                                Lancer !
+                            </button>
+                            <p class="text-red-500" v-if="can_produce == false">
+                                {{ can_produce_msg }}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="w-1/2">
+                        <h1 class="font-bold text-xl">
+                            Informations Importantes
+                        </h1>
+                        <h2 class="font-bold text-lg">Nécessite:</h2>
+                        <p>Pour un lot:</p>
+                        <p>
+                            - Machines x
+                            <span class="text-blue-700 font-bold">{{
+                                selectedProd.machine_units
+                            }}</span>
+                            et Employés x
+                            <span class="text-blue-700 font-bold">{{
+                                selectedProd.labor_units
+                            }}</span>
+                        </p>
+                        <p
+                            v-for="(
+                                material, key
+                            ) in selectedProd.raw_materials"
+                            :key="key"
+                        >
+                            - {{ material.name }} x
+                            <span class="text-blue-700 font-bold">
+                                {{ material.pivot.quantity }}
+                            </span>
+                            KG
+                        </p>
+                        <h2 class="font-bold text-lg">Prévisions:</h2>
+                        <p>
+                            - Chiffre d'Affaire Estimé :
+                            <span class="font-bold text-indigo-500">
+                                {{ salesRevenues }} UM</span
+                            >
+                        </p>
+                        <p>
+                            - Coût Total Estimé :
+                            <span class="font-bold text-red-500">
+                                {{ totalCost }} UM</span
+                            >
+                        </p>
+                        <p>
+                            - Profit Estimé :
+                            <span
+                                :class="
+                                    profit >= 0
+                                        ? 'text-green-500'
+                                        : 'text-red-400'
+                                "
+                                class="font-bold"
+                            >
+                                {{ profit }} UM</span
+                            >
+                        </p>
+                        <p>
+                            - Durée de production :
+                            <span class="text-yellow-500 font-bold">
+                                {{ prodDelay }} j</span
+                            >
+                        </p>
+
+                        <h2 class="text-sm font-bold">Remarques:</h2>
+                        <p class="text-xs font-bold">
+                            - Les prévisions sont calculées dans le cas ou toute
+                            la quantité produite est vendue.
+                        </p>
+                        <p class="text-xs font-bold">
+                            - Votre taux de rebut est de
+                            {{ indicators["reject_rate"].value * 100 }}%, pour
+                            le réduire, lancez une étude AMDEC.
+                        </p>
+                        <p>
+                            <button
+                                @click="launch_prod_modal = false"
+                                class="bg-gray-500 justify-end px-3 py-1 text-white rounded my-1"
+                            >
+                                Fermer
+                            </button>
+                        </p>
+                    </div>
+                </div>
+            </template>
+        </Modal>
+        <Modal v-if="machine.show_transaction_modal" class="pt-44">
+            <template v-slot:content>
+                <div class="flex flex-col items-center gap-5">
+                    <h2
+                        v-if="machine.transaction == 'buy'"
+                        class="font-bold text-lg"
+                    >
+                        Acheter une Machine
+                    </h2>
+                    <h2
+                        v-if="machine.transaction == 'sell'"
+                        class="font-semibold text-lg"
+                    >
+                        Vendre une Machine
+                    </h2>
+                    <div class="w-full gap-4 flex-col flex">
+                        <div class="flex flex-col items-start gap-2">
+                            <p class="text-md font-medium text-nav">
+                                Choix Du niveau de la machine
+                            </p>
+                            <select
+                                class="rounded-sm focus:border-vert focus:ring-0 w-full border-vert"
+                                style="border-width: 1px"
+                            >
+                                <option value="">1</option>
+                                <option value="">2</option>
+                                <option value="">3</option>
+                            </select>
+                        </div>
+                        <div class="flex flex-col items-start gap-2">
+                            <p class="text-md font-medium text-nav">
+                                Nombre que vous souhaitez
+                                {{
+                                    machine.transaction == "buy"
+                                        ? "acheter"
+                                        : "vendre"
+                                }}
+                            </p>
+                            <input
+                                :value="quantity"
+                                @input="quantity = $event.target.value"
+                                min="0"
+                                type="number"
+                                class="rounded-sm focus:border-vert w-full focus:ring-0 border-vert"
+                                style="border-width: 1px"
+                            />
+                        </div>
+                        <div class="flex flex-col">
+                            <p class="text-me font-medium text-nav">Prix</p>
+                            <p
+                                class="py-2 px-4 border-vert w-40 text-jaune"
+                                style="border-width: 1px"
+                            >
+                                {{
+                                    machine.transaction == "buy"
+                                        ? machine.buy_price * quantity
+                                        : machine.sell_price * quantity
+                                }}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="w-full flex items-center gap-4 justify-center">
+                        <button
+                            @click="confirmMachineTransaction"
+                            class="bg-vert rounded-md px-3 border-vert py-1 text-white"
+                            style="border-width: 1px"
+                        >
+                            Confirmer
+                        </button>
+                        <button
+                            @click="machine.show_transaction_modal = false"
+                            class="bg-white border-vert rounded-md px-3 py-1 text-vert"
+                            style="border-width: 1px"
+                        >
+                            Annuler
+                        </button>
+                    </div>
+                </div>
+            </template>
+        </Modal>
+        <Modal v-if="action.show_info" class="pt-44">
+            <template v-slot:content>
+                <div class="flex flex-col gap-5">
+                    <h1 class="text-lg text-jaune uppercase">
+                        {{ action.value }}
+                    </h1>
+                    <p class="">
+                        {{ action.phrase }}
+                    </p>
+                    <p class="">
+                        {{ action.result_phrase }}
+                    </p>
+                    <div class="w-full flex items-center gap-4 justify-center">
+                        <button
+                            @click="confirmAction"
+                            class="bg-vert rounded-md px-3 border-2 border-vert py-1 text-white"
+                        >
+                            Confirmer
+                        </button>
+                        <button
+                            @click="action.show_info = false"
+                            class="bg-white border-vert border-2 rounded-md px-3 py-1 text-vert"
+                        >
+                            Annuler
+                        </button>
+                    </div>
+                </div>
+            </template>
+        </Modal>
     </div>
 </template>
 
@@ -494,6 +398,7 @@ export default {
     props: ["products", "indicators", "user", "caisse"],
     data() {
         return {
+            quantity: 1,
             launch_prod_modal: false,
             launch_data: {
                 prod_id: 1,
