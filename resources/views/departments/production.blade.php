@@ -11,7 +11,7 @@
                 <Disponibility :user="{{ Auth::user() }}" :dette="false"></Disponibility>
                 <Disponibility :user="{{ Auth::user() }}" :dette="true"></Disponibility>
             </div>
-            <div class="w-full px-3 h-full">
+            <div class="w-full px-2 h-full">
                 <ProductionDepartment :products="{{$products}}" :caisse="{{$caisse}}" :user="{{auth()->user()}}"></ProductionDepartment>
             </div>
         </div>

@@ -47,7 +47,7 @@
             <Indicator :indicators="indicators"></Indicator>
 
             <div
-                class="flex w-1/4 gap-3 justify-evenly items-center rounded-xl px-3 bg-white shadow-sm"
+                class="relative flex w-1/4 gap-3 justify-evenly items-center rounded-xl px-3 bg-white shadow-sm"
             >
                 <img
                     class="h-16 w-16"
@@ -55,17 +55,23 @@
                     alt="machine icon"
                 />
                 <h1 class="text-vN text-lg font-medium">Nombre de Machine</h1>
-                <button>
+                <button @click="showMachines = !showMachines">
                     <img
                         class="h-5 w-5"
                         src="/assets/icons/chevron-down.svg"
                         alt="arrow down icon"
                     />
                 </button>
+                <div
+                    v-if="showMachines"
+                    class="flex items-center gap-2 absolute z-999 -bottom-11 right-0 bg-white border-opacity-5 border-vN shadow-md p-2 rounded-lg"
+                >
+                    {{ indicators["machines"].value }}
+                </div>
             </div>
 
             <div
-                class="flex w-1/4 gap-3 justify-evenly items-center rounded-xl px-3 bg-white shadow-sm"
+                class="relative flex w-1/4 gap-3 justify-evenly items-center rounded-xl px-3 bg-white shadow-sm"
             >
                 <img
                     class="h-16 w-16"
@@ -73,34 +79,20 @@
                     alt="employees icon"
                 />
                 <h1 class="text-vN text-lg font-medium">Nombre d'employé</h1>
-                <button>
+                <button @click="showEmployees = !showEmployees">
                     <img
                         class="h-5 w-5"
                         src="/assets/icons/chevron-down.svg"
                         alt="arrow down icon"
                     />
                 </button>
+                <div
+                    v-if="showEmployees"
+                    class="flex items-center gap-2 absolute z-999 -bottom-11 right-0 bg-white border-opacity-5 border-vN shadow-md p-2 rounded-lg"
+                >
+                    {{ indicators["nb_workers_prod"].value }}
+                </div>
             </div>
-
-            <!-- <StatCard
-                title="Chiffre d'Affaire"
-                color="text-green-500"
-                icon="fa-coins"
-                :value="indicators['ca'].value"
-            ></StatCard>
-            <StatCard
-                title="Machines"
-                color="text-gray-600"
-                icon="fa-cogs"
-                :value="indicators['machines'].value"
-                :second-value="indicators['busy_machines'].value + ' occupées.'"
-            ></StatCard>
-            <StatCard
-                title="Nb. Employés"
-                color="text-indigo-600"
-                icon="fa-users"
-                :value="indicators['nb_workers_prod'].value"
-            ></StatCard> -->
         </div>
         <div v-if="page_index == 'prod_stats'">
             <h1 class="text-lg font-extrabold">Analyse de la Demande</h1>
@@ -374,101 +366,96 @@
                 </template>
             </Modal>
         </div>
-        <div v-if="page_index == 'decision_center'">
-            <div class="mx-auto flex gap-7 mt-10">
-                <div
-                    class="w-1/3 bg-white rounded-xl text-center flex flex-col pt-7 shadow-xl"
+        <div v-if="page_index == 'decision_center'" class="flex gap-6 mt-10">
+            <div
+                class="flex-grow bg-white rounded-xl gap-6 text-center flex flex-col py-7 shadow-lg px-2"
+            >
+                <img class="mx-auto h-16 w-16" src="/images/prod.png" alt="" />
+                <div class="mx-auto text-center text-vN flex-1">
+                    <h1 class="text-2xl font-medium mb-4">
+                        Lancer une production
+                    </h1>
+                    <p class="text-sm text-nav text-opacity-80">
+                        En lançant une production, vous produirez une quantité
+                        d'un produit que vous pourrez par la suite vendre.<br />
+
+                        <span class="text-jaune font-medium"> Astuce :</span>
+                        Planifiez bien votre production en amont pour eviter les
+                        coûts de stock !
+                    </p>
+                </div>
+
+                <button
+                    class="rounded-xl bg-vert text-white mx-auto py-2 px-11 mb-8 text-lg font-medium"
                 >
-                    <img
-                        class="mx-auto h-16 w-16"
-                        src="/images/prod.png"
-                        alt=""
-                    />
-                    <div class="mx-auto text-center p-8 text-vN flex-1">
-                        <h1 class="ubuntu text-2xl font-semibold mb-4">
-                            Lancer une production
-                        </h1>
-                        <p class="text-sm">
-                            En lançant une production, vous produirez une
-                            quantité d'un produit que vous pourrez par la suite
-                            vendre.<br />
+                    Lancer
+                </button>
+            </div>
 
-                            <span class="text-yellow-500 font-semibold">
-                                Astuce :</span
-                            >
-                            Planifiez bien votre production en amont pour eviter
-                            les coûts de stock !
-                        </p>
-                    </div>
-
+            <div
+                class="flex-grow border-2 rounded-xl gap-6 text-center flex flex-col py-7 shadow-lg px-2"
+            >
+                <img
+                    class="mx-auto h-16 w-16"
+                    src="/images/machine.png"
+                    alt=""
+                />
+                <div class="mx-auto text-center text-vN flex-1">
+                    <h1 class="text-2xl font-medium mb-4">Machine</h1>
+                    <p class="text-sm text-nav text-opacity-80">
+                        En achetant de nouvelles machines ou en réparant des
+                        anciennes machines vous pourrez produire plus de
+                        quantité. <br />
+                    </p>
+                    <p class="text-sm text-nav text-opacity-80 mt-2">
+                        <span class="text-jaune font-medium"> Astuce :</span>
+                        Attention à ne pas sur-estimer vos besoins en machines
+                    </p>
+                </div>
+                <div class="flex flex-col gap-3 mt-3">
                     <button
-                        class="rounded-xl bg-vert text-white mx-auto py-2 px-11 mb-8 text-lg font-medium"
+                        class="rounded-xl bg-vert text-white mx-auto py-2 px-11 text-lg font-medium"
                     >
-                        Lancer
+                        Acheter une machine
+                    </button>
+                    <button
+                        class="rounded-xl bg-vert text-white mx-auto py-2 px-11 text-lg font-medium"
+                    >
+                        Vendre une machine
                     </button>
                 </div>
+            </div>
 
-                <div class="w-1/3 rounded-xl text-center pt-7 flex flex-col">
-                    <img
-                        class="mx-auto h-16 w-16"
-                        src="/images/machine.png"
-                        alt=""
-                    />
-                    <div class="mx-auto text-center p-8 text-vN flex-1">
-                        <h1 class="ubuntu text-2xl font-semibold mb-4">
-                            Machine
-                        </h1>
-                        <p class="text-sm">
-                            En achetant de nouvelles machines ou en réparant des
-                            anciennes machines vous pourrez produire plus de
-                            quantité. <br />
-
-                            <span class="text-yellow-500 font-semibold">
-                                Astuce :</span
-                            >
-                            Attention à ne pas sur-estimer vos besoins en
-                            machines
-                        </p>
-                    </div>
-                    <div class="flex flex-col gap-3">
-                        <button
-                            class="rounded-xl bg-vert text-white mx-auto py-2 px-8 flex-1 text-lg font-medium"
-                        >
-                            Acheter une machine
-                        </button>
-                        <button
-                            class="rounded-xl bg-vert text-white mx-auto py-2 px-8 flex-1 text-lg font-medium"
-                        >
-                            Vendre une machine
-                        </button>
-                    </div>
+            <div
+                class="flex-grow bg-white rounded-xl gap-6 text-center flex flex-col py-7 shadow-lg px-2"
+            >
+                <img
+                    class="mx-auto h-16 w-16"
+                    src="/images/atelier.png"
+                    alt=""
+                />
+                <div class="mx-auto text-center text-vN flex-1">
+                    <h1 class="text-2xl font-medium mb-4">Atelier</h1>
+                    <p class="text-sm text-nav text-opacity-80">
+                        Dans cette section vous pouvez lancer des actions pour
+                        améliorer l'état de vos usines et votre productivité.
+                    </p>
                 </div>
 
-                <div
-                    class="w-1/3 bg-white rounded-xl text-center flex flex-col pt-7 shadow-xl"
+                <select
+                    class="rounded-md focus:border-vert focus:ring-0 w-5/6 mx-auto border-2 border-vert"
                 >
-                    <img
-                        class="mx-auto h-16 w-16"
-                        src="/images/atelier.png"
-                        alt=""
-                    />
-                    <div class="mx-auto text-center p-8 text-vN flex-1">
-                        <h1 class="ubuntu text-2xl font-semibold mb-4">
-                            Atelier
-                        </h1>
-                        <p class="text-sm">
-                            Dans cette section vous pouvez lancer des actions
-                            pour améliorer l'état de vos usines et votre
-                            productivité.
-                        </p>
-                    </div>
-
-                    <button
-                        class="rounded-xl bg-vert text-white mx-auto py-2 px-11 mb-8 text-lg font-medium"
-                    >
-                        Lancer
-                    </button>
-                </div>
+                    <option value="5s">Appliquer les 5S</option>
+                    <option value="audit">Effectuer un audit qualité</option>
+                    <option value="maintenance">
+                        Lancer une maintenance générale
+                    </option>
+                </select>
+                <button
+                    class="rounded-xl bg-vert text-white mx-auto py-2 px-11 mb-8 text-lg font-medium"
+                >
+                    Lancer
+                </button>
             </div>
 
             <!-- <ProdCenter
@@ -520,6 +507,8 @@ export default {
             product_info: null,
             average_prices: [],
             caisse: 0,
+            showMachines: false,
+            showEmployees: false,
         };
     },
     computed: {
