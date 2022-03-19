@@ -5,17 +5,14 @@
         </h2>
     </x-slot> -->
 
-    <div class="">
-        <div class=" mx-auto sm:px-6 lg:px-8">
-            <div class="flex flex-wrap sm:rounded-lg">
-                <div class="flex w-full justify-between items-center">
-                    <h1 class="text-xl font-bold mt-8 mb-4">Département Production: </h1>
-                    
-                </div>
-                <div class="w-full px-3 h-full">
-                    <ProductionDepartment :products="{{$products}}" :caisse="{{$caisse}}" :user="{{auth()->user()}}"></ProductionDepartment>
-                </div>
-
+    <div class="mx-auto px-8 py-10">
+        <div class="flex flex-wrap sm:rounded-lg">
+            <div class="flex justify-center gap-6 mb-6 w-full">
+                <Disponibility :user="{{ Auth::user() }}" :dette="false"></Disponibility>
+                <Disponibility :user="{{ Auth::user() }}" :dette="true"></Disponibility>
+            </div>
+            <div class="w-full px-3 h-full">
+                <ProductionDepartment :products="{{$products}}" :caisse="{{$caisse}}" :user="{{auth()->user()}}"></ProductionDepartment>
             </div>
         </div>
     </div>

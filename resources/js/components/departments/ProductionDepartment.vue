@@ -1,66 +1,86 @@
- <template>
+<template>
     <div class="w-full">
         <div class="w-full">
-            <nav class="border-b text-sm flex justify-start">
-                <button @click="page_index = 'prod_stats'"
-                    :class=" page_index == 'prod_stats'
+            <nav class="mb-10 text-sm flex justify-start gap-8">
+                <button
+                    @click="page_index = 'prod_stats'"
+                    :class="
+                        page_index == 'prod_stats'
                             ? 'border-b-2 border-vert text-vert font-medium'
                             : 'text-vN hover:text-black'
                     "
-                    class="inline-block px-4 py-2 focus:outline-none text-lg" href="#">
+                    class="inline-block py-2 focus:outline-none text-lg"
+                >
                     Statistiques
                 </button>
 
                 <!-- active -->
-                <button  @click="page_index = 'production_list'"
-                    :class=" page_index == 'production_list'
-                           ? 'border-b-2 border-vert text-vert font-medium'
-                            : 'text-vN hover:text-black'
-                    "
-                    class="inline-block px-4 py-2 focus:outline-none text-lg" href="#">
-                    Productions
-                </button>
-
-                <button @click="page_index = 'decision_center'"
-                    :class=" page_index == 'decision_center'
+                <button
+                    @click="page_index = 'production_list'"
+                    :class="
+                        page_index == 'production_list'
                             ? 'border-b-2 border-vert text-vert font-medium'
                             : 'text-vN hover:text-black'
                     "
-                    class="inline-block px-4 py-2 focus:outline-none text-lg" href="#"
+                    class="inline-block py-2 focus:outline-none text-lg"
+                >
+                    Productions
+                </button>
+
+                <button
+                    @click="page_index = 'decision_center'"
+                    :class="
+                        page_index == 'decision_center'
+                            ? 'border-b-2 border-vert text-vert font-medium'
+                            : 'text-vN hover:text-black'
+                    "
+                    class="inline-block py-2 focus:outline-none text-lg"
                 >
                     Centre de décision
                 </button>
             </nav>
         </div>
 
-
-
         <!-- stat cards  -->
 
-        <div v-if="show_stat_cards"  class="flex w-full justify-center gap-7 mt-2">
+        <div v-if="show_stat_cards" class="flex w-full justify-center gap-7">
+            <Indicator :indicators="indicators"></Indicator>
 
-           <div class="flex w-3/12 justify-evenly items-center rounded-xl text-vN font-semibold p-1 bg-gray-50" >
-               <img class="h-20 w-20" src="/assets/icons/employees.svg" alt="dsfsd">
-                <div class="flex flex-col gap-2  ">  
-                   <h1>Chiffre d'affaire</h1>
-                   <span class="mx-auto">{{indicators['ca'].value}} DA</span>
-               </div> 
+            <div
+                class="flex w-1/4 gap-3 justify-evenly items-center rounded-xl px-3 bg-white shadow-sm"
+            >
+                <img
+                    class="h-16 w-16"
+                    src="/assets/icons/machine.svg"
+                    alt="machine icon"
+                />
+                <h1 class="text-vN text-lg font-medium">Nombre de Machine</h1>
+                <button>
+                    <img
+                        class="h-5 w-5"
+                        src="/assets/icons/chevron-down.svg"
+                        alt="arrow down icon"
+                    />
+                </button>
+            </div>
 
-           </div >
-               
-           <div class="w-3/12 flex items-center  rounded-xl text-vN font-semibold justify-center p-1 bg-gray-50">
-                <img class="h-20 w-20" src="/assets/icons/machine.svg" alt="dsfsd">
-                <h1>Nombre de Machine</h1>
-                <button ><img class="h-8 w-6 " src="/assets/icons/chevron-down.svg" alt="dds"></button>
-            
-           </div>
-
-           <div class="w-3/12 flex items-center rounded-xl text-vN font-semibold justify-evenly p-1 bg-gray-50">
-                <img class="h-20 w-20" src="/assets/icons/employees.svg" alt="dsfsd">
-                <h1>Nombre d'employé</h1>
-                <button ><img class="h-8 w-6 " src="/assets/icons/chevron-down.svg" alt="dds"></button>
-            
-           </div>
+            <div
+                class="flex w-1/4 gap-3 justify-evenly items-center rounded-xl px-3 bg-white shadow-sm"
+            >
+                <img
+                    class="h-16 w-16"
+                    src="/assets/icons/employees.svg"
+                    alt="employees icon"
+                />
+                <h1 class="text-vN text-lg font-medium">Nombre d'employé</h1>
+                <button>
+                    <img
+                        class="h-5 w-5"
+                        src="/assets/icons/chevron-down.svg"
+                        alt="arrow down icon"
+                    />
+                </button>
+            </div>
 
             <!-- <StatCard
                 title="Chiffre d'Affaire"
@@ -103,15 +123,7 @@
                     </h3>
                     <button
                         @click="showProductDescription(i)"
-                        class="
-                            bg-green-400
-                            mx-2
-                            my-1
-                            text-white
-                            px-3
-                            py-1
-                            rounded
-                        "
+                        class="bg-green-400 mx-2 my-1 text-white px-3 py-1 rounded"
                     >
                         Afficher la Description
                     </button>
@@ -184,142 +196,52 @@
                 <thead>
                     <tr>
                         <th
-                            class="
-                                p-3
-                                font-bold
-                                uppercase
-                                bg-gray-200
-                                text-gray-600
-                                border border-gray-300
-                                hidden
-                                lg:table-cell
-                            "
+                            class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell"
                         >
                             Numéro
                         </th>
                         <th
-                            class="
-                                p-3
-                                font-bold
-                                uppercase
-                                bg-gray-200
-                                text-gray-600
-                                border border-gray-300
-                                hidden
-                                lg:table-cell
-                            "
+                            class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell"
                         >
                             Produit
                         </th>
                         <th
-                            class="
-                                p-3
-                                font-bold
-                                uppercase
-                                bg-gray-200
-                                text-gray-600
-                                border border-gray-300
-                                hidden
-                                lg:table-cell
-                            "
+                            class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell"
                         >
                             Qt. Produite
                         </th>
                         <th
-                            class="
-                                p-3
-                                font-bold
-                                uppercase
-                                bg-gray-200
-                                text-gray-600
-                                border border-gray-300
-                                hidden
-                                lg:table-cell
-                            "
+                            class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell"
                         >
                             Qt. Vendue
                         </th>
                         <th
-                            class="
-                                p-3
-                                font-bold
-                                uppercase
-                                bg-gray-200
-                                text-gray-600
-                                border border-gray-300
-                                hidden
-                                lg:table-cell
-                            "
+                            class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell"
                         >
                             Stock
                         </th>
                         <th
-                            class="
-                                p-3
-                                font-bold
-                                uppercase
-                                bg-gray-200
-                                text-gray-600
-                                border border-gray-300
-                                hidden
-                                lg:table-cell
-                            "
+                            class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell"
                         >
                             Prix
                         </th>
                         <th
-                            class="
-                                p-3
-                                font-bold
-                                uppercase
-                                bg-gray-200
-                                text-gray-600
-                                border border-gray-300
-                                hidden
-                                lg:table-cell
-                            "
+                            class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell"
                         >
                             Coût
                         </th>
                         <th
-                            class="
-                                p-3
-                                font-bold
-                                uppercase
-                                bg-gray-200
-                                text-gray-600
-                                border border-gray-300
-                                hidden
-                                lg:table-cell
-                            "
+                            class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell"
                         >
                             Chiffre d'Affaire
                         </th>
                         <th
-                            class="
-                                p-3
-                                font-bold
-                                uppercase
-                                bg-gray-200
-                                text-gray-600
-                                border border-gray-300
-                                hidden
-                                lg:table-cell
-                            "
+                            class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell"
                         >
                             Status
                         </th>
                         <th
-                            class="
-                                p-3
-                                font-bold
-                                uppercase
-                                bg-gray-200
-                                text-gray-600
-                                border border-gray-300
-                                hidden
-                                lg:table-cell
-                            "
+                            class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell"
                         >
                             Action
                         </th>
@@ -329,136 +251,45 @@
                     <tr
                         v-for="(prod, key) in productions"
                         v-bind:key="key"
-                        class="
-                            bg-white
-                            lg:hover:bg-gray-100
-                            flex
-                            lg:table-row
-                            flex-row
-                            lg:flex-row
-                            flex-wrap
-                            lg:flex-no-wrap
-                            mb-10
-                            lg:mb-0
-                        "
+                        class="bg-white lg:hover:bg-gray-100 flex lg:table-row flex-row lg:flex-row flex-wrap lg:flex-no-wrap mb-10 lg:mb-0"
                     >
                         <td
-                            class="
-                                w-full
-                                lg:w-auto
-                                p-3
-                                text-gray-800 text-center
-                                border border-b
-                                block
-                                lg:table-cell
-                                relative
-                                lg:static
-                            "
+                            class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static"
                         >
                             {{ prod.id }}
                         </td>
                         <td
-                            class="
-                                w-full
-                                lg:w-auto
-                                p-3
-                                text-gray-800 text-center
-                                border border-b
-                                block
-                                lg:table-cell
-                                relative
-                                lg:static
-                            "
+                            class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static"
                         >
                             {{ prod.product }}
                         </td>
                         <td
-                            class="
-                                w-full
-                                lg:w-auto
-                                p-3
-                                text-gray-800 text-center
-                                border border-b
-                                block
-                                lg:table-cell
-                                relative
-                                lg:static
-                            "
+                            class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static"
                         >
                             {{ prod.quantity }}
                         </td>
                         <td
-                            class="
-                                w-full
-                                lg:w-auto
-                                p-3
-                                text-gray-800 text-center
-                                border border-b
-                                block
-                                lg:table-cell
-                                relative
-                                lg:static
-                            "
+                            class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static"
                         >
                             {{ prod.sold }}
                         </td>
                         <td
-                            class="
-                                w-full
-                                lg:w-auto
-                                p-3
-                                text-gray-800 text-center
-                                border border-b
-                                block
-                                lg:table-cell
-                                relative
-                                lg:static
-                            "
+                            class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static"
                         >
                             {{ prod.quantity - prod.sold }}
                         </td>
                         <td
-                            class="
-                                w-full
-                                lg:w-auto
-                                p-3
-                                text-gray-800 text-center
-                                border border-b
-                                block
-                                lg:table-cell
-                                relative
-                                lg:static
-                            "
+                            class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static"
                         >
                             {{ prod.price }}
                         </td>
                         <td
-                            class="
-                                w-full
-                                lg:w-auto
-                                p-3
-                                text-gray-800 text-center
-                                border border-b
-                                block
-                                lg:table-cell
-                                relative
-                                lg:static
-                            "
+                            class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static"
                         >
                             {{ prod.cost }}
                         </td>
                         <td
-                            class="
-                                w-full
-                                lg:w-auto
-                                p-3
-                                text-gray-800 text-center
-                                border border-b
-                                block
-                                lg:table-cell
-                                relative
-                                lg:static
-                            "
+                            class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static"
                         >
                             {{ prod.sold * prod.price }} UM
                         </td>
@@ -468,42 +299,16 @@
                                     ? 'text-yellow-500'
                                     : 'text-green-500'
                             "
-                            class="
-                                w-full
-                                lg:w-auto
-                                p-3
-                                text-center
-                                border border-b
-                                block
-                                lg:table-cell
-                                relative
-                                lg:static
-                            "
+                            class="w-full lg:w-auto p-3 text-center border border-b block lg:table-cell relative lg:static"
                         >
                             {{ prod.status }}
                         </td>
                         <td
-                            class="
-                                w-full
-                                lg:w-auto
-                                p-3
-                                text-gray-800 text-center
-                                border border-b
-                                block
-                                lg:table-cell
-                                relative
-                                lg:static
-                            "
+                            class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static"
                         >
                             <button
                                 @click="sell(prod)"
-                                class="
-                                    bg-green-400
-                                    text-white
-                                    py-2
-                                    px-4
-                                    rounded
-                                "
+                                class="bg-green-400 text-white py-2 px-4 rounded"
                                 v-bind:class="{
                                     'hover:bg-green-800':
                                         prod.status_code == 'completed' &&
@@ -550,24 +355,11 @@
                             Coût de distribution total : {{ distCost }} UM
                         </p>
                         <div
-                            class="
-                                w-full
-                                my-2
-                                flex flex-wrap
-                                items-center
-                                px-10
-                                space-x-4
-                            "
+                            class="w-full my-2 flex flex-wrap items-center px-10 space-x-4"
                         >
                             <button
                                 @click="confirmSell"
-                                class="
-                                    bg-green-500
-                                    rounded
-                                    px-3
-                                    py-1
-                                    text-white
-                                "
+                                class="bg-green-500 rounded px-3 py-1 text-white"
                             >
                                 Confirmer
                             </button>
@@ -583,51 +375,101 @@
             </Modal>
         </div>
         <div v-if="page_index == 'decision_center'">
-          <div class="container mx-auto flex gap-7 mt-7">
-             
-             <div class=" w-1/3 bg-white rounded-xl text-center flex flex-col pt-7 shadow-xl ">
-                      <img class="mx-auto h-16 w-16" src="/images/prod.png" alt="">
-                      <div class="mx-auto text-center p-8 text-vN flex-1">
-                            <h1 class="ubuntu text-2xl font-semibold mb-4">Lancer une production</h1>
-                            <p class="text-sm" >En lançant une production, vous produirez une quantité d'un produit que vous pourrez par la suite vendre.<br>
+            <div class="mx-auto flex gap-7 mt-10">
+                <div
+                    class="w-1/3 bg-white rounded-xl text-center flex flex-col pt-7 shadow-xl"
+                >
+                    <img
+                        class="mx-auto h-16 w-16"
+                        src="/images/prod.png"
+                        alt=""
+                    />
+                    <div class="mx-auto text-center p-8 text-vN flex-1">
+                        <h1 class="ubuntu text-2xl font-semibold mb-4">
+                            Lancer une production
+                        </h1>
+                        <p class="text-sm">
+                            En lançant une production, vous produirez une
+                            quantité d'un produit que vous pourrez par la suite
+                            vendre.<br />
 
-                            <span class="text-yellow-500 font-semibold"> Astuce :</span> Planifiez bien votre production en amont pour eviter les coûts de stock !</p>
-                     </div>
+                            <span class="text-yellow-500 font-semibold">
+                                Astuce :</span
+                            >
+                            Planifiez bien votre production en amont pour eviter
+                            les coûts de stock !
+                        </p>
+                    </div>
 
-                     <button class="rounded-xl bg-vert text-white mx-auto py-2 px-11 mb-8 text-lg font-medium">Lancer</button>
-                  
-                  
-              </div>
-              
-              <div class="w-1/3 rounded-xl text-center pt-7 flex flex-col ">
-                      <img class="mx-auto h-16 w-16 " src="/images/machine.png" alt="">
-                      <div class="mx-auto text-center p-8 text-vN flex-1">
-                            <h1 class="ubuntu text-2xl font-semibold mb-4 ">Machine</h1>
-                            <p class="text-sm" >En achetant de nouvelles machines ou en réparant des anciennes machines vous pourrez produire plus de quantité. <br>
-
-                            <span class="text-yellow-500 font-semibold"> Astuce :</span> Attention à ne pas sur-estimer vos besoins en machines</p>
-                     </div>
-                   <div class="flex flex-col gap-3">
-                       <button class="rounded-xl bg-vert text-white mx-auto py-2 px-8 flex-1 text-lg font-medium">Acheter une machine</button>
-                       <button class="rounded-xl bg-vert text-white mx-auto py-2 px-8 flex-1 text-lg font-medium">Vendre une machine </button>
-                   </div>
-              </div>
-
-              
-                <div class="w-1/3 bg-white rounded-xl text-center flex flex-col pt-7 shadow-xl">
-                      <img class="mx-auto h-16 w-16 " src="/images/atelier.png" alt="">
-                      <div class="mx-auto text-center p-8 text-vN flex-1">
-                            <h1 class="ubuntu text-2xl font-semibold mb-4 ">Atelier</h1>
-                            <p class="text-sm" >Dans cette section vous pouvez lancer des actions pour améliorer l'état de vos usines et votre productivité.</p>
-
-                     </div>
-
-                     <button class="rounded-xl bg-vert text-white mx-auto py-2 px-11  mb-8 text-lg font-medium">Lancer</button>
-                     
+                    <button
+                        class="rounded-xl bg-vert text-white mx-auto py-2 px-11 mb-8 text-lg font-medium"
+                    >
+                        Lancer
+                    </button>
                 </div>
-              
-          </div>
 
+                <div class="w-1/3 rounded-xl text-center pt-7 flex flex-col">
+                    <img
+                        class="mx-auto h-16 w-16"
+                        src="/images/machine.png"
+                        alt=""
+                    />
+                    <div class="mx-auto text-center p-8 text-vN flex-1">
+                        <h1 class="ubuntu text-2xl font-semibold mb-4">
+                            Machine
+                        </h1>
+                        <p class="text-sm">
+                            En achetant de nouvelles machines ou en réparant des
+                            anciennes machines vous pourrez produire plus de
+                            quantité. <br />
+
+                            <span class="text-yellow-500 font-semibold">
+                                Astuce :</span
+                            >
+                            Attention à ne pas sur-estimer vos besoins en
+                            machines
+                        </p>
+                    </div>
+                    <div class="flex flex-col gap-3">
+                        <button
+                            class="rounded-xl bg-vert text-white mx-auto py-2 px-8 flex-1 text-lg font-medium"
+                        >
+                            Acheter une machine
+                        </button>
+                        <button
+                            class="rounded-xl bg-vert text-white mx-auto py-2 px-8 flex-1 text-lg font-medium"
+                        >
+                            Vendre une machine
+                        </button>
+                    </div>
+                </div>
+
+                <div
+                    class="w-1/3 bg-white rounded-xl text-center flex flex-col pt-7 shadow-xl"
+                >
+                    <img
+                        class="mx-auto h-16 w-16"
+                        src="/images/atelier.png"
+                        alt=""
+                    />
+                    <div class="mx-auto text-center p-8 text-vN flex-1">
+                        <h1 class="ubuntu text-2xl font-semibold mb-4">
+                            Atelier
+                        </h1>
+                        <p class="text-sm">
+                            Dans cette section vous pouvez lancer des actions
+                            pour améliorer l'état de vos usines et votre
+                            productivité.
+                        </p>
+                    </div>
+
+                    <button
+                        class="rounded-xl bg-vert text-white mx-auto py-2 px-11 mb-8 text-lg font-medium"
+                    >
+                        Lancer
+                    </button>
+                </div>
+            </div>
 
             <!-- <ProdCenter
                 @prodLaunched="updateProdData"
@@ -645,6 +487,7 @@ import LineGraph from "./ui/LineGraph";
 import StatCard from "./ui/StatCard";
 import ProdCenter from "./ProdCenter";
 import Modal from "../Modal";
+import Indicator from "./ui/Indicator";
 export default {
     name: "ProductionDepartment",
     components: {
@@ -652,6 +495,7 @@ export default {
         StatCard,
         ProdCenter,
         Modal,
+        Indicator,
     },
     props: ["user"],
     data() {

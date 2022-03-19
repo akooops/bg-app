@@ -85,6 +85,11 @@ Vue.use(VCalendar, {
     componentPrefix: "vc", // Use <vc-calendar /> instead of <v-calendar />
 });
 
+Vue.component(
+    "indicator",
+    require("./components/departments/ui/Indicator.vue").default
+);
+
 const app = new Vue({
     el: "#app",
 });
