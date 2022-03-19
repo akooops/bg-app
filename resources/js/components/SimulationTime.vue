@@ -42,7 +42,7 @@
                 <a
                     href="/logout"
                     v-if="show_menu"
-                    class="flex items-center gap-2 absolute z-999 -bottom-14 right-0 bg-white border-opacity-5 border-vN shadow-md w-40 p-2 rounded-lg"
+                    class="flex items-center gap-2 absolute z-999 -bottom-14 right-0 bg-white border-opacity-5 border-vN shadow-md w-44 p-2 rounded-lg"
                     style="border-width: 1px"
                 >
                     <img
