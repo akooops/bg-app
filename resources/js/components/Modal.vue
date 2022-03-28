@@ -16,9 +16,8 @@
                 leave-to-class="opacity-0 translate-y-4 md:translate-y-0 md:scale-95"
             >
                 <div
-                    class="h-auto px-4 py-6 bg-white shadow-xl border-vert items-center justify-self-center"
+                    class=" flex flex-row px-4 py-6 bg-white shadow-xl border-vert"
                     style="border-width: 0.5px"
-                    :class="custom_css ? custom_css : 'w-96'"
                     role="dialog"
                     aria-modal="true"
                     aria-labelledby="modal-headline"

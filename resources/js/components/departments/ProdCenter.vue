@@ -69,8 +69,7 @@
                     </p>
                 </div>
 
-                <button
-                    class="rounded-xl bg-vert text-white mx-auto py-2 px-11 mb-8 text-lg font-medium"
+                <button  @click="launch_prod_modal = true"  class="rounded-xl bg-vert text-white mx-auto py-2 px-11 mb-8 text-lg font-medium"
                 >
                     Lancer
                 </button>
@@ -149,7 +148,49 @@
                 </button>
             </div>
         </div>
-        <Modal v-if="launch_prod_modal">
+     <Modal v-if="launch_prod_modal">
+         <template v-slot:content>
+            
+             <div class="flex flex-col w-1/2 p-6 mx-auto">
+                 <h1 class="text-black text-2xl">Lancer une production</h1>
+                <h1 class="text-vert text-lg mt-4">Produit :</h1>
+                <select  v-model='launch_data.prod_id'>
+                    <option :value="product.id" v-for='(product,key) in products' :key=key>
+                        {{product.name}}
+                    </option>
+                </select>
+                <h1 class="text-vert text-lg mt-2">Choix de la machine :</h1>
+                <div class="flex flex-col m-3 gap-4 mx-auto">
+                      <div  class="flex gap-3 items-center"><input v-model='launch_data.machine' type="radio" id="machine1" name="machine" class=" text-vert " /><label for="">Niveau 1</label></div>
+                      <div class="flex gap-3 items-center"><input v-model='launch_data.machine' type="radio"  id="machine2" name="machine" class="text-vert" /><label for="">Niveau 2</label></div>
+                      <div class="flex gap-3 items-center"><input v-model='launch_data.machine' type="radio"  id="machine3"  name="machine" class="text-vert " /><label for="">Niveau 3</label></div>
+                </div>
+                <h1 class="text-vert text-lg">Quantité( en lot de 100 pièces)</h1>
+                <input type="number " v-model="launch_data.quantity" class="px-2  border rounded-md border-gray-200">
+                <h1 class="text-vert text-lg mt-3">Prix (Unitaire)</h1>
+                <input type="number " v-model="launch_data.price" class=" px-2 border rounded-md border-gray-200">
+                 
+                 <button class="bg-vN text-white mx-auto px-4 py-1 rounded-md mt-5">Lancer</button>
+
+
+
+             </div>
+
+
+             <div class="flex w-1/2 p-6">
+                                  <h1 class="text-vert text-lg">Informations importantes</h1>
+
+             </div>
+         </template>
+
+
+
+    </Modal>
+
+
+
+
+        <!-- <Modal v-if="launch_prod_modal">
             <template v-slot:content>
                 <div class="w-full flex flex-wrap p-2">
                     <div class="w-1/2">
@@ -277,7 +318,7 @@
                     </div>
                 </div>
             </template>
-        </Modal>
+        </Modal> -->
         <Modal v-if="machine.show_transaction_modal" class="pt-44">
             <template v-slot:content>
                 <div class="flex flex-col items-center gap-5">
@@ -404,6 +445,7 @@ export default {
                 prod_id: 1,
                 price: 0,
                 quantity: 0,
+                machine: 1,
             },
             prod_factors: {
                 machines: 0,
