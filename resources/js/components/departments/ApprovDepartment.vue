@@ -340,12 +340,12 @@ export default {
                 });
         },
         showDetails(command) {
-            this.show_details_modal = true;
             this.current_command = command;
+            this.show_details_modal = true;
         },
         getStatus(status) {
             if (status == "pending") {
-                return "En Attente";
+                return "En Attente...";
             } else if (status == "confirmed") {
                 return "Confirmé";
             }

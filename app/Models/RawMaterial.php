@@ -13,12 +13,14 @@ class RawMaterial extends Model
      *
      * @var array
      */
+
     protected $fillable = [
         'name',
         'price',
         'unit',
         'volume'
     ];
+    
     public function usedIn()
     {
         return $this->belongsToMany('App\Models\Product','raw_materials_products')->withPivot(["quantity"]);

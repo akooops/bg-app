@@ -8,14 +8,10 @@
     <div class="py-12">
         <div class=" mx-auto sm:px-6 lg:px-8">
             <div class="flex flex-wrap  overflow-hidden  sm:rounded-lg">
-                <h1 class = "text-xl font-bold">Nouvelle Commande:</h1>
-                    <CommandMaker
-                    :materials = "{{$materials}}"
-                    :suppliers = "{{$suppliers}}" 
-                    :user = "{{auth()->user()}}"
-                    :caisse = "{{$caisse}}"
-                    ></CommandMaker>
-                
+                <h1 class="text-xl font-bold">Nouvelle Commande:</h1>
+                <CommandMaker :materials="{{ $materials }}" :suppliers="{{ $suppliers }}"
+                    :user="{{ auth()->user() }}" :caisse="{{ $caisse }}"></CommandMaker>
+
             </div>
         </div>
     </div>

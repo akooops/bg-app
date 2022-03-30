@@ -347,10 +347,7 @@ export default {
                 .then((resp) => {
                     this.show_success = true;
                     this.message = resp.data.message;
-                    setTimeout(function () {
-                        window.location.href =
-                            "/entreprise/department/Approvisionnement";
-                    }, 4000);
+                    this.command_sent = false;
                 })
                 .catch((e) => {
                     this.show_error = true;

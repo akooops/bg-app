@@ -19,6 +19,7 @@ use App\Jobs\ProductionScheduler;
 use App\Events\NewNotification;
 use Carbon\Carbon;
 
+
 class EntrepriseController extends Controller
 {
     use HelperTrait, DemandTrait, IndicatorTrait;
@@ -622,7 +623,7 @@ class EntrepriseController extends Controller
             }
         }
 
-        $message = "Vous avez acheté " . $number . " machine(s) de niveau " . $level . " au prix de " . $buy_price * $number . " DA." . $health_msg;
+        $message = "Vous avez acheté " . $number . " machine(s) de niveau " . $level . " au prix de " . $buy_price * $number . " DA. " . $health_msg;
         $notification = [
             "type" => "MachinesUpdate",
             "entreprise_id" => $entreprise_id,
@@ -670,7 +671,7 @@ class EntrepriseController extends Controller
         }
 
         if ($nb_machines - $number < 0) {
-            $message = "Vous ne pouvez pas vendre " . $number . " machine(s) de niveau " . $level . ": vous n'en avez pas autant.";
+            $message = "Vous ne pouvez pas vendre " . $number . " machine(s) de niveau " . $level . ": Vous n'en avez pas autant.";
             $notification = [
                 "type" => "MachinesUpdate",
                 "entreprise_id" => $entreprise_id,
@@ -682,7 +683,7 @@ class EntrepriseController extends Controller
         }
 
         if ($nb_machines - $nb_busy_machines < $number) {
-            $message = "Vous ne pouvez pas vendre " . $number . " machine(s) de niveau " . $level . ": les machines en production ne peuvent pas être venudes.";
+            $message = "Vous ne pouvez pas vendre " . $number . " machine(s) de niveau " . $level . ": Les machines en production ne peuvent pas être venudes.";
             $notification = [
                 "type" => "MachinesUpdate",
                 "entreprise_id" => $entreprise_id,

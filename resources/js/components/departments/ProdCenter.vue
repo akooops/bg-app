@@ -446,7 +446,37 @@
                                 <input
                                     v-model="machine.transaction_nb"
                                     class="w-28"
-                                    min="1"
+                                    :min="
+                                        indicators['nb_machines_lv1']['value'] -
+                                            indicators['nb_machines_lv1_busy'][
+                                                'value'
+                                            ] >
+                                        0
+                                            ? 1
+                                            : 0
+                                    "
+                                    :max="
+                                        machine.transaction_lv == 1
+                                            ? indicators['nb_machines_lv1'][
+                                                  'value'
+                                              ] -
+                                              indicators[
+                                                  'nb_machines_lv1_busy'
+                                              ]['value']
+                                            : machine.transaction_lv == 2
+                                            ? indicators['nb_machines_lv2'][
+                                                  'value'
+                                              ] -
+                                              indicators[
+                                                  'nb_machines_lv2_busy'
+                                              ]['value']
+                                            : indicators['nb_machines_lv3'][
+                                                  'value'
+                                              ] -
+                                              indicators[
+                                                  'nb_machines_lv3_busy'
+                                              ]['value']
+                                    "
                                     type="number"
                                 />
                                 machine(s) de niveau
@@ -492,7 +522,12 @@
                                 </button>
                                 <button
                                     @click="
-                                        machine.show_transaction_modal = false
+                                        machine.transaction_nb =
+                                            machine.transaction == 'buy'
+                                                ? 1
+                                                : machine.transaction_nb;
+                                        machine.transaction_lv = 1;
+                                        machine.show_transaction_modal = false;
                                     "
                                     class="
                                         bg-gray-500
@@ -653,6 +688,63 @@ export default {
         "launch_data.machine_lvl": function () {
             this.can_produce = false;
             this.verifyProd();
+        },
+        "machine.transaction_lv": function () {
+            if (this.machine.transaction_lv == 1) {
+                if (
+                    this.indicators["nb_machines_lv1"]["value"] -
+                        this.indicators["nb_machines_lv1_busy"]["value"] ==
+                    0
+                ) {
+                    this.machine.transaction_nb = 0;
+                } else if (
+                    this.indicators["nb_machines_lv1"]["value"] -
+                        this.indicators["nb_machines_lv1_busy"]["value"] <
+                    this.machine.transaction_nb
+                ) {
+                    this.machine.transaction_nb =
+                        this.indicators["nb_machines_lv1"]["value"] -
+                        this.indicators["nb_machines_lv1_busy"]["value"];
+                } else if (this.machine.transaction_nb == 0) {
+                    this.machine.transaction_nb = 1;
+                }
+            } else if (this.machine.transaction_lv == 2) {
+                if (
+                    this.indicators["nb_machines_lv2"]["value"] -
+                        this.indicators["nb_machines_lv2_busy"]["value"] ==
+                    0
+                ) {
+                    this.machine.transaction_nb = 0;
+                } else if (
+                    this.indicators["nb_machines_lv2"]["value"] -
+                        this.indicators["nb_machines_lv2_busy"]["value"] <
+                    this.machine.transaction_nb
+                ) {
+                    this.machine.transaction_nb =
+                        this.indicators["nb_machines_lv2"]["value"] -
+                        this.indicators["nb_machines_lv2_busy"]["value"];
+                } else if (this.machine.transaction_nb == 0) {
+                    this.machine.transaction_nb = 1;
+                }
+            } else if (this.machine.transaction_lv == 3) {
+                if (
+                    this.indicators["nb_machines_lv3"]["value"] -
+                        this.indicators["nb_machines_lv3_busy"]["value"] ==
+                    0
+                ) {
+                    this.machine.transaction_nb = 0;
+                } else if (
+                    this.indicators["nb_machines_lv3"]["value"] -
+                        this.indicators["nb_machines_lv3_busy"]["value"] <
+                    this.machine.transaction_nb
+                ) {
+                    this.machine.transaction_nb =
+                        this.indicators["nb_machines_lv3"]["value"] -
+                        this.indicators["nb_machines_lv3_busy"]["value"];
+                } else if (this.machine.transaction_nb == 0) {
+                    this.machine.transaction_nb = 1;
+                }
+            }
         },
     },
     computed: {
@@ -909,18 +1001,18 @@ export default {
         confirmMachineTransaction(type) {
             this.machine.show_transaction_modal = false;
             if (this.machine.transaction == "buy") {
-                if (
-                    this.machine.buy_price * this.machine.transaction_nb >
-                    this.caisse
-                ) {
-                    this.show_error = true;
-                    this.message =
-                        "Vos disponibilités ne suffisent pas pour acheter " +
-                        this.machine.transaction_nb +
-                        " machine(s)";
-                    this.machine.show_transaction_modal = false;
-                    return "";
-                }
+                // if (
+                //     this.machine.buy_price * this.machine.transaction_nb >
+                //     this.caisse
+                // ) {
+                //     this.show_error = true;
+                //     this.message =
+                //         "Vos disponibilités ne suffisent pas pour acheter " +
+                //         this.machine.transaction_nb +
+                //         " machine(s)";
+                //     this.machine.show_transaction_modal = false;
+                //     return "";
+                // }
                 axios
                     .post("/api/entreprise/machine/buy", {
                         entreprise_id: this.user.id,
@@ -943,27 +1035,38 @@ export default {
                         this.message = resp.data.message;
                     });
             } else if (this.machine.transaction == "sell") {
-                if (
-                    this.machine.transaction_nb >
-                    this.indicators["nb_machines_lv1"]["value"]
-                ) {
-                    this.show_error = true;
-                    this.message = "Pas assez de machines!";
-                    this.machine.transaction_nb = 1;
-                    this.machine.show_transaction_modal = false;
-                    return "";
-                } else if (
-                    this.machine.transaction_nb >
-                    this.indicators["nb_machines_lv1"]["value"] -
-                        this.indicators["nb_machines_lv1_busy"]["value"]
-                ) {
-                    this.show_error = true;
-                    this.message =
-                        "Vous ne pouvez pas vendre les machines en plein production";
-                    this.machine.transaction_nb = 1;
-                    this.machine.show_transaction_modal = false;
-                    return "";
-                }
+                // let nb_machines = 0;
+                // let nb_machines_busy = 0;
+
+                // if (this.machine.transaction_lv == 1) {
+                //     nb_machines = this.indicators["nb_machines_lv1"]["value"];
+                //     nb_machines_busy = this.indicators["nb_machines_lv1_busy"]["value"];
+                // }
+                // else if (this.machine.transaction_lv == 2) {
+                //     nb_machines = this.indicators["nb_machines_lv2"]["value"];
+                //     nb_machines_busy = this.indicators["nb_machines_lv2_busy"]["value"];
+                // }
+                // else if (this.machine.transaction_lv == 3) {
+                //     nb_machines = this.indicators["nb_machines_lv3"]["value"];
+                //     nb_machines_busy = this.indicators["nb_machines_lv3_busy"]["value"];
+                // }
+
+                // if (this.machine.transaction_nb > nb_machines) {
+                //     this.show_error = true;
+                //     this.message = "Pas assez de machines!";
+                //     this.machine.transaction_nb = 1;
+                //     this.machine.transaction_lv = 1;
+                //     this.machine.show_transaction_modal = false;
+                //     return;
+                // }
+                // else if (this.machine.transaction_nb > nb_machines - nb_machines_busy) {
+                //     this.show_error = true;
+                //     this.message = "Vous ne pouvez pas vendre les machines en plein production";
+                //     this.machine.transaction_nb = 1;
+                //     this.machine.transaction_lv = 1;
+                //     this.machine.show_transaction_modal = false;
+                //     return;
+                // }
 
                 axios
                     .post("/api/entreprise/machine/sell", {
@@ -1036,13 +1139,13 @@ export default {
         confirmAction() {
             this.action.show_info = false;
             let price = this.action.price[this.action.value];
-            if (price > this.caisse) {
-                this.show_error = true;
-                this.message =
-                    "Vos disponibilités ne suffisent pas pour acheter des machines";
-                this.action.show_info = false;
-                return "";
-            }
+            // if (price > this.caisse) {
+            //     this.show_error = true;
+            //     this.message =
+            //         "Vos disponibilités ne suffisent pas pour acheter des machines";
+            //     this.action.show_info = false;
+            //     return "";
+            // }
             axios
                 .post("/api/entreprise/action/apply", {
                     type: this.action.value,
