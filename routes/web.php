@@ -31,13 +31,13 @@ Route::prefix("entreprise")->middleware(["auth", "entreprise"])->group(function 
 
 	Route::get('/department/Approvisionnement', [EntrepriseController::class, "showDptApprov"])->name("approv");
 	Route::get('/department/Production', [EntrepriseController::class, "showDptProduction"])->name("production");
-	Route::get('/department/Marketing', [EntrepriseController::class, "showMarketing"]);
+	Route::get('/department/Marketing', [EntrepriseController::class, "showMarketing"])->name("marketing");
 
-	Route::get('/department/Finance', [EntrepriseController::class, "showFinance"]);
+	Route::get('/department/Finance', [EntrepriseController::class, "showFinance"])->name("finance");
 
-	Route::get('/department/Ressources Humaines', [EntrepriseController::class, "showHr"]);
+	Route::get('/department/Ressources Humaines', [EntrepriseController::class, "showHr"])->name("rh");
 
-	Route::get('/command/create', [EntrepriseController::class, "showCommandMaker"])->name("approv");
+	Route::get('/command/create', [EntrepriseController::class, "showCommandMaker"]);
 	Route::get('/stock', [EntrepriseController::class, "showStock"])->name("stock");
 	Route::get('/loans', [EntrepriseController::class, "showLoans"])->name("loans");
 });

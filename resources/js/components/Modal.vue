@@ -16,7 +16,7 @@
                 leave-to-class="opacity-0 translate-y-4 md:translate-y-0 md:scale-95"
             >
                 <div
-                    class=" flex flex-row px-4 py-6 bg-white shadow-xl border-vert"
+                    class=" flex flex-row px-4 py-6 bg-white shadow-xl border-vert border-opacity-50"
                     style="border-width: 0.5px"
                     role="dialog"
                     aria-modal="true"

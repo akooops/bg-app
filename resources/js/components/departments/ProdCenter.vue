@@ -155,7 +155,7 @@
                  <h1 class="text-black text-2xl">Lancer une production</h1>
                 <h1 class="text-vert text-lg mt-4">Produit :</h1>
                 <select  v-model='launch_data.prod_id'>
-                    <option :value="product.id" v-for='(product,key) in products' :key=key>
+                    <option :value="product.id" v-for='(product,key) in products' :key="key">
                         {{product.name}}
                     </option>
                 </select>
@@ -319,9 +319,9 @@
                 </div>
             </template>
         </Modal> -->
-        <Modal v-if="machine.show_transaction_modal" class="pt-44">
+        <Modal v-if="machine.show_transaction_modal" class="pt-40">
             <template v-slot:content>
-                <div class="flex flex-col items-center gap-5">
+                <div class="flex flex-col items-center gap-5 p-5">
                     <h2
                         v-if="machine.transaction == 'buy'"
                         class="font-bold text-lg"
@@ -340,7 +340,7 @@
                                 Choix Du niveau de la machine
                             </p>
                             <select
-                                class="rounded-sm focus:border-vert focus:ring-0 w-full border-vert"
+                                class="rounded-sm focus:border-vert focus:ring-0 w-full border-gray-200"
                                 style="border-width: 1px"
                             >
                                 <option value="">1</option>
@@ -362,14 +362,14 @@
                                 @input="quantity = $event.target.value"
                                 min="0"
                                 type="number"
-                                class="rounded-sm focus:border-vert w-full focus:ring-0 border-vert"
+                                class="rounded-sm focus:border-vert w-full focus:ring-0 border-gray-200"
                                 style="border-width: 1px"
                             />
                         </div>
                         <div class="flex flex-col">
                             <p class="text-me font-medium text-nav">Prix</p>
                             <p
-                                class="py-2 px-4 border-vert w-40 text-jaune"
+                                class="py-2 px-4 border-gray-200 w-40 text-jaune"
                                 style="border-width: 1px"
                             >
                                 {{
@@ -380,18 +380,18 @@
                             </p>
                         </div>
                     </div>
-                    <div class="w-full flex items-center gap-4 justify-center">
+                    <div class="w-full flex items-center gap-4 justify-center mt-5">
                         <button
                             @click="confirmMachineTransaction"
-                            class="bg-vert rounded-md px-3 border-vert py-1 text-white"
-                            style="border-width: 1px"
+                            class="border-0 px-3 py-1 text-vN hover:text-vert"
+                            
                         >
                             Confirmer
                         </button>
                         <button
                             @click="machine.show_transaction_modal = false"
-                            class="bg-white border-vert rounded-md px-3 py-1 text-vert"
-                            style="border-width: 1px"
+                            class=" px-3 py-1 text-vN opacity-80"
+                            
                         >
                             Annuler
                         </button>

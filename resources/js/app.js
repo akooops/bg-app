@@ -79,6 +79,7 @@ Vue.component(
     require("./components/Disponibility.vue").default
 );
 
+
 Vue.component("calendar", require("./components/Calendar.vue").default);
 
 Vue.use(VCalendar, {
