@@ -148,10 +148,10 @@
                 </button>
             </div>
         </div>
-     <Modal v-if="launch_prod_modal">
-         <template v-slot:content>
+     <Modal v-if="launch_prod_modal" >
+         <template v-slot:content >
             
-             <div class="flex flex-col w-1/2 p-6 mx-auto">
+             <div class="flex flex-col w-1/2 px-6  mx-auto">
                  <h1 class="text-black text-2xl">Lancer une production</h1>
                 <h1 class="text-vert text-lg mt-4">Produit :</h1>
                 <select  v-model='launch_data.prod_id'>
@@ -177,9 +177,34 @@
              </div>
 
 
-             <div class="flex w-1/2 p-6">
-                                  <h1 class="text-vert text-lg">Informations importantes</h1>
+             <div class="flex flex-col w-1/2 px-6 ">
+              <h1 class="text-vert text-lg">Informations importantes</h1>
+              <h1 class="text-vert text-lg">Pour un lot : </h1>
+              <div class="p-3 ">
+                  <table class="w-full" style="background-color :#F9F9FC">
+                  <thead class="text-xs text-gray-700 uppercase ">
+                      <tr class="border-b border-t" >
+                          <th class="">Matière Premiere</th>
+                          <th class="">Quantité Nécessaire</th>
+                          <th class=" ">Quantité Stockés</th>
+                      </tr>
+                  </thead>
+                  <tbody >
+                      <tr v-for="(material,key) in selectedProd.raw_materials" :key="key" class="border-b">
+                          <td class="flex justify-center icon-material" ><img src="/assets/icons/khobz.png" alt="khobz"><span>{{material.name}}</span></td>
+                          <td class="text-center ">{{material.pivot.quantity}}</td> 
+                          <td class="text-center" v-if="stock.find(element => element.id==material.id) != undefined"> {{stock.find(element => element.id==material.id).quantity}}</td>
+                          <td class="text-center" v-else> 0</td>
 
+                      </tr>
+                  </tbody>
+
+              </table>
+
+              </div>
+              
+              
+    
              </div>
          </template>
 
