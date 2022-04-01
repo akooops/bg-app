@@ -151,59 +151,108 @@
      <Modal v-if="launch_prod_modal" >
          <template v-slot:content >
             
-             <div class="flex flex-col w-1/2 px-6  mx-auto">
-                 <h1 class="text-black text-2xl">Lancer une production</h1>
-                <h1 class="text-vert text-lg mt-4">Produit :</h1>
+             <div class="flex flex-col w-2/5 px-6  mx-auto">
+                 <h1 class="text-vert font-semibold text-2xl">Lancer une production</h1>
+                <h1 class="text-vN  text-lg mt-4">Produit :</h1>
                 <select  v-model='launch_data.prod_id'>
                     <option :value="product.id" v-for='(product,key) in products' :key="key">
                         {{product.name}}
                     </option>
                 </select>
-                <h1 class="text-vert text-lg mt-2">Choix de la machine :</h1>
+                <h1 class="text-vN text-lg mt-2">Choix de la machine :</h1>
                 <div class="flex flex-col m-3 gap-4 mx-auto">
                       <div  class="flex gap-3 items-center"><input v-model='launch_data.machine' type="radio" id="machine1" name="machine" class=" text-vert " /><label for="">Niveau 1</label></div>
                       <div class="flex gap-3 items-center"><input v-model='launch_data.machine' type="radio"  id="machine2" name="machine" class="text-vert" /><label for="">Niveau 2</label></div>
                       <div class="flex gap-3 items-center"><input v-model='launch_data.machine' type="radio"  id="machine3"  name="machine" class="text-vert " /><label for="">Niveau 3</label></div>
                 </div>
-                <h1 class="text-vert text-lg">Quantité( en lot de 100 pièces)</h1>
-                <input type="number " v-model="launch_data.quantity" class="px-2  border rounded-md border-gray-200">
-                <h1 class="text-vert text-lg mt-3">Prix (Unitaire)</h1>
-                <input type="number " v-model="launch_data.price" class=" px-2 border rounded-md border-gray-200">
+                <h1 class="text-vN text-lg">Quantité( en lot de 100 pièces)</h1>
+                <input type="number " v-model="launch_data.quantity" class="px-2 text-lg text-yellow-500 border rounded-md border-gray-200">
+                <h1 class="text-vN text-lg mt-3 pt-3">Prix (Unitaire)</h1>
+                <input type="number " v-model="launch_data.price" class=" px-2  text-lg text-yellow-500 border rounded-md border-gray-200">
                  
-                 <button class="bg-vN text-white mx-auto px-4 py-1 rounded-md mt-5">Lancer</button>
+                 <div class="flex flex-row justify-center gap-7 mt-12">
+                     <button class="bg-vN text-white px-7 py-1 rounded-md ">Lancer</button>
+                     <button class="bg-vN text-white px-7 py-1 rounded-md " @click="launch_prod_modal = !launch_prod_modal">Annuler</button>
 
+                 </div>
+                
 
 
              </div>
 
 
-             <div class="flex flex-col w-1/2 px-6 ">
-              <h1 class="text-vert text-lg">Informations importantes</h1>
-              <h1 class="text-vert text-lg">Pour un lot : </h1>
+             <div class="flex flex-col w-3/5 px-6 ">
+              <h1 class="text-vN pl-3 font-semibold text-lg">Informations importantes</h1>
+              <h1 class="text-vN text-lg pl-3">Pour un lot : </h1>
               <div class="p-3 ">
                   <table class="w-full" style="background-color :#F9F9FC">
                   <thead class="text-xs text-gray-700 uppercase ">
-                      <tr class="border-b border-t" >
-                          <th class="">Matière Premiere</th>
-                          <th class="">Quantité Nécessaire</th>
-                          <th class=" ">Quantité Stockés</th>
+                      <tr class="border-b border-t text-vN " >
+                          <th class="px-3 py-1">Matière Premiere</th>
+                          <th class="px-3 py-1">Quantité Nécessaire</th>
+                          <th class="px-3 py-1 ">Quantité Stockés</th>
                       </tr>
                   </thead>
                   <tbody >
-                      <tr v-for="(material,key) in selectedProd.raw_materials" :key="key" class="border-b">
-                          <td class="flex justify-center icon-material" ><img src="/assets/icons/khobz.png" alt="khobz"><span>{{material.name}}</span></td>
-                          <td class="text-center ">{{material.pivot.quantity}}</td> 
-                          <td class="text-center" v-if="stock.find(element => element.id==material.id) != undefined"> {{stock.find(element => element.id==material.id).quantity}}</td>
-                          <td class="text-center" v-else> 0</td>
+                      <tr v-for="(material,key) in selectedProd.raw_materials" :key="key" class=" text-vN border-b ">
+                          <td class="flex justify-center icon-material py-1" ><img src="/assets/icons/khobz.png" alt="khobz"><span>{{material.name}}</span></td>
+                          <td class="text-center py-1">{{material.pivot.quantity}}</td> 
+                          <td class="text-center py-1" v-if="stock.find(element => element.id==material.id) != undefined"> {{stock.find(element => element.id==material.id).quantity}}</td>
+                          <td class="text-center py-1" v-else> 0</td>
 
                       </tr>
                   </tbody>
 
               </table>
-
               </div>
-              
-              
+             <h1 class="text-vN text-lg  pl-3">Machines : </h1>
+
+              <div class="p-3 ">
+                  <table class="w-full " style="background-color :#F9F9FC">
+                  <thead class="text-xs text-gray-700 uppercase ">
+                      <tr class="border-b border-t " >
+                          <th class="px-4 py-1 text-vN">Temps Total estimé</th>
+                          <th class="px-4 py-1 text-vN">Temps unitaire  </th>
+                          <th class="px-4 py-1 text-vN">Nombre d'employés</th>
+                          
+                      </tr>
+                  </thead>
+                  <tbody >
+                      <tr class="border-b">
+                          <td class="flex justify-center icon-material text-yellow-500 py-1" >{{ prodDelay }} J</td>
+                          <td class="text-center text-yellow-500 py-1">{{ totalCost }} (lot/min)</td> 
+                          <td class="text-center text-yellow-500 py-1" > {{ profit }} UM</td>
+
+                      </tr>
+                  </tbody>
+
+              </table>
+              </div>
+
+               <h1 class="text-vN text-lg  pl-3">Prévisions  : </h1>
+                <div class="p-3 ">
+                  <table class="w-full" style="background-color :#F9F9FC">
+                  <thead class="text-xs text-gray-700 uppercase ">
+                      <tr class="border-b border-t" >
+                          <th class="px-4 py-1 text-vN">Chiffre d’Affaire Estimés </th>
+                          <th class="px-4 py-1 text-vN">Coût Total Estimé </th>
+                          <th class="px-4 py-1 text-vN">Profit Estimé</th>
+                      </tr>
+                  </thead>
+                  <tbody >
+                      <tr class="border-b">
+                          <td class="flex justify-center icon-material text-yellow-500 py-1" >{{ salesRevenues }} UM</td>
+                          <td class="text-center text-yellow-500 py-1">{{ totalCost }} UM</td> 
+                          <td class="text-center text-yellow-500 py-1" > {{ profit }} UM</td>
+
+                      </tr>
+                  </tbody>
+
+              </table>
+              </div>
+              <h1 class="text-yellow-500 my-2  pl-3">Remarques : </h1>
+              <p class="text-vN text-sm  pl-3">- Les prévisions sont calculés dans le cas ou toutes la quantité produite est vendue</p>
+              <p class="text-vN text-sm pl-3">- Votre taux de rebut est de 5%, pour le réduire, lancez une étude AMDEC.</p>
     
              </div>
          </template>
