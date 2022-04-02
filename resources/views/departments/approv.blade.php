@@ -17,13 +17,10 @@
             </div>
                 <div class = "w-full px-3">
                     <ApprovDepartment
-                    :materials = "{{$materials}}"
-                    :suppliers = "{{$suppliers}}" 
                     :user = "{{auth()->user()}}"
-                    :caisse="{{$caisse}}"
                     ></ApprovDepartment>
                 </div>
-                
+
             </div>
         </div>
     </div>

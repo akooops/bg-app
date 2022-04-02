@@ -7,7 +7,9 @@ use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Currency;
+use Laravel\Nova\Fields\BelongsToMany;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Benjacho\BelongsToManyField\BelongsToManyField;
 
 
 class RawMaterial extends Resource
@@ -52,7 +54,21 @@ class RawMaterial extends Resource
             Text::make('Unit')
                 ->rules('required', 'max:255'),
             Currency::make('Price')->currency('EUR'),
-            Number::make('Volume')->min(1),
+            Number::make('Volume')->min(1)->step(0.1),
+
+            BelongsToMany::make('Suppliers')->fields(function () {
+                return [
+                    Number::make('Price Factor')->min(0)->max(1)->step(0.01),
+                    Number::make('Quantity Available')->min(0),
+                    Number::make('Time To Deliver')->min(0),
+                ];
+            }),
+
+            BelongsToMany::make('Products')->fields(function () {
+                return [
+                    Number::make('Quantité', 'quantity')->min(0)->step(0.01)->sortable(),
+                ];
+            })
         ];
     }
 
@@ -99,6 +115,7 @@ class RawMaterial extends Resource
     {
         return [];
     }
+
     public static function label() {
         return 'Matières Premières';
     }

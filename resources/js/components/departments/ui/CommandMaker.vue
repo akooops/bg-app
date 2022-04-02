@@ -96,7 +96,7 @@
                             {{ cmd.supplier }}
                         </td>
                         <td class="text-center">
-                            {{ cmd.ddl_min }}j - {{ cmd.ddl_max }}j
+                            {{ cmd.time_to_ship }} sem
                         </td>
                         <td class="py-3 px-6 text-left">
                             {{ cmd.quantity }} KG
@@ -146,15 +146,7 @@
             >
                 <button
                     @click="sendCommand"
-                    class="
-                        text-white
-                        my-3
-                        rounded
-                        w-34
-                        h-10
-                        px-3
-                        py-2
-                    "
+                    class="text-white my-3 rounded w-34 h-10 px-3 py-2"
                     v-bind:class="{
                         'bg-gray-500': this.command_sent == true,
                         'bg-blue-500': this.command_sent == false,
@@ -227,7 +219,7 @@
 import CommandItem from "./CommandItem";
 import Modal from "../../Modal";
 export default {
-    name: "DepartmentCard",
+    name: "CommandMaker",
     components: { CommandItem, Modal },
     data() {
         return {
@@ -243,10 +235,7 @@ export default {
                 price: null,
                 quantity: 1,
                 total_price: null,
-                ddl: {
-                    min: null,
-                    max: null,
-                },
+                time_to_ship: 0,
             },
             commands: [],
             filtered_materials: [],
@@ -255,13 +244,33 @@ export default {
     props: ["materials", "suppliers", "user", "caisse"],
     computed: {
         supplierDelay() {
-            if (this.commandItem.supplier != "") {
+            if (this.commandItem.supplier != "" && this.commandItem.material != "") {
+
+                let material = this.materials.find(
+                    (item) => this.commandItem.material == item.name
+                );
+
                 let supplier = this.suppliers.find(
                     (item) => this.commandItem.supplier == item.name
                 );
-                this.commandItem.ddl.min = supplier.ddl_min;
-                this.commandItem.ddl.max = supplier.ddl_max;
-                return supplier.ddl_min + "j - " + supplier.ddl_max + "j";
+
+                let supp_raw_mat = supplier.raw_materials.find(
+                    (item) => item.id == material.id
+                );
+
+                if (supp_raw_mat == undefined) {
+                    return "";
+                }
+                else {
+                    supp_raw_mat = supp_raw_mat.pivot;
+                }
+
+                this.commandItem.time_to_ship = supp_raw_mat.time_to_deliver;
+                return supp_raw_mat.time_to_deliver + " sem";
+            }
+
+            else {
+                return ""
             }
         },
         materialPrice() {
@@ -272,11 +281,23 @@ export default {
                 let material = this.materials.find(
                     (item) => this.commandItem.material == item.name
                 );
+
                 let supplier = this.suppliers.find(
                     (item) => this.commandItem.supplier == item.name
                 );
 
-                return Math.round(material.price * supplier.rate * 100) / 100;
+                let supp_raw_mat = supplier.raw_materials.find(
+                    (item) => item.id == material.id
+                );
+
+                if (supp_raw_mat == undefined) {
+                    return 0;
+                }
+                else {
+                    supp_raw_mat = supp_raw_mat.pivot;
+                }
+
+                return Math.round(material.price * supp_raw_mat.price_factor);
             } else {
                 return 0;
             }
@@ -300,23 +321,41 @@ export default {
                 return true;
             }
 
+            let material = this.materials.find(
+                (item) => this.commandItem.material == item.name
+            );
+
+            let supplier = this.suppliers.find(
+                (item) => this.commandItem.supplier == item.name
+            );
+
+            let supp_raw_mat = supplier.raw_materials.find(
+                (item) => item.id == material.id
+            );
+
+            if (supp_raw_mat == undefined) {
+                return true;
+            }
+
             return false;
         },
     },
     methods: {
         newCommandModal() {
-            this.show_add_modal = true;
             this.commandItem.material = "";
             this.commandItem.supplier = "";
             this.commandItem.quantity = 1;
+
+            // if (this.materials.length > 0 && this.suppliers.length > 0) {
+                this.show_add_modal = true;
+            // }
         },
         addRow() {
             let command = {
                 material: this.commandItem.material,
                 supplier: this.commandItem.supplier,
                 quantity: this.commandItem.quantity,
-                ddl_min: this.commandItem.ddl.min,
-                ddl_max: this.commandItem.ddl.max,
+                time_to_ship: this.commandItem.time_to_ship,
                 price: this.materialPrice,
                 total_price: this.totalPrice,
                 item_id: this.num_commands,
@@ -341,7 +380,7 @@ export default {
             }
             axios
                 .post("/api/command/create", {
-                    command: this.commands,
+                    commands: this.commands,
                     entreprise_id: this.user.id,
                 })
                 .then((resp) => {
@@ -359,12 +398,12 @@ export default {
         },
     },
     mounted() {
-        window.Echo.channel("entreprise_" + this.user.id).listen(
-            "NavbarDataChanged",
-            (e) => {
-                this.caisse = e.caisse;
-            }
-        );
+        // window.Echo.channel("entreprise_" + this.user.id).listen(
+        //     "NavbarDataChanged",
+        //     (e) => {
+        //         this.caisse = e.caisse;
+        //     }
+        // );
     },
 };
 </script>

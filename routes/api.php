@@ -93,3 +93,4 @@ Route::get('/time', [EntrepriseController::class, "getSimulationTime"]);
 Route::get('/products', [EntrepriseController::class, "getProducts"]);
 Route::get('/ranking', [EntrepriseController::class, "getRanking"]);
 Route::get("/test", [EntrepriseController::class, "testFunc"]);
+Route::get("/supp_raw_mats", [EntrepriseController::class, "getSuppRawMatInfo"]);

@@ -38,7 +38,9 @@ class ProcessWorkers implements ShouldQueue
     {
         $current_date = nova_get_setting("current_date");
         $entreprises = Entreprise::get();
+
         foreach ($entreprises as $entreprise) {
+
             // Increment 5s day if 5s active
             $day_5s = $this->getIndicator("5s_day", $entreprise->id)["value"];
 
@@ -46,9 +48,19 @@ class ProcessWorkers implements ShouldQueue
                 $this->updateIndicator("5s_day", $entreprise->id, 1);
             }
 
+            // Workers quit if mood too low
+            $nb_workers_lv1 = $this->getIndicator("nb_workers_lv1", $entreprise->id)["value"];
+            $nb_workers_lv2 = $this->getIndicator("nb_workers_lv2", $entreprise->id)["value"];
+            $nb_workers = $nb_workers_lv1 + $nb_workers_lv2;
+
+            $nb_workers_lv1_busy = $this->getIndicator("nb_workers_lv1_busy", $entreprise->id)["value"];
+            $nb_workers_lv2_busy = $this->getIndicator("nb_workers_lv2_busy", $entreprise->id)["value"];
+
+            $workers_mood = $this->getIndicator("workers_mood", $entreprise->id)["value"];
+            $workers_mood_th = nova_get_setting("mood_quitting_threshold");
+
             // Workers mood decrease every month
-            if ($current_date % 30 == 0) {
-                $workers_mood = $this->getIndicator("workers_mood", $entreprise->id)['value'];
+            if ($current_date % 30 == 0 && $nb_workers > 0) {
                 $workers_mood_decay_rate = nova_get_setting('workers_mood_decay_rate');
                 if ($workers_mood - $workers_mood_decay_rate >= 0) {
                     $this->updateIndicator("workers_mood", $entreprise->id, -1 * $workers_mood_decay_rate);
@@ -61,24 +73,14 @@ class ProcessWorkers implements ShouldQueue
                     "status" => "info",
                     "entreprise_id" => $entreprise->id,
                     "data" => [],
-                    "message" => "mood and health decay",
-                    "title" => "mood and health decay"
+                    "message" => "L'humeur au sein de votre entreprise décroit",
+                    "title" => "L'humeur décroit"
                 ];
                 event(new NewNotification($notification));
             }
 
-            // Workers quit if mood too low
-            $nb_workers_lv1 = $this->getIndicator("nb_workers_lv1", $entreprise->id)["value"];
-            $nb_workers_lv2 = $this->getIndicator("nb_workers_lv2", $entreprise->id)["value"];
-
-            $nb_workers_lv1_busy = $this->getIndicator("nb_workers_lv1_busy", $entreprise->id)["value"];
-            $nb_workers_lv2_busy = $this->getIndicator("nb_workers_lv2_busy", $entreprise->id)["value"];
-
-            $workers_mood = $this->getIndicator("workers_mood", $entreprise->id)["value"];
-            $workers_mood_th = nova_get_setting("mood_quitting_threshold");
-
             // Warn that workers are going to quit
-            if ($workers_mood - nova_get_setting('workers_mood_decay_rate') < $workers_mood_th) {
+            if ($workers_mood - nova_get_setting('workers_mood_decay_rate') < $workers_mood_th && $nb_workers > 0) {
                 if ($current_date % 30 == 0) {
                     $notification = [
                         "type" => "WorkersUpdate",
@@ -93,15 +95,16 @@ class ProcessWorkers implements ShouldQueue
             }
 
             // Workers quitting
-            if ($workers_mood <= $workers_mood_th) {
+            if ($workers_mood <= $workers_mood_th && $nb_workers > 0) {
                 $pick = mt_rand() / mt_getrandmax();
                 $quitting_prob = nova_get_setting("quitting_prob");
 
                 if ($pick <= $quitting_prob) {
-                    $quitting_prob_lv2 = $nb_workers_lv2 / ($nb_workers_lv1 + $nb_workers_lv2);
+                    $quitting_prob_lv2 = $nb_workers_lv2 / $nb_workers;
                     $pick = mt_rand() / mt_getrandmax();
 
                     $message = "";
+
                     if ($pick <= $quitting_prob_lv2) {
                         if ($nb_workers_lv2 == $nb_workers_lv2_busy) {
                             $this->updateIndicator("nb_workers_lv2_busy", $entreprise->id, -1);
@@ -109,7 +112,18 @@ class ProcessWorkers implements ShouldQueue
                         $this->updateIndicator("nb_workers_lv2", $entreprise->id, -1);
 
                         $message = "Vos employés sont entrain de démissionner! Vous avez perdu un employé expert.";
-                    } else {
+                        $notification = [
+                            "type" => "WorkersUpdate",
+                            "status" => "warning",
+                            "entreprise_id" => $entreprise->id,
+                            "data" => [],
+                            "message" => $message,
+                            "title" => "Les employés démissionnent"
+                        ];
+                        event(new NewNotification($notification));
+                    }
+
+                    else {
                         if ($nb_workers_lv1 == $nb_workers_lv1_busy) {
                             $this->updateIndicator("nb_workers_lv1_busy", $entreprise->id, -1);
                         }

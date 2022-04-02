@@ -33,8 +33,8 @@ class EntrepriseController extends Controller
     // Departments view routes
     function showDptApprov(Request $request)
     {
-        $raw_materials = RawMaterial::all();
-        $suppliers = Supplier::all();
+        $raw_materials = RawMaterial::with('suppliers')->get();
+        $suppliers = Supplier::with('raw_materials')->get();
         $caisse = $this->getIndicator('caisse', auth()->user()->id)['value'];
         return view("departments.approv", [
             "materials" => $raw_materials, "suppliers" => $suppliers,
@@ -53,8 +53,8 @@ class EntrepriseController extends Controller
 
     function showCommandMaker(Request $request)
     {
-        $raw_materials = RawMaterial::all();
-        $suppliers = Supplier::all();
+        $raw_materials = RawMaterial::with('suppliers')->get();
+        $suppliers = Supplier::with('raw_materials')->get();
         $caisse = $this->getIndicator('caisse', auth()->user()->id)['value'];
         return view("departments.widgets.command_maker", [
             "materials" => $raw_materials,
@@ -115,7 +115,7 @@ class EntrepriseController extends Controller
         $entreprise_id = $request->entreprise_id;
         $command_items = Command::where("entreprise_id", "=", $entreprise_id)->get();
         $commands = $command_items->groupBy("command_id")->values()->toArray();
-        //dd($commands);
+
         $commands_data = collect($commands)->map(function ($cmd) {
             $data = [
                 "command_id" => $cmd[0]["command_id"],
@@ -123,16 +123,19 @@ class EntrepriseController extends Controller
                 "num_items" => count($cmd),
                 "status" => $this->getCommandStatus($cmd)
             ];
+
             $data["details"] = collect($cmd)->map(function ($item) {
                 $material = RawMaterial::find($item["raw_material_id"]);
-                //dd($item["raw_material_id"]);
+
                 $supplier = Supplier::find($item["supplier_id"]);
+
                 $quantity = $item["quantity"];
                 $price = $item["price"];
-                $phrase = $item["quantity"] . " unités " . " de " . $material->name . " Chez " . $supplier->name . ", Prix: " . $price . " DA / Status : " . $this->parseCommandStatus($item["status"]);
+                $phrase = $item["quantity"] . " unités " . " de " . "$material->name" . " Chez " . ($supplier != null ? $supplier->name : "Unknown") . ", Prix: " . $price . " DA / Status : " . $this->parseCommandStatus($item["status"]);
 
-                return ["material" => $material->name, "unit" => $material->unit, "supplier" => $supplier->name, "quantity" => $quantity, "price" => $price, "status" => $item["status"], "phrase" => $phrase];
+                return ["material" => $material->name, "unit" => $material->unit, "supplier" => ($supplier != null ? $supplier->name : "Unknown"), "quantity" => $quantity, "price" => $price, "status" => $item["status"], "phrase" => $phrase];
             });
+
             return $data;
         });
         $sorted_commands = $commands_data->sortByDesc("created");
@@ -157,62 +160,94 @@ class EntrepriseController extends Controller
     function createCommand(Request $request)
     {
         $entreprise_id = $request->entreprise_id;
+
+        // Just a way of labeling the commands with ids
         $last_cmd = Command::latest()->first();
         $cmd_id = 0;
         if ($last_cmd != null) {
             $cmd_id = $last_cmd->command_id  + 1;
         }
-        //dd($request->command);
+
+        // We'll use these to stop the command if the final price is more than the player's money
+        $caisse = $this->getIndicator("caisse", $entreprise_id)["value"];
+        $final_price = 0;
+
+        // We get an array of commands (one for every different supplier or raw material) from the front, through which we iterate
         $command_items = [];
-        for ($i = 0; $i < count($request["command"]); $i++) {
+        for ($i = 0; $i < count($request["commands"]); $i++) {
 
-            $cmd =  $request["command"][$i];
+            // Pull the command from the array of commands
+            $cmd =  $request["commands"][$i];
 
-            if ($cmd["quantity"] <= 0) {
-                break;
-            }
-
-            //dd($cmd);
+            // Get necessary ids
             $supplier_id = Supplier::where("name", $cmd["supplier"])->first()->id;
             $material_id = RawMaterial::where("name", $cmd["material"])->first()->id;
             $item_id = $cmd["item_id"];
-            //dd($cmd_id);
+
+            // Do a quantity check
+            $quantity = $cmd["quantity"];
+            if ($quantity <= 0) {
+                // Stop the command and return error: command's quantity must be positive
+            }
+
+            // Do a price check to be sure that player can pay
+            $total_price = $cmd["total_price"];
+            $final_price += $total_price;
+
+            if ($final_price > $caisse) {
+                // Stop the command and return error: not enough money
+            }
+
+            // Status will be "shipping" until the command is delivered to the  player
+            $status = "shipping";
+
+            // I don't we'll have errors here since it's all in the back, but just in case
+            $creation_date = $this->getSimulationTime();
+            $time_to_ship = $cmd["time_to_ship"];
+
+            if ($time_to_ship <= 0) {
+                // Stop the command and return error: command's time to ship must be positive
+            }
+
+            // Fill in the array to insert into the database later
             $cmd_item = [
                 "command_id" => $cmd_id,
                 "entreprise_id" => $entreprise_id,
                 "supplier_id" => $supplier_id,
                 "raw_material_id" => $material_id,
-                "status" => "pending",
-                "price" => $cmd["price"],
-                "quantity" => $cmd["quantity"],
-                "creation_date" => $this->getSimulationTime(),
-                "item_id" => $item_id
+                "status" => $status,
+                "price" => $total_price,
+                "quantity" => $quantity,
+                "creation_date" => $creation_date,
+                "item_id" => $item_id,
+                "time_to_ship" => $time_to_ship,
             ];
             array_push($command_items, $cmd_item);
         }
-        //dd($command_items);
+
+        // Group commands by supplier
         $command_items = collect($command_items);
-
-        // Logic to split command into suppliers
         $supp_command_items = $command_items->groupBy("supplier_id");
-        info($supp_command_items);
 
+        // Create commands in database
         $supp_command_items->map(function ($supp_cmd) use ($entreprise_id, $cmd_id) {
-            // dd($supp_cmd[0]);
-            $supplier_id = $supp_cmd[0]["supplier_id"];
-            $command = [
-                "id" => $cmd_id,
-                "name" => Entreprise::find($entreprise_id)->name,
-                "status" => "pending",
-                "num_items" => count($supp_cmd),
-                "creation_date" => $supp_cmd[0]["creation_date"]
-            ];
+
             $supp_cmd->map(function ($supp_cmd_item) {
                 Command::create($supp_cmd_item);
             });
-            event(new CommandCreated($command, $supplier_id));
         });
-        return Response::json(["message" => "Votre commande à été envoyée aux fournisseurs, vous serez redirigé vers le département d'approvisionnement dans 4 secondes."], 200);
+
+        $message = "";
+        $notification = [
+            "type" => "CommandUpdate",
+            "entreprise_id" => $this->entreprise_id,
+            "message" => $message,
+            "title" => "Livraison de la commande"
+        ];
+        event(new NewNotification($notification));
+
+        $message = "Commande effectuée. Livraison en cours...";
+        return Response::json(["message" => $message, "success" => true], 200);
     }
 
     public function getStock(Request $request)
@@ -291,13 +326,14 @@ class EntrepriseController extends Controller
 
         $delay = $request->delay;
 
-        // Check if enough free machines to launch prod
+        // Check if enough free machines to launch prod and health is enough
         $nb_machines_needed = $request->machines;
 
         $machines_lvl = $request->machines_lvl;
 
         $nb_machines = null;
         $nb_busy_machines = null;
+        $machines_health = null;
         if ($machines_lvl == 1) {
             if ($this->getIndicator("machines_lv1_health", $entreprise_id) <= 0) {
                 $message = "Impossible de lancer la production: veuillez réparer vos machines.";
@@ -306,7 +342,9 @@ class EntrepriseController extends Controller
 
             $nb_machines = $this->getIndicator("nb_machines_lv1", $entreprise_id)["value"];
             $nb_busy_machines = $this->getIndicator("nb_machines_lv1_busy", $entreprise_id)["value"];
-        } else if ($machines_lvl == 2) {
+            $machines_health = $this->getIndicator("machines_lv1_health", $entreprise_id)["value"];
+        }
+        else if ($machines_lvl == 2) {
             if ($this->getIndicator("machines_lv2_health", $entreprise_id) <= 0) {
                 $message = "Impossible de lancer la production: veuillez réparer vos machines.";
                 return Response::json(["message" => $message, "success" => false], 200);
@@ -314,7 +352,9 @@ class EntrepriseController extends Controller
 
             $nb_machines = $this->getIndicator("nb_machines_lv2", $entreprise_id)["value"];
             $nb_busy_machines = $this->getIndicator("nb_machines_lv2_busy", $entreprise_id)["value"];
-        } else if ($machines_lvl == 3) {
+            $machines_health = $this->getIndicator("machines_lv2_health", $entreprise_id)["value"];
+        }
+        else if ($machines_lvl == 3) {
             if ($this->getIndicator("machines_lv3_health", $entreprise_id) <= 0) {
                 $message = "Impossible de lancer la production: veuillez réparer vos machines.";
                 return Response::json(["message" => $message, "success" => false], 200);
@@ -322,57 +362,51 @@ class EntrepriseController extends Controller
 
             $nb_machines = $this->getIndicator("nb_machines_lv3", $entreprise_id)["value"];
             $nb_busy_machines = $this->getIndicator("nb_machines_lv3_busy", $entreprise_id)["value"];
+            $machines_health = $this->getIndicator("machines_lv3_health", $entreprise_id)["value"];
         }
 
+        // Check if enough machines
         if ($nb_machines < $nb_machines_needed) {
             $message = "Impossible de lancer la production: Machines insuffisantes.";
             return Response::json(["message" => $message, "success" => false], 200);
         }
 
+        // Check if enough free machines
         if ($nb_machines - $nb_busy_machines < $nb_machines_needed) {
             $message = "Impossible de lancer la production: Machines libres insuffisantes.";
             return Response::json(["message" => $message, "success" => false], 200);
         }
 
-        $labor = $request->labor;
+        // Check if machines health is enough
+        if ($machines_health <= 0.05) {
+            $message = "Impossible de lancer la production: Les machines de niveau " . $machines_lvl . " sont HS (santé < 5%).";
+            return Response::json(["message" => $message, "success" => false], 200);
+        }
+
+        $labor_lv1 = $request->labor_lv1;
+        $labor_lv2 = $request->labor_lv2;
 
         // Check if enough free workers to launch prod
-        $nb_workers = null;
-        $nb_busy_workers = null;
-
         $nb_workers_lv1 = $this->getIndicator("nb_workers_lv1", $entreprise_id)["value"];
         $nb_busy_workers_lv1 = $this->getIndicator("nb_workers_lv1_busy", $entreprise_id)["value"];
 
         $nb_workers_lv2 = $this->getIndicator("nb_workers_lv2", $entreprise_id)["value"];
         $nb_busy_workers_lv2 = $this->getIndicator("nb_workers_lv2_busy", $entreprise_id)["value"];
 
-        $nb_workers_lv1_to_use = null;
-        $nb_workers_lv2_to_use = null;
+        $nb_workers_lv1_to_use = $labor_lv1;
+        $nb_workers_lv2_to_use = $labor_lv2;
 
-        if ($machines_lvl == 1 || $machines_lvl == 2) {
-            $nb_workers = $nb_workers_lv1 + $nb_workers_lv2;
-            $nb_busy_workers = $nb_busy_workers_lv1 + $nb_busy_workers_lv2;
-
-            if ($nb_workers_lv1 - $nb_busy_workers_lv1 >= $labor) {
-                $nb_workers_lv1_to_use = $labor;
-                $nb_workers_lv2_to_use = 0;
-            } else {
-                $nb_workers_lv1_to_use = $nb_workers_lv1 - $nb_busy_workers_lv1;
-                $nb_workers_lv2_to_use = $labor - ($nb_workers_lv1 - $nb_busy_workers_lv1);
-            }
-        } else if ($machines_lvl == 3) {
-            $nb_workers = $nb_workers_lv2;
-            $nb_busy_workers = $nb_busy_workers_lv2;
-
-            $nb_workers_lv1_to_use = 0;
-            $nb_workers_lv2_to_use = $labor;
+        if ($nb_workers_lv1 - $nb_busy_workers_lv1 < $nb_workers_lv1_to_use
+        && $nb_workers_lv1 + $nb_workers_lv2 - $nb_busy_workers_lv1 - $nb_busy_workers_lv2 -  $nb_workers_lv2_to_use < $nb_workers_lv1_to_use ) {
+            $message = "Impossible de lancer la production: Employés simples libres insuffisants.";
+            return Response::json(["message" => $message, "success" => false], 200);
         }
-
-        if ($nb_workers - $nb_busy_workers < $labor) {
-            $message = "Impossible de lancer la production: employés libres insuffisants.";
+        if ($nb_workers_lv2 - $nb_busy_workers_lv2 < $nb_workers_lv2_to_use) {
+            $message = "Impossible de lancer la production: Employés experts libres insuffisants.";
             return Response::json(["message" => $message, "success" => false], 200);
         }
 
+        // Compute real produced quantity (counting out the reject rate)
         $reject_rate = $this->getIndicator("reject_rate", $entreprise_id)["value"];
         $real_produced_quant = $quantity * (1 - $reject_rate);
 
@@ -415,8 +449,18 @@ class EntrepriseController extends Controller
                 ->decrement("quantity", $product[$i]->quantity * $request->quantity);
         }
 
+        $message = "Stock de matières premières décru";
+        $notification = [
+            "type" => "StockUpdate",
+            "entreprise_id" => $entreprise_id,
+            "message" => $message,
+            "title" => "Matières premières"
+        ];
+        event(new NewNotification($notification));
+
         // Decrement caisse data before production ends
         $this->updateIndicator("caisse", $entreprise_id, -1 * $cost);
+
         // Increment production cost
         $this->updateIndicator("prod_cost", $entreprise_id, $cost);
 
@@ -489,66 +533,6 @@ class EntrepriseController extends Controller
         ];
         event(new NewNotification($notification));
         return Response::json(["message" => $message], 200);
-
-        /*$name = DB::table("products")->where("id", "=", $product_id)->first()->name;
-        $production = DB::table("productions")->where("id", "=", $production_id)->first();
-        $status = $production->status;
-
-        if ($status == 'sold' || $production->sold >= $production->quantity) {
-            $message = "Vous avez déjà tout vendu pour cette production.";
-            $notification = [
-                "type" => "ProductionUpdate",
-                "entreprise_id" => $entreprise_id,
-                "message" => $message,
-                "title" => "Production déjà vendue"
-            ];
-            event(new NewNotification($notification));
-            return Response::json(["message" => $message], 200);
-        }
-
-        $left_demand = DB::table("products")->where("id", "=", $product_id)->first()->left_demand;
-        if ($left_demand <= 0) {
-            $message = "Il n'y a plus de demande sur le produit" . $name . "pour l'instant.";
-            $notification = [
-                "type" => "ProductionUpdate",
-                "entreprise_id" => $entreprise_id,
-                "message" => $message,
-                "title" => "Pas de demande"
-            ];
-            event(new NewNotification($notification));
-            return Response::json(["message" => $message], 200);
-        }
-
-        // Remove from stock and update production table
-        DB::table("stock")->where("entreprise_id", "=", $entreprise_id)->where("product_id", "=", $product_id)
-            ->decrement("quantity", $sold_quantity);
-        DB::table("productions")->where("id", "=", $production_id)->increment("sold", $sold_quantity);
-
-        // Mark production as sold if no more in stock
-        if ($stock_quantity <= 0) {
-            DB::table("productions")->where("id", "=", $production_id)->update(["status" => "sold"]);
-        }
-
-        DB::table("products")->where("id", "=", $product_id)->decrement("left_demand", $sold_quantity);
-
-        // Update indicators:
-        // Increase caisse
-        $sales = $sold_quantity * $price;
-        $ca_key = "ca_" . $product_id;
-        $profit_value = $sales - $dist_cost;
-        $this->updateIndicator("caisse", $entreprise_id, $profit_value);
-        $this->updateIndicator($ca_key, $entreprise_id, $sales);
-        $this->updateIndicator("ca", $entreprise_id, $sales);
-        $this->updateIndicator("dist_cost", $entreprise_id, $dist_cost);
-        $message = "Vous avez vendu " . $sold_quantity . " unités de " . $name . " et vous avez généré un chiffre d'affaires de " . $sales . " DA";
-        $notification = [
-            "type" => "ProductionUpdate",
-            "entreprise_id" => $entreprise_id,
-            "message" => $message,
-            "title" => "Production Vendue"
-        ];
-        event(new NewNotification($notification));
-        return Response::json(["message" => $message], 200);*/
     }
 
     // Machine functions
@@ -992,7 +976,6 @@ class EntrepriseController extends Controller
         return ["list" => $sorted, "meta" => nova_get_setting("show_final_score", "")];
     }
 
-
     public function getNavbarData(Request $request)
     {
         $time = $this->getSimulationTime();
@@ -1040,6 +1023,17 @@ class EntrepriseController extends Controller
             "speed_lv1" => $speed_lv1, "speed_lv2" => $speed_lv2, "speed_lv3" => $speed_lv3,
             "pollution_lv1" => $pollution_lv1, "pollution_lv2" => $pollution_lv2, "pollution_lv3" => $pollution_lv3,
             "durability_lv1" => $durability_lv1, "durability_lv2" => $durability_lv2, "durability_lv3" => $durability_lv3,
+        ];
+    }
+
+    public function getSuppRawMatInfo(Request $request)
+    {
+        $raw_materials = RawMaterial::with('suppliers')->get();
+        $suppliers = Supplier::with('raw_materials')->get();
+
+        return [
+            "materials" => $raw_materials,
+            "suppliers" => $suppliers,
         ];
     }
 }

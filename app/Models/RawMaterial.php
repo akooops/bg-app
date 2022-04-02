@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Supplier;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class RawMaterial extends Model
 {
@@ -20,10 +21,14 @@ class RawMaterial extends Model
         'unit',
         'volume'
     ];
-    
-    public function usedIn()
+
+    public function products()
     {
         return $this->belongsToMany('App\Models\Product','raw_materials_products')->withPivot(["quantity"]);
+    }
+
+    public function suppliers() {
+        return $this->belongsToMany(Supplier::class)->withPivot('price_factor', 'quantity_available', 'time_to_deliver');
     }
 
 }

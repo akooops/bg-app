@@ -161,7 +161,7 @@
                                 Pour produire un lot de 100 unités de ce produit
                                 vous avez besoin de :
                             </p>
-                            <p>
+                            <!-- <p>
                                 - Machines x
                                 <span class="text-blue-700 font-bold">{{
                                     product_info.machine_units
@@ -170,7 +170,7 @@
                                 <span class="text-blue-700 font-bold">{{
                                     product_info.labor_units
                                 }}</span>
-                            </p>
+                            </p> -->
                             <p
                                 v-for="(
                                     material, key

@@ -2,12 +2,15 @@
 
 namespace App\Nova;
 
-use Illuminate\Http\Request;
 use Laravel\Nova\Fields\ID;
+use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Password;
+use Laravel\Nova\Fields\BelongsToMany;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Benjacho\BelongsToManyField\BelongsToManyField;
+use Laravel\Nova\Fields\Boolean;
 
 class Supplier extends Resource
 {
@@ -48,19 +51,15 @@ class Supplier extends Resource
                 ->sortable()
                 ->rules('required', 'max:255'),
 
-            Text::make('Email')
-                ->sortable()
-                ->rules('required', 'email', 'max:254')
-                ->creationRules('unique:users,email')
-                ->updateRules('unique:users,email,{{resourceId}}'),
+            Boolean::make('Foreign'),
 
-            Password::make('Password')
-                ->onlyOnForms()
-                ->creationRules('required', 'string', 'min:8')
-                ->updateRules('nullable', 'string', 'min:8'),
-            Number::make('Taux Prix','rate')->min(1)->max(5)->step(0.01),
-            Number::make('Délai de Livraison Min','ddl_min'),
-            Number::make('Délai de Livraison Max','ddl_max')
+            BelongsToMany::make('Raw Materials')->fields(function () {
+                return [
+                    Number::make('Price Factor')->min(0)->max(1)->step(0.01),
+                    Number::make('Quantity Available')->min(0),
+                    Number::make('Time To Deliver')->min(0),
+                ];
+            }),
         ];
     }
 
@@ -107,7 +106,9 @@ class Supplier extends Resource
     {
         return [];
     }
-    public static function label() {
+
+    public static function label()
+    {
         return 'Fournisseurs';
     }
 }

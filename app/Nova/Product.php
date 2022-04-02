@@ -52,19 +52,31 @@ class Product extends Resource
             Text::make('Name')
                 ->sortable()
                 ->rules('required', 'max:255'),
-            Text::make("Description","description"),
-            Number::make("Prix Min","price_min"),
-            Number::make("Prix Max","price_max"),
-            Number::make("Nombre de Machines","machine_units"),
-            Text::make("Coef publicité","ad_coef"),
-            Number::make("Nombre d'Employés","labor_units"),
-            Number::make("Nombre d'Employés","labor_units"),
-            Number::make("Demande Mensuelle","avg_demand"),
-            Number::make("Demande Restante","left_demand"),      
-            AttachMany::make("Raw Materials","RawMaterials","App\Nova\RawMaterial")->showCounts()->help("Sélectionnez des matieres premiers pour les ajouter à ce produit"),
+
+            Number::make("Prix Min", "price_min"),
+            Number::make("Prix Max", "price_max"),
+
+            // Number::make("Nombre de Machines", "machine_units"),
+            // Number::make("Nombre d'Employés", "labor_units"),
+
+            Number::make("Facteur vitesse de prod", "prod_speed_factor")->step(0.01),
+
+            Number::make("Cout de production unitaire", "unit_prod_price")->step(0.01),
+
+            Number::make("Coef publicité", "ad_coef"),
+
+            Number::make("Demande Mensuelle", "avg_demand"),
+            Number::make("Demande Restante", "left_demand"),
+
+            Text::make("Description", "description"),
+
+            // AttachMany::make("Raw Materials", "RawMaterials", "App\Nova\RawMaterial")
+            //     ->showCounts()
+            //     ->help("Sélectionnez des matieres premiers pour les ajouter à ce produit"),
+
             BelongsToMany::make('RawMaterials')->fields(function () {
                 return [
-                    Number::make('Quantité','quantity')->step(0.01)->sortable(),
+                    Number::make('Quantité', 'quantity')->min(0)->step(0.01)->sortable(),
                 ];
             })
         ];
@@ -113,7 +125,8 @@ class Product extends Resource
     {
         return [];
     }
-    public static function label() {
+    public static function label()
+    {
         return 'Produits';
     }
 }
