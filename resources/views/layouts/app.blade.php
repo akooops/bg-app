@@ -29,7 +29,7 @@
 
         <!-- Page Content -->
         <main class='flex'>
-            <!-- <notification v-bind:user="{{auth()->user()}}"></notification> -->
+            <notification v-bind:user="{{auth()->user()}}"></notification>
             <div class="flex flex-col w-1/4 z-10  py-10 pr-6 bg-white min-h-screen gap-10">
                 <div class=" flex gap-8 flex-col text-lg">
                     <x-nav-link :href="route('dashboard')" :path='["/assets/icons/dashboard.svg", "/assets/icons/dashboard_inactive.svg"]' :active="request()->routeIs('dashboard') || Request::is('entreprise/department/*')">

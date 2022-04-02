@@ -95,34 +95,42 @@
             </div>
         </div>
         <div v-if="page_index == 'prod_stats'">
-            <h1 class="text-lg font-extrabold">Analyse de la Demande</h1>
-
             <div
                 v-if="show_market_demand"
-                class="flex flex-wrap bg-white justify-center items-center my-3"
+                class="grid grid-rows-2 grid-cols-2 justify-between gap-8 mt-8"
             >
                 <div
                     v-for="(prod, i) in prod_data"
                     :key="i"
-                    class="w-1/2 rounded mt-2"
+                    class="rounded mt-2 flex-1"
                 >
-                    <h2 class="font-extrabold text-lg px-2">
-                        Demande Prévisionelle - {{ products[i].name }} :
-                    </h2>
-                    <h3 class="px-3 font-bold">
-                        {{ products[i].left_demand }} demandes restante
-                        (mensuelle).
-                    </h3>
-                    <button
-                        @click="showProductDescription(i)"
-                        class="bg-green-400 mx-2 my-1 text-white px-3 py-1 rounded"
-                    >
-                        Afficher la Description
-                    </button>
-                    <LineGraph
-                        :x-data="prod.prices"
-                        :y-data="prod.demand"
-                    ></LineGraph>
+                    <div class="flex flex-col gap-5">
+                        <h2 class="font-medium text-lg">
+                            Demande Prévisionelle - {{ products[i].name }} :
+                        </h2>
+                        <div class="flex gap-4">
+                            <div
+                                class="flex flex-col items-center px-2 py-1 text-white bg-vert rounded-md"
+                            >
+                                <h3 class="font-medium text-sm">
+                                    Demandes restantes
+                                </h3>
+                                <p class="font-bold">
+                                    {{ products[i].left_demand }}
+                                </p>
+                            </div>
+                            <button
+                                @click="showProductDescription(i)"
+                                class="bg-white border-vert border-2 text-vert px-4 py-1 rounded-md"
+                            >
+                                Description
+                            </button>
+                        </div>
+                        <LineGraph
+                            :x-data="prod.prices"
+                            :y-data="prod.demand"
+                        ></LineGraph>
+                    </div>
                 </div>
                 <Modal v-if="show_product_info">
                     <template v-slot:content>
@@ -384,6 +392,8 @@ import StatCard from "./ui/StatCard";
 import ProdCenter from "./ProdCenter";
 import Modal from "../Modal";
 import Indicator from "./ui/Indicator";
+import "echarts";
+import VChart from "vue-echarts";
 export default {
     name: "ProductionDepartment",
     components: {
@@ -392,6 +402,7 @@ export default {
         ProdCenter,
         Modal,
         Indicator,
+        VChart,
     },
     props: ["user"],
     data() {

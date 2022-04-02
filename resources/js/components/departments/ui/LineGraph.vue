@@ -1,5 +1,10 @@
 <template>
-    <v-chart ref="chart" class="chart" :option="option" autoresize />
+    <v-chart
+        ref="chart"
+        class="chart px-5 py-3 bg-white shadow-md rounded-xl w-1/3"
+        :option="option"
+        autoresize
+    />
 </template>
 
 <script>
@@ -20,47 +25,109 @@ use([
   LegendComponent
   ]);
 */
-import "echarts";
-import VChart, { THEME_KEY } from "vue-echarts";
+import * as echarts from "echarts";
+import VChart, { THEME_KEY, Bar } from "vue-echarts";
 
 export default {
     name: "LineGraph",
     components: {
         VChart,
     },
+
     props: ["xData", "yData"],
     data() {
         return {
             option: {
                 xAxis: {
                     type: "category",
-                    boundaryGap: false,
-                    data: [],
+                    showGrid: false,
                     name: "Prix",
                 },
                 yAxis: {
                     type: "value",
+                    boundaryGap: [0, "30%"],
+                    showGrid: false,
                     name: "Unités",
+                    splitLine: {
+                        show: false,
+                    },
                 },
                 tooltip: {
                     show: true,
                 },
                 series: [
                     {
+                        type: "bar",
                         data: [],
+                        color: ["#B2D06B"],
+                        itemStyle: {
+                            //gradient color
+                            color: new echarts.graphic.LinearGradient(
+                                0,
+                                0,
+                                0,
+                                1,
+                                [
+                                    {
+                                        offset: 0,
+                                        color: "rgba(178, 208, 107, 0.1)",
+                                    },
+                                    {
+                                        offset: 1,
+                                        color: "#B2D06B",
+                                    },
+                                ]
+                            ),
+                        },
+                        //remove grid
+                    },
+                    {
+                        //remove tooltip for line chart
                         type: "line",
-                        smooth: true,
-                        areaStyle: {},
+                        // symbold size
+
+                        lineStyle: {
+                            color: new echarts.graphic.LinearGradient(
+                                3,
+                                1,
+                                1,
+                                19,
+                                [
+                                    {
+                                        offset: 0,
+                                        color: "#B2D06B",
+                                    },
+                                    {
+                                        offset: 1,
+                                        color: "#0B3434",
+                                    },
+                                ]
+                            ),
+                            width: 3,
+                        },
+                        areaStyle: {
+                            color: "#0B3434",
+                            opacity: 0,
+                        },
+                        data: [],
                     },
                 ],
             },
         };
     },
     mounted() {
-        this.option.xAxis.data = this.xData;
-        this.option.series[0].data = this.yData;
-        //this.$refs.chart.resize()
-        //this.$forceUpdate()
+        // spread all xdata and ydata on the option data
+        this.option.series[0].data = this.yData.map((item, index) => {
+            return [this.xData[index], item];
+        });
+        this.option.series[1].data = this.yData.map((item, index) => {
+            return [this.xData[index], item];
+        });
+
+        //     this.option.xAxis.data = this.xData;
+        //     this.option.series[0].data = this.yData;
+        //     //this.$refs.chart.resize()
+        //     //this.$forceUpdate()
     },
 };
 </script>
