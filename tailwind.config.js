@@ -18,6 +18,7 @@ module.exports = {
                 vN: "#0B3434",
                 jaune: "#FFBC3E",
                 nav: "#0B3434",
+                gray: "#F9F9FC",
             },
         },
     },

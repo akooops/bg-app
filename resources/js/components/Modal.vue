@@ -1,6 +1,9 @@
 <template>
-    <div class="fixed z-50 inset-0 h-full w-full bg-gray-50 bg-opacity-50">
-        <div class="flex justify-center ">
+    <div
+        class="fixed z-50 inset-0 h-full bg-gray-50 bg-opacity-50 overflow-auto rounded-sm"
+        v-bind:class="description ? 'w-1/2 m-auto' : 'w-full'"
+    >
+        <div class="flex justify-center">
             <!-- <div class="z-10" aria-hidden="true">
                 <div class="absolute inset-0 bg-gray-100 opacity-75"></div>
             </div> -->
@@ -16,7 +19,7 @@
                 leave-to-class="opacity-0 translate-y-4 md:translate-y-0 md:scale-95"
             >
                 <div
-                    class=" flex flex-row px-4 py-6 bg-white shadow-xl border-vert border-opacity-50 "
+                    class="flex flex-row px-4 py-6 bg-white shadow-xl border-vert border-opacity-50"
                     style="border-width: 0.5px"
                     role="dialog"
                     aria-modal="true"
@@ -34,7 +37,7 @@
 <script type="text/javascript">
 export default {
     name: "Modal",
-    props: ["custom_css"],
+    props: ["custom_css", "description"],
     data() {
         return {};
     },
