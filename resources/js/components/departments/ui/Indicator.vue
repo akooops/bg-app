@@ -10,7 +10,7 @@
         <div class="flex items-center flex-col gap-1">
             <h1 class="text-vN text-lg font-medium">Chiffre d'affaire</h1>
             <span class="text-nav text-opacity-80 text-lg"
-                >{{ indicators["ca"].value }} DA</span
+                >{{ Math.round(indicators["ca"].value).toLocaleString() }} DA</span
             >
         </div>
     </div>
@@ -22,11 +22,11 @@ export default {
     props: ["indicators"],
     data() {
         return {
-            indicators: {
-                ca: {
-                    value: 0,
-                },
-            },
+            // indicators: {
+            //     ca: {
+            //         value: 0,
+            //     },
+            // },
         };
     },
 };

@@ -595,6 +595,18 @@ class EntrepriseController extends Controller
             return Response::json(["message" => $message, "success" => false], 200);
         }
 
+        if ($number <= 0) {
+            $message = "Impossible d'acheter des machines: Le nombre doit être positif.";
+            $notification = [
+                "type" => "MachinesUpdate",
+                "entreprise_id" => $entreprise_id,
+                "message" => $message,
+                "title" => "Echec de l'achat de machine"
+            ];
+            event(new NewNotification($notification));
+            return Response::json(["message" => $message, "success" => false], 200);
+        }
+
         $this->updateIndicator("caisse", $entreprise_id, -1 * $buy_price * $number);
 
         $health_msg = "";
@@ -678,6 +690,18 @@ class EntrepriseController extends Controller
                 "entreprise_id" => $entreprise_id,
                 "message" => $message,
                 "title" => "Échec de la vente de machine"
+            ];
+            event(new NewNotification($notification));
+            return Response::json(["message" => $message, "success" => false], 200);
+        }
+
+        if ($number <= 0) {
+            $message = "Impossible de vendre des machines: Le nombre doit être positif.";
+            $notification = [
+                "type" => "MachinesUpdate",
+                "entreprise_id" => $entreprise_id,
+                "message" => $message,
+                "title" => "Echec de l'achat de machine"
             ];
             event(new NewNotification($notification));
             return Response::json(["message" => $message, "success" => false], 200);

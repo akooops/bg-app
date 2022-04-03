@@ -13,7 +13,7 @@
                     class="text-white text-center my-auto mx-auto"
                     style="font-size: 12px"
                 >
-                    {{ time }}
+                    21
                 </p>
             </div>
         </div>

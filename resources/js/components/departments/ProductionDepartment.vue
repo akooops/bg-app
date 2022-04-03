@@ -44,7 +44,7 @@
         <!-- stat cards  -->
 
         <div v-if="show_stat_cards" class="flex w-full justify-center gap-7">
-            <Indicator :indicators="indicators"></Indicator>
+            <Indicator v-if="indicators_loaded" :indicators="indicators"></Indicator>
 
             <div
                 class="relative flex w-1/4 gap-3 justify-evenly items-center rounded-xl px-3 bg-white shadow-sm"
@@ -66,9 +66,9 @@
                     v-if="showMachines"
                     class="flex items-center gap-2 absolute z-999 -bottom-11 right-0 bg-white border-opacity-5 border-vN shadow-md p-2 rounded-lg"
                 >
-                    Niveau 1: {{ indicators['nb_machines_lv1'].value }} | Occupés: {{ indicators['nb_machines_lv1_busy'].value }} | Santé: ( + {{ (Math.round(indicators['machines_lv1_health'].value * Math.pow(10, 2)) * 100) / Math.pow(10, 2) }} %)<br/>
-                    Niveau 1: {{ indicators['nb_machines_lv2'].value }} | Occupés: {{ indicators['nb_machines_lv2_busy'].value }} | Santé: ( + {{ (Math.round(indicators['machines_lv2_health'].value * Math.pow(10, 2)) * 100) / Math.pow(10, 2) }} %)<br/>
-                    Niveau 1: {{ indicators['nb_machines_lv3'].value }} | Occupés: {{ indicators['nb_machines_lv3_busy'].value }} | Santé: ( + {{ (Math.round(indicators['machines_lv3_health'].value * Math.pow(10, 2)) * 100) / Math.pow(10, 2) }} %)<br/>
+                    Niveau 1: {{ indicators['nb_machines_lv1'].value }} | Occupés: {{ indicators['nb_machines_lv1_busy'].value }} | Santé: {{ (Math.round(indicators['machines_lv1_health'].value * Math.pow(10, 2)) * 100) / Math.pow(10, 2) }}%<br/>
+                    Niveau 2: {{ indicators['nb_machines_lv2'].value }} | Occupés: {{ indicators['nb_machines_lv2_busy'].value }} | Santé: {{ (Math.round(indicators['machines_lv2_health'].value * Math.pow(10, 2)) * 100) / Math.pow(10, 2) }}%<br/>
+                    Niveau 3: {{ indicators['nb_machines_lv3'].value }} | Occupés: {{ indicators['nb_machines_lv3_busy'].value }} | Santé: {{ (Math.round(indicators['machines_lv3_health'].value * Math.pow(10, 2)) * 100) / Math.pow(10, 2) }}%<br/>
                 </div>
             </div>
 

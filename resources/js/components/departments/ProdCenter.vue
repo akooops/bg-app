@@ -170,30 +170,33 @@
                     <div class="flex flex-col m-3 gap-4 mx-auto">
                         <div class="flex gap-3 items-center">
                             <input
-                                v-model="launch_data.machine"
+                                v-model="launch_data.machine_lvl"
                                 type="radio"
                                 id="machine1"
-                                name="machine"
+                                name="machine1"
                                 class="text-vert"
-                            /><label for="">Niveau 1</label>
+                                :value="1"
+                            /><label for="machine1">Niveau 1</label>
                         </div>
                         <div class="flex gap-3 items-center">
                             <input
-                                v-model="launch_data.machine"
+                                v-model="launch_data.machine_lvl"
                                 type="radio"
                                 id="machine2"
-                                name="machine"
+                                name="machine2"
                                 class="text-vert"
-                            /><label for="">Niveau 2</label>
+                                :value="2"
+                            /><label for="machine2">Niveau 2</label>
                         </div>
                         <div class="flex gap-3 items-center">
                             <input
-                                v-model="launch_data.machine"
+                                v-model="launch_data.machine_lvl"
                                 type="radio"
                                 id="machine3"
-                                name="machine"
+                                name="machine3"
                                 class="text-vert"
-                            /><label for="">Niveau 3</label>
+                                :value="3"
+                            /><label for="machine3">Niveau 3</label>
                         </div>
                     </div>
                     <h1 class="text-vN text-lg mt-2">Nombre de machines:</h1>
@@ -385,8 +388,9 @@
                         quantité produite est vendue
                     </p>
                     <p class="text-vN text-sm pl-3">
-                        - Votre taux de rebut est de 5%, pour le réduire, lancez
-                        une étude AMDEC.
+                        - Votre taux de rebut est de
+                        {{ Math.round(indicators["reject_rate"].value * Math.pow(10, 2)) }}%,
+                        pour le réduire, lancez une étude AMDEC.
                     </p>
                 </div>
             </template>
@@ -422,9 +426,17 @@
                                 {{ machine.transaction == "buy" ? "acheter" : "vendre" }}
                             </p>
                             <input
-                                :value="quantity"
                                 v-model="machine.transaction_nb"
                                 min="1"
+                                :max="
+                                    machine.transaction == 'sell' ?
+                                        (machine.transaction_lv == 1 ?
+                                            indicators['nb_machines_lv1'].value - indicators['nb_machines_lv1_busy'].value :
+                                        machine.transaction_lv == 2 ?
+                                            indicators['nb_machines_lv2'].value - indicators['nb_machines_lv2_busy'].value :
+                                            indicators['nb_machines_lv3'].value - indicators['nb_machines_lv3_busy'].value) :
+                                        undefined
+                                "
                                 type="number"
                                 class="rounded-sm focus:border-vert w-full focus:ring-0 border-gray-200"
                                 style="border-width: 1px"
@@ -433,6 +445,7 @@
                         <div class="flex flex-col">
                             <p class="text-me font-medium text-nav">Prix</p>
                             <p
+                                v-if="machine.transaction == 'buy'"
                                 class="py-2 px-4 border-gray-200 w-40 text-jaune"
                                 style="border-width: 1px"
                             >
@@ -446,6 +459,30 @@
                                     )
 
                                     * machine.transaction_nb
+                                }}
+                            </p>
+                            <p
+                                v-else
+                                class="py-2 px-4 border-gray-200 w-40 text-jaune"
+                                style="border-width: 1px"
+                            >
+                                {{
+                                    (
+                                        machine.transaction_lv == 1 ?
+                                        machine.buy_price_lv1 :
+                                        machine.transaction_lv == 2 ?
+                                        machine.buy_price_lv2 :
+                                        machine.buy_price_lv3
+                                    )
+
+                                    * machine.transaction_nb *
+                                    indicators[
+                                        machine.transaction_lv == 1 ?
+                                        "machines_lv1_health" :
+                                        machine.transaction_lv == 2 ?
+                                        "machines_lv2_health" :
+                                        "machines_lv3_health"
+                                    ].value
                                 }}
                             </p>
                         </div>
