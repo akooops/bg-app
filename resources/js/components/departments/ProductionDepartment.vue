@@ -335,39 +335,58 @@
                     </tr>
                 </tbody>
             </table>
-            <Modal v-if="show_selling_info">
+            <Modal v-if="show_selling_info" class="mt-10">
                 <template v-slot:content>
-                    <div class="w-full">
-                        <p>
-                            Vous allez vendre
-                            <span class="font-bold text-green-500">{{
-                                sell_info.sold_quant
-                            }}</span>
-                            unités au prix de
-                            <span class="font-bold text-green-300">
-                                {{ sell_info.price }}</span
+                    <div class="flex flex-col gap-6 w-80 px-2 pb-4">
+                        <p class="text-center font-bold text-lg">
+                            Vendre la commande N° {{ sell_info.number }}
+                        </p>
+                        <div class="flex flex-col">
+                            <p class="font-medium text-lg">Unités</p>
+                            <p
+                                class="px-2 text-lg py-2 w-2/5 border rounded-md border-gray-200"
                             >
-                            UM et vous aurez
-                            <span class="font-bold text-yellow-500">
+                                {{ sell_info.sold_quant }}
+                            </p>
+                        </div>
+                        <div class="flex flex-col">
+                            <p class="font-medium text-lg">Prix</p>
+                            <p
+                                class="px-2 text-lg py-2 text-yellow-500 w-2/5 border rounded-md border-gray-200"
+                            >
+                                {{ sell_info.price }}
+                            </p>
+                        </div>
+                        <div class="flex flex-col">
+                            <p class="font-medium text-lg">Stock</p>
+                            <p
+                                class="px-2 text-lg py-2 text-vert border w-2/5 rounded-md border-gray-200"
+                            >
                                 {{ sell_info.stock_quant }}
-                            </span>
-                            unités en stock.
-                        </p>
-                        <p class="font-bold text-red-500">
-                            Coût de distribution total : {{ distCost }} UM
-                        </p>
+                            </p>
+                        </div>
+                        <div class="flex flex-col">
+                            <p class="font-medium text-lg">
+                                Cout de distrubution total
+                            </p>
+                            <p
+                                class="px-2 text-lg py-2 text-yellow-500 border w-2/3 rounded-md border-gray-200"
+                            >
+                                {{ distCost }}
+                            </p>
+                        </div>
                         <div
-                            class="w-full my-2 flex flex-wrap items-center px-10 space-x-4"
+                            class="ml-auto flex items-center gap-4 justify-center mt-5"
                         >
                             <button
                                 @click="confirmSell"
-                                class="bg-green-500 rounded px-3 py-1 text-white"
+                                class="border-0 px-3 py-1 text-vN hover:text-vert"
                             >
                                 Confirmer
                             </button>
                             <button
                                 @click="show_selling_info = false"
-                                class="bg-gray-500 rounded px-3 py-1 text-white"
+                                class="px-3 py-1 text-vN opacity-80"
                             >
                                 Annuler
                             </button>
@@ -424,6 +443,7 @@ export default {
                 sold_quant: 0,
                 stock_quant: 0,
                 price: 0,
+                number: 0,
             },
             show_selling_info: false,
             show_product_info: false,
@@ -523,9 +543,16 @@ export default {
                     this.sell_info.stock_quant = resp.data.stock;
                     this.sell_info.price = data.price;
                     this.show_selling_info = true;
+                    this.sell_info.number = data.id;
                 });
         },
+        getProducts() {
+            axios.get("/api/products").then((resp) => {
+                this.products = resp.data;
+            });
+        },
         confirmSell() {
+            this.show_selling_info = false;
             let data = {
                 entreprise_id: this.user.id,
                 product_id: this.sell_info.production.product_id,
@@ -535,16 +562,10 @@ export default {
                 stock: this.sell_info.stock_quant,
                 price: this.sell_info.price,
             };
-            // console.log(data);
             axios.post("/api/production/sell", data).then((resp) => {
-                // console.log(resp.data.message);
                 this.show_selling_info = false;
             });
-        },
-        getProducts() {
-            axios.get("/api/products").then((resp) => {
-                this.products = resp.data;
-            });
+            this.updateProdData();
         },
 
         updateProdData() {
