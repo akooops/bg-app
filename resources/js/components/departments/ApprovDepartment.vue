@@ -1,5 +1,49 @@
 <template>
     <div>
+        <div class="w-full">
+            <nav class="border-b text-sm flex justify-start">
+                <button
+                    @click="changeTab('commands')"
+                    :class="
+                        page_index == 'commands'
+                            ? 'border-b-2 border-indigo-600 text-indigo-600 font-semibold'
+                            : 'text-gray-700 hover:text-black'
+                    "
+                    class="inline-block px-4 py-2 focus:outline-none text-lg"
+                    href="#"
+                >
+                    Vos commandes
+                </button>
+
+                <!-- active -->
+                <button
+                    @click="changeTab('stock')"
+                    :class="
+                        page_index == 'stock'
+                            ? 'border-b-2 border-indigo-600 text-indigo-600 font-semibold'
+                            : 'text-gray-700 hover:text-black'
+                    "
+                    class="inline-block px-4 py-2 focus:outline-none text-lg"
+                    href="#"
+                >
+                    Stock
+                </button>
+
+                <button
+                    @click="changeTab('command_creator')"
+                    :class="
+                        page_index == 'command_creator'
+                            ? 'border-b-2 border-indigo-600 text-indigo-600 font-semibold'
+                            : 'text-gray-700 hover:text-black'
+                    "
+                    class="inline-block px-4 py-2 focus:outline-none text-lg"
+                    href="#"
+                >
+                    Créer une commande
+                </button>
+            </nav>
+        </div>
+
         <div
             v-if="show_success"
             class="
@@ -66,245 +110,311 @@
                 </svg>
             </span>
         </div>
-        <p class="text-lg" v-if="commands.length == 0">
-            Vous n'avez pas de commandes encore, veuillez créer une commande.
-        </p>
-        <div v-else class="w-full bg-white shadow-md rounded my-2">
-            <table class="min-w-max w-full table-auto">
-                <thead>
-                    <tr>
-                        <th
-                            class="
-                                p-3
-                                font-bold
-                                uppercase
-                                bg-gray-200
-                                text-gray-600
-                                border border-gray-300
-                                hidden
-                                lg:table-cell
-                            "
-                        >
-                            Numéro
-                        </th>
 
-                        <th
-                            class="
-                                p-3
-                                font-bold
-                                uppercase
-                                bg-gray-200
-                                text-gray-600
-                                border border-gray-300
-                                hidden
-                                lg:table-cell
-                            "
-                        >
-                            Nombre d'items
-                        </th>
-                        <th
-                            class="
-                                p-3
-                                font-bold
-                                uppercase
-                                bg-gray-200
-                                text-gray-600
-                                border border-gray-300
-                                hidden
-                                lg:table-cell
-                            "
-                        >
-                            Date de creation
-                        </th>
-                        <th
-                            class="
-                                p-3
-                                font-bold
-                                uppercase
-                                bg-gray-200
-                                text-gray-600
-                                border border-gray-300
-                                hidden
-                                lg:table-cell
-                            "
-                        >
-                            Statut
-                        </th>
-                        <th
-                            class="
-                                p-3
-                                font-bold
-                                uppercase
-                                bg-gray-200
-                                text-gray-600
-                                border border-gray-300
-                                hidden
-                                lg:table-cell
-                            "
-                        >
-                            Action
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr
-                        v-for="(cmd, key) in commands"
-                        v-bind:key="key"
-                        class="
-                            bg-white
-                            lg:hover:bg-gray-100
-                            flex
-                            lg:table-row
-                            flex-row
-                            lg:flex-row
-                            flex-wrap
-                            lg:flex-no-wrap
-                            mb-10
-                            lg:mb-0
-                        "
-                    >
-                        <td
-                            class="
-                                w-full
-                                lg:w-auto
-                                p-3
-                                text-gray-800 text-center
-                                border border-b
-                                block
-                                lg:table-cell
-                                relative
-                                lg:static
-                            "
-                        >
-                            {{ cmd.command_id }}
-                        </td>
-                        <td
-                            class="
-                                w-full
-                                lg:w-auto
-                                p-3
-                                text-gray-800 text-center
-                                border border-b
-                                block
-                                lg:table-cell
-                                relative
-                                lg:static
-                            "
-                        >
-                            {{ cmd.num_items }}
-                        </td>
+        <div v-if="page_index == 'commands'">
+            <p class="text-lg" v-if="commands.length == 0">
+                Vous n'avez pas encore de commandes.
+            </p>
 
-                        <td
-                            class="
-                                w-full
-                                lg:w-auto
-                                p-3
-                                text-gray-800 text-center
-                                border border-b
-                                block
-                                lg:table-cell
-                                relative
-                                lg:static
-                            "
-                        >
-                            Jour N° {{ cmd.created }}
-                        </td>
-                        <td
-                            class="
-                                w-full
-                                lg:w-auto
-                                p-3
-                                text-gray-800 text-center
-                                border border-b
-                                block
-                                lg:table-cell
-                                relative
-                                lg:static
-                            "
-                        >
-                            <span
-                                :class="
-                                    cmd.status == 'confirmed'
-                                        ? 'text-green-500'
-                                        : 'text-yellow-500'
-                                "
-                                >{{ getStatus(cmd.status) }}</span
-                            >
-                        </td>
-                        <td
-                            class="
-                                w-full
-                                lg:w-auto
-                                p-3
-                                text-gray-800 text-center
-                                border border-b
-                                block
-                                lg:table-cell
-                                relative
-                                lg:static
-                            "
-                        >
-                            <button
-                                @click="showDetails(cmd)"
+            <div v-else class="w-full bg-white shadow-md rounded my-2">
+                <table class="min-w-max w-full table-auto">
+                    <thead>
+                        <tr>
+                            <th
                                 class="
-                                    bg-green-400
-                                    hover:bg-green-800
-                                    text-white
-                                    py-2
-                                    px-4
-                                    rounded
+                                    p-3
+                                    font-bold
+                                    uppercase
+                                    bg-gray-200
+                                    text-gray-600
+                                    border border-gray-300
+                                    hidden
+                                    lg:table-cell
                                 "
                             >
-                                Détails
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                                Numéro
+                            </th>
+
+                            <th
+                                class="
+                                    p-3
+                                    font-bold
+                                    uppercase
+                                    bg-gray-200
+                                    text-gray-600
+                                    border border-gray-300
+                                    hidden
+                                    lg:table-cell
+                                "
+                            >
+                                Nombre d'items
+                            </th>
+                            <th
+                                class="
+                                    p-3
+                                    font-bold
+                                    uppercase
+                                    bg-gray-200
+                                    text-gray-600
+                                    border border-gray-300
+                                    hidden
+                                    lg:table-cell
+                                "
+                            >
+                                Date de creation
+                            </th>
+                            <th
+                                class="
+                                    p-3
+                                    font-bold
+                                    uppercase
+                                    bg-gray-200
+                                    text-gray-600
+                                    border border-gray-300
+                                    hidden
+                                    lg:table-cell
+                                "
+                            >
+                                Statut
+                            </th>
+                            <th
+                                class="
+                                    p-3
+                                    font-bold
+                                    uppercase
+                                    bg-gray-200
+                                    text-gray-600
+                                    border border-gray-300
+                                    hidden
+                                    lg:table-cell
+                                "
+                            >
+                                Action
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr
+                            v-for="(cmd, key) in commands"
+                            v-bind:key="key"
+                            class="
+                                bg-white
+                                lg:hover:bg-gray-100
+                                flex
+                                lg:table-row
+                                flex-row
+                                lg:flex-row
+                                flex-wrap
+                                lg:flex-no-wrap
+                                mb-10
+                                lg:mb-0
+                            "
+                        >
+                            <td
+                                class="
+                                    w-full
+                                    lg:w-auto
+                                    p-3
+                                    text-gray-800 text-center
+                                    border border-b
+                                    block
+                                    lg:table-cell
+                                    relative
+                                    lg:static
+                                "
+                            >
+                                {{ cmd.command_id }}
+                            </td>
+                            <td
+                                class="
+                                    w-full
+                                    lg:w-auto
+                                    p-3
+                                    text-gray-800 text-center
+                                    border border-b
+                                    block
+                                    lg:table-cell
+                                    relative
+                                    lg:static
+                                "
+                            >
+                                {{ cmd.num_items }}
+                            </td>
+
+                            <td
+                                class="
+                                    w-full
+                                    lg:w-auto
+                                    p-3
+                                    text-gray-800 text-center
+                                    border border-b
+                                    block
+                                    lg:table-cell
+                                    relative
+                                    lg:static
+                                "
+                            >
+                                Jour N° {{ cmd.creation_date }}
+                            </td>
+                            <td
+                                class="
+                                    w-full
+                                    lg:w-auto
+                                    p-3
+                                    text-gray-800 text-center
+                                    border border-b
+                                    block
+                                    lg:table-cell
+                                    relative
+                                    lg:static
+                                "
+                            >
+                                <span
+                                    :class="
+                                        cmd.status == 'confirmed'
+                                            ? 'text-green-500'
+                                            : 'text-yellow-500'
+                                    "
+                                    >{{ getStatus(cmd.status) }}</span
+                                >
+                            </td>
+                            <td
+                                class="
+                                    w-full
+                                    lg:w-auto
+                                    p-3
+                                    text-gray-800 text-center
+                                    border border-b
+                                    block
+                                    lg:table-cell
+                                    relative
+                                    lg:static
+                                "
+                            >
+                                <button
+                                    @click="showDetails(cmd)"
+                                    class="
+                                        bg-green-400
+                                        hover:bg-green-800
+                                        text-white
+                                        py-2
+                                        px-4
+                                        rounded
+                                    "
+                                >
+                                    Détails
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <Modal
+                v-if="show_details_modal"
+                id="modal"
+                class="align-center modal"
+                custom_css="w-3/5"
+            >
+                <template v-slot:content>
+                    <h3 class="font-extrabold text-lg my-3">
+                        Détails sur la commande N°
+                        {{ current_command.command_id }}
+                    </h3>
+
+                    <p
+                        v-for="(item, key) in current_command.details"
+                        v-bind:key="key"
+                    >
+                        * {{ item.quantity }} {{ item.unit }} de
+                        {{ item.material }} chez <b>{{ item.supplier }}</b> -
+                        <span
+                            :class="
+                                item.status == 'confirmed'
+                                    ? 'text-green-500'
+                                    : 'text-yellow-500'
+                            "
+                            >{{ getStatus(item.status) }} - Date de livraison:
+                            Jour N° {{ item.reception_date }}</span
+                        >
+                    </p>
+
+                    <button
+                        class="
+                            bg-gray-200
+                            active:bg-gray-600
+                            hover:bg-gray-400
+                            text-back
+                            px-3
+                            py-2
+                            rounded
+                            w-1/2
+                            mt-4
+                        "
+                        @click="show_details_modal = false"
+                    >
+                        Fermer
+                    </button>
+                </template>
+            </Modal>
         </div>
+
+        <div v-if="page_index == 'stock' && stock.length > 0">
+            <Stock :user="user" :stock="stock"></Stock>
+        </div>
+
+        <div v-if="page_index == 'command_creator'">
+            <CommandMaker ref="command_maker" :user="user" :caisse="caisse"></CommandMaker>
+        </div>
+
         <Modal
-            v-if="show_details_modal"
+            v-if="show_change_tab_modal"
             id="modal"
             class="align-center modal"
-            custom_css="w-1/3"
+            custom_css="w-3/5"
         >
             <template v-slot:content>
                 <h3 class="font-extrabold text-lg my-3">
-                    Détails sur la commande N° {{ current_command.command_id }}
+                    Changer d'onglet et abandonner le travail sur celui-ci ?
                 </h3>
 
-                <p
-                    v-for="(item, key) in current_command.details"
-                    v-bind:key="key"
-                >
-                    - {{ item.quantity }} {{ item.unit }} de
-                    {{ item.material }} chez <b>{{ item.supplier }}</b> -
-                    <span
-                        :class="
-                            item.status == 'confirmed'
-                                ? 'text-green-500'
-                                : 'text-yellow-500'
+                <div class="flex space-x-4 w-1/2 justify-center items-center">
+                    <button
+                        class="
+                            bg-red-400
+                            active:bg-red-600
+                            hover:bg-red-600
+                            text-white
+                            px-3
+                            py-2
+                            rounded
+                            w-1/2
+                            mt-4
                         "
-                        >{{ getStatus(item.status) }}</span
+                        @click="changeTab(null, true)"
                     >
-                </p>
+                        Oui
+                    </button>
 
-                <button
-                    class="
-                        bg-gray-200
-                        active:bg-gray-600
-                        hover:bg-gray-400
-                        text-back
-                        px-3
-                        py-2
-                        rounded
-                        w-1/2
-                        mt-4
-                    "
-                    @click="show_details_modal = false"
-                >
-                    Fermer
-                </button>
+                    <button
+                        class="
+                            bg-gray-200
+                            active:bg-gray-600
+                            hover:bg-gray-400
+                            text-back
+                            px-3
+                            py-2
+                            rounded
+                            w-1/2
+                            mt-4
+                        "
+                        @click="
+                            next_tab = null;
+                            show_change_tab_modal = false;
+                        "
+                    >
+                        Non
+                    </button>
+                </div>
             </template>
         </Modal>
     </div>
@@ -312,24 +422,52 @@
 
 <script type="text/javascript">
 import CommandItem from "./ui/CommandItem";
+import Stock from "./ui/Stock";
+import CommandMaker from "./ui/CommandMaker";
 import Modal from "../Modal";
 export default {
     name: "DepartmentCard",
-    components: { CommandItem, Modal },
+    components: { CommandItem, Modal, Stock, CommandMaker },
     data() {
         return {
-            num_commands: 1,
-            commands: [],
             show_success: false,
             show_error: false,
-            message: "Test",
+
+            message: "",
+
             current_command: {},
+
+            show_change_tab_modal: false,
             show_details_modal: false,
+
+            commands_loaded: false,
+            stock_loaded: false,
+
+            page_index: "commands",
+            next_tab: null,
+
+            caisse: 0,
+
+            commands: [],
+            stock: [],
         };
     },
-    props: ["materials", "suppliers", "user", "caisse"],
+    props: ["user"],
     computed: {},
     methods: {
+        showDetails(command) {
+            this.current_command = command;
+            this.show_details_modal = true;
+        },
+
+        getStatus(status) {
+            if (status == "pending") {
+                return "Livraison...";
+            } else if (status == "confirmed") {
+                return "Reçue";
+            }
+        },
+
         getCommands() {
             axios
                 .get("/api/entreprise/commands", {
@@ -337,30 +475,61 @@ export default {
                 })
                 .then((resp) => {
                     this.commands = resp.data;
+                    this.commands_loaded = true;
                 });
         },
-        showDetails(command) {
-            this.show_details_modal = true;
-            this.current_command = command;
+
+        getStock() {
+            axios
+                .get("/api/entreprise/stock", {
+                    params: {
+                        entreprise_id: this.user.id,
+                    },
+                })
+                .then((response) => {
+                    this.stock = response.data;
+                })
+                .catch(function (error) {});
         },
-        getStatus(status) {
-            if (status == "pending") {
-                return "En Attente";
-            } else if (status == "confirmed") {
-                return "Confirmé";
+
+        changeTab(tab_name = null, confirm = false) {
+            if (!confirm) {
+                if (this.page_index == "command_creator" && this.$refs.command_maker.commands.length > 0) {
+                    this.next_tab = tab_name;
+                    this.show_change_tab_modal = true;
+                } else {
+                    this.page_index = tab_name;
+                }
+            } else {
+                this.page_index = this.next_tab;
+                this.show_change_tab_modal = false;
             }
         },
     },
-    mounted() {
+    created() {
+        axios
+            .get("/api/navbar", {
+                params: {
+                    entreprise_id: this.user.id,
+                    type: this.user.type,
+                },
+            })
+            .then((resp) => {
+                this.caisse = resp.data["caisse"];
+            });
+
         this.getCommands();
+        this.getStock();
+    },
+    mounted() {
         window.Echo.channel("entreprise_" + this.user.id)
             .listen("NewNotification", (e) => {
-                if (e.notification.type == "CommandAccepted") {
+                if (e.notification.type == "CommandUpdate") {
                     this.getCommands();
                     this.$forceUpdate();
                 }
-                if (e.notification.type == "CommandDelivered") {
-                    this.getCommands();
+                if (e.notification.type == "StockUpdate") {
+                    this.getStock();
                     this.$forceUpdate();
                 }
             })

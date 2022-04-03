@@ -34,10 +34,12 @@ Route::prefix("entreprise")->group(function () {
 	Route::get("/production/indicators", [EntrepriseController::class, "getProdIndicators"]);
     Route::post("/machine/buy", [EntrepriseController::class, "buyMachine"]);
     Route::post("/machine/sell", [EntrepriseController::class, "sellMachine"]);
-    Route::post("/production/apply-action", [EntrepriseController::class, "applyProdAction"]);
+    Route::post("/machine/info", [EntrepriseController::class, "getMachinesInfo"]);
+    Route::post("/action/apply", [EntrepriseController::class, "applyProdAction"]);
     Route::get("/marketing/indicators", [MarketingController::class, "getMarketingIndicators"]);
     Route::get("/hr/indicators", [HrController::class, "getHrIndicators"]);
     Route::post("/hr/hire", [HrController::class, "hireWorkers"]);
+    Route::post("/hr/fire", [HrController::class, "fireWorkers"]);
     Route::post("/hr/launch-workshop", [HrController::class, "launchWorkshop"]);
     Route::post("/hr/prime-workers", [HrController::class, "primeWorkers"]);
 
@@ -91,3 +93,4 @@ Route::get('/time', [EntrepriseController::class, "getSimulationTime"]);
 Route::get('/products', [EntrepriseController::class, "getProducts"]);
 Route::get('/ranking', [EntrepriseController::class, "getRanking"]);
 Route::get("/test", [EntrepriseController::class, "testFunc"]);
+Route::get("/supp_raw_mats", [EntrepriseController::class, "getSuppRawMatInfo"]);

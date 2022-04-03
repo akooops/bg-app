@@ -1,6 +1,6 @@
 <template>
     <div class="w-full">
-        <div class="w-full">
+        <div v-if="indicators_loaded" class="w-full">
             <nav class="mb-10 text-sm flex justify-start gap-8">
                 <button
                     @click="page_index = 'prod_stats'"
@@ -66,7 +66,9 @@
                     v-if="showMachines"
                     class="flex items-center gap-2 absolute z-999 -bottom-11 right-0 bg-white border-opacity-5 border-vN shadow-md p-2 rounded-lg"
                 >
-                    {{ indicators["machines"].value }}
+                    Niveau 1: {{ indicators['nb_machines_lv1'].value }} | Occupés: {{ indicators['nb_machines_lv1_busy'].value }} | Santé: ( + {{ (Math.round(indicators['machines_lv1_health'].value * Math.pow(10, 2)) * 100) / Math.pow(10, 2) }} %)<br/>
+                    Niveau 1: {{ indicators['nb_machines_lv2'].value }} | Occupés: {{ indicators['nb_machines_lv2_busy'].value }} | Santé: ( + {{ (Math.round(indicators['machines_lv2_health'].value * Math.pow(10, 2)) * 100) / Math.pow(10, 2) }} %)<br/>
+                    Niveau 1: {{ indicators['nb_machines_lv3'].value }} | Occupés: {{ indicators['nb_machines_lv3_busy'].value }} | Santé: ( + {{ (Math.round(indicators['machines_lv3_health'].value * Math.pow(10, 2)) * 100) / Math.pow(10, 2) }} %)<br/>
                 </div>
             </div>
 
@@ -90,7 +92,9 @@
                     v-if="showEmployees"
                     class="flex items-center gap-2 absolute z-999 -bottom-11 right-0 bg-white border-opacity-5 border-vN shadow-md p-2 rounded-lg"
                 >
-                    {{ indicators["nb_workers_prod"].value }}
+                    Simples: {{ indicators['nb_workers_lv1'].value }} <br/>
+                    Experts: {{ indicators['nb_workers_lv2'].value }} <br/>
+                    Humeur: {{ Math.round(indicators['workers_mood'].value * 100) }} % <br/>
                 </div>
             </div>
         </div>
@@ -159,37 +163,30 @@
                                         class="bg-gray-100 font-semibold text-vN"
                                     >
                                         <tr>
-                                            <th
-                                                class="border w-1/2 p-2 border-l-0"
-                                            >
+                                            <th class="border w-1/2 p-2 border-l-0">
                                                 Matieres premiere
                                             </th>
-                                            <th
-                                                class="border w-1/2 p-2 border-r-0"
-                                            >
+                                            <th class="border w-1/2 p-2 border-r-0">
                                                 Quantités
                                             </th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr
-                                            v-for="(
-                                                mat, i
-                                            ) in product_info.raw_materials"
+                                            v-for="(mat, i) in product_info.raw_materials"
                                             :key="i"
                                             class="bg-gray-100 font-normal text-vN"
                                         >
-                                            <td
-                                                class="flex justify-center icon-material py-1 border border-l-0"
-                                            >
+                                            <td class="flex justify-center icon-material py-1 border border-l-0">
                                                 <img
                                                     src="/assets/icons/khobz.png"
                                                     alt="khobz"
-                                                /><span>{{ mat.name }}</span>
+                                                />
+                                                <span>
+                                                    {{ mat.name }}
+                                                </span>
                                             </td>
-                                            <td
-                                                class="text-center border table-cell border-r-0"
-                                            >
+                                            <td class="text-center border table-cell border-r-0">
                                                 {{ mat.pivot.quantity }}
                                             </td>
                                         </tr>
@@ -203,39 +200,7 @@
         </div>
         <div v-if="page_index == 'production_list'" class="w-full mt-10">
             <div class="flex items-center justify-between mb-7">
-                <h1 class="text-lg font-semibold text-vN">Vos Produits</h1>
-                <button
-                    class="group rounded-full tip hover:bg-gray-200 p-1"
-                    @click="getProductions"
-                    title="Actualiser"
-                >
-                    <svg
-                        class="group-hover:text-vert text-vN stroke-current"
-                        fill="none"
-                        width="27"
-                        height="23"
-                        viewBox="0 0 27 23"
-                    >
-                        <path
-                            d="M25.9998 2.13428V8.95245H19.1816"
-                            stroke-width="1.6"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                        />
-                        <path
-                            d="M1 20.3157V13.4976H7.81817"
-                            stroke-width="1.6"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                        />
-                        <path
-                            d="M3.85227 7.81549C4.4286 6.18684 5.4081 4.73072 6.69939 3.58301C7.99067 2.4353 9.55166 1.63341 11.2367 1.25215C12.9217 0.870893 14.6758 0.922699 16.3354 1.40274C17.995 1.88277 19.5059 2.77539 20.7273 3.99731L26 8.95185M1 13.4973L6.27272 18.4518C7.49402 19.6738 9.00496 20.5664 10.6645 21.0464C12.3241 21.5265 14.0783 21.5783 15.7633 21.197C17.4483 20.8157 19.0093 20.0138 20.3006 18.8661C21.5919 17.7184 22.5714 16.2623 23.1477 14.6337"
-                            stroke-width="1.6"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                        />
-                    </svg>
-                </button>
+                <h1 class="text-lg font-semibold text-vN">Vos Productions</h1>
             </div>
 
             <table class="w-full">
@@ -338,9 +303,13 @@
                         </td>
                         <td
                             :class="
-                                prod.status_code == 'pending'
-                                    ? 'text-jaune'
-                                    : 'text-vert'
+                                prod.status_code == 'pending' ?
+                                'text-jaune' :
+                                prod.status_code == 'sold' ?
+                                'text-vert' :
+                                prod.status_code == 'selling' ?
+                                'text-blue-500' :
+                                'text-black'
                             "
                             class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
                         >
@@ -352,21 +321,11 @@
                             <button
                                 @click="sell(prod)"
                                 class="p-1 px-2 rounded-full"
-                                v-bind:class="{
-                                    'bg-opacity-50 hover:bg-opacity-100 bg-vert text-vN':
-                                        prod.status_code == 'completed' &&
-                                        prod.sold < prod.quantity,
-                                }"
-                                :disabled="
-                                    !(
-                                        prod.status_code == 'completed' &&
-                                        prod.sold < prod.quantity
-                                    )
-                                "
+                                v-if="prod.status_code == 'completed'"
                             >
                                 {{
-                                    prod.sold >= prod.quantity
-                                        ? ""
+                                    prod.status_code == "sold"
+                                        ? "Vendu!"
                                         : prod.status_code == "pending"
                                         ? "En attente"
                                         : "Vendre"
@@ -473,6 +432,7 @@ export default {
             caisse: 0,
             showMachines: false,
             showEmployees: false,
+            indicators_loaded: false,
         };
     },
     computed: {
@@ -502,6 +462,7 @@ export default {
                 .then((resp) => {
                     this.indicators = resp.data;
                     this.show_stat_cards = true;
+                    this.indicators_loaded = true;
                 });
         },
         async getMarketDemands() {
@@ -545,8 +506,6 @@ export default {
                 });
         },
         sell(prod) {
-            // console.log('Prod')
-            // console.log(prod);
             let data = {
                 entreprise_id: this.user.id,
                 id: prod.id,
@@ -554,7 +513,6 @@ export default {
                 quantity: prod.quantity - prod.sold,
                 price: prod.price,
             };
-            // console.log(data);
             this.sell_info.production = data;
             axios
                 .get("/api/demand/real", {
@@ -564,9 +522,8 @@ export default {
                     this.sell_info.sold_quant = resp.data.demand;
                     this.sell_info.stock_quant = resp.data.stock;
                     this.sell_info.price = data.price;
+                    this.show_selling_info = true;
                 });
-
-            this.show_selling_info = true;
         },
         confirmSell() {
             let data = {
@@ -578,9 +535,9 @@ export default {
                 stock: this.sell_info.stock_quant,
                 price: this.sell_info.price,
             };
-            console.log(data);
+            // console.log(data);
             axios.post("/api/production/sell", data).then((resp) => {
-                console.log(resp.data.message);
+                // console.log(resp.data.message);
                 this.show_selling_info = false;
             });
         },
@@ -609,41 +566,40 @@ export default {
             });
         },
     },
-    beforeMount() {
-        this.getProducts();
-    },
-    mounted() {
-        // console.log("Test");
+    created() {
         this.updateProdData();
         this.getMarketDemands();
-        this.getProducts();
-        //add stock to productions
-
+        axios
+            .get("/api/navbar", {
+                params: {
+                    entreprise_id: this.user.id,
+                    type: this.user.type,
+                },
+            })
+            .then((resp) => {
+                this.caisse = resp.data["caisse"];
+            });
+    },
+    mounted() {
         window.Echo.channel("entreprise_" + this.user.id).listen(
             "NewNotification",
             (e) => {
-                if (e.notification.type == "ProductionSold") {
-                    this.updateProdData();
-                    this.getProducts();
-                    this.$forceUpdate();
-                }
-                if (e.notification.type == "ProductionDone") {
+                if (e.notification.type == "ProductionUpdate") {
                     this.updateProdData();
                     this.$forceUpdate();
                 }
-                if (e.notification.type == "ProductionLaunched") {
+
+                if (e.notification.type == "ActionUpdate") {
                     this.updateProdData();
                     this.$forceUpdate();
                 }
-                if (e.notification.type == "MachineBought") {
+
+                if (e.notification.type == "MachinesUpdate") {
                     this.getProdNumbers();
                     this.$forceUpdate();
                 }
-                if (e.notification.type == "MachineSold") {
-                    this.getProdNumbers();
-                    this.$forceUpdate();
-                }
-                if (e.notification.type == "Information") {
+
+                if (e.notification.type == "WorkersUpdate") {
                     this.getProdNumbers();
                     this.$forceUpdate();
                 }

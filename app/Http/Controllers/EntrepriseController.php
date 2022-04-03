@@ -2,22 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Carbon\Carbon;
+use App\Models\Command;
+use App\Models\Product;
+use App\Models\Supplier;
 use App\Models\Department;
 use App\Models\Entreprise;
 use App\Models\RawMaterial;
-use App\Models\Supplier;
-use App\Models\Command;
-use App\Models\Product;
-use Illuminate\Support\Facades\Response;
-use Illuminate\Support\Facades\DB;
-use App\Events\CommandCreated;
-use App\Traits\HelperTrait;
 use App\Traits\DemandTrait;
+use App\Traits\HelperTrait;
+use Illuminate\Http\Request;
+use App\Events\CommandCreated;
+use App\Jobs\CommandScheduler;
 use App\Traits\IndicatorTrait;
-use App\Jobs\ProductionScheduler;
 use App\Events\NewNotification;
-use Carbon\Carbon;
+use App\Jobs\ProductionScheduler;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Response;
+
 
 class EntrepriseController extends Controller
 {
@@ -32,8 +34,8 @@ class EntrepriseController extends Controller
     // Departments view routes
     function showDptApprov(Request $request)
     {
-        $raw_materials = RawMaterial::all();
-        $suppliers = Supplier::all();
+        $raw_materials = RawMaterial::with('suppliers')->get();
+        $suppliers = Supplier::with('raw_materials')->get();
         $caisse = $this->getIndicator('caisse', auth()->user()->id)['value'];
         return view("departments.approv", [
             "materials" => $raw_materials, "suppliers" => $suppliers,
@@ -52,8 +54,8 @@ class EntrepriseController extends Controller
 
     function showCommandMaker(Request $request)
     {
-        $raw_materials = RawMaterial::all();
-        $suppliers = Supplier::all();
+        $raw_materials = RawMaterial::with('suppliers')->get();
+        $suppliers = Supplier::with('raw_materials')->get();
         $caisse = $this->getIndicator('caisse', auth()->user()->id)['value'];
         return view("departments.widgets.command_maker", [
             "materials" => $raw_materials,
@@ -102,37 +104,44 @@ class EntrepriseController extends Controller
         $caisse = $this->getIndicator('caisse', auth()->user()->id)["value"];
         return view("departments.hr", [
             "workshop_price" => nova_get_setting('workshop_price', ''),
-            "salary" => nova_get_setting("salary_production", ''), "caisse" => $caisse
+            "salary_lv1" => nova_get_setting("salary_lv1"),
+            "salary_lv2" => nova_get_setting("salary_lv2"),
+            "bonus_coeff" => nova_get_setting("bonus_coeff"),
+            "caisse" => $caisse
         ]);
     }
 
     function getEntrepriseCommands(Request $request)
     {
         $entreprise_id = $request->entreprise_id;
-        $command_items = Command::where("entreprise_id", "=", $entreprise_id)->get();
+        $command_items = Command::where("entreprise_id", "=", $entreprise_id)->orderByDesc("creation_date")->get();
         $commands = $command_items->groupBy("command_id")->values()->toArray();
-        //dd($commands);
+
         $commands_data = collect($commands)->map(function ($cmd) {
             $data = [
                 "command_id" => $cmd[0]["command_id"],
-                "created" => $cmd[0]["creation_date"],
+                "creation_date" => $cmd[0]["creation_date"],
                 "num_items" => count($cmd),
                 "status" => $this->getCommandStatus($cmd)
             ];
+
             $data["details"] = collect($cmd)->map(function ($item) {
                 $material = RawMaterial::find($item["raw_material_id"]);
-                //dd($item["raw_material_id"]);
+
                 $supplier = Supplier::find($item["supplier_id"]);
+
                 $quantity = $item["quantity"];
                 $price = $item["price"];
-                $phrase = $item["quantity"] . " unités " . " de " . $material->name . " Chez " . $supplier->name . ", Prix: " . $price . " DA / Status : " . $this->parseCommandStatus($item["status"]);
 
-                return ["material" => $material->name, "unit" => $material->unit, "supplier" => $supplier->name, "quantity" => $quantity, "price" => $price, "status" => $item["status"], "phrase" => $phrase];
+                $reception_date = $item["creation_date"] + $item["time_to_ship"];
+
+                return ["material" => $material->name, "unit" => $material->unit, "supplier" => ($supplier != null ? $supplier->name : "Unknown"), "quantity" => $quantity, "price" => $price, "status" => $item["status"], "reception_date" => $reception_date];
             });
+
             return $data;
         });
-        $sorted_commands = $commands_data->sortByDesc("created");
-        return $sorted_commands->toArray();
+
+        return $commands_data->toArray();
     }
 
     function getCommandStatus($cmd)
@@ -153,62 +162,120 @@ class EntrepriseController extends Controller
     function createCommand(Request $request)
     {
         $entreprise_id = $request->entreprise_id;
+
+        // Just a way of labeling the commands with ids
         $last_cmd = Command::latest()->first();
         $cmd_id = 0;
         if ($last_cmd != null) {
             $cmd_id = $last_cmd->command_id  + 1;
         }
-        //dd($request->command);
+
+        // We'll use these to stop the command if the final price is more than the player's money
+        $caisse = $this->getIndicator("caisse", $entreprise_id)["value"];
+        $final_price = 0;
+
+        // We get an array of commands (one for every different supplier or raw material) from the front, through which we iterate
         $command_items = [];
-        for ($i = 0; $i < count($request["command"]); $i++) {
+        for ($i = 0; $i < count($request["commands"]); $i++) {
 
-            $cmd =  $request["command"][$i];
+            // Pull the command from the array of commands
+            $cmd =  $request["commands"][$i];
 
-            if ($cmd["quantity"] <= 0) {
-                break;
-            }
+            // Get the supplier for this command with the associated raw materials data
+            $supplier = Supplier::with('raw_materials')->where("name", $cmd["supplier"])->first();
 
-            //dd($cmd);
-            $supplier_id = Supplier::where("name", $cmd["supplier"])->first()->id;
+            // Get necessary ids
+            $supplier_id = $supplier->id;
             $material_id = RawMaterial::where("name", $cmd["material"])->first()->id;
             $item_id = $cmd["item_id"];
-            //dd($cmd_id);
+
+            // Check availability
+            $available = false;
+            foreach ($supplier->raw_materials as $mat) {
+                if ($mat->id == $material_id) {
+                    $available = $mat->pivot->is_available == 1 ? true : false;
+                }
+            }
+
+            if (!$available) {
+                // Stop the command and return error: raw material not available for this supplier
+                $message = "Impossible d'effectuer la commande: Les quantités doivent être positives.";
+                return Response::json(["message" => $message, "success" => false], 200);
+            }
+
+            // Do a quantity check
+            $quantity = $cmd["quantity"];
+            if ($quantity <= 0) {
+                // Stop the command and return error: command's quantity must be positive
+                $message = "Impossible d'effectuer la commande: Les quantités doivent être positives.";
+                return Response::json(["message" => $message, "success" => false], 200);
+            }
+
+            // Do a price check to be sure that player can pay
+            $total_price = $cmd["total_price"];
+            $final_price += $total_price;
+
+            if ($final_price > $caisse) {
+                // Stop the command and return error: not enough money
+                $message = "Impossible d'effectuer la commande: Disponibilités insuffisantes.";
+                return Response::json(["message" => $message, "success" => false], 200);
+            }
+
+            // Status will be "pending" until the command is delivered to the player
+            $status = "pending";
+
+            // I don't we'll have errors here since it's all in the back, but just in case
+            $creation_date = $this->getSimulationTime();
+            $time_to_ship = $cmd["time_to_ship"];
+
+            if ($time_to_ship <= 0) {
+                // Stop the command and return error: command's time to ship must be positive
+                $message = "Impossible d'effectuer la commande: Le temps de livraison doit être positif.";
+                return Response::json(["message" => $message, "success" => false], 200);
+            }
+
+            // Fill in the array to insert into the database later
             $cmd_item = [
                 "command_id" => $cmd_id,
                 "entreprise_id" => $entreprise_id,
                 "supplier_id" => $supplier_id,
                 "raw_material_id" => $material_id,
-                "status" => "pending",
-                "price" => $cmd["price"],
-                "quantity" => $cmd["quantity"],
-                "creation_date" => $this->getSimulationTime(),
-                "item_id" => $item_id
+                "status" => $status,
+                "price" => $total_price,
+                "quantity" => $quantity,
+                "creation_date" => $creation_date,
+                "item_id" => $item_id,
+                "time_to_ship" => $time_to_ship,
             ];
             array_push($command_items, $cmd_item);
         }
-        //dd($command_items);
+
+        // Group commands by supplier
         $command_items = collect($command_items);
-
-        // Logic to split command into suppliers
         $supp_command_items = $command_items->groupBy("supplier_id");
-        info($supp_command_items);
 
+        // Create commands in database
         $supp_command_items->map(function ($supp_cmd) use ($entreprise_id, $cmd_id) {
-            // dd($supp_cmd[0]);
-            $supplier_id = $supp_cmd[0]["supplier_id"];
-            $command = [
-                "id" => $cmd_id,
-                "name" => Entreprise::find($entreprise_id)->name,
-                "status" => "pending",
-                "num_items" => count($supp_cmd),
-                "creation_date" => $supp_cmd[0]["creation_date"]
-            ];
+
             $supp_cmd->map(function ($supp_cmd_item) {
                 Command::create($supp_cmd_item);
+
+                CommandScheduler::dispatch($supp_cmd_item, $supp_cmd_item["item_id"])
+                    ->delay(now()->addSeconds($supp_cmd_item["time_to_ship"] * 60));
             });
-            event(new CommandCreated($command, $supplier_id));
+
         });
-        return Response::json(["message" => "Votre commande à été envoyée aux fournisseurs, vous serez redirigé vers le département d'approvisionnement dans 4 secondes."], 200);
+
+        $message = "Commande effectuée. Livraison en cours...";
+        $notification = [
+            "type" => "CommandUpdate",
+            "entreprise_id" => $entreprise_id,
+            "message" => $message,
+            "title" => "Livraison de la commande"
+        ];
+        event(new NewNotification($notification));
+
+        return Response::json(["message" => $message, "success" => true], 200);
     }
 
     public function getStock(Request $request)
@@ -237,8 +304,13 @@ class EntrepriseController extends Controller
     {
         // Return production useful indicators
         $keys = [
-            "machines", "busy_machines", "machines_health", "nb_workers_prod", "ca",
-            "reject_rate", "productivity_coeff", "dist_unit_cost"
+            "nb_machines_lv1", "nb_machines_lv2", "nb_machines_lv3",
+            "nb_machines_lv1_busy", "nb_machines_lv2_busy", "nb_machines_lv3_busy",
+            "machines_lv1_health", "machines_lv2_health", "machines_lv3_health",
+            "nb_workers_lv1", "nb_workers_lv2",
+            "nb_workers_lv1_busy", "nb_workers_lv2_busy",
+            "workers_mood", "5s_day",
+            "ca", "reject_rate", "productivity_coeff", "dist_unit_cost"
         ];
         $entreprise_id = $request->entreprise_id;
         $resp = [];
@@ -252,14 +324,120 @@ class EntrepriseController extends Controller
     public function launchProduction(Request $request)
     {
         $entreprise_id = $request->entreprise_id;
-        $product_id = $request->product_id;
-        $quantity = $request->quantity * 100;
-        $delay = $request->delay;
         $cost = $request->cost;
-        $machines = $request->machines;
-        $labor = $request->machines;
+
+        // Check if enough money to launch prod
+        $caisse = $this->getIndicator("caisse", $entreprise_id)["value"];
+        if ($cost > $caisse) {
+            $message = "Impossible de lancer la production: disponnibiltiés insuffisantes.";
+            return Response::json(["message" => $message, "success" => false], 200);
+        }
+
+        $product_id = $request->product_id;
+
+        // Check if enough raw materials to launch prod
+        $product = DB::table("raw_materials_products")->where("product_id", "=", $product_id)->orderBy("raw_material_id")->get();
+        $stock = DB::table("raw_materials_stock")->where("entreprise_id", "=", $entreprise_id)->orderBy("raw_material_id")->get();
+
+        $quantity = $request->quantity * 100; // should be divided by 100 for nb lots
+
+        for ($i = 0; $i < count($product); $i++) {
+            if ($product[$i]->raw_material_id != $stock[$i]->raw_material_id) {
+                continue;
+            }
+
+            if ($product[$i]->quantity * $request->quantity > $stock[$i]->quantity) {
+                $message = "Pas assez de matière première " . $product[$i]->raw_material_id;
+                return Response::json(["message" => $message, "success" => false], 200);
+            }
+        }
+
+        $delay = $request->delay;
+
+        // Check if enough free machines to launch prod and health is enough
+        $nb_machines_needed = $request->machines;
+
+        $machines_lvl = $request->machines_lvl;
+
+        $nb_machines = null;
+        $nb_busy_machines = null;
+        $machines_health = null;
+        if ($machines_lvl == 1) {
+            if ($this->getIndicator("machines_lv1_health", $entreprise_id) <= 0) {
+                $message = "Impossible de lancer la production: veuillez réparer vos machines.";
+                return Response::json(["message" => $message, "success" => false], 200);
+            }
+
+            $nb_machines = $this->getIndicator("nb_machines_lv1", $entreprise_id)["value"];
+            $nb_busy_machines = $this->getIndicator("nb_machines_lv1_busy", $entreprise_id)["value"];
+            $machines_health = $this->getIndicator("machines_lv1_health", $entreprise_id)["value"];
+        }
+        else if ($machines_lvl == 2) {
+            if ($this->getIndicator("machines_lv2_health", $entreprise_id) <= 0) {
+                $message = "Impossible de lancer la production: veuillez réparer vos machines.";
+                return Response::json(["message" => $message, "success" => false], 200);
+            }
+
+            $nb_machines = $this->getIndicator("nb_machines_lv2", $entreprise_id)["value"];
+            $nb_busy_machines = $this->getIndicator("nb_machines_lv2_busy", $entreprise_id)["value"];
+            $machines_health = $this->getIndicator("machines_lv2_health", $entreprise_id)["value"];
+        }
+        else if ($machines_lvl == 3) {
+            if ($this->getIndicator("machines_lv3_health", $entreprise_id) <= 0) {
+                $message = "Impossible de lancer la production: veuillez réparer vos machines.";
+                return Response::json(["message" => $message, "success" => false], 200);
+            }
+
+            $nb_machines = $this->getIndicator("nb_machines_lv3", $entreprise_id)["value"];
+            $nb_busy_machines = $this->getIndicator("nb_machines_lv3_busy", $entreprise_id)["value"];
+            $machines_health = $this->getIndicator("machines_lv3_health", $entreprise_id)["value"];
+        }
+
+        // Check if enough machines
+        if ($nb_machines < $nb_machines_needed) {
+            $message = "Impossible de lancer la production: Machines insuffisantes.";
+            return Response::json(["message" => $message, "success" => false], 200);
+        }
+
+        // Check if enough free machines
+        if ($nb_machines - $nb_busy_machines < $nb_machines_needed) {
+            $message = "Impossible de lancer la production: Machines libres insuffisantes.";
+            return Response::json(["message" => $message, "success" => false], 200);
+        }
+
+        // Check if machines health is enough
+        if ($machines_health <= 0.05) {
+            $message = "Impossible de lancer la production: Les machines de niveau " . $machines_lvl . " sont HS (santé < 5%).";
+            return Response::json(["message" => $message, "success" => false], 200);
+        }
+
+        $labor_lv1 = $request->labor_lv1;
+        $labor_lv2 = $request->labor_lv2;
+
+        // Check if enough free workers to launch prod
+        $nb_workers_lv1 = $this->getIndicator("nb_workers_lv1", $entreprise_id)["value"];
+        $nb_busy_workers_lv1 = $this->getIndicator("nb_workers_lv1_busy", $entreprise_id)["value"];
+
+        $nb_workers_lv2 = $this->getIndicator("nb_workers_lv2", $entreprise_id)["value"];
+        $nb_busy_workers_lv2 = $this->getIndicator("nb_workers_lv2_busy", $entreprise_id)["value"];
+
+        $nb_workers_lv1_to_use = $labor_lv1;
+        $nb_workers_lv2_to_use = $labor_lv2;
+
+        if ($nb_workers_lv1 - $nb_busy_workers_lv1 < $nb_workers_lv1_to_use
+        && $nb_workers_lv1 + $nb_workers_lv2 - $nb_busy_workers_lv1 - $nb_busy_workers_lv2 -  $nb_workers_lv2_to_use < $nb_workers_lv1_to_use ) {
+            $message = "Impossible de lancer la production: Employés simples libres insuffisants.";
+            return Response::json(["message" => $message, "success" => false], 200);
+        }
+        if ($nb_workers_lv2 - $nb_busy_workers_lv2 < $nb_workers_lv2_to_use) {
+            $message = "Impossible de lancer la production: Employés experts libres insuffisants.";
+            return Response::json(["message" => $message, "success" => false], 200);
+        }
+
+        // Compute real produced quantity (counting out the reject rate)
         $reject_rate = $this->getIndicator("reject_rate", $entreprise_id)["value"];
         $real_produced_quant = $quantity * (1 - $reject_rate);
+
         $production_data = [
             "entreprise_id" => $entreprise_id,
             "product_id" => $product_id,
@@ -268,19 +446,59 @@ class EntrepriseController extends Controller
             "price" => $request->price,
             "cost" => $cost,
             "name" => "", // Bug, should be removed from DB
-            "status" => "pending"
+            "status" => "pending",
+            "machines_lv1" => $machines_lvl == 1 ? $nb_machines_needed : 0,
+            "machines_lv2" => $machines_lvl == 2 ? $nb_machines_needed : 0,
+            "machines_lv3" => $machines_lvl == 3 ? $nb_machines_needed : 0,
+            "workers_lv1" => $nb_workers_lv1_to_use,
+            "workers_lv2" => $nb_workers_lv2_to_use,
         ];
+
+        // Add production to database
         $prod_id = DB::table("productions")->insertGetId($production_data);
-        $this->updateIndicator("busy_machines", $entreprise_id, $machines);
-        $prod_factors = [
-            "machines" => $machines,
-            "labor" => $labor
+
+        // Mark machines used as so in indicators
+        if ($machines_lvl == 1) {
+            $this->updateIndicator("nb_machines_lv1_busy", $entreprise_id, $nb_machines_needed);
+        } else if ($machines_lvl == 2) {
+            $this->updateIndicator("nb_machines_lv2_busy", $entreprise_id, $nb_machines_needed);
+        } else if ($machines_lvl == 3) {
+            $this->updateIndicator("nb_machines_lv3_busy", $entreprise_id, $nb_machines_needed);
+        }
+
+        // Mark employees used as so in indicators
+        $this->updateIndicator("nb_workers_lv1_busy", $entreprise_id, $nb_workers_lv1_to_use);
+        $this->updateIndicator("nb_workers_lv2_busy", $entreprise_id, $nb_workers_lv2_to_use);
+
+        // Decrement stock of raw materials by quantity taken to produce this lot
+        for ($i = 0; $i < count($product); $i++) {
+            DB::table("raw_materials_stock")->where("entreprise_id", "=", $entreprise_id)
+                ->where("raw_material_id", "=", $product[$i]->raw_material_id)
+                ->decrement("quantity", $product[$i]->quantity * $request->quantity);
+        }
+
+        // Send stock change notification
+        $message = "Stock de matières premières décru";
+        $notification = [
+            "type" => "StockUpdate",
+            "entreprise_id" => $entreprise_id,
+            "message" => $message,
+            "title" => "Matières premières"
         ];
+        event(new NewNotification($notification));
+
+        // Decrement caisse data before production ends
+        $this->updateIndicator("caisse", $entreprise_id, -1 * $cost);
+
+        // Increment production cost
+        $this->updateIndicator("prod_cost", $entreprise_id, $cost);
+
+        // Add delay to production
         ProductionScheduler::dispatch($production_data, $prod_id)
             ->delay(now()->addSeconds($delay));
 
         // Schedule production;
-        return Response::json(["message" => "La production a été lancée !"], 200);
+        return Response::json(["message" => "La production a été lancée !", "success" => true], 200);
     }
 
     function getAllProductions(Request $request)
@@ -305,33 +523,42 @@ class EntrepriseController extends Controller
     function sellProd(Request $request)
     {
         $entreprise_id = $request->entreprise_id;
-        $product_id = $request->product_id;
-        $dist_cost = $request->dist_cost;
-        $sold_quantity = $request->sold;
-        $price = $request->price;
-        $stock_quantity = $request->stock;
         $production_id = $request->production_id;
 
-        // Remove from stock and update production table
-        DB::table("stock")->where("entreprise_id", "=", $entreprise_id)->where("product_id", "=", $product_id)->decrement("quantity", $sold_quantity);
-        DB::table("productions")->where("id", "=", $production_id)->increment("sold", $sold_quantity);
-        DB::table("products")->where("id", "=", $product_id)->decrement("left_demand", $sold_quantity);
+        $production = DB::table("productions")->where("id", "=", $production_id)->first();
+        $status = $production->status;
+        if ($status == 'sold') {
+            $message = "Vous avez déjà tout vendu pour la production" . $production_id . "";
+            $notification = [
+                "type" => "ProductionUpdate",
+                "entreprise_id" => $entreprise_id,
+                "message" => $message,
+                "title" => "Production déjà vendue"
+            ];
+            event(new NewNotification($notification));
+            return Response::json(["message" => $message], 200);
+        }
 
-        // Update indicators:
-        // Increase caisse
-        $sales = $sold_quantity * $price;
-        $ca_key = "ca_" . $product_id;
-        $profit_value = $sales - $dist_cost;
-        $this->updateIndicator("caisse", $entreprise_id, $profit_value);
-        $this->updateIndicator($ca_key, $entreprise_id, $sales);
-        $this->updateIndicator("ca", $entreprise_id, $sales);
-        $this->updateIndicator("dist_cost", $entreprise_id, $dist_cost);
-        $message = "Vous avez vendu " . $sold_quantity . " unités et vous avez généré un chiffre d'affaires de " . $sales . " DA";
+        if ($status == 'selling') {
+            $message = "La production " . $production_id . " est déjà en vente.";
+            $notification = [
+                "type" => "ProductionUpdate",
+                "entreprise_id" => $entreprise_id,
+                "message" => $message,
+                "title" => "Production déjà vendue"
+            ];
+            event(new NewNotification($notification));
+            return Response::json(["message" => $message], 200);
+        }
+
+        DB::table("productions")->where("id", "=", $production_id)->update(["status" => "selling"]);
+
+        $message = "La production " . $production_id . " a été mise en vente.";
         $notification = [
-            "type" => "ProductionSold",
+            "type" => "ProductionUpdate",
             "entreprise_id" => $entreprise_id,
             "message" => $message,
-            "title" => "Production Vendue"
+            "title" => "Production mise en vente"
         ];
         event(new NewNotification($notification));
         return Response::json(["message" => $message], 200);
@@ -341,40 +568,192 @@ class EntrepriseController extends Controller
     public function buyMachine(Request $request)
     {
         $entreprise_id = $request->entreprise_id;
-        $buy_price = 10000;
-        // update indicators
+        $number = $request->number;
+        $level = $request->level;
 
-        $this->updateIndicator("caisse", $entreprise_id, -1 * $buy_price);
-        $this->updateIndicator("machines", $entreprise_id, 1);
-        $message = "Vous avez acheté une machine au prix de " . $buy_price . " DA";
+        $buy_price = null;
+
+        if ($level == 1) {
+            $buy_price = nova_get_setting("machines_lv1_price");
+        } else if ($level == 2) {
+            $buy_price = nova_get_setting("machines_lv2_price");
+        } else if ($level == 3) {
+            $buy_price = nova_get_setting("machines_lv3_price");
+        }
+
+        $caisse = $this->getIndicator("caisse", $entreprise_id)["value"];
+
+        if ($buy_price * $number > $caisse) {
+            $message = "Impossible d'acheter " . $number . " machine(s) de niveau " . $level . ": disponnibilités insuffisantes.";
+            $notification = [
+                "type" => "MachinesUpdate",
+                "entreprise_id" => $entreprise_id,
+                "message" => $message,
+                "title" => "Echec de l'achat de machine"
+            ];
+            event(new NewNotification($notification));
+            return Response::json(["message" => $message, "success" => false], 200);
+        }
+
+        $this->updateIndicator("caisse", $entreprise_id, -1 * $buy_price * $number);
+
+        $health_msg = "";
+        if ($level == 1) {
+            $this->updateIndicator("nb_machines_lv1", $entreprise_id, $number);
+
+            $machines_health = $this->getIndicator("machines_lv1_health", $entreprise_id)["value"];
+            $nb_machines = $this->getIndicator("nb_machines_lv1", $entreprise_id)["value"];
+
+            if (($nb_machines * $machines_health + $number) / ($nb_machines + 1) <= 1) {
+                $this->setIndicator("machines_lv1_health", $entreprise_id, ($nb_machines * $machines_health + $number) / ($nb_machines + 1));
+                $health_msg = "Santé des machines légèrement augmentée.";
+            } else {
+                $this->setIndicator("machines_lv1_health", $entreprise_id, 1);
+            }
+        } else if ($level == 2) {
+            $this->updateIndicator("nb_machines_lv2", $entreprise_id, $number);
+
+            $machines_health = $this->getIndicator("machines_lv2_health", $entreprise_id)["value"];
+            $nb_machines = $this->getIndicator("nb_machines_lv2", $entreprise_id)["value"];
+
+            if (($nb_machines * $machines_health + $number) / ($nb_machines + 1) <= 1) {
+                $this->setIndicator("machines_lv2_health", $entreprise_id, ($nb_machines * $machines_health + $number) / ($nb_machines + 1));
+                $health_msg = "Santé des machines légèrement augmentée.";
+            } else {
+                $this->setIndicator("machines_lv2_health", $entreprise_id, 1);
+            }
+        } else if ($level == 3) {
+            $this->updateIndicator("nb_machines_lv3", $entreprise_id, $number);
+
+            $machines_health = $this->getIndicator("machines_lv3_health", $entreprise_id)["value"];
+            $nb_machines = $this->getIndicator("nb_machines_lv3", $entreprise_id)["value"];
+
+            if (($nb_machines * $machines_health + $number) / ($nb_machines + 1) <= 1) {
+                $this->setIndicator("machines_lv3_health", $entreprise_id, ($nb_machines * $machines_health + $number) / ($nb_machines + 1));
+                $health_msg = "Santé des machines légèrement augmentée.";
+            } else {
+                $this->setIndicator("machines_lv3_health", $entreprise_id, 1);
+            }
+        }
+
+        $message = "Vous avez acheté " . $number . " machine(s) de niveau " . $level . " au prix de " . $buy_price * $number . " DA. " . $health_msg;
         $notification = [
-            "type" => "MachineBought",
+            "type" => "MachinesUpdate",
             "entreprise_id" => $entreprise_id,
             "message" => $message,
             "title" => "Machine Achetée"
         ];
         event(new NewNotification($notification));
-        return Response::json(["message" => $message], 200);
+        return Response::json(["message" => $message, "success" => true], 200);
     }
+
     public function sellMachine(Request $request)
     {
         $entreprise_id = $request->entreprise_id;
-        $sell_price = 8000;
-        $machines_health = $this->getIndicator("machines_health", $entreprise_id)["value"];
-        $real_sell_price = $sell_price * $machines_health;
-        // update indicators
+        $number = $request->number;
+        $level = $request->level;
 
-        $this->updateIndicator("caisse", $entreprise_id, $real_sell_price);
-        $this->updateIndicator("machines", $entreprise_id, -1);
-        $message = "Vous avez vendu une machine au prix de " . $real_sell_price . " DA";
+        $nb_machines = null;
+        $nb_busy_machines = null;
+        $machines_health = null;
+
+        if ($level == 1) {
+            $nb_machines = $this->getIndicator("nb_machines_lv1", $entreprise_id)["value"];
+            $nb_busy_machines = $this->getIndicator("nb_machines_lv1_busy", $entreprise_id)["value"];
+            $machines_health = $this->getIndicator("machines_lv1_health", $entreprise_id)["value"];
+        } else if ($level == 2) {
+            $nb_machines = $this->getIndicator("nb_machines_lv2", $entreprise_id)["value"];
+            $nb_busy_machines = $this->getIndicator("nb_machines_lv2_busy", $entreprise_id)["value"];
+            $machines_health = $this->getIndicator("machines_lv2_health", $entreprise_id)["value"];
+        } else if ($level == 3) {
+            $nb_machines = $this->getIndicator("nb_machines_lv3", $entreprise_id)["value"];
+            $nb_busy_machines = $this->getIndicator("nb_machines_lv3_busy", $entreprise_id)["value"];
+            $machines_health = $this->getIndicator("machines_lv3_health", $entreprise_id)["value"];
+        }
+
+        if ($machines_health < 0.2) {
+            $message = "Vous ne pouvez pas vendre des machines dont la santé est inférieure à 20%";
+            $notification = [
+                "type" => "MachinesUpdate",
+                "entreprise_id" => $entreprise_id,
+                "message" => $message,
+                "title" => "Échec de la vente de machine"
+            ];
+            event(new NewNotification($notification));
+            return Response::json(["message" => $message, "success" => false], 200);
+        }
+
+        if ($nb_machines - $number < 0) {
+            $message = "Vous ne pouvez pas vendre " . $number . " machine(s) de niveau " . $level . ": Vous n'en avez pas autant.";
+            $notification = [
+                "type" => "MachinesUpdate",
+                "entreprise_id" => $entreprise_id,
+                "message" => $message,
+                "title" => "Échec de la vente de machine"
+            ];
+            event(new NewNotification($notification));
+            return Response::json(["message" => $message, "success" => false], 200);
+        }
+
+        if ($nb_machines - $nb_busy_machines < $number) {
+            $message = "Vous ne pouvez pas vendre " . $number . " machine(s) de niveau " . $level . ": Les machines en production ne peuvent pas être venudes.";
+            $notification = [
+                "type" => "MachinesUpdate",
+                "entreprise_id" => $entreprise_id,
+                "message" => $message,
+                "title" => "Échec de la vente de machine"
+            ];
+            event(new NewNotification($notification));
+            return Response::json(["message" => $message, "success" => false], 200);
+        }
+
+        $buy_price = null;
+        $sell_price = null;
+
+        if ($level == 1) {
+            $buy_price = nova_get_setting("machines_lv1_price");
+            $sell_price = $buy_price * $this->getIndicator("machines_lv1_health", $entreprise_id)['value'];
+        } else if ($level == 2) {
+            $buy_price = nova_get_setting("machines_lv2_price");
+            $sell_price = $buy_price * $this->getIndicator("machines_lv2_health", $entreprise_id)['value'];
+        } else if ($level == 3) {
+            $buy_price = nova_get_setting("machines_lv3_price");
+            $sell_price = $buy_price * $this->getIndicator("machines_lv3_health", $entreprise_id)['value'];
+        }
+
+        $this->updateIndicator("caisse", $entreprise_id, $sell_price * $number);
+
+        if ($level == 1) {
+            $this->updateIndicator("nb_machines_lv1", $entreprise_id, -1 * $number);
+
+            if ($this->getIndicator("nb_machines_lv1", $entreprise_id)["value"] == 0) {
+                $this->setIndicator("machines_lv1_health", $entreprise_id, 1);
+            }
+        }
+        else if ($level == 2) {
+            $this->updateIndicator("nb_machines_lv2", $entreprise_id, -1 * $number);
+
+            if ($this->getIndicator("nb_machines_lv2", $entreprise_id)["value"] == 0) {
+                $this->setIndicator("machines_lv2_health", $entreprise_id, 1);
+            }
+        }
+        else if ($level == 3) {
+            $this->updateIndicator("nb_machines_lv3", $entreprise_id, -1 * $number);
+
+            if ($this->getIndicator("nb_machines_lv3", $entreprise_id)["value"] == 0) {
+                $this->setIndicator("machines_lv3_health", $entreprise_id, 1);
+            }
+        }
+
+        $message = "Vous avez vendu " . $number . " machine(s) de niveau " . $level . " au prix de " . $sell_price * $number . " DA";
         $notification = [
-            "type" => "MachineSold",
+            "type" => "MachinesUpdate",
             "entreprise_id" => $entreprise_id,
             "message" => $message,
             "title" => "Machine Vendue"
         ];
         event(new NewNotification($notification));
-        return Response::json(["message" => $message], 200);
+        return Response::json(["message" => $message, "success" => true], 200);
     }
 
     public function applyProdAction(Request $request)
@@ -382,48 +761,215 @@ class EntrepriseController extends Controller
         $type = $request->type;
         $price = $request->price;
         $entreprise_id = $request->entreprise_id;
-        $message = "";
+
+        $caisse = $this->getIndicator("caisse", $entreprise_id)["value"];
+        if ($price > $caisse) {
+            $message = "Impossible de lancer l'action: Disponnibilités insuffisantes.";
+            $notification = [
+                "type" => "ActionUpdate",
+                "entreprise_id" => $entreprise_id,
+                "message" => $message,
+                "title" => "Échec de l'action"
+            ];
+            event(new NewNotification($notification));
+            return Response::json(["message" => $message, "success" => false], 200);
+        }
+
+        $message = "Aucune action définie";
         switch ($type) {
             case '5s':
-                $prod_coeff = $this->getIndicator("productivity_coeff", $entreprise_id)["value"];
+                $mood = $this->getIndicator("workers_mood", $entreprise_id)["value"];
+                if ($mood < 0.5) {
+                    $message = "Impossible de lancer les 5S: Vos employés manquent de motivation!";
+                    $notification = [
+                        "type" => "ActionUpdate",
+                        "entreprise_id" => $entreprise_id,
+                        "message" => $message,
+                        "title" => "5S"
+                    ];
+                    event(new NewNotification($notification));
+                    return Response::json(["message" => $message, "success" => false], 200);
+                }
 
-                if ($prod_coeff >= 5) {
-                    $message = "Vous ne pouvez plus augmenter votre taux de productivité, il est déja élevé !";
-                } else {
+                $day_5s = $this->getIndicator("5s_day", $entreprise_id)["value"];
+
+                if ($day_5s < 30) {
+                    $message = "Impossible de relancer les 5S: Il vous en reste encore " . (30 - $day_5s) . " jour(s)!";
+                    $notification = [
+                        "type" => "ActionUpdate",
+                        "entreprise_id" => $entreprise_id,
+                        "message" => $message,
+                        "title" => "5S"
+                    ];
+                    event(new NewNotification($notification));
+                    return Response::json(["message" => $message, "success" => false], 200);
+                }
+                else {
                     $this->updateIndicator("caisse", $entreprise_id, -1 * $price);
-                    $this->updateIndicator("productivity_coeff", $entreprise_id, 0.5);
-                    $message = "Votre taux de productivité a augmenté !, vous pouvez produire plus rapidement.";
+                    $this->setIndicator("5s_day", $entreprise_id, 0);
+
+                    $message = "Votre taux de productivité a augmenté, vous pouvez produire plus rapidement pendant 1 mois!";
+                    $notification = [
+                        "type" => "ActionUpdate",
+                        "entreprise_id" => $entreprise_id,
+                        "message" => $message,
+                        "title" => "5S"
+                    ];
+                    event(new NewNotification($notification));
+                    return Response::json(["message" => $message, "success" => true], 200);
                 }
                 break;
+
             case 'audit':
                 $reject_rate = $this->getIndicator("reject_rate", $entreprise_id)["value"];
                 if ($reject_rate < 0.01) {
                     $message = "Vous ne pouvez plus réduire vos taux de rebuts.";
-                } else {
+                    $notification = [
+                        "type" => "ActionUpdate",
+                        "entreprise_id" => $entreprise_id,
+                        "message" => $message,
+                        "title" => "Audit"
+                    ];
+                    event(new NewNotification($notification));
+                    return Response::json(["message" => $message, "success" => false], 200);
+                }
+                else {
                     $this->updateIndicator("reject_rate", $entreprise_id, -0.01);
                     $this->updateIndicator("caisse", $entreprise_id, -1 * $price);
+
                     $message = "Votre taux de rebut est maintenant plus faible.";
+                    $notification = [
+                        "type" => "ActionUpdate",
+                        "entreprise_id" => $entreprise_id,
+                        "message" => $message,
+                        "title" => "Audit"
+                    ];
+                    event(new NewNotification($notification));
+                    return Response::json(["message" => $message, "success" => true], 200);
                 }
                 break;
-            case 'maintenance':
-                $machines_health = $this->getIndicator("machines_health", $entreprise_id)["value"];
+            case 'maintenance_lv1':
+                $nb_machines = $this->getIndicator("nb_machines_lv1", $entreprise_id)["value"];
+                if ($nb_machines <= 0) {
+                    $message = "Vous n'avez pas de machines de niveau 1!";
+                    $notification = [
+                        "type" => "ActionUpdate",
+                        "entreprise_id" => $entreprise_id,
+                        "message" => $message,
+                        "title" => "Réparation machines niveau 1"
+                    ];
+                    event(new NewNotification($notification));
+                    return Response::json(["message" => $message, "success" => false], 200);
+                }
+
+                $machines_health = $this->getIndicator("machines_lv1_health", $entreprise_id)["value"];
                 if ($machines_health > 0.9) {
-                    $message = "Vous ne pouvez plus augmentez la fiabilité de vos machines, elle est assez faible !";
-                } else {
-                    $this->updateIndicator("machines_health", $entreprise_id, 0.05);
+                    $message = "Vos machines de niveau 1 sont en bon état, vous ne pouvez pas les réparer plus que ça!";
+                    $notification = [
+                        "type" => "ActionUpdate",
+                        "entreprise_id" => $entreprise_id,
+                        "message" => $message,
+                        "title" => "Réparation machines niveau 1"
+                    ];
+                    event(new NewNotification($notification));
+                    return Response::json(["message" => $message, "success" => false], 200);
+                }
+                else {
+                    $this->setIndicator("machines_lv1_health", $entreprise_id, 0.9);
                     $this->updateIndicator("caisse", $entreprise_id, -1 * $price);
-                    $message = "Vos machines sont maintenant plus fiables ! Vous pouvez les vendre plus chère.";
+
+                    $message = "Vos machines de niveau 1 sont maintenant en meilleur état, vous pouvez les vendre plus cher!";
+                    $notification = [
+                        "type" => "ActionUpdate",
+                        "entreprise_id" => $entreprise_id,
+                        "message" => $message,
+                        "title" => "Réparation machines niveau 1"
+                    ];
+                    event(new NewNotification($notification));
+                    return Response::json(["message" => $message, "success" => true], 200);
+                }
+                break;
+            case 'maintenance_lv2':
+                $nb_machines = $this->getIndicator("nb_machines_lv2", $entreprise_id)["value"];
+                if ($nb_machines <= 0) {
+                    $message = "Vous n'avez pas de machines de niveau 2!";
+                    $notification = [
+                        "type" => "ActionUpdate",
+                        "entreprise_id" => $entreprise_id,
+                        "message" => $message,
+                        "title" => "Réparation machines niveau 2"
+                    ];
+                    event(new NewNotification($notification));
+                    return Response::json(["message" => $message, "success" => false], 200);
+                }
+
+                $machines_health = $this->getIndicator("machines_lv2_health", $entreprise_id)["value"];
+                if ($machines_health > 0.9) {
+                    $message = "Vos machines de niveau 2 sont en bon état, vous ne pouvez pas les réparer plus que ça!";
+                    $notification = [
+                        "type" => "ActionUpdate",
+                        "entreprise_id" => $entreprise_id,
+                        "message" => $message,
+                        "title" => "Réparation machines niveau 2"
+                    ];
+                    event(new NewNotification($notification));
+                    return Response::json(["message" => $message, "success" => false], 200);
+                } else {
+                    $this->setIndicator("machines_lv2_health", $entreprise_id, 0.9);
+                    $this->updateIndicator("caisse", $entreprise_id, -1 * $price);
+
+                    $message = "Vos machines de niveau 2 sont maintenant en meilleur état, vous pouvez les vendre plus cher!";
+                    $notification = [
+                        "type" => "ActionUpdate",
+                        "entreprise_id" => $entreprise_id,
+                        "message" => $message,
+                        "title" => "Réparation machines niveau 2"
+                    ];
+                    event(new NewNotification($notification));
+                    return Response::json(["message" => $message, "success" => true], 200);
+                }
+                break;
+            case 'maintenance_lv3':
+                $nb_machines = $this->getIndicator("nb_machines_lv3", $entreprise_id)["value"];
+                if ($nb_machines <= 0) {
+                    $message = "Vous n'avez pas de machines de niveau 3!";
+                    $notification = [
+                        "type" => "ActionUpdate",
+                        "entreprise_id" => $entreprise_id,
+                        "message" => $message,
+                        "title" => "Réparation machines niveau 3"
+                    ];
+                    event(new NewNotification($notification));
+                    return Response::json(["message" => $message, "success" => false], 200);
+                }
+
+                $machines_health = $this->getIndicator("machines_lv3_health", $entreprise_id)["value"];
+                if ($machines_health > 0.9) {
+                    $message = "Vos machines de niveau 3 sont en bon état, vous ne pouvez pas les réparer plus que ça!";
+                    $notification = [
+                        "type" => "ActionUpdate",
+                        "entreprise_id" => $entreprise_id,
+                        "message" => $message,
+                        "title" => "Réparation machines niveau 3"
+                    ];
+                    event(new NewNotification($notification));
+                    return Response::json(["message" => $message, "success" => false], 200);
+                } else {
+                    $this->setIndicator("machines_lv3_health", $entreprise_id, 0.9);
+                    $this->updateIndicator("caisse", $entreprise_id, -1 * $price);
+
+                    $message = "Vos machines de niveau 3 sont maintenant en meilleur état, vous pouvez les vendre plus cher!";
+                    $notification = [
+                        "type" => "ActionUpdate",
+                        "entreprise_id" => $entreprise_id,
+                        "message" => $message,
+                        "title" => "Réparation machines niveau 3"
+                    ];
+                    event(new NewNotification($notification));
+                    return Response::json(["message" => $message, "success" => true], 200);
                 }
                 break;
         }
-        $notification = [
-            "type" => "Information",
-            "entreprise_id" => $entreprise_id,
-            "message" => $message,
-            "title" => "Information"
-        ];
-        event(new NewNotification($notification));
-        return Response::json(["message" => $message], 200);
     }
     /*
     public function getFinanceIndicators(Request $request){
@@ -459,7 +1005,6 @@ class EntrepriseController extends Controller
         return ["list" => $sorted, "meta" => nova_get_setting("show_final_score", "")];
     }
 
-
     public function getNavbarData(Request $request)
     {
         $time = $this->getSimulationTime();
@@ -467,14 +1012,57 @@ class EntrepriseController extends Controller
             $caisse = $this->getIndicator("caisse", $request->entreprise_id)['value'];
             $dettes = $this->getIndicator("dettes", $request->entreprise_id)['value'];
         } else {
-            $caisse = '';
-            $dettes = '';
+            $caisse = 0;
+            $dettes = 0;
         }
         return ["time" => $time, "caisse" => $caisse, "dettes" => $dettes];
     }
 
-    public function testFunc()
+    public function getMachinesInfo(Request $request)
     {
-        //$this->resetIndicator("busy_machines",1);
+        $entreprise_id = $request->entreprise_id;
+
+        $buy_price_lv1 = nova_get_setting("machines_lv1_price");
+        $buy_price_lv2 = nova_get_setting("machines_lv2_price");
+        $buy_price_lv3 = nova_get_setting("machines_lv3_price");
+
+        $speed_lv1 = nova_get_setting("machines_lv1_speed");
+        $speed_lv2 = nova_get_setting("machines_lv2_speed");
+        $speed_lv3 = nova_get_setting("machines_lv3_speed");
+
+        $pollution_lv1 = nova_get_setting("machines_lv1_pollution");
+        $pollution_lv2 = nova_get_setting("machines_lv2_pollution");
+        $pollution_lv3 = nova_get_setting("machines_lv3_pollution");
+
+        $durability_lv1 = nova_get_setting("machines_lv1_durability");
+        $durability_lv2 = nova_get_setting("machines_lv2_durability");
+        $durability_lv3 = nova_get_setting("machines_lv3_durability");
+
+        $health_lv1 = $this->getIndicator("machines_lv1_health", $entreprise_id)['value'];
+        $health_lv2 = $this->getIndicator("machines_lv2_health", $entreprise_id)['value'];
+        $health_lv3 = $this->getIndicator("machines_lv3_health", $entreprise_id)['value'];
+
+        $sell_price_lv1 = round($buy_price_lv1 * $health_lv1);
+        $sell_price_lv2 = round($buy_price_lv2 * $health_lv2);
+        $sell_price_lv3 = round($buy_price_lv3 * $health_lv3);
+
+        return [
+            "buy_price_lv1" => $buy_price_lv1, "buy_price_lv2" => $buy_price_lv2, "buy_price_lv3" => $buy_price_lv3,
+            "sell_price_lv1" => $sell_price_lv1, "sell_price_lv2" => $sell_price_lv2, "sell_price_lv3" => $sell_price_lv3,
+            "speed_lv1" => $speed_lv1, "speed_lv2" => $speed_lv2, "speed_lv3" => $speed_lv3,
+            "pollution_lv1" => $pollution_lv1, "pollution_lv2" => $pollution_lv2, "pollution_lv3" => $pollution_lv3,
+            "durability_lv1" => $durability_lv1, "durability_lv2" => $durability_lv2, "durability_lv3" => $durability_lv3,
+        ];
+    }
+
+    public function getSuppRawMatInfo(Request $request)
+    {
+        $raw_materials = RawMaterial::with('suppliers')->get();
+        $suppliers = Supplier::with('raw_materials')->get();
+
+        return [
+            "materials" => $raw_materials,
+            "suppliers" => $suppliers,
+        ];
     }
 }

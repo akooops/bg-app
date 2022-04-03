@@ -70,7 +70,7 @@
                 </div>
 
                 <button
-                    @click="launch_prod_modal = true"
+                    @click="getStock(true)"
                     class="rounded-xl bg-vert text-white mx-auto py-2 px-11 mb-8 text-lg font-medium"
                 >
                     Lancer
@@ -100,16 +100,16 @@
                 </div>
                 <div class="flex flex-col gap-3 mt-3">
                     <button
-                        @click="setMachineTransaction('buy')"
+                        @click="getMachineInfo('buy')"
                         class="rounded-xl bg-vert text-white mx-auto py-2 px-11 text-lg font-medium"
                     >
-                        Acheter une machine
+                        Acheter
                     </button>
                     <button
-                        @click="setMachineTransaction('sell')"
+                        @click="getMachineInfo('sell')"
                         class="rounded-xl bg-vert text-white mx-auto py-2 px-11 text-lg font-medium"
                     >
-                        Vendre une machine
+                        Vendre
                     </button>
                 </div>
             </div>
@@ -138,9 +138,9 @@
                 >
                     <option value="5s">Appliquer les 5S</option>
                     <option value="audit">Effectuer un audit qualité</option>
-                    <option value="maintenance">
-                        Lancer une maintenance générale
-                    </option>
+                    <option value="maintenance_lv1">Réparer les machines de niveau 1</option>
+                    <option value="maintenance_lv2">Réparer les machines de niveau 2</option>
+                    <option value="maintenance_lv3">Réparer les machines de niveau 3</option>
                 </select>
                 <button
                     @click="showActionInfo"
@@ -196,6 +196,20 @@
                             /><label for="">Niveau 3</label>
                         </div>
                     </div>
+                    <h1 class="text-vN text-lg mt-2">Nombre de machines:</h1>
+                    <input
+                        class="mx-4 w-2/3"
+                        v-model="launch_data.machine_nb"
+                        type="number"
+                        min="1"
+                        :max="
+                            launch_data.machine_lvl == 1 ?
+                            indicators['nb_machines_lv1'].value - indicators['nb_machines_lv1_busy'].value :
+                            launch_data.machine_lvl == 2 ?
+                            indicators['nb_machines_lv2'].value - indicators['nb_machines_lv2_busy'].value :
+                            indicators['nb_machines_lv3'].value - indicators['nb_machines_lv3_busy'].value
+                        "
+                    />
                     <h1 class="text-vN text-lg">
                         Quantité( en lot de 100 pièces)
                     </h1>
@@ -203,21 +217,37 @@
                         type="number "
                         v-model="launch_data.quantity"
                         class="px-2 text-lg text-yellow-500 border rounded-md border-gray-200"
+                        min="1"
                     />
                     <h1 class="text-vN text-lg mt-3 pt-3">Prix (Unitaire)</h1>
                     <input
                         type="number "
                         v-model="launch_data.price"
                         class="px-2 text-lg text-yellow-500 border rounded-md border-gray-200"
+                        :min="selectedProd.price_min"
+                        :max="selectedProd.price_max"
                     />
-
+                    <p class="text-red-500" v-if="can_produce == false">
+                        {{ can_produce_msg }}
+                    </p>
                     <div class="flex flex-row justify-center gap-7 mt-12">
-                        <button class="bg-vN text-white px-7 py-1 rounded-md">
+                        <button
+                            :diabled="can_produce == false"
+                            v-if="can_produce == true"
+                            @click="launchProduction()"
+                            class="bg-vN text-white px-7 py-1 rounded-md"
+                        >
                             Lancer
                         </button>
                         <button
                             class="bg-vN text-white px-7 py-1 rounded-md"
-                            @click="launch_prod_modal = !launch_prod_modal"
+                            @click="
+                                launch_prod_modal = false;
+                                launch_data.price = (selectedProd.price_min + selectedProd.price_max) / 2;
+                                launch_data.quantity = 1;
+                                launch_data.machine_lvl = 1;
+                                launch_data.machine_nb = 1;
+                            "
                         >
                             Annuler
                         </button>
@@ -228,7 +258,7 @@
                     <h1 class="text-vN pl-3 font-semibold text-lg">
                         Informations importantes
                     </h1>
-                    <h1 class="text-vN text-lg pl-3">Pour un lot :</h1>
+                    <h1 class="text-vN text-lg pl-3">Nécessite :</h1>
                     <div class="p-3">
                         <table class="w-full" style="background-color: #f9f9fc">
                             <thead class="text-xs text-gray-700 uppercase">
@@ -254,28 +284,25 @@
                                         <img
                                             src="/assets/icons/khobz.png"
                                             alt="khobz"
-                                        /><span>{{ material.name }}</span>
+                                        />
+                                        <span>{{ material.name }}</span>
                                     </td>
                                     <td class="text-center py-1">
                                         {{ material.pivot.quantity }}
                                     </td>
                                     <td
                                         class="text-center py-1"
-                                        v-if="
-                                            stock.find(
-                                                (element) =>
-                                                    element.id == material.id
-                                            ) != undefined
+                                        :class="
+                                            material.pivot.quantity * launch_data.quantity <= stock.find((item) => { return ( item.id == material.pivot.raw_material_id); }).quantity
+                                            ? 'text-blue-700' : 'text-red-700'
                                         "
+
                                     >
-                                        {{
-                                            stock.find(
-                                                (element) =>
-                                                    element.id == material.id
-                                            ).quantity
-                                        }}
+                                        <span v-if=" stock.find( (element) => element.id == material.id ) != undefined ">
+                                            {{ stock.find((element) => element.id == material.id).quantity }}
+                                        </span>
+                                        <span v-else>0</span>
                                     </td>
-                                    <td class="text-center py-1" v-else>0</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -299,20 +326,22 @@
                             </thead>
                             <tbody>
                                 <tr class="border-b">
-                                    <td
-                                        class="flex justify-center icon-material text-yellow-500 py-1"
-                                    >
-                                        {{ prodDelay }} J
+                                    <td class="flex justify-center icon-material text-yellow-500 py-1">
+                                        {{ Math.round(prodDelay * Math.pow(10, 2)) / Math.pow(10, 2) }} J
                                     </td>
-                                    <td
-                                        class="text-center text-yellow-500 py-1"
-                                    >
-                                        {{ totalCost }} (lot/min)
+                                    <td class="text-center text-yellow-500 py-1">
+                                        FILL THIS (lot/min)
                                     </td>
-                                    <td
-                                        class="text-center text-yellow-500 py-1"
-                                    >
-                                        {{ profit }} UM
+                                    <td class="text-center text-yellow-500 py-1">
+                                        Simples:
+                                        <span class="font-bold" :class="indicators['nb_workers_lv1'].value - indicators['nb_workers_lv1_busy'].value >= prod_factors.labor_lv1 ? 'text-blue-700' : 'text-red-700'">
+                                            {{ prod_factors.labor_lv1 }} / {{ indicators["nb_workers_lv1"].value - indicators["nb_workers_lv1_busy"].value }}
+                                        </span>
+                                        <br />
+                                        Experts:
+                                        <span class="font-bold" :class="indicators['nb_workers_lv2'].value - indicators['nb_workers_lv2_busy'].value >= prod_factors.labor_lv2 ? 'text-blue-700' : 'text-red-700'">
+                                            {{ prod_factors.labor_lv2 }} / {{ indicators["nb_workers_lv2"].value - indicators["nb_workers_lv2_busy"].value }}
+                                        </span>
                                     </td>
                                 </tr>
                             </tbody>
@@ -337,19 +366,13 @@
                             </thead>
                             <tbody>
                                 <tr class="border-b">
-                                    <td
-                                        class="flex justify-center icon-material text-yellow-500 py-1"
-                                    >
+                                    <td class="flex justify-center icon-material text-yellow-500 py-1">
                                         {{ salesRevenues }} UM
                                     </td>
-                                    <td
-                                        class="text-center text-yellow-500 py-1"
-                                    >
+                                    <td class="text-center text-yellow-500 py-1">
                                         {{ totalCost }} UM
                                     </td>
-                                    <td
-                                        class="text-center text-yellow-500 py-1"
-                                    >
+                                    <td class="text-center text-yellow-500 py-1">
                                         {{ profit }} UM
                                     </td>
                                 </tr>
@@ -369,177 +392,39 @@
             </template>
         </Modal>
 
-        <!-- <Modal v-if="launch_prod_modal">
-            <template v-slot:content>
-                <div class="w-full flex flex-wrap p-2">
-                    <div class="w-1/2">
-                        <h1><strong>Lancer une Production</strong></h1>
-                        <p class="my-1 mx-4">Produit :</p>
-                        <select
-                            class="mx-4 w-1/3"
-                            v-model="launch_data.prod_id"
-                        >
-                            <option
-                                :value="prod.id"
-                                v-for="(prod, key) in products"
-                                :key="key"
-                            >
-                                {{ prod.name }}
-                            </option>
-                        </select>
-                        <p class="my-1 mx-4">
-                            Quantité (en lot de 100 pièces):
-                        </p>
-                        <input
-                            v-model="launch_data.quantity"
-                            class="mx-4 w-2/3"
-                            type="number"
-                        />
-                        <p class="my-1 mx-4">Prix (Unitaire):</p>
-                        <input
-                            class="mx-4 w-2/3"
-                            v-model="launch_data.price"
-                            type="number"
-                        />
-                        <div class="h-auto">
-                            <button
-                                :diabled="can_produce == false"
-                                v-if="can_produce == true"
-                                @click="launchProduction"
-                                class="bg-blue-400 mx-4 my-2 py-1 px-4 text-white"
-                            >
-                                Lancer !
-                            </button>
-                            <p class="text-red-500" v-if="can_produce == false">
-                                {{ can_produce_msg }}
-                            </p>
-                        </div>
-                    </div>
-                    <div class="w-1/2">
-                        <h1 class="font-bold text-xl">
-                            Informations Importantes
-                        </h1>
-                        <h2 class="font-bold text-lg">Nécessite:</h2>
-                        <p>Pour un lot:</p>
-                        <p>
-                            - Machines x
-                            <span class="text-blue-700 font-bold">{{
-                                selectedProd.machine_units
-                            }}</span>
-                            et Employés x
-                            <span class="text-blue-700 font-bold">{{
-                                selectedProd.labor_units
-                            }}</span>
-                        </p>
-                        <p
-                            v-for="(
-                                material, key
-                            ) in selectedProd.raw_materials"
-                            :key="key"
-                        >
-                            - {{ material.name }} x
-                            <span class="text-blue-700 font-bold">
-                                {{ material.pivot.quantity }}
-                            </span>
-                            KG
-                        </p>
-                        <h2 class="font-bold text-lg">Prévisions:</h2>
-                        <p>
-                            - Chiffre d'Affaire Estimé :
-                            <span class="font-bold text-indigo-500">
-                                {{ salesRevenues }} UM</span
-                            >
-                        </p>
-                        <p>
-                            - Coût Total Estimé :
-                            <span class="font-bold text-red-500">
-                                {{ totalCost }} UM</span
-                            >
-                        </p>
-                        <p>
-                            - Profit Estimé :
-                            <span
-                                :class="
-                                    profit >= 0
-                                        ? 'text-green-500'
-                                        : 'text-red-400'
-                                "
-                                class="font-bold"
-                            >
-                                {{ profit }} UM</span
-                            >
-                        </p>
-                        <p>
-                            - Durée de production :
-                            <span class="text-yellow-500 font-bold">
-                                {{ prodDelay }} j</span
-                            >
-                        </p>
-
-                        <h2 class="text-sm font-bold">Remarques:</h2>
-                        <p class="text-xs font-bold">
-                            - Les prévisions sont calculées dans le cas ou toute
-                            la quantité produite est vendue.
-                        </p>
-                        <p class="text-xs font-bold">
-                            - Votre taux de rebut est de
-                            {{ indicators["reject_rate"].value * 100 }}%, pour
-                            le réduire, lancez une étude AMDEC.
-                        </p>
-                        <p>
-                            <button
-                                @click="launch_prod_modal = false"
-                                class="bg-gray-500 justify-end px-3 py-1 text-white rounded my-1"
-                            >
-                                Fermer
-                            </button>
-                        </p>
-                    </div>
-                </div>
-            </template>
-        </Modal> -->
         <Modal v-if="machine.show_transaction_modal" class="">
             <template v-slot:content>
                 <div class="flex flex-col items-center gap-5 p-5">
-                    <h2
-                        v-if="machine.transaction == 'buy'"
-                        class="font-bold text-lg"
-                    >
+                    <h2 v-if="machine.transaction == 'buy'" class="font-bold text-lg">
                         Acheter une Machine
                     </h2>
-                    <h2
-                        v-if="machine.transaction == 'sell'"
-                        class="font-semibold text-lg"
-                    >
+                    <h2 v-if="machine.transaction == 'sell'" class="font-semibold text-lg">
                         Vendre une Machine
                     </h2>
                     <div class="w-full gap-4 flex-col flex">
                         <div class="flex flex-col items-start gap-2">
                             <p class="text-md font-medium text-nav">
-                                Choix Du niveau de la machine
+                                Choix du niveau de la machine
                             </p>
                             <select
                                 class="rounded-sm focus:border-vert focus:ring-0 w-full border-gray-200"
                                 style="border-width: 1px"
+                                v-model="machine.transaction_lv"
                             >
-                                <option value="">1</option>
-                                <option value="">2</option>
-                                <option value="">3</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
                             </select>
                         </div>
                         <div class="flex flex-col items-start gap-2">
                             <p class="text-md font-medium text-nav">
                                 Nombre que vous souhaitez
-                                {{
-                                    machine.transaction == "buy"
-                                        ? "acheter"
-                                        : "vendre"
-                                }}
+                                {{ machine.transaction == "buy" ? "acheter" : "vendre" }}
                             </p>
                             <input
                                 :value="quantity"
-                                @input="quantity = $event.target.value"
-                                min="0"
+                                v-model="machine.transaction_nb"
+                                min="1"
                                 type="number"
                                 class="rounded-sm focus:border-vert w-full focus:ring-0 border-gray-200"
                                 style="border-width: 1px"
@@ -552,9 +437,15 @@
                                 style="border-width: 1px"
                             >
                                 {{
-                                    machine.transaction == "buy"
-                                        ? machine.buy_price * quantity
-                                        : machine.sell_price * quantity
+                                    (
+                                        machine.transaction_lv == 1 ?
+                                        machine.buy_price_lv1 :
+                                        machine.transaction_lv == 2 ?
+                                        machine.buy_price_lv2 :
+                                        machine.buy_price_lv3
+                                    )
+
+                                    * machine.transaction_nb
                                 }}
                             </p>
                         </div>
@@ -569,7 +460,11 @@
                             Confirmer
                         </button>
                         <button
-                            @click="machine.show_transaction_modal = false"
+                            @click="
+                                machine.transaction_nb =
+                                machine.transaction == 'buy' ? 1 : machine.transaction_nb;
+                                machine.transaction_lv = 1;
+                                machine.show_transaction_modal = false;"
                             class="px-3 py-1 text-vN opacity-80"
                         >
                             Annuler
@@ -610,7 +505,7 @@
     </div>
 </template>
 
-<script>
+<script type="text/javascript">
 import Modal from "../Modal";
 export default {
     name: "ProdCenter",
@@ -623,31 +518,65 @@ export default {
             launch_data: {
                 prod_id: 1,
                 price: 0,
-                quantity: 0,
-                machine: 1,
+                quantity: 1,
+                machine_lvl: 1,
+                machine_nb: 1,
             },
             prod_factors: {
                 machines: 0,
-                labor: 0,
+                labor_lv1: 0,
+                labor_lv2: 0,
             },
             machine: {
                 show_transaction_modal: false,
                 transaction: "",
-                buy_price: 40000,
-                sell_price: 35000 * this.indicators["machines_health"].value,
+
+                buy_price_lv1: 0,
+                buy_price_lv2: 0,
+                buy_price_lv3: 0,
+
+                sell_price_lv1: 0,
+                sell_price_lv2: 0,
+                sell_price_lv3: 0,
+
+                durability_lv1: 1,
+                durability_lv2: 1,
+                durability_lv3: 1,
+
+                speed_lv1: 1,
+                speed_lv2: 1,
+                speed_lv3: 1,
+
+                pollution_lv1: 1,
+                pollution_lv2: 1,
+                pollution_lv3: 1,
+
+                transaction_nb: 1,
+                transaction_lv: 1,
             },
             can_produce_msg: "",
-            can_produce: true,
+            can_produce: false,
             stock: {},
             show_success: false,
             show_error: false,
             message: "",
             action: {
-                value: "",
+                value: "5s",
                 price: {
                     "5s": 40000,
                     audit: 60000,
-                    maintenance: 15000 * this.indicators["machines"]["value"],
+                    maintenance_lv1:
+                        10000 *
+                        (1 - this.indicators["machines_lv1_health"]["value"]) *
+                        this.indicators["nb_machines_lv1"]["value"],
+                    maintenance_lv2:
+                        15000 *
+                        (1 - this.indicators["machines_lv2_health"]["value"]) *
+                        this.indicators["nb_machines_lv2"]["value"],
+                    maintenance_lb3:
+                        20000 *
+                        (1 - this.indicators["machines_lv3_health"]["value"]) *
+                        this.indicators["nb_machines_lv3"]["value"],
                 },
                 phrase: "",
                 result_phrase: "",
@@ -656,18 +585,117 @@ export default {
         };
     },
     watch: {
-        "launch_data.quantity": function (new_val, old_val) {
-            this.prod_factors = {
-                machines:
-                    this.launch_data.quantity * this.selectedProd.machine_units,
-                labor:
-                    this.launch_data.quantity * this.selectedProd.labor_units,
-            };
+        "launch_data.prod_id": function () {
+            this.launch_data.price =
+                (this.selectedProd.price_min + this.selectedProd.price_max) / 2;
+            this.can_produce = false;
+            this.verifyProd();
+        },
+        "launch_data.quantity": function () {
             this.can_produce = false;
             this.verifyProd();
         },
         "launch_data.price": function () {
+            this.can_produce = false;
             this.verifyProd();
+        },
+        "launch_data.machine_lvl": function () {
+            this.can_produce = false;
+
+            // let free_workers_lv1 =
+            //     this.indicators["nb_workers_lv1"].value -
+            //     this.indicators["nb_workers_lv1_busy"].value;
+            // let free_workers_lv2 =
+            //     this.indicators["nb_workers_lv2"].value -
+            //     this.indicators["nb_workers_lv2_busy"].value;
+
+            // if (
+            //     this.prod_factors.labor_lv1 > free_workers_lv1 &&
+            //     free_workers_lv2 > 0
+            // ) {
+            //     this.prod_factors.labor_lv2 =
+            //         parseInt(this.prod_factors.labor_lv2) +
+            //         parseInt(this.prod_factors.labor_lv1) -
+            //         free_workers_lv1;
+            //     this.prod_factors.labor_lv1 = free_workers_lv1;
+            // }
+
+            // let free_machines =
+            //     this.launch_data.machine_lvl == 1
+            //         ? this.indicators["nb_machiness_lv1"].value -
+            //           this.indicators["nb_machiness_lv1_busy"].value
+            //         : this.launch_data.machine_lvl == 2
+            //         ? this.indicators["nb_machiness_lv2"].value -
+            //           this.indicators["nb_machiness_lv2_busy"].value
+            //         : this.indicators["nb_machiness_lv3"].value -
+            //           this.indicators["nb_machiness_lv3_busy"].value;
+
+            // if (this.launch_data.machine_nb > free_machines) {
+            //     this.launch_data.machine_nb = free_machines;
+            // }
+
+            this.verifyProd();
+        },
+        "launch_data.machine_nb": function () {
+            this.can_produce = false;
+            this.verifyProd();
+        },
+        "machine.transaction_lv": function () {
+            if (this.machine.transaction_lv == 1) {
+                if (
+                    this.indicators["nb_machines_lv1"]["value"] -
+                        this.indicators["nb_machines_lv1_busy"]["value"] ==
+                    0
+                ) {
+                    this.machine.transaction_nb = 0;
+                } else if (
+                    this.indicators["nb_machines_lv1"]["value"] -
+                        this.indicators["nb_machines_lv1_busy"]["value"] <
+                    this.machine.transaction_nb
+                ) {
+                    this.machine.transaction_nb =
+                        this.indicators["nb_machines_lv1"]["value"] -
+                        this.indicators["nb_machines_lv1_busy"]["value"];
+                } else if (this.machine.transaction_nb == 0) {
+                    this.machine.transaction_nb = 1;
+                }
+            } else if (this.machine.transaction_lv == 2) {
+                if (
+                    this.indicators["nb_machines_lv2"]["value"] -
+                        this.indicators["nb_machines_lv2_busy"]["value"] ==
+                    0
+                ) {
+                    this.machine.transaction_nb = 0;
+                } else if (
+                    this.indicators["nb_machines_lv2"]["value"] -
+                        this.indicators["nb_machines_lv2_busy"]["value"] <
+                    this.machine.transaction_nb
+                ) {
+                    this.machine.transaction_nb =
+                        this.indicators["nb_machines_lv2"]["value"] -
+                        this.indicators["nb_machines_lv2_busy"]["value"];
+                } else if (this.machine.transaction_nb == 0) {
+                    this.machine.transaction_nb = 1;
+                }
+            } else if (this.machine.transaction_lv == 3) {
+                if (
+                    this.indicators["nb_machines_lv3"]["value"] -
+                        this.indicators["nb_machines_lv3_busy"]["value"] ==
+                    0
+                ) {
+                    this.machine.transaction_nb = 0;
+                } else if (
+                    this.indicators["nb_machines_lv3"]["value"] -
+                        this.indicators["nb_machines_lv3_busy"]["value"] <
+                    this.machine.transaction_nb
+                ) {
+                    this.machine.transaction_nb =
+                        this.indicators["nb_machines_lv3"]["value"] -
+                        this.indicators["nb_machines_lv3_busy"]["value"];
+                } else if (this.machine.transaction_nb == 0) {
+                    this.machine.transaction_nb = 1;
+                }
+            }
         },
     },
     computed: {
@@ -685,31 +713,46 @@ export default {
         totalCost() {
             return (
                 this.launch_data.quantity *
-                    (this.selectedProd.machine_units * 500) +
-                500
+                this.selectedProd.unit_prod_price *
+                100
             );
         },
         profit() {
             return this.salesRevenues - this.totalCost;
         },
         prodDelay() {
-            let coeff = this.indicators["productivity_coeff"].value;
-            return this.launch_data.quantity / (coeff * 10);
+            let coeff =
+                (this.indicators["5s_day"].value < 30 ? 1.5 : 1) *
+                (this.launch_data.machine_lvl == 1
+                    ? this.machine.speed_lv1
+                    : this.launch_data.machine_lvl == 2
+                    ? this.machine.speed_lv2
+                    : this.machine.speed_lv3) *
+                this.launch_data.machine_nb;
+
+            return (
+                (this.selectedProd.prod_speed_factor *
+                    this.launch_data.quantity) / (coeff)
+            );
         },
     },
     methods: {
         launchProduction() {
             let data = {
-                product_id: this.selectedProd.id,
-                entreprise_id: this.user.id,
-                quantity: this.launch_data.quantity,
-                price: this.launch_data.price,
-                cost: this.totalCost,
-                delay: this.prodDelay * 60,
-                machines: this.prod_factors.machines,
-                labor: this.prod_factors.labor,
+                product_id: this.selectedProd.id, // slected product id
+                entreprise_id: this.user.id, // this users's id
+                quantity: this.launch_data.quantity, // number of lots (100 units) to be produced
+                price: this.launch_data.price, // price of selling
+                cost: this.totalCost, // cost of production
+                delay: this.prodDelay * 60, // time it takes to produce
+                machines: this.prod_factors.machines, // number of necessary free machines to produce
+                labor_lv1: this.prod_factors.labor_lv1, // number of necessary simple free workers to produce
+                labor_lv2: this.prod_factors.labor_lv2, // number of necessary simple free workers to produce
+                machines_lvl: this.launch_data.machine_lvl, // selected machine level
             };
+
             if (this.caisse < data.cost) {
+                this.launch_prod_modal = false;
                 this.show_error = true;
                 this.message =
                     "Vos disponibilités ne suffisent pas pour lancer la production";
@@ -718,28 +761,48 @@ export default {
             axios
                 .post("/api/production/launch", data)
                 .then((resp) => {
-                    this.show_success = true;
+                    if (resp.data.success) {
+                        this.show_success = true;
+                        this.show_error = false;
+                    } else {
+                        this.show_success = false;
+                        this.show_error = true;
+                    }
                     this.message = resp.data.message;
                     this.launch_prod_modal = false;
-                    this.launch_data = {
-                        prod_id: 1,
-                        price: 0,
-                        quantity: 0,
-                    };
-                    this.prod_factors = {
-                        machines: 0,
-                        labor: 0,
-                    };
+
+                    this.launch_data.prod_id = 1;
+                    this.launch_data.price =
+                        (this.selectedProd.price_min +
+                            this.selectedProd.price_max) /
+                        2;
+                    this.launch_data.quantity = 1;
+                    this.launch_data.machine_lvl = 1;
+                    this.launch_data.machine_nb = 1;
+
+                    this.getStock();
+
                     this.$emit("prodLaunched");
                 })
                 .catch((e) => {
                     this.show_error = true;
                     this.message =
-                        "Oops ! une erreur est survenue, veuillez infomrer un organisateur";
+                        "Oops ! Une erreur est survenue, veuillez infomrer un organisateur";
+
                     this.launch_prod_modal = false;
+
+                    this.launch_data.prod_id = 1;
+                    this.launch_data.price =
+                        (this.selectedProd.price_min +
+                            this.selectedProd.price_max) /
+                        2;
+                    this.launch_data.quantity = 1;
+                    this.launch_data.machine_lvl = 1;
+
+                    this.getStock();
                 });
         },
-        getStock() {
+        getStock(open_prod_modal = false) {
             axios
                 .get("/api/entreprise/stock", {
                     params: {
@@ -748,10 +811,37 @@ export default {
                 })
                 .then((resp) => {
                     this.stock = resp.data;
+
+                    this.launch_data.prod_id = 1;
+                    this.launch_data.machine_lvl = 1;
+                    this.launch_data.quantity = 1;
+                    this.launch_data.price =
+                        (this.selectedProd.price_min +
+                            this.selectedProd.price_max) /
+                        2;
+
                     this.verifyProd();
+
+                    if (open_prod_modal) {
+                        this.launch_prod_modal = true;
+                    }
                 });
         },
         verifyProd() {
+            this.prod_factors = {
+                machines: this.launch_data.machine_nb,
+                // this.launch_data.quantity * this.selectedProd.machine_units,
+
+                labor_lv1:
+                    (this.launch_data.machine_lvl == 2 ? 2 : 1) *
+                    this.launch_data.machine_nb,
+
+                labor_lv2:
+                    this.launch_data.machine_lvl == 3
+                        ? this.launch_data.machine_nb
+                        : 0,
+            };
+
             let resp = true;
             if (
                 this.launch_data.price > this.selectedProd.price_max ||
@@ -765,13 +855,44 @@ export default {
                     this.selectedProd.price_max +
                     " DA";
             } else {
-                let free_machines =
-                    this.indicators["machines"].value -
-                    this.indicators["busy_machines"].value;
+                let free_machines = 0;
+
+                let free_workers_lv1 =
+                    this.indicators["nb_workers_lv1"].value -
+                    this.indicators["nb_workers_lv1_busy"].value;
+                let free_workers_lv2 =
+                    this.indicators["nb_workers_lv2"].value -
+                    this.indicators["nb_workers_lv2_busy"].value;
+
+                if (this.launch_data.machine_lvl == 1) {
+                    free_machines =
+                        this.indicators["nb_machines_lv1"].value -
+                        this.indicators["nb_machines_lv1_busy"].value;
+                } else if (this.launch_data.machine_lvl == 2) {
+                    free_machines =
+                        this.indicators["nb_machines_lv2"].value -
+                        this.indicators["nb_machines_lv2_busy"].value;
+                } else if (this.launch_data.machine_lvl == 3) {
+                    free_machines =
+                        this.indicators["nb_machines_lv3"].value -
+                        this.indicators["nb_machines_lv3_busy"].value;
+                }
+
+                if (
+                    this.prod_factors.labor_lv1 > free_workers_lv1 &&
+                    free_workers_lv2 > 0
+                ) {
+                    this.prod_factors.labor_lv2 =
+                        parseInt(this.prod_factors.labor_lv2) +
+                        parseInt(this.prod_factors.labor_lv1) -
+                        free_workers_lv1;
+                    this.prod_factors.labor_lv1 = free_workers_lv1;
+                }
+
                 if (
                     this.prod_factors.machines <= free_machines &&
-                    this.prod_factors.labor <=
-                        this.indicators["nb_workers_prod"].value
+                    this.prod_factors.labor_lv1 <= free_workers_lv1 &&
+                    this.prod_factors.labor_lv2 <= free_workers_lv2
                 ) {
                     for (const material of this.selectedProd.raw_materials) {
                         let stock_material = this.stock.find((item) => {
@@ -798,41 +919,149 @@ export default {
                     }
                 } else {
                     resp = false;
-                    this.can_produce_msg =
-                        "Pas assez de machines ou d'employés, vous ne pouvez pas lancer la production !";
+                    if (this.prod_factors.machines > free_machines) {
+                        this.can_produce_msg =
+                            "Pas assez de machines libres, vous ne pouvez pas lancer la production !";
+                    } else {
+                        this.can_produce_msg =
+                            "Pas assez d'employés libres, vous ne pouvez pas lancer la production !";
+
+                        if (this.launch_data.machine_lvl == 3) {
+                            this.can_produce_msg =
+                                "Pas assez d'employés qualifiés libres pour utiliser des machines de niveau 3 !";
+
+                            if (free_workers_lv2 == 0) {
+                                this.can_produce_msg =
+                                    "Vous n'avez pas d'employés qualifiés pour utiliser des machines de niveau 3 !";
+                            }
+                        }
+                    }
                 }
             }
             this.can_produce = resp;
         },
-        setMachineTransaction(type) {
-            this.machine.transaction = type;
-            this.machine.show_transaction_modal = true;
+        getMachineInfo(type) {
+            axios
+                .post("/api/entreprise/machine/info", {
+                    entreprise_id: this.user.id,
+                })
+                .then((resp) => {
+                    this.machine.buy_price_lv1 = resp.data.buy_price_lv1;
+                    this.machine.buy_price_lv2 = resp.data.buy_price_lv2;
+                    this.machine.buy_price_lv3 = resp.data.buy_price_lv3;
+
+                    this.machine.sell_price_lv1 = resp.data.sell_price_lv1;
+                    this.machine.sell_price_lv2 = resp.data.sell_price_lv2;
+                    this.machine.sell_price_lv3 = resp.data.sell_price_lv3;
+
+                    this.machine.durability_lv1 = resp.data.durability_lv1;
+                    this.machine.durability_lv2 = resp.data.durability_lv2;
+                    this.machine.durability_lv3 = resp.data.durability_lv3;
+
+                    this.machine.speed_lv1 = resp.data.speed_lv1;
+                    this.machine.speed_lv2 = resp.data.speed_lv2;
+                    this.machine.speed_lv3 = resp.data.speed_lv3;
+
+                    this.machine.pollution_lv1 = resp.data.pollution_lv1;
+                    this.machine.pollution_lv2 = resp.data.pollution_lv2;
+                    this.machine.pollution_lv3 = resp.data.pollution_lv3;
+
+                    if (type == "buy" || type == "sell") {
+                        this.machine.transaction = type;
+                        this.machine.show_transaction_modal = true;
+                    }
+                });
         },
         confirmMachineTransaction(type) {
+            this.machine.show_transaction_modal = false;
             if (this.machine.transaction == "buy") {
-                if (this.machine.buy_price > this.caisse) {
-                    this.show_error = true;
-                    this.message =
-                        "Vos disponibilités ne suffisent pas pour acheter des machines";
-                    this.machine.show_transaction_modal = false;
-                    return "";
-                }
+                // if (
+                //     this.machine.buy_price * this.machine.transaction_nb >
+                //     this.caisse
+                // ) {
+                //     this.show_error = true;
+                //     this.message =
+                //         "Vos disponibilités ne suffisent pas pour acheter " +
+                //         this.machine.transaction_nb +
+                //         " machine(s)";
+                //     this.machine.show_transaction_modal = false;
+                //     return "";
+                // }
                 axios
                     .post("/api/entreprise/machine/buy", {
                         entreprise_id: this.user.id,
-                        price: this.machine.buy_price,
+                        level: this.machine.transaction_lv,
+                        number: this.machine.transaction_nb,
                     })
                     .then((resp) => {
                         this.machine.show_transaction_modal = false;
+                        this.machine.transaction_nb = 1;
+                        this.machine.transaction_lv = 1;
+
+                        if (resp.data.success) {
+                            this.show_success = true;
+                            this.show_error = false;
+                        } else {
+                            this.show_success = false;
+                            this.show_error = true;
+                        }
+
+                        this.message = resp.data.message;
                     });
             } else if (this.machine.transaction == "sell") {
+                // let nb_machines = 0;
+                // let nb_machines_busy = 0;
+
+                // if (this.machine.transaction_lv == 1) {
+                //     nb_machines = this.indicators["nb_machines_lv1"]["value"];
+                //     nb_machines_busy = this.indicators["nb_machines_lv1_busy"]["value"];
+                // }
+                // else if (this.machine.transaction_lv == 2) {
+                //     nb_machines = this.indicators["nb_machines_lv2"]["value"];
+                //     nb_machines_busy = this.indicators["nb_machines_lv2_busy"]["value"];
+                // }
+                // else if (this.machine.transaction_lv == 3) {
+                //     nb_machines = this.indicators["nb_machines_lv3"]["value"];
+                //     nb_machines_busy = this.indicators["nb_machines_lv3_busy"]["value"];
+                // }
+
+                // if (this.machine.transaction_nb > nb_machines) {
+                //     this.show_error = true;
+                //     this.message = "Pas assez de machines!";
+                //     this.machine.transaction_nb = 1;
+                //     this.machine.transaction_lv = 1;
+                //     this.machine.show_transaction_modal = false;
+                //     return;
+                // }
+                // else if (this.machine.transaction_nb > nb_machines - nb_machines_busy) {
+                //     this.show_error = true;
+                //     this.message = "Vous ne pouvez pas vendre les machines en plein production";
+                //     this.machine.transaction_nb = 1;
+                //     this.machine.transaction_lv = 1;
+                //     this.machine.show_transaction_modal = false;
+                //     return;
+                // }
+
                 axios
                     .post("/api/entreprise/machine/sell", {
                         entreprise_id: this.user.id,
-                        price: this.machine.sell_price,
+                        level: this.machine.transaction_lv,
+                        number: this.machine.transaction_nb,
                     })
                     .then((resp) => {
                         this.machine.show_transaction_modal = false;
+                        this.machine.transaction_nb = 1;
+                        this.machine.transaction_lv = 1;
+
+                        if (resp.data.success) {
+                            this.show_success = true;
+                            this.show_error = false;
+                        } else {
+                            this.show_success = false;
+                            this.show_error = true;
+                        }
+
+                        this.message = resp.data.message;
                     });
             }
         },
@@ -854,45 +1083,67 @@ export default {
                     this.action.result_phrase =
                         "Votre taux de rebut sera plus faible.";
                     break;
-                case "maintenance":
+                case "maintenance_lv1":
                     this.action.phrase =
-                        "Vous allez lancer une maintenance générale, celà vous coutera " +
-                        this.action.price["maintenance"] +
+                        "Vous allez réparer vos machines de niveau 1, celà vous coutera " +
+                        this.action.price["maintenance_lv1"] +
                         " DA";
                     this.action.result_phrase =
-                        "Vous pouvez vendre vos machines avec un prix plus élevé.";
+                        "Vous pouvez vendre vos machines de niveau 1 avec un prix plus élevé.";
+                    break;
+                case "maintenance_lv2":
+                    this.action.phrase =
+                        "Vous allez réparer vos machines de niveau 2, celà vous coutera " +
+                        this.action.price["maintenance_lv2"] +
+                        " DA";
+                    this.action.result_phrase =
+                        "Vous pouvez vendre vos machines de niveau 2 avec un prix plus élevé.";
+                    break;
+                case "maintenance_lv3":
+                    this.action.phrase =
+                        "Vous allez réparer vos machines de niveau 3, celà vous coutera " +
+                        this.action.price["maintenance_lv3"] +
+                        " DA";
+                    this.action.result_phrase =
+                        "Vous pouvez vendre vos machines de niveau 3 avec un prix plus élevé.";
                     break;
             }
             this.action.show_info = true;
         },
         confirmAction() {
+            this.action.show_info = false;
             let price = this.action.price[this.action.value];
-            if (price > this.caisse) {
-                this.show_error = true;
-                this.message =
-                    "Vos disponibilités ne suffisent pas pour acheter des machines";
-                this.action.show_info = false;
-                return "";
-            }
+            // if (price > this.caisse) {
+            //     this.show_error = true;
+            //     this.message =
+            //         "Vos disponibilités ne suffisent pas pour acheter des machines";
+            //     this.action.show_info = false;
+            //     return "";
+            // }
             axios
-                .post("/api/entreprise/production/apply-action", {
+                .post("/api/entreprise/action/apply", {
                     type: this.action.value,
                     price: price,
                     entreprise_id: this.user.id,
                 })
                 .then((resp) => {
                     this.action.show_info = false;
+
+                    if (resp.data.success) {
+                        this.show_success = true;
+                        this.show_error = false;
+                    } else {
+                        this.show_success = false;
+                        this.show_error = true;
+                    }
+
+                    this.message = resp.data.message;
                 });
         },
     },
-    mounted() {
+    created() {
+        this.getMachineInfo();
         this.getStock();
-        window.Echo.channel("entreprise_" + this.user.id).listen(
-            "NavbarDataChanged",
-            (e) => {
-                this.caisse = e.caisse;
-            }
-        );
     },
 };
 </script>

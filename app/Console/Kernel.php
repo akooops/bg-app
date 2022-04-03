@@ -2,19 +2,27 @@
 
 namespace App\Console;
 
+use App\Jobs\DailyStats;
+use App\Jobs\PenaltyLoan;
+use App\Jobs\MonthlyCosts;
+use App\Models\Entreprise;
+
+use App\Traits\DemandTrait;
+
+use App\Traits\HelperTrait;
+use App\Jobs\ProcessWorkers;
+use App\Traits\IndicatorTrait;
+use App\Events\NewNotification;
+use Illuminate\Support\Facades\DB;
+use App\Events\SimulationDateChanged;
+use App\Jobs\SellProductionsScheduler;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
-use App\Traits\HelperTrait;
-use App\Events\SimulationDateChanged;
-
-use App\Jobs\DailyStats;
-
-use App\Jobs\MonthlyCosts;
-use App\Jobs\PenaltyLoan;
 
 class Kernel extends ConsoleKernel
 {
-    use HelperTrait;
+    use HelperTrait, IndicatorTrait, DemandTrait;
     /**
      * The Artisan commands provided by your application.
      *
@@ -32,23 +40,36 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->call(function () {
-            //Checking if the simulation started
-            $game_status = nova_get_setting("game_started", null);
-            if ($game_status === "1") {
-                if (nova_get_setting("current_date") != null) {
-                    $value = nova_get_setting("current_date") + 1;
+        $game_status = nova_get_setting("game_started");
+
+        if ($game_status == "1") {
+            $schedule->call(function () {
+                $current_date = nova_get_setting("current_date");
+                if ($current_date != null) {
+                    $current_date += 1;
                 } else {
-                    $value = nova_get_setting("start_date") + 1;
+                    $current_date = nova_get_setting("start_date");
                 }
-                nova_set_setting_value("current_date", $value);
-                event(new SimulationDateChanged($value));
-            }
-        })->everyMinute();
-        $schedule->job(new MonthlyCosts, 'monthly costs')->everyThirtyMinutes();
-        $schedule->job(new PenaltyLoan, 'penalty loan')->everyMinute();
-        //$schedule->job(new DailyStats)->everyMinute();
-        // $schedule->command('inspire')->hourly();
+
+                nova_set_setting_value("current_date", $current_date);
+                event(new SimulationDateChanged($current_date));
+            })->everyMinute();
+
+            // Take out penalty loans
+            $schedule->job(new PenaltyLoan)->everyMinute();
+
+            // Apply action on every entreprise
+            $schedule->job(new ProcessWorkers)->everyMinute();
+
+            // Sell parts of productions that are on sale
+            $schedule->job(new SellProductionsScheduler)->everyMinute();
+
+            // Sell parts of productions that are on sale
+            $schedule->job(new MonthlyCosts)->everyMinute();
+
+            //$schedule->job(new DailyStats)->everyMinute();
+            // $schedule->command('inspire')->hourly();
+        }
     }
 
     /**

@@ -22,9 +22,6 @@ Route::get('/', function () {
 });
 
 
-
-
-
 Route::prefix("entreprise")->middleware(["auth", "entreprise"])->group(function () {
 
 	Route::get('/dashboard', [EntrepriseController::class, "showDashboard"])->name("dashboard");
@@ -32,34 +29,35 @@ Route::prefix("entreprise")->middleware(["auth", "entreprise"])->group(function 
 	Route::get('/department/Approvisionnement', [EntrepriseController::class, "showDptApprov"])->name("approv");
 	Route::get('/department/Production', [EntrepriseController::class, "showDptProduction"])->name("production");
 	Route::get('/department/Marketing', [EntrepriseController::class, "showMarketing"])->name("marketing");
-
 	Route::get('/department/Finance', [EntrepriseController::class, "showFinance"])->name("finance");
-
 	Route::get('/department/Ressources Humaines', [EntrepriseController::class, "showHr"])->name("rh");
 
 	Route::get('/command/create', [EntrepriseController::class, "showCommandMaker"]);
+
 	Route::get('/stock', [EntrepriseController::class, "showStock"])->name("stock");
+
 	Route::get('/loans', [EntrepriseController::class, "showLoans"])->name("loans");
 });
 
 Route::prefix("supplier")->middleware(["auth", "supplier"])->group(function () {
 
-	Route::get('/dashboard', function () {
-		return view('supplier.dashboard');
-	})->name('supplier_dashboard');
-	Route::get('/command/{id}', function ($id) {
-		$entreprise_id = Command::where("command_id", "=", $id)->first()->entreprise_id;
-		return view('supplier.single_command', ["command_id" => $id, "entreprise_id" => $entreprise_id]);
-	});
+    Route::get('/dashboard', function () {
+        return view('supplier.dashboard');
+    })->name('supplier_dashboard');
+
+    Route::get('/command/{id}', function ($id) {
+        $entreprise_id = Command::where("command_id", "=", $id)->first()->entreprise_id;
+        return view('supplier.single_command', ["command_id" => $id, "entreprise_id" => $entreprise_id]);
+    });
 });
 
 Route::get('/logout', function () {
-	Auth::logout();
-	return redirect("/login");
+    Auth::logout();
+    return redirect("/login");
 });
 
 Route::get('/banker/dashboard', function () {
-	return view('banker.dashboard');
+    return view('banker.dashboard');
 })->middleware(['auth', 'banker'])->name('banker_dashboard');
 
 

@@ -42,6 +42,32 @@ trait IndicatorTrait
             event(new NavbarDataChanged($data));
         }
     }
+    public function setIndicator($indicator_code, $entreprise_id, $value)
+    {
+        $indicator = DB::table("indicators")->where("code", "=", $indicator_code)->first();
+        $entrep_indicator = DB::table("entreprise_indicator")->where("entreprise_id", "=", $entreprise_id)->where("indicator_id", "=", $indicator->id);
+
+        if (count($entrep_indicator->get()->toArray()) == 0) {
+            // Create indicator
+            DB::table("entreprise_indicator")->insert([
+                "indicator_id" =>  $indicator->id,
+                "entreprise_id" => $entreprise_id,
+                "value" => $value,
+                "phase" => 0
+            ]);
+        } else {
+            $entrep_indicator->update(["value" => $value]);
+        }
+
+        if ($indicator_code == 'dettes' || $indicator_code == 'caisse') {
+            $data = [
+                "entreprise_id" => $entreprise_id,
+                "dettes" => $this->getIndicator("dettes", $entreprise_id)['value'],
+                "caisse" => $this->getIndicator("caisse", $entreprise_id)['value'],
+            ];
+            event(new NavbarDataChanged($data));
+        }
+    }
     public function resetIndicator($indicator_code, $entreprise_id)
     {
         $indicator = DB::table("indicators")->where("code", "=", $indicator_code)->first();

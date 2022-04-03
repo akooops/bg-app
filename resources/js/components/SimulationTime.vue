@@ -13,7 +13,7 @@
                     class="text-white text-center my-auto mx-auto"
                     style="font-size: 12px"
                 >
-                    21
+                    {{ time }}
                 </p>
             </div>
         </div>
@@ -65,8 +65,8 @@ export default {
         return {
             time: null,
             show_menu: false,
-            caisse: "",
-            dettes: "",
+            caisse: 0,
+            dettes: 0,
             bg: "",
         };
     },
