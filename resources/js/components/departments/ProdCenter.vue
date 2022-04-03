@@ -212,7 +212,8 @@
                     />
 
                     <div class="flex flex-row justify-center gap-7 mt-12">
-                        <button class="bg-vN text-white px-7 py-1 rounded-md">
+                        <button :diabled="can_produce == false"
+                                @click="launchProduction" class="bg-vN text-white px-7 py-1 rounded-md">
                             Lancer
                         </button>
                         <button
