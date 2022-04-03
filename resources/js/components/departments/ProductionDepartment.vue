@@ -1,16 +1,15 @@
- <template>
+<template>
     <div class="w-full">
         <div v-if="indicators_loaded" class="w-full">
-            <nav class="border-b text-sm flex justify-start">
+            <nav class="mb-10 text-sm flex justify-start gap-8">
                 <button
                     @click="page_index = 'prod_stats'"
                     :class="
                         page_index == 'prod_stats'
-                            ? 'border-b-2 border-indigo-600 text-indigo-600 font-semibold'
-                            : 'text-gray-700 hover:text-black'
+                            ? 'border-b-2 border-vert text-vert font-medium'
+                            : 'text-vN hover:text-black'
                     "
-                    class="inline-block px-4 py-2 focus:outline-none text-lg"
-                    href="#"
+                    class="inline-block py-2 focus:outline-none text-lg"
                 >
                     Statistiques
                 </button>
@@ -20,11 +19,10 @@
                     @click="page_index = 'production_list'"
                     :class="
                         page_index == 'production_list'
-                            ? 'border-b-2 border-indigo-600 text-indigo-600 font-semibold'
-                            : 'text-gray-700 hover:text-black'
+                            ? 'border-b-2 border-vert text-vert font-medium'
+                            : 'text-vN hover:text-black'
                     "
-                    class="inline-block px-4 py-2 focus:outline-none text-lg"
-                    href="#"
+                    class="inline-block py-2 focus:outline-none text-lg"
                 >
                     Productions
                 </button>
@@ -33,506 +31,296 @@
                     @click="page_index = 'decision_center'"
                     :class="
                         page_index == 'decision_center'
-                            ? 'border-b-2 border-indigo-600 text-indigo-600 font-semibold'
-                            : 'text-gray-700 hover:text-black'
+                            ? 'border-b-2 border-vert text-vert font-medium'
+                            : 'text-vN hover:text-black'
                     "
-                    class="inline-block px-4 py-2 focus:outline-none text-lg"
-                    href="#"
+                    class="inline-block py-2 focus:outline-none text-lg"
                 >
                     Centre de décision
                 </button>
             </nav>
         </div>
 
-        <div
-            v-if="show_stat_cards"
-            class="flex flex-wrap w-full justify-between py-3"
-        >
-            <StatCard
-                title="Chiffre d'Affaire"
-                color="text-green-500"
-                icon="fa-coins"
-                :value="[indicators['ca'].value.toString() + ' DA']"
-            ></StatCard>
-            <StatCard
-                title="Machines"
-                color="text-gray-600"
-                icon="fa-cogs"
-                :value="[
-                    'Niv. 1: ' + indicators['nb_machines_lv1'].value,
-                    'Niv. 2: ' + indicators['nb_machines_lv2'].value,
-                    'Niv. 3: ' + indicators['nb_machines_lv3'].value,
-                ]"
-                :second-value="[
-                    indicators['nb_machines_lv1_busy'].value + ' occupées.',
-                    indicators['nb_machines_lv2_busy'].value + ' occupées.',
-                    indicators['nb_machines_lv3_busy'].value + ' occupées.',
-                ]"
-                :third-value="[
-                    '(' +
-                        (Math.round(
-                            indicators['machines_lv1_health'].value *
-                                Math.pow(10, 2)
-                        ) *
-                            100) /
-                            Math.pow(10, 2) +
-                        '%)',
-                    '(' +
-                        (Math.round(
-                            indicators['machines_lv2_health'].value *
-                                Math.pow(10, 2)
-                        ) *
-                            100) /
-                            Math.pow(10, 2) +
-                        '%)',
-                    '(' +
-                        (Math.round(
-                            indicators['machines_lv3_health'].value *
-                                Math.pow(10, 2)
-                        ) *
-                            100) /
-                            Math.pow(10, 2) +
-                        '%)',
-                ]"
-            ></StatCard>
-            <StatCard
-                title="Nb. Employés"
-                color="text-indigo-600"
-                icon="fa-users"
-                :value="[
-                    'Simple: ' + indicators['nb_workers_lv1'].value,
-                    'Expert: ' + indicators['nb_workers_lv2'].value,
-                    'Humeur: ' +
-                        Math.round(indicators['workers_mood'].value * 100) +
-                        '%',
-                ]"
-                :second-value="[
-                    indicators['nb_workers_lv1_busy'].value + ' occupés.',
-                    indicators['nb_workers_lv2_busy'].value + ' occupés.',
-                ]"
-            ></StatCard>
-        </div>
-        <div v-if="page_index == 'prod_stats'">
-            <h1 class="text-lg font-extrabold">Analyse de la Demande</h1>
+        <!-- stat cards  -->
+
+        <div v-if="show_stat_cards" class="flex w-full justify-center gap-7">
+            <Indicator v-if="indicators_loaded" :indicators="indicators"></Indicator>
 
             <div
+                class="relative flex w-1/4 gap-3 justify-evenly items-center rounded-xl px-3 bg-white shadow-sm"
+            >
+                <img
+                    class="h-16 w-16"
+                    src="/assets/icons/machine.svg"
+                    alt="machine icon"
+                />
+                <h1 class="text-vN text-lg font-medium">Nombre de Machine</h1>
+                <button @click="showMachines = !showMachines">
+                    <img
+                        class="h-5 w-5"
+                        src="/assets/icons/chevron-down.svg"
+                        alt="arrow down icon"
+                    />
+                </button>
+                <div
+                    v-if="showMachines"
+                    class="flex items-center gap-2 absolute z-999 -bottom-11 right-0 bg-white border-opacity-5 border-vN shadow-md p-2 rounded-lg"
+                >
+                    Niveau 1: {{ indicators['nb_machines_lv1'].value }} | Occupés: {{ indicators['nb_machines_lv1_busy'].value }} | Santé: {{ (Math.round(indicators['machines_lv1_health'].value * Math.pow(10, 2)) * 100) / Math.pow(10, 2) }}%<br/>
+                    Niveau 2: {{ indicators['nb_machines_lv2'].value }} | Occupés: {{ indicators['nb_machines_lv2_busy'].value }} | Santé: {{ (Math.round(indicators['machines_lv2_health'].value * Math.pow(10, 2)) * 100) / Math.pow(10, 2) }}%<br/>
+                    Niveau 3: {{ indicators['nb_machines_lv3'].value }} | Occupés: {{ indicators['nb_machines_lv3_busy'].value }} | Santé: {{ (Math.round(indicators['machines_lv3_health'].value * Math.pow(10, 2)) * 100) / Math.pow(10, 2) }}%<br/>
+                </div>
+            </div>
+
+            <div
+                class="relative flex w-1/4 gap-3 justify-evenly items-center rounded-xl px-3 bg-white shadow-sm"
+            >
+                <img
+                    class="h-16 w-16"
+                    src="/assets/icons/employees.svg"
+                    alt="employees icon"
+                />
+                <h1 class="text-vN text-lg font-medium">Nombre d'employé</h1>
+                <button @click="showEmployees = !showEmployees">
+                    <img
+                        class="h-5 w-5"
+                        src="/assets/icons/chevron-down.svg"
+                        alt="arrow down icon"
+                    />
+                </button>
+                <div
+                    v-if="showEmployees"
+                    class="flex items-center gap-2 absolute z-999 -bottom-11 right-0 bg-white border-opacity-5 border-vN shadow-md p-2 rounded-lg"
+                >
+                    Simples: {{ indicators['nb_workers_lv1'].value }} <br/>
+                    Experts: {{ indicators['nb_workers_lv2'].value }} <br/>
+                    Humeur: {{ Math.round(indicators['workers_mood'].value * 100) }} % <br/>
+                </div>
+            </div>
+        </div>
+        <div v-if="page_index == 'prod_stats'">
+            <div
                 v-if="show_market_demand"
-                class="flex flex-wrap bg-white justify-center items-center my-3"
+                class="grid grid-rows-2 grid-cols-2 justify-between gap-8 mt-8"
             >
                 <div
                     v-for="(prod, i) in prod_data"
                     :key="i"
-                    class="w-1/2 rounded mt-2"
+                    class="rounded mt-2 flex-1"
                 >
-                    <h2 class="font-extrabold text-lg px-2">
-                        Demande Prévisionelle - {{ products[i].name }} :
-                    </h2>
-                    <h3 class="px-3 font-bold">
-                        {{ products[i].left_demand }} demandes restante
-                        (mensuelle).
-                    </h3>
-                    <button
-                        @click="showProductDescription(i)"
-                        class="
-                            bg-green-400
-                            mx-2
-                            my-1
-                            text-white
-                            px-3
-                            py-1
-                            rounded
-                        "
-                    >
-                        Afficher la Description
-                    </button>
-                    <LineGraph
-                        :x-data="prod.prices"
-                        :y-data="prod.demand"
-                    ></LineGraph>
-                </div>
-                <Modal v-if="show_product_info">
-                    <template v-slot:content>
-                        <div class="w-full">
-                            <h1 class="text-lg font-bold">
-                                Détails - {{ product_info.name }}
-                            </h1>
-                            <p>{{ product_info.description }}</p>
-                            <p class="font-bold">
-                                Pour produire un lot de 100 unités de ce produit
-                                vous avez besoin de :
-                            </p>
-                            <!-- <p>
-                                - Machines x
-                                <span class="text-blue-700 font-bold">{{
-                                    product_info.machine_units
-                                }}</span>
-                                et Employés x
-                                <span class="text-blue-700 font-bold">{{
-                                    product_info.labor_units
-                                }}</span>
-                            </p> -->
-                            <p
-                                v-for="(
-                                    material, key
-                                ) in product_info.raw_materials"
-                                :key="key"
+                    <div class="flex flex-col gap-5">
+                        <h2 class="font-medium text-lg">
+                            Demande Prévisionelle - {{ products[i].name }} :
+                        </h2>
+                        <div class="flex gap-4">
+                            <div
+                                class="flex flex-col items-center px-2 py-1 text-white bg-vert rounded-md"
                             >
-                                - {{ material.name }} x
-                                <span class="text-blue-700 font-bold">
-                                    {{ material.pivot.quantity }}
-                                </span>
-                                KG
-                            </p>
-                            <p>
-                                <span class="font-bold">Prix Moyen </span> :
-                                {{ product_info["avg_price"] }} DA (Moyenne
-                                basée sur les 10 dernières productions lancées
-                                dans le jeu.)
-                            </p>
+                                <h3 class="font-medium text-sm">
+                                    Demandes restantes
+                                </h3>
+                                <p class="font-bold">
+                                    {{ products[i].left_demand }}
+                                </p>
+                            </div>
                             <button
-                                class="bg-gray-300 px-3 py-1 rounded my-1"
-                                @click="show_product_info = false"
+                                @click="showProductDescription(i)"
+                                class="bg-white border-vert border-2 text-vert px-4 py-1 rounded-md"
                             >
-                                Fermer
+                                Description
                             </button>
+                        </div>
+                        <LineGraph
+                            :x-data="prod.prices"
+                            :y-data="prod.demand"
+                        ></LineGraph>
+                    </div>
+                </div>
+                <Modal v-if="show_product_info" :description="true">
+                    <template v-slot:content>
+                        <div class="w-full flex flex-col gap-8 p-3">
+                            <div class="flex justify-between item-center">
+                                <h1 class="text-lg text-vert font-bold">
+                                    Description - {{ product_info.name }}
+                                </h1>
+                                <img
+                                    src="/assets/icons/close.svg"
+                                    class="w-6 h-6 cursor-pointer"
+                                    alt="close icon"
+                                    @click="show_product_info = false"
+                                />
+                            </div>
+                            <p class="text-vN font-normal">
+                                {{ product_info.description }}
+                            </p>
+                            <div>
+                                <p class="font-medium mb-3">
+                                    Pour produire un lot de 100 unités de ce
+                                    produit vous avez besoin de :
+                                </p>
+                                <table class="w-2/3 border-colapse">
+                                    <thead
+                                        class="bg-gray-100 font-semibold text-vN"
+                                    >
+                                        <tr>
+                                            <th class="border w-1/2 p-2 border-l-0">
+                                                Matieres premiere
+                                            </th>
+                                            <th class="border w-1/2 p-2 border-r-0">
+                                                Quantités
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr
+                                            v-for="(mat, i) in product_info.raw_materials"
+                                            :key="i"
+                                            class="bg-gray-100 font-normal text-vN"
+                                        >
+                                            <td class="flex justify-center icon-material py-1 border border-l-0">
+                                                <img
+                                                    src="/assets/icons/khobz.png"
+                                                    alt="khobz"
+                                                />
+                                                <span>
+                                                    {{ mat.name }}
+                                                </span>
+                                            </td>
+                                            <td class="text-center border table-cell border-r-0">
+                                                {{ mat.pivot.quantity }}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </template>
                 </Modal>
             </div>
         </div>
-        <div v-if="page_index == 'production_list'" class="w-full">
-            <div classs="inline-flex w-full  items-center justify-between">
-                <h1 class="text-lg font-extrabold">Vos Productions</h1>
+        <div v-if="page_index == 'production_list'" class="w-full mt-10">
+            <div class="flex items-center justify-between mb-7">
+                <h1 class="text-lg font-semibold text-vN">Vos Productions</h1>
             </div>
-            <table class="border-collapse w-full">
-                <thead>
+
+            <table class="w-full">
+                <thead
+                    class="sticky top-0 border-b bg-white font-semibold text-vN"
+                >
                     <tr>
                         <th
-                            class="
-                                p-3
-                                font-bold
-                                uppercase
-                                bg-gray-200
-                                text-gray-600
-                                border border-gray-300
-                                hidden
-                                lg:table-cell
-                            "
+                            class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                            @click="sort('id')"
                         >
                             Numéro
                         </th>
+                        <th class="p-3 text-sm table-cell">Matiere</th>
                         <th
-                            class="
-                                p-3
-                                font-bold
-                                uppercase
-                                bg-gray-200
-                                text-gray-600
-                                border border-gray-300
-                                hidden
-                                lg:table-cell
-                            "
-                        >
-                            Produit
-                        </th>
-                        <th
-                            class="
-                                p-3
-                                font-bold
-                                uppercase
-                                bg-gray-200
-                                text-gray-600
-                                border border-gray-300
-                                hidden
-                                lg:table-cell
-                            "
+                            class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                            @click="sort('quantity')"
                         >
                             Qt. Produite
                         </th>
                         <th
-                            class="
-                                p-3
-                                font-bold
-                                uppercase
-                                bg-gray-200
-                                text-gray-600
-                                border border-gray-300
-                                hidden
-                                lg:table-cell
-                            "
+                            class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                            @click="sort('sold')"
                         >
                             Qt. Vendue
                         </th>
                         <th
-                            class="
-                                p-3
-                                font-bold
-                                uppercase
-                                bg-gray-200
-                                text-gray-600
-                                border border-gray-300
-                                hidden
-                                lg:table-cell
-                            "
+                            class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                            @click="sort('stock')"
                         >
                             Stock
                         </th>
                         <th
-                            class="
-                                p-3
-                                font-bold
-                                uppercase
-                                bg-gray-200
-                                text-gray-600
-                                border border-gray-300
-                                hidden
-                                lg:table-cell
-                            "
+                            class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                            @click="sort('price')"
                         >
                             Prix
                         </th>
                         <th
-                            class="
-                                p-3
-                                font-bold
-                                uppercase
-                                bg-gray-200
-                                text-gray-600
-                                border border-gray-300
-                                hidden
-                                lg:table-cell
-                            "
+                            class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                            @click="sort('cost')"
                         >
                             Coût
                         </th>
                         <th
-                            class="
-                                p-3
-                                font-bold
-                                uppercase
-                                bg-gray-200
-                                text-gray-600
-                                border border-gray-300
-                                hidden
-                                lg:table-cell
-                            "
+                            class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                            @click="sort('CA')"
                         >
                             Chiffre d'Affaire
                         </th>
-                        <th
-                            class="
-                                p-3
-                                font-bold
-                                uppercase
-                                bg-gray-200
-                                text-gray-600
-                                border border-gray-300
-                                hidden
-                                lg:table-cell
-                            "
-                        >
-                            Status
-                        </th>
-                        <th
-                            class="
-                                p-3
-                                font-bold
-                                uppercase
-                                bg-gray-200
-                                text-gray-600
-                                border border-gray-300
-                                hidden
-                                lg:table-cell
-                            "
-                        >
-                            Action
-                        </th>
+                        <th class="p-3 text-md table-cell">Status</th>
+                        <th class="p-3 text-md table-cell">Action</th>
                     </tr>
                 </thead>
                 <tbody v-if="productions.length > 0">
                     <tr
                         v-for="(prod, key) in productions"
                         v-bind:key="key"
-                        class="
-                            bg-white
-                            lg:hover:bg-gray-100
-                            flex
-                            lg:table-row
-                            flex-row
-                            lg:flex-row
-                            flex-wrap
-                            lg:flex-no-wrap
-                            mb-10
-                            lg:mb-0
-                        "
+                        class="bg-white flex lg:table-row flex-row lg:flex-row flex-wrap lg:flex-no-wrap lg:mb-0 border-b text-vN font-light text-sm h-14"
                     >
                         <td
-                            class="
-                                w-full
-                                lg:w-auto
-                                p-3
-                                text-gray-800 text-center
-                                border border-b
-                                block
-                                lg:table-cell
-                                relative
-                                lg:static
-                            "
+                            class="p-1 text-center block lg:table-cell relative lg:static"
                         >
                             {{ prod.id }}
                         </td>
                         <td
-                            class="
-                                w-full
-                                lg:w-auto
-                                p-3
-                                text-gray-800 text-center
-                                border border-b
-                                block
-                                lg:table-cell
-                                relative
-                                lg:static
-                            "
+                            class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
                         >
                             {{ prod.product }}
                         </td>
                         <td
-                            class="
-                                w-full
-                                lg:w-auto
-                                p-3
-                                text-gray-800 text-center
-                                border border-b
-                                block
-                                lg:table-cell
-                                relative
-                                lg:static
-                            "
+                            class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
                         >
                             {{ prod.quantity }}
                         </td>
                         <td
-                            class="
-                                w-full
-                                lg:w-auto
-                                p-3
-                                text-gray-800 text-center
-                                border border-b
-                                block
-                                lg:table-cell
-                                relative
-                                lg:static
-                            "
+                            class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
                         >
                             {{ prod.sold }}
                         </td>
                         <td
-                            class="
-                                w-full
-                                lg:w-auto
-                                p-3
-                                text-gray-800 text-center
-                                border border-b
-                                block
-                                lg:table-cell
-                                relative
-                                lg:static
-                            "
+                            class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
                         >
                             {{ prod.quantity - prod.sold }}
                         </td>
                         <td
-                            class="
-                                w-full
-                                lg:w-auto
-                                p-3
-                                text-gray-800 text-center
-                                border border-b
-                                block
-                                lg:table-cell
-                                relative
-                                lg:static
-                            "
+                            class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
                         >
                             {{ prod.price }}
                         </td>
                         <td
-                            class="
-                                w-full
-                                lg:w-auto
-                                p-3
-                                text-gray-800 text-center
-                                border border-b
-                                block
-                                lg:table-cell
-                                relative
-                                lg:static
-                            "
+                            class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
                         >
                             {{ prod.cost }}
                         </td>
                         <td
-                            class="
-                                w-full
-                                lg:w-auto
-                                p-3
-                                text-gray-800 text-center
-                                border border-b
-                                block
-                                lg:table-cell
-                                relative
-                                lg:static
-                            "
+                            class="w-full lg:w-auto p-1 text-center lg:table-cell relative lg:static"
                         >
                             {{ prod.sold * prod.price }} UM
                         </td>
                         <td
                             :class="
-                                prod.status_code == 'pending'
-                                    ? 'text-yellow-500'
-                                    : prod.status_code == 'sold'
-                                    ? 'text-green-500'
-                                    : prod.status_code == 'selling'
-                                    ? 'text-blue-500'
-                                    : 'text-black'
+                                prod.status_code == 'pending' ?
+                                'text-jaune' :
+                                prod.status_code == 'sold' ?
+                                'text-vert' :
+                                prod.status_code == 'selling' ?
+                                'text-blue-500' :
+                                'text-black'
                             "
-                            class="
-                                w-full
-                                lg:w-auto
-                                p-3
-                                text-center
-                                border border-b
-                                block
-                                lg:table-cell
-                                relative
-                                lg:static
-                            "
+                            class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
                         >
                             {{ prod.status }}
                         </td>
                         <td
-                            class="
-                                w-full
-                                lg:w-auto
-                                p-3
-                                text-gray-800 text-center
-                                border border-b
-                                block
-                                lg:table-cell
-                                relative
-                                lg:static
-                            "
+                            class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
                         >
                             <button
                                 @click="sell(prod)"
-                                class="
-                                    text-white
-                                    py-2
-                                    px-4
-                                    rounded
-                                    bg-green-400
-                                    hover:bg-green-800
-                                "
+                                class="p-1 px-2 rounded-full"
                                 v-if="prod.status_code == 'completed'"
                             >
                                 {{
@@ -547,52 +335,58 @@
                     </tr>
                 </tbody>
             </table>
-            <Modal v-if="show_selling_info">
+            <Modal v-if="show_selling_info" class="mt-10">
                 <template v-slot:content>
-                    <div class="w-full">
-                        <p>
-                            Vous allez vendre
-                            <span class="font-bold text-green-500">{{
-                                sell_info.sold_quant
-                            }}</span>
-                            unités au prix de
-                            <span class="font-bold text-green-300">
-                                {{ sell_info.price }}</span
+                    <div class="flex flex-col gap-6 w-80 px-2 pb-4">
+                        <p class="text-center font-bold text-lg">
+                            Vendre la commande N° {{ sell_info.number }}
+                        </p>
+                        <div class="flex flex-col">
+                            <p class="font-medium text-lg">Unités</p>
+                            <p
+                                class="px-2 text-lg py-2 w-2/5 border rounded-md border-gray-200"
                             >
-                            UM et vous aurez
-                            <span class="font-bold text-yellow-500">
+                                {{ sell_info.sold_quant }}
+                            </p>
+                        </div>
+                        <div class="flex flex-col">
+                            <p class="font-medium text-lg">Prix</p>
+                            <p
+                                class="px-2 text-lg py-2 text-yellow-500 w-2/5 border rounded-md border-gray-200"
+                            >
+                                {{ sell_info.price }}
+                            </p>
+                        </div>
+                        <div class="flex flex-col">
+                            <p class="font-medium text-lg">Stock</p>
+                            <p
+                                class="px-2 text-lg py-2 text-vert border w-2/5 rounded-md border-gray-200"
+                            >
                                 {{ sell_info.stock_quant }}
-                            </span>
-                            unités en stock.
-                        </p>
-                        <p class="font-bold text-red-500">
-                            Coût de distribution total : {{ distCost }} UM
-                        </p>
+                            </p>
+                        </div>
+                        <div class="flex flex-col">
+                            <p class="font-medium text-lg">
+                                Cout de distrubution total
+                            </p>
+                            <p
+                                class="px-2 text-lg py-2 text-yellow-500 border w-2/3 rounded-md border-gray-200"
+                            >
+                                {{ distCost }}
+                            </p>
+                        </div>
                         <div
-                            class="
-                                w-full
-                                my-2
-                                flex flex-wrap
-                                items-center
-                                px-10
-                                space-x-4
-                            "
+                            class="ml-auto flex items-center gap-4 justify-center mt-5"
                         >
                             <button
                                 @click="confirmSell"
-                                class="
-                                    bg-green-500
-                                    rounded
-                                    px-3
-                                    py-1
-                                    text-white
-                                "
+                                class="border-0 px-3 py-1 text-vN hover:text-vert"
                             >
                                 Confirmer
                             </button>
                             <button
                                 @click="show_selling_info = false"
-                                class="bg-gray-500 rounded px-3 py-1 text-white"
+                                class="px-3 py-1 text-vN opacity-80"
                             >
                                 Annuler
                             </button>
@@ -618,6 +412,9 @@ import LineGraph from "./ui/LineGraph";
 import StatCard from "./ui/StatCard";
 import ProdCenter from "./ProdCenter";
 import Modal from "../Modal";
+import Indicator from "./ui/Indicator";
+import "echarts";
+import VChart from "vue-echarts";
 export default {
     name: "ProductionDepartment",
     components: {
@@ -625,10 +422,13 @@ export default {
         StatCard,
         ProdCenter,
         Modal,
+        Indicator,
+        VChart,
     },
     props: ["user"],
     data() {
         return {
+            reverse: false,
             products: [],
             market_demand: [],
             id_list: [1, 2, 3, 4],
@@ -643,12 +443,15 @@ export default {
                 sold_quant: 0,
                 stock_quant: 0,
                 price: 0,
+                number: 0,
             },
             show_selling_info: false,
             show_product_info: false,
             product_info: null,
             average_prices: [],
             caisse: 0,
+            showMachines: false,
+            showEmployees: false,
             indicators_loaded: false,
         };
     },
@@ -705,6 +508,12 @@ export default {
                 })
                 .then((resp) => {
                     this.productions = resp.data.reverse();
+                })
+                .then(() => {
+                    this.productions.forEach((prod) => {
+                        prod.stock = prod.quantity - prod.sold;
+                        prod.CA = prod.sold * prod.price;
+                    });
                 });
         },
         getAvgPrice(product) {
@@ -734,9 +543,16 @@ export default {
                     this.sell_info.stock_quant = resp.data.stock;
                     this.sell_info.price = data.price;
                     this.show_selling_info = true;
+                    this.sell_info.number = data.id;
                 });
         },
+        getProducts() {
+            axios.get("/api/products").then((resp) => {
+                this.products = resp.data;
+            });
+        },
         confirmSell() {
+            this.show_selling_info = false;
             let data = {
                 entreprise_id: this.user.id,
                 product_id: this.sell_info.production.product_id,
@@ -746,22 +562,29 @@ export default {
                 stock: this.sell_info.stock_quant,
                 price: this.sell_info.price,
             };
-            // console.log(data);
             axios.post("/api/production/sell", data).then((resp) => {
-                // console.log(resp.data.message);
                 this.show_selling_info = false;
             });
-        },
-        getProducts() {
-            axios.get("/api/products").then((resp) => {
-                this.products = resp.data;
-            });
+            this.updateProdData();
         },
 
         updateProdData() {
             this.getProdNumbers();
             this.getProductions();
             this.getProducts();
+        },
+        sort(key) {
+            this.reverse = !this.reverse;
+            this.productions.sort((a, b) => {
+                if (a[key] < b[key]) {
+                    return this.reverse ? -1 : 1;
+                }
+                if (a[key] > b[key]) {
+                    return this.reverse ? 1 : -1;
+                }
+                console.log(this.productions);
+                return 0;
+            });
         },
     },
     created() {

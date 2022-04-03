@@ -1,34 +1,22 @@
 <template>
     <div
-        class="
-            w-1/3
-            mr-3
-            my-2
-            max-w-sm
-            overflow-hidden
-            rounded
-            border
-            bg-white
-            shadow
-        "
+        class="flex flex-col gap-3 items-center py-8 w-1/3 rounded-3xl bg-white shadow-md hover:shadow-lg"
     >
-        <div class="relative">
-            <div class="flex h-32 justify-center items-center">
-                <i :class="'fa ' + icon" class="text-blue-500 text-6xl"></i>
-            </div>
-        </div>
-        <div class="p-3 text-center">
-            <h3 class="text-lg font-extrabold mb-4 truncate-2nd">
-                <a
-                    class="hover:text-blue-500"
-                    :href="'/entreprise/department/' + name"
-                    >Département {{ name }}</a
-                >
-            </h3>
+        <img
+            :src="'/assets/icons/' + name + '.svg'"
+            :alt="name + 'icon'"
+            class="h-12 w-12"
+        />
+        <div class="text-center">
+            <a
+                class="font-semibold block mb-5 hover:text-vert text-vN text-2xl"
+                :href="'/entreprise/department/' + name"
+                >{{ name }}</a
+            >
 
             <a
                 :href="'/entreprise/department/' + name"
-                class="bg-green-400 text-white px-3 py-1 rounded text-center"
+                class="bg-vert text-white px-3 py-2 rounded-full text-sm hover:bg-white hover:text-vert transition-all border border-transparent hover:border-vert text-center"
             >
                 Accéder
             </a>
@@ -40,10 +28,8 @@
 export default {
     name: "DepartmentCard",
     data() {
-        return {
-            message: "hello",
-        };
+        return {};
     },
-    props: ["name", "icon"],
+    props: ["name"],
 };
 </script>

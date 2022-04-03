@@ -1,9 +1,12 @@
 <template>
-    <div class="fixed z-index-999 inset-0">
+    <div
+        class="fixed z-50 inset-0 h-full bg-gray-50 bg-opacity-50 overflow-auto rounded-sm m-auto w-full"
+        v-bind:class="description ? 'w-1/2' : 'w-full'"
+    >
         <div class="flex justify-center">
-            <div class="inset-0 transition-opacity" aria-hidden="true">
-                <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
-            </div>
+            <!-- <div class="z-10" aria-hidden="true">
+                <div class="absolute inset-0 bg-gray-100 opacity-75"></div>
+            </div> -->
 
             <!-- This element is to trick the browser into centering the modal contents. -->
             <span class="" aria-hidden="true">&#8203;</span>
@@ -16,27 +19,16 @@
                 leave-to-class="opacity-0 translate-y-4 md:translate-y-0 md:scale-95"
             >
                 <div
-                    class="
-                        h-auto
-                        md:my-8
-                        mx-0
-                        bg-white
-                        md:rounded
-                        text-left
-                        shadow-xl
-                        transform
-                        transition-all
-                        align-bottom
-                    "
-                    :class="custom_css ? custom_css : 'w-full md:w-2/3'"
+                    class="flex flex-row px-4 py-6 bg-white shadow-2xl border-opacity-50 rounded-md"
+                    style="border-width: 0.5px"
                     role="dialog"
                     aria-modal="true"
                     aria-labelledby="modal-headline"
                 >
-                    <div class="w-full p-5">
-                        <slot name="content"></slot>
-                    </div>
+                    <!-- <div class="w-full"> -->
+                    <slot name="content"></slot>
                 </div>
+                <!-- </div> -->
             </transition>
         </div>
     </div>
@@ -45,9 +37,17 @@
 <script type="text/javascript">
 export default {
     name: "Modal",
-    props: ["custom_css"],
+    props: ["custom_css", "description"],
     data() {
         return {};
+    },
+    mounted() {
+        //remove scroll bar
+        document.body.style.overflow = "hidden";
+    },
+    beforeDestroy() {
+        //remove scroll bar
+        document.body.style.overflow = "auto";
     },
 };
 </script>

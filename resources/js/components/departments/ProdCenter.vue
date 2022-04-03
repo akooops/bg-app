@@ -2,16 +2,7 @@
     <div class="w-full">
         <div
             v-if="show_success"
-            class="
-                my-2
-                bg-green-100
-                border border-green-400
-                text-green-700
-                px-4
-                py-3
-                rounded
-                relative
-            "
+            class="my-2 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative"
             role="alert"
         >
             <strong class="font-bold">{{ message }}</strong>
@@ -36,15 +27,7 @@
 
         <div
             v-if="show_error"
-            class="
-                bg-red-100
-                border border-red-400
-                text-red-700
-                px-4
-                py-3
-                rounded
-                relative
-            "
+            class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
             role="alert"
         >
             <strong class="font-bold">{{ message }}</strong>
@@ -66,628 +49,496 @@
                 </svg>
             </span>
         </div>
-        <div class="flex w-full flex-wrap">
+
+        <div class="flex gap-6 mt-10">
             <div
-                class="
-                    w-1/3
-                    mr-3
-                    my-2
-                    max-w-sm
-                    overflow-hidden
-                    rounded
-                    border
-                    bg-white
-                    shadow
-                "
+                class="flex-grow bg-white rounded-xl gap-6 text-center flex flex-col py-7 shadow-lg px-2"
             >
-                <div class="relative">
-                    <div class="flex h-24 justify-center items-center">
-                        <i class="fa fa-rocket text-green-300 text-6xl"></i>
-                    </div>
-                </div>
-                <div class="p-3 text-center">
-                    <h3 class="text-lg font-extrabold mb-4 truncate-2nd">
-                        Lancer une Production
-                    </h3>
-                    <p>
+                <img class="mx-auto h-16 w-16" src="/images/prod.png" alt="" />
+                <div class="mx-auto text-center text-vN flex-1">
+                    <h1 class="text-2xl font-medium mb-4">
+                        Lancer une production
+                    </h1>
+                    <p class="text-sm text-nav text-opacity-80">
                         En lançant une production, vous produirez une quantité
-                        d'un produit que vous pourrez par la suite vendre.
+                        d'un produit que vous pourrez par la suite vendre.<br />
+
+                        <span class="text-jaune font-medium"> Astuce :</span>
+                        Planifiez bien votre production en amont pour eviter les
+                        coûts de stock !
                     </p>
-                    <p>
-                        <span class="font-bold text-sm">Astuce : </span
-                        >Planifiez bien votre production en amont pour eviter
-                        les coûts de stock !
-                    </p>
-                    <button
-                        @click="getStock(true)"
-                        class="
-                            bg-blue-500
-                            text-white
-                            w-56
-                            my-2
-                            px-3
-                            py-1
-                            rounded
-                            text-center
-                        "
-                    >
-                        Lancer
-                    </button>
                 </div>
+
+                <button
+                    @click="getStock(true)"
+                    class="rounded-xl bg-vert text-white mx-auto py-2 px-11 mb-8 text-lg font-medium"
+                >
+                    Lancer
+                </button>
             </div>
+
             <div
-                class="
-                    w-1/3
-                    mr-3
-                    my-2
-                    max-w-sm
-                    overflow-hidden
-                    rounded
-                    border
-                    bg-white
-                    shadow
-                "
+                class="flex-grow border-2 rounded-xl gap-6 text-center flex flex-col py-7 shadow-lg px-2"
             >
-                <div class="relative">
-                    <div class="flex h-24 justify-center items-center">
-                        <i class="fa fa-cogs text-green-300 text-6xl"></i>
-                    </div>
-                </div>
-                <div class="p-3 text-center">
-                    <h3 class="text-lg font-extrabold mb-4 truncate-2nd">
-                        Machines
-                    </h3>
-                    <p>
+                <img
+                    class="mx-auto h-16 w-16"
+                    src="/images/machine.png"
+                    alt=""
+                />
+                <div class="mx-auto text-center text-vN flex-1">
+                    <h1 class="text-2xl font-medium mb-4">Machine</h1>
+                    <p class="text-sm text-nav text-opacity-80">
                         En achetant de nouvelles machines ou en réparant des
                         anciennes machines vous pourrez produire plus de
                         quantité.
+                        <br />
                     </p>
-                    <p>
-                        <span class="font-bold text-sm">Astuce : </span
-                        >Attention à ne pas sur-estimer vos besoins en machines
+                    <p class="text-sm text-nav text-opacity-80 mt-2">
+                        <span class="text-jaune font-medium"> Astuce :</span>
+                        Attention à ne pas sur-estimer vos besoins en machines
                     </p>
+                </div>
+                <div class="flex flex-col gap-3 mt-3">
                     <button
                         @click="getMachineInfo('buy')"
-                        class="
-                            bg-blue-500
-                            text-white
-                            w-56
-                            my-2
-                            px-3
-                            py-1
-                            rounded
-                            text-center
-                        "
+                        class="rounded-xl bg-vert text-white mx-auto py-2 px-11 text-lg font-medium"
                     >
                         Acheter
                     </button>
                     <button
                         @click="getMachineInfo('sell')"
-                        class="
-                            bg-blue-500
-                            text-white
-                            w-56
-                            my-2
-                            px-3
-                            py-1
-                            rounded
-                            text-center
-                        "
+                        class="rounded-xl bg-vert text-white mx-auto py-2 px-11 text-lg font-medium"
                     >
                         Vendre
                     </button>
                 </div>
             </div>
+
             <div
-                class="
-                    w-1/3
-                    mr-3
-                    my-2
-                    max-w-sm
-                    overflow-hidden
-                    rounded
-                    border
-                    bg-white
-                    shadow
-                "
+                class="flex-grow bg-white rounded-xl gap-6 text-center flex flex-col py-7 shadow-lg px-2"
             >
-                <div class="relative">
-                    <div class="flex h-24 justify-center items-center">
-                        <i class="fa fa-industry text-green-300 text-6xl"></i>
-                    </div>
-                </div>
-                <div class="p-3 text-center">
-                    <h3 class="text-lg font-extrabold mb-4 truncate-2nd">
-                        Ateliers
-                    </h3>
-                    <p>
+                <img
+                    class="mx-auto h-16 w-16"
+                    src="/images/atelier.png"
+                    alt=""
+                />
+                <div class="mx-auto text-center text-vN flex-1">
+                    <h1 class="text-2xl font-medium mb-4">Atelier</h1>
+                    <p class="text-sm text-nav text-opacity-80">
                         Dans cette section vous pouvez lancer des actions pour
                         améliorer l'état de vos usines et votre productivité.
                     </p>
-                    <select v-model="action.value">
-                        <option value="5s">Appliquer les 5S</option>
-                        <option value="audit">
-                            Effectuer un audit qualité
-                        </option>
-                        <option value="maintenance_lv1">
-                            Réparer les machines de niveau 1
-                        </option>
-                        <option value="maintenance_lv2">
-                            Réparer les machines de niveau 2
-                        </option>
-                        <option value="maintenance_lv3">
-                            Réparer les machines de niveau 3
+                </div>
+
+                <select
+                    v-model="action.value"
+                    aria-placeholder="Choisissez une action"
+                    class="rounded-md focus:border-vert focus:ring-0 w-5/6 mx-auto border-vert"
+                    style="border-width: 1px"
+                >
+                    <option value="5s">Appliquer les 5S</option>
+                    <option value="audit">Effectuer un audit qualité</option>
+                    <option value="maintenance_lv1">Réparer les machines de niveau 1</option>
+                    <option value="maintenance_lv2">Réparer les machines de niveau 2</option>
+                    <option value="maintenance_lv3">Réparer les machines de niveau 3</option>
+                </select>
+                <button
+                    @click="showActionInfo"
+                    class="rounded-xl bg-vert text-white mx-auto py-2 px-11 mb-8 text-lg font-medium"
+                >
+                    Lancer
+                </button>
+            </div>
+        </div>
+        <Modal v-if="launch_prod_modal">
+            <template v-slot:content>
+                <div class="flex flex-col w-2/5 px-6 mx-auto">
+                    <h1 class="text-vert font-semibold text-2xl">
+                        Lancer une production
+                    </h1>
+                    <h1 class="text-vN text-lg mt-4">Produit :</h1>
+                    <select v-model="launch_data.prod_id">
+                        <option
+                            :value="product.id"
+                            v-for="(product, key) in products"
+                            :key="key"
+                        >
+                            {{ product.name }}
                         </option>
                     </select>
-                    <button
-                        class="
-                            bg-blue-500
-                            text-white
-                            w-56
-                            my-2
-                            px-3
-                            py-1
-                            rounded
-                            text-center
+                    <h1 class="text-vN text-lg mt-2">Choix de la machine :</h1>
+                    <div class="flex flex-col m-3 gap-4 mx-auto">
+                        <div class="flex gap-3 items-center">
+                            <input
+                                v-model="launch_data.machine_lvl"
+                                type="radio"
+                                id="machine1"
+                                name="machine1"
+                                class="text-vert"
+                                :value="1"
+                            /><label for="machine1">Niveau 1</label>
+                        </div>
+                        <div class="flex gap-3 items-center">
+                            <input
+                                v-model="launch_data.machine_lvl"
+                                type="radio"
+                                id="machine2"
+                                name="machine2"
+                                class="text-vert"
+                                :value="2"
+                            /><label for="machine2">Niveau 2</label>
+                        </div>
+                        <div class="flex gap-3 items-center">
+                            <input
+                                v-model="launch_data.machine_lvl"
+                                type="radio"
+                                id="machine3"
+                                name="machine3"
+                                class="text-vert"
+                                :value="3"
+                            /><label for="machine3">Niveau 3</label>
+                        </div>
+                    </div>
+                    <h1 class="text-vN text-lg mt-2">Nombre de machines:</h1>
+                    <input
+                        class="mx-4 w-2/3"
+                        v-model="launch_data.machine_nb"
+                        type="number"
+                        min="1"
+                        :max="
+                            launch_data.machine_lvl == 1 ?
+                            indicators['nb_machines_lv1'].value - indicators['nb_machines_lv1_busy'].value :
+                            launch_data.machine_lvl == 2 ?
+                            indicators['nb_machines_lv2'].value - indicators['nb_machines_lv2_busy'].value :
+                            indicators['nb_machines_lv3'].value - indicators['nb_machines_lv3_busy'].value
                         "
-                        @click="showActionInfo"
-                    >
-                        Appliquer
-                    </button>
+                    />
+                    <h1 class="text-vN text-lg">
+                        Quantité( en lot de 100 pièces)
+                    </h1>
+                    <input
+                        type="number "
+                        v-model="launch_data.quantity"
+                        class="px-2 text-lg text-yellow-500 border rounded-md border-gray-200"
+                        min="1"
+                    />
+                    <h1 class="text-vN text-lg mt-3 pt-3">Prix (Unitaire)</h1>
+                    <input
+                        type="number "
+                        v-model="launch_data.price"
+                        class="px-2 text-lg text-yellow-500 border rounded-md border-gray-200"
+                        :min="selectedProd.price_min"
+                        :max="selectedProd.price_max"
+                    />
+                    <p class="text-red-500" v-if="can_produce == false">
+                        {{ can_produce_msg }}
+                    </p>
+                    <div class="flex flex-row justify-center gap-7 mt-12">
+                        <button
+                            :diabled="can_produce == false"
+                            v-if="can_produce == true"
+                            @click="launchProduction()"
+                            class="bg-vN text-white px-7 py-1 rounded-md"
+                        >
+                            Lancer
+                        </button>
+                        <button
+                            class="bg-vN text-white px-7 py-1 rounded-md"
+                            @click="
+                                launch_prod_modal = false;
+                                launch_data.price = (selectedProd.price_min + selectedProd.price_max) / 2;
+                                launch_data.quantity = 1;
+                                launch_data.machine_lvl = 1;
+                                launch_data.machine_nb = 1;
+                            "
+                        >
+                            Annuler
+                        </button>
+                    </div>
                 </div>
-                <Modal v-if="launch_prod_modal">
-                    <template v-slot:content>
-                        <div class="w-full flex flex-wrap p-2">
-                            <div class="w-1/2">
-                                <h1><strong>Lancer une Production</strong></h1>
-                                <p class="my-1 mx-4">Produit :</p>
-                                <select
-                                    class="mx-4 w-1/3"
-                                    v-model="launch_data.prod_id"
-                                >
-                                    <option
-                                        :value="prod.id"
-                                        v-for="(prod, key) in products"
-                                        :key="key"
-                                    >
-                                        {{ prod.name }}
-                                    </option>
-                                </select>
-                                <p class="my-1 mx-4">
-                                    Quantité (en lot de 100 pièces):
-                                </p>
-                                <input
-                                    v-model="launch_data.quantity"
-                                    class="mx-4 w-2/3"
-                                    type="number"
-                                    min="1"
-                                />
-                                <p class="my-1 mx-4">Prix (Unitaire):</p>
-                                <input
-                                    class="mx-4 w-2/3"
-                                    v-model="launch_data.price"
-                                    type="number"
-                                    :min="selectedProd.price_min"
-                                    :max="selectedProd.price_max"
-                                />
-                                <p class="my-1 mx-4">Niveau de machine:</p>
-                                <input
-                                    class="mx-4 w-2/3"
-                                    v-model="launch_data.machine_lvl"
-                                    type="number"
-                                    min="1"
-                                    max="3"
-                                />
-                                <p class="my-1 mx-4">Nombre de machines:</p>
-                                <input
-                                    class="mx-4 w-2/3"
-                                    v-model="launch_data.machine_nb"
-                                    type="number"
-                                    min="1"
-                                    :max="
-                                        launch_data.machine_lvl == 1
-                                            ? indicators['nb_machines_lv1']
-                                                  .value -
-                                              indicators['nb_machines_lv1_busy']
-                                                  .value
-                                            : launch_data.machine_lvl == 2
-                                            ? indicators['nb_machines_lv2']
-                                                  .value -
-                                              indicators['nb_machines_lv2_busy']
-                                                  .value
-                                            : indicators['nb_machines_lv3']
-                                                  .value -
-                                              indicators['nb_machines_lv3_busy']
-                                                  .value
-                                    "
-                                />
-                                <div class="h-auto">
-                                    <button
-                                        :diabled="can_produce == false"
-                                        v-if="can_produce == true"
-                                        @click="launchProduction()"
-                                        class="
-                                            bg-blue-400
-                                            mx-4
-                                            my-2
-                                            py-1
-                                            px-4
-                                            text-white
-                                        "
-                                    >
-                                        Lancer !
-                                    </button>
-                                    <p
-                                        class="text-red-500"
-                                        v-if="can_produce == false"
-                                    >
-                                        {{ can_produce_msg }}
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="w-1/2">
-                                <h1 class="font-bold text-xl">
-                                    Informations Importantes
-                                </h1>
-                                <h2 class="font-bold text-lg">Nécessite:</h2>
-                                <p>
-                                    Employés simples x
-                                    <span
-                                        class="font-bold"
-                                        :class="
-                                            indicators['nb_workers_lv1'].value -
-                                                indicators[
-                                                    'nb_workers_lv1_busy'
-                                                ].value >=
-                                            prod_factors.labor_lv1
-                                                ? 'text-blue-700'
-                                                : 'text-red-700'
-                                        "
-                                    >
-                                        {{ prod_factors.labor_lv1 }} /
-                                        {{
-                                            indicators["nb_workers_lv1"].value -
-                                            indicators["nb_workers_lv1_busy"]
-                                                .value
-                                        }}
-                                    </span>
 
-                                    <br />
-
-                                    Employés experts x
-                                    <span
-                                        class="font-bold"
-                                        :class="
-                                            indicators['nb_workers_lv2'].value -
-                                                indicators[
-                                                    'nb_workers_lv2_busy'
-                                                ].value >=
-                                            prod_factors.labor_lv2
-                                                ? 'text-blue-700'
-                                                : 'text-red-700'
-                                        "
-                                    >
-                                        {{ prod_factors.labor_lv2 }} /
-                                        {{
-                                            indicators["nb_workers_lv2"].value -
-                                            indicators["nb_workers_lv2_busy"]
-                                                .value
-                                        }}
-                                    </span>
-                                </p>
-                                <p
+                <div class="flex flex-col w-3/5 px-6">
+                    <h1 class="text-vN pl-3 font-semibold text-lg">
+                        Informations importantes
+                    </h1>
+                    <h1 class="text-vN text-lg pl-3">Nécessite :</h1>
+                    <div class="p-3">
+                        <table class="w-full" style="background-color: #f9f9fc">
+                            <thead class="text-xs text-gray-700 uppercase">
+                                <tr class="border-b border-t text-vN">
+                                    <th class="px-3 py-1">Matière Premiere</th>
+                                    <th class="px-3 py-1">
+                                        Quantité Nécessaire
+                                    </th>
+                                    <th class="px-3 py-1">Quantité Stockés</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr
                                     v-for="(
                                         material, key
                                     ) in selectedProd.raw_materials"
                                     :key="key"
+                                    class="text-vN border-b"
                                 >
-                                    - {{ material.name }} x
-                                    <span
-                                        class="font-bold"
+                                    <td
+                                        class="flex justify-center icon-material py-1"
+                                    >
+                                        <img
+                                            src="/assets/icons/khobz.png"
+                                            alt="khobz"
+                                        />
+                                        <span>{{ material.name }}</span>
+                                    </td>
+                                    <td class="text-center py-1">
+                                        {{ material.pivot.quantity }}
+                                    </td>
+                                    <td
+                                        class="text-center py-1"
                                         :class="
-                                            material.pivot.quantity *
-                                                launch_data.quantity <=
-                                            stock.find((item) => {
-                                                return (
-                                                    item.id ==
-                                                    material.pivot
-                                                        .raw_material_id
-                                                );
-                                            }).quantity
-                                                ? 'text-blue-700'
-                                                : 'text-red-700'
+                                            material.pivot.quantity * launch_data.quantity <= stock.find((item) => { return ( item.id == material.pivot.raw_material_id); }).quantity
+                                            ? 'text-blue-700' : 'text-red-700'
                                         "
-                                    >
-                                        {{
-                                            Math.round(
-                                                material.pivot.quantity *
-                                                    launch_data.quantity *
-                                                    Math.pow(10, 2)
-                                            ) / Math.pow(10, 2)
-                                        }}
-                                        /
-                                        {{
-                                            stock.find((item) => {
-                                                return (
-                                                    item.id ==
-                                                    material.pivot
-                                                        .raw_material_id
-                                                );
-                                            }).quantity
-                                        }}
-                                    </span>
-                                    KG
-                                </p>
-                                <h2 class="font-bold text-lg">Prévisions:</h2>
-                                <p>
-                                    - Chiffre d'Affaire Estimé :
-                                    <span class="font-bold text-indigo-500">
-                                        {{ salesRevenues }} UM</span
-                                    >
-                                </p>
-                                <p>
-                                    - Coût Total Estimé :
-                                    <span class="font-bold text-red-500">
-                                        {{ totalCost }} UM</span
-                                    >
-                                </p>
-                                <p>
-                                    - Profit Estimé :
-                                    <span
-                                        :class="
-                                            profit >= 0
-                                                ? 'text-green-500'
-                                                : 'text-red-400'
-                                        "
-                                        class="font-bold"
-                                    >
-                                        {{ profit }} UM</span
-                                    >
-                                </p>
-                                <p>
-                                    - Durée de production :
-                                    <span class="text-yellow-500 font-bold">
-                                        {{
-                                            Math.round(
-                                                prodDelay * Math.pow(10, 2)
-                                            ) / Math.pow(10, 2)
-                                        }}
-                                        j</span
-                                    >
-                                </p>
 
-                                <h2 class="text-sm font-bold">Remarques:</h2>
-                                <p class="text-xs font-bold">
-                                    - Les prévisions sont calculées dans le cas
-                                    ou toute la quantité produite est vendue.
-                                </p>
-                                <p class="text-xs font-bold">
-                                    - Votre taux de rebut est de
-                                    {{
-                                        indicators["reject_rate"].value * 100
-                                    }}%, pour le réduire, lancez une étude
-                                    AMDEC.
-                                </p>
-                                <p>
-                                    <button
-                                        @click="
-                                            launch_prod_modal = false;
-                                            launch_data.price =
-                                                (selectedProd.price_min +
-                                                    selectedProd.price_max) /
-                                                2;
-                                            launch_data.quantity = 1;
-                                            launch_data.machine_lvl = 1;
-                                            launch_data.machine_nb = 1;
-                                        "
-                                        class="
-                                            bg-gray-500
-                                            justify-end
-                                            px-3
-                                            py-1
-                                            text-white
-                                            rounded
-                                            my-1
-                                        "
                                     >
-                                        Fermer
-                                    </button>
-                                </p>
-                            </div>
-                        </div>
-                    </template>
-                </Modal>
-                <Modal v-if="machine.show_transaction_modal">
-                    <template v-slot:content>
-                        <div class="w-full">
-                            <p v-if="machine.transaction == 'buy'">
-                                Vous allez acheter
-                                <input
-                                    v-model="machine.transaction_nb"
-                                    class="w-28"
-                                    min="1"
-                                    type="number"
-                                />
-                                machine(s) de niveau
-                                <input
-                                    v-model="machine.transaction_lv"
-                                    class="w-28"
-                                    min="1"
-                                    max="3"
-                                    type="number"
-                                />
-                                au prix de
-                                {{
-                                    (machine.transaction_lv == 1
-                                        ? machine.buy_price_lv1
-                                        : machine.transaction_lv == 2
-                                        ? machine.buy_price_lv2
-                                        : machine.buy_price_lv3) *
-                                    machine.transaction_nb
-                                }}
-                                DA, voulez vous continuer ?
+                                        <span v-if=" stock.find( (element) => element.id == material.id ) != undefined ">
+                                            {{ stock.find((element) => element.id == material.id).quantity }}
+                                        </span>
+                                        <span v-else>0</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h1 class="text-vN text-lg pl-3">Machines :</h1>
+
+                    <div class="p-3">
+                        <table class="w-full" style="background-color: #f9f9fc">
+                            <thead class="text-xs text-gray-700 uppercase">
+                                <tr class="border-b border-t">
+                                    <th class="px-4 py-1 text-vN">
+                                        Temps Total estimé
+                                    </th>
+                                    <th class="px-4 py-1 text-vN">
+                                        Temps unitaire
+                                    </th>
+                                    <th class="px-4 py-1 text-vN">
+                                        Nombre d'employés
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b">
+                                    <td class="flex justify-center icon-material text-yellow-500 py-1">
+                                        {{ Math.round(prodDelay * Math.pow(10, 2)) / Math.pow(10, 2) }} J
+                                    </td>
+                                    <td class="text-center text-yellow-500 py-1">
+                                        FILL THIS (lot/min)
+                                    </td>
+                                    <td class="text-center text-yellow-500 py-1">
+                                        Simples:
+                                        <span class="font-bold" :class="indicators['nb_workers_lv1'].value - indicators['nb_workers_lv1_busy'].value >= prod_factors.labor_lv1 ? 'text-blue-700' : 'text-red-700'">
+                                            {{ prod_factors.labor_lv1 }} / {{ indicators["nb_workers_lv1"].value - indicators["nb_workers_lv1_busy"].value }}
+                                        </span>
+                                        <br />
+                                        Experts:
+                                        <span class="font-bold" :class="indicators['nb_workers_lv2'].value - indicators['nb_workers_lv2_busy'].value >= prod_factors.labor_lv2 ? 'text-blue-700' : 'text-red-700'">
+                                            {{ prod_factors.labor_lv2 }} / {{ indicators["nb_workers_lv2"].value - indicators["nb_workers_lv2_busy"].value }}
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h1 class="text-vN text-lg pl-3">Prévisions :</h1>
+                    <div class="p-3">
+                        <table class="w-full" style="background-color: #f9f9fc">
+                            <thead class="text-xs text-gray-700 uppercase">
+                                <tr class="border-b border-t">
+                                    <th class="px-4 py-1 text-vN">
+                                        Chiffre d’Affaire Estimés
+                                    </th>
+                                    <th class="px-4 py-1 text-vN">
+                                        Coût Total Estimé
+                                    </th>
+                                    <th class="px-4 py-1 text-vN">
+                                        Profit Estimé
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b">
+                                    <td class="flex justify-center icon-material text-yellow-500 py-1">
+                                        {{ salesRevenues }} UM
+                                    </td>
+                                    <td class="text-center text-yellow-500 py-1">
+                                        {{ totalCost }} UM
+                                    </td>
+                                    <td class="text-center text-yellow-500 py-1">
+                                        {{ profit }} UM
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h1 class="text-yellow-500 my-2 pl-3">Remarques :</h1>
+                    <p class="text-vN text-sm pl-3">
+                        - Les prévisions sont calculés dans le cas ou toutes la
+                        quantité produite est vendue
+                    </p>
+                    <p class="text-vN text-sm pl-3">
+                        - Votre taux de rebut est de
+                        {{ Math.round(indicators["reject_rate"].value * Math.pow(10, 2)) }}%,
+                        pour le réduire, lancez une étude AMDEC.
+                    </p>
+                </div>
+            </template>
+        </Modal>
+
+        <Modal v-if="machine.show_transaction_modal" class="">
+            <template v-slot:content>
+                <div class="flex flex-col items-center gap-5 p-5">
+                    <h2 v-if="machine.transaction == 'buy'" class="font-bold text-lg">
+                        Acheter une Machine
+                    </h2>
+                    <h2 v-if="machine.transaction == 'sell'" class="font-semibold text-lg">
+                        Vendre une Machine
+                    </h2>
+                    <div class="w-full gap-4 flex-col flex">
+                        <div class="flex flex-col items-start gap-2">
+                            <p class="text-md font-medium text-nav">
+                                Choix du niveau de la machine
                             </p>
-                            <p v-if="machine.transaction == 'sell'">
-                                Vous allez vendre
-                                <input
-                                    v-model="machine.transaction_nb"
-                                    class="w-28"
-                                    :min="
-                                        indicators[
-                                            machine.transaction_lv == 1
-                                                ? 'nb_machines_lv1'
-                                                : machine.transaction_lv == 2
-                                                ? 'nb_machines_lv2'
-                                                : 'nb_machines_lv3'
-                                        ]['value'] -
-                                            indicators[
-                                                machine.transaction_lv == 1
-                                                    ? 'nb_machines_lv1_busy'
-                                                    : machine.transaction_lv ==
-                                                      2
-                                                    ? 'nb_machines_lv2_busy'
-                                                    : 'nb_machines_lv3_busy'
-                                            ]['value'] >
-                                        0
-                                            ? 1
-                                            : 0
-                                    "
-                                    :max="
-                                        machine.transaction_lv == 1
-                                            ? indicators['nb_machines_lv1'][
-                                                  'value'
-                                              ] -
-                                              indicators[
-                                                  'nb_machines_lv1_busy'
-                                              ]['value']
-                                            : machine.transaction_lv == 2
-                                            ? indicators['nb_machines_lv2'][
-                                                  'value'
-                                              ] -
-                                              indicators[
-                                                  'nb_machines_lv2_busy'
-                                              ]['value']
-                                            : indicators['nb_machines_lv3'][
-                                                  'value'
-                                              ] -
-                                              indicators[
-                                                  'nb_machines_lv3_busy'
-                                              ]['value']
-                                    "
-                                    type="number"
-                                />
-                                machine(s) de niveau
-                                <input
-                                    v-model="machine.transaction_lv"
-                                    class="w-28"
-                                    min="1"
-                                    max="3"
-                                    type="number"
-                                />
-                                au prix de
-                                {{
-                                    (machine.transaction_lv == 1
-                                        ? machine.sell_price_lv1
-                                        : machine.transaction_lv == 2
-                                        ? machine.sell_price_lv2
-                                        : machine.sell_price_lv3) *
-                                    machine.transaction_nb
-                                }}
-                                DA, voulez vous continuer ?
-                            </p>
-                            <div
-                                class="
-                                    w-full
-                                    my-2
-                                    flex flex-wrap
-                                    items-center
-                                    px-10
-                                    space-x-4
-                                "
+                            <select
+                                class="rounded-sm focus:border-vert focus:ring-0 w-full border-gray-200"
+                                style="border-width: 1px"
+                                v-model="machine.transaction_lv"
                             >
-                                <button
-                                    @click="confirmMachineTransaction"
-                                    class="
-                                        bg-green-500
-                                        rounded
-                                        px-3
-                                        py-1
-                                        text-white
-                                    "
-                                >
-                                    Confirmer
-                                </button>
-                                <button
-                                    @click="
-                                        machine.transaction_nb =
-                                            machine.transaction == 'buy'
-                                                ? 1
-                                                : machine.transaction_nb;
-                                        machine.transaction_lv = 1;
-                                        machine.show_transaction_modal = false;
-                                    "
-                                    class="
-                                        bg-gray-500
-                                        rounded
-                                        px-3
-                                        py-1
-                                        text-white
-                                    "
-                                >
-                                    Annuler
-                                </button>
-                            </div>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                            </select>
                         </div>
-                    </template>
-                </Modal>
-                <Modal v-if="action.show_info">
-                    <template v-slot:content>
-                        <div class="w-full">
-                            <p>{{ action.phrase }}</p>
-                            <p>
-                                <span class="font-bold">Résultat : </span
-                                >{{ action.result_phrase }}
+                        <div class="flex flex-col items-start gap-2">
+                            <p class="text-md font-medium text-nav">
+                                Nombre que vous souhaitez
+                                {{ machine.transaction == "buy" ? "acheter" : "vendre" }}
                             </p>
-                            <div
-                                class="
-                                    w-full
-                                    my-2
-                                    flex flex-wrap
-                                    items-center
-                                    px-10
-                                    space-x-4
+                            <input
+                                v-model="machine.transaction_nb"
+                                min="1"
+                                :max="
+                                    machine.transaction == 'sell' ?
+                                        (machine.transaction_lv == 1 ?
+                                            indicators['nb_machines_lv1'].value - indicators['nb_machines_lv1_busy'].value :
+                                        machine.transaction_lv == 2 ?
+                                            indicators['nb_machines_lv2'].value - indicators['nb_machines_lv2_busy'].value :
+                                            indicators['nb_machines_lv3'].value - indicators['nb_machines_lv3_busy'].value) :
+                                        undefined
                                 "
-                            >
-                                <button
-                                    @click="confirmAction"
-                                    class="
-                                        bg-green-500
-                                        rounded
-                                        px-3
-                                        py-1
-                                        text-white
-                                    "
-                                >
-                                    Confirmer
-                                </button>
-                                <button
-                                    @click="action.show_info = false"
-                                    class="
-                                        bg-gray-500
-                                        rounded
-                                        px-3
-                                        py-1
-                                        text-white
-                                    "
-                                >
-                                    Annuler
-                                </button>
-                            </div>
+                                type="number"
+                                class="rounded-sm focus:border-vert w-full focus:ring-0 border-gray-200"
+                                style="border-width: 1px"
+                            />
                         </div>
-                    </template>
-                </Modal>
-            </div>
-        </div>
+                        <div class="flex flex-col">
+                            <p class="text-me font-medium text-nav">Prix</p>
+                            <p
+                                v-if="machine.transaction == 'buy'"
+                                class="py-2 px-4 border-gray-200 w-40 text-jaune"
+                                style="border-width: 1px"
+                            >
+                                {{
+                                    (
+                                        machine.transaction_lv == 1 ?
+                                        machine.buy_price_lv1 :
+                                        machine.transaction_lv == 2 ?
+                                        machine.buy_price_lv2 :
+                                        machine.buy_price_lv3
+                                    )
+
+                                    * machine.transaction_nb
+                                }}
+                            </p>
+                            <p
+                                v-else
+                                class="py-2 px-4 border-gray-200 w-40 text-jaune"
+                                style="border-width: 1px"
+                            >
+                                {{
+                                    (
+                                        machine.transaction_lv == 1 ?
+                                        machine.buy_price_lv1 :
+                                        machine.transaction_lv == 2 ?
+                                        machine.buy_price_lv2 :
+                                        machine.buy_price_lv3
+                                    )
+
+                                    * machine.transaction_nb *
+                                    indicators[
+                                        machine.transaction_lv == 1 ?
+                                        "machines_lv1_health" :
+                                        machine.transaction_lv == 2 ?
+                                        "machines_lv2_health" :
+                                        "machines_lv3_health"
+                                    ].value
+                                }}
+                            </p>
+                        </div>
+                    </div>
+                    <div
+                        class="w-full flex items-center gap-4 justify-center mt-5"
+                    >
+                        <button
+                            @click="confirmMachineTransaction"
+                            class="border-0 px-3 py-1 text-vN hover:text-vert"
+                        >
+                            Confirmer
+                        </button>
+                        <button
+                            @click="
+                                machine.transaction_nb =
+                                machine.transaction == 'buy' ? 1 : machine.transaction_nb;
+                                machine.transaction_lv = 1;
+                                machine.show_transaction_modal = false;"
+                            class="px-3 py-1 text-vN opacity-80"
+                        >
+                            Annuler
+                        </button>
+                    </div>
+                </div>
+            </template>
+        </Modal>
+        <Modal v-if="action.show_info" class="pt-44">
+            <template v-slot:content>
+                <div class="flex flex-col gap-5">
+                    <h1 class="text-lg text-jaune uppercase">
+                        {{ action.value }}
+                    </h1>
+                    <p class="">
+                        {{ action.phrase }}
+                    </p>
+                    <p class="">
+                        {{ action.result_phrase }}
+                    </p>
+                    <div class="w-full flex items-center gap-4 justify-center">
+                        <button
+                            @click="confirmAction"
+                            class="bg-vert rounded-md px-3 border-2 border-vert py-1 text-white"
+                        >
+                            Confirmer
+                        </button>
+                        <button
+                            @click="action.show_info = false"
+                            class="bg-white border-vert border-2 rounded-md px-3 py-1 text-vert"
+                        >
+                            Annuler
+                        </button>
+                    </div>
+                </div>
+            </template>
+        </Modal>
     </div>
 </template>
 
@@ -699,6 +550,7 @@ export default {
     props: ["products", "indicators", "user", "caisse"],
     data() {
         return {
+            quantity: 1,
             launch_prod_modal: false,
             launch_data: {
                 prod_id: 1,

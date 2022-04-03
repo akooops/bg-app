@@ -1,39 +1,24 @@
-<nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
+<nav x-data="{ open: false }" class="bg-white border-b border-gray-100 z-10">
     <!-- Primary Navigation Menu -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
-            <div class="flex">
-                <!-- Logo -->
-                <div class="flex-shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
-                        <x-application-logo class="block h-10 w-auto fill-current text-gray-600" />
-                    </a>
-                </div>
+    <div class="w-full mx-auto px-8 shadow-lg">
+        <div class="flex justify-between py-4">
+            <!-- Logo -->
+            <x-logo />
+            @if (request()->routeIs('dashboard') || Request::is('entreprise/department/*'))
+            <div class="flex flex-row gap-3 justify-center  rounded-3xl px-3 py-2 bg-vert bg-opacity-10" >
+                <x-bar-dep name="Production" :active="request()->routeIs('production')" link="{{ route('production') }}"></x-bar-dep>
+                <x-bar-dep name="Approvisement" :active="request()->routeIs('approv')" link="{{ route('approv') }}"></x-bar-dep>
+                <x-bar-dep name="Marketing" :active="request()->routeIs('marketing')" link="{{ route('marketing') }}"></x-bar-dep>
+                <x-bar-dep name="Finance" :active="request()->routeIs('finance')" link="{{ route('finance') }}"></x-bar-dep>
+                <x-bar-dep name="Human Resources" :active="request()->routeIs('rh')" link="{{ route('rh') }}"></x-bar-dep>
 
-                <!-- Navigation Links -->
-                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
-                </div>
-                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-nav-link href="/leaderboard" :active="request()->routeIs('leaderboard')">
-                        {{ __('Classement') }}
-                    </x-nav-link>
-                </div>
             </div>
+            @endif
 
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ml-6">
-            <simulationtime class="mr-12" v-bind:user="{{Auth()->user()}}"></simulationtime>
-
+                <simulationtime class="mr-12" v-bind:user="{{Auth()->user()}}"></simulationtime>
             </div>
-
-            <!-- Hamburger -->
-
         </div>
     </div>
-
-    <!-- Responsive Navigation Menu -->
-
 </nav>

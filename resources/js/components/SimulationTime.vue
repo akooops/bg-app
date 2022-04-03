@@ -1,54 +1,58 @@
 <template>
-    <div class="flex">
-        <p class="mr-12">
-            Disponibilités <span class="font-bold">{{ Math.round(caisse) }}</span>
-        </p>
-        <p class="mr-12">
-            Dettes <span class="font-bold">{{ Math.round(dettes) }}</span>
-        </p>
-        <p>
-            Jour n° <span class="font-bold">{{ time }}</span>
-        </p>
-        <div class="flex ml-4" @click="show_menu = !show_menu">
-            <p>{{ user.name }}</p>
-            <div class="ml-1 mt-1">
-                <svg
-                    class="fill-current h-4 w-4"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 20 20"
+    <div class="flex items-center gap-3">
+        <div class="relative">
+            <img
+                src="/assets/icons/notifications.svg"
+                alt="notification icon"
+                class="h-9 w-9"
+            />
+            <div
+                class="bg-red-500 absolute -top-1 right-0 w-5 h-5 rounded-full"
+            >
+                <p
+                    class="text-white text-center my-auto mx-auto"
+                    style="font-size: 12px"
                 >
-                    <path
-                        fill-rule="evenodd"
-                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                        clip-rule="evenodd"
-                    />
-                </svg>
+                    21
+                </p>
             </div>
         </div>
-        <div
-            v-if="show_menu"
-            class="
-                origin-top-right
-                absolute
-                z-999
-                right-0
-                mr-8
-                mt-8
-                w-56
-                rounded
-                shadow-lg
-                bg-white
-                ring-1 ring-black ring-opacity-5
-            "
-        >
+        <div class="flex items-center gap-3">
+            <p class="font-semibold">
+                <span class="uppercase">{{ user.name }}</span>
+                Team
+            </p>
             <div
-                class="py-1 pl-4"
-                role="menu"
-                aria-orientation="vertical"
-                aria-labelledby="options-menu"
+                v-bind:class="
+                    bg +
+                    ' w-9 h-9 relative flex justify-center items-center rounded-full {{ bg }} text-sm text-white uppercase'
+                "
             >
-                <a href="/logout">Se déconnecter</a>
+                {{ user.name.substr(0, 2) }}
             </div>
+            <button
+                @click="show_menu = !show_menu"
+                class="relative focus:bg-vert focus:bg-opacity-5 p-1 focus:border-2 rounded-sm focus:border-Vn border-opacity-50"
+            >
+                <img
+                    src="/assets/icons/chevron-down.svg"
+                    alt="arrow down icon"
+                    class="h-4 w-4"
+                />
+                <a
+                    href="/logout"
+                    v-if="show_menu"
+                    class="flex items-center gap-2 absolute z-999 -bottom-14 right-0 bg-white border-opacity-5 border-vN shadow-md w-44 p-2 rounded-lg"
+                    style="border-width: 1px"
+                >
+                    <img
+                        src="/assets/icons/logout.svg"
+                        alt="logout icon"
+                        class="w-5 h-5"
+                    />
+                    <p>Se déconnecter</p>
+                </a>
+            </button>
         </div>
     </div>
 </template>
@@ -63,6 +67,7 @@ export default {
             show_menu: false,
             caisse: 0,
             dettes: 0,
+            bg: "",
         };
     },
     methods: {
@@ -98,9 +103,18 @@ export default {
                 }
             );
         }
+        let backgrounds = [
+            "bg-red-500",
+            "bg-orange-500",
+            "bg-yellow-500",
+            "bg-green-500",
+            "bg-blue-500",
+            "bg-indigo-500",
+            "bg-purple-500",
+        ];
+        this.bg = backgrounds[Math.floor(Math.random() * backgrounds.length)];
     },
 };
 </script>
 
-<style>
-</style>
+<style></style>

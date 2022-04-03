@@ -1,0 +1,93 @@
+
+ @font-face{
+    font-family: "ubuntu";
+    src: url("/css/webfonts/Ubuntu-Medium.ttf")
+  }
+
+  .ubuntu{
+      font-family: "ubuntu";
+  }
+
+
+  .icon-material span{
+    display: none;
+  }
+
+  .icon-material:hover{
+    position: relative;
+  }
+  .icon-material:hover span{
+        padding: 5px 5px 5px 5px;
+        display: block ;
+        background: #B2D06B;
+        color: white;
+        z-index: 100;
+        left: 4em;
+        top: 2.5em;
+        position: absolute;
+        width: max-content;
+        border-radius: 4px;
+        font-size: medium;
+        
+        
+  }
+
+
+
+  [title]:hover::after{
+    
+      content: attr(title);
+      color: #0B3434;
+      background-color: #B2D06B;
+      position: absolute;
+      top: -100%;
+      left: 0;
+
+  }
+
+  .bg-pistache{
+    background-color: rgba(178, 208, 107, 1);
+  }
+
+  .pistache{
+    color: rgba(178, 208, 107, 1);
+  }
+
+  .bg-vert-dark{
+    background-color: #0B3434;
+  }
+
+  .vert-dark{
+    color: #0B3434;
+  }
+
+  .btn-pistache{
+    background-color: #B2D06B;
+  }
+  
+  .btn-pistache:hover{
+    background-color: #eeffc7;
+  }
+
+
+  .vert-sombre{
+    color: rgba(11, 52, 52, 0.6);
+
+  }
+
+
+  .border-pistache{
+    border-left: 10px solid ;
+    border-color: rgba(178, 208, 107, 1) ;
+    
+  }
+
+  .margin-left-transparent{
+    border-left: 10px solid;
+    border-color: rgba(255, 255, 255, 0);
+  }
+
+  .vert-titre{
+    color :rgba(11, 52, 52, 1);
+
+  }

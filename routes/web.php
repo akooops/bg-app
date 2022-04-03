@@ -18,25 +18,25 @@ use App\Http\Controllers\EntrepriseController;
 */
 
 Route::get('/', function () {
-    return redirect("/login");
+	return view('welcome');
 });
 
 
 Route::prefix("entreprise")->middleware(["auth", "entreprise"])->group(function () {
 
-    Route::get('/dashboard', [EntrepriseController::class, "showDashboard"])->name("dashboard");
+	Route::get('/dashboard', [EntrepriseController::class, "showDashboard"])->name("dashboard");
 
-    Route::get('/department/Approvisionnement', [EntrepriseController::class, "showDptApprov"])->name("approv");
-    Route::get('/department/Production', [EntrepriseController::class, "showDptProduction"])->name("production");
-    Route::get('/department/Marketing', [EntrepriseController::class, "showMarketing"]);
+	Route::get('/department/Approvisionnement', [EntrepriseController::class, "showDptApprov"])->name("approv");
+	Route::get('/department/Production', [EntrepriseController::class, "showDptProduction"])->name("production");
+	Route::get('/department/Marketing', [EntrepriseController::class, "showMarketing"])->name("marketing");
+	Route::get('/department/Finance', [EntrepriseController::class, "showFinance"])->name("finance");
+	Route::get('/department/Ressources Humaines', [EntrepriseController::class, "showHr"])->name("rh");
 
-    Route::get('/department/Finance', [EntrepriseController::class, "showFinance"]);
+	Route::get('/command/create', [EntrepriseController::class, "showCommandMaker"]);
 
-    Route::get('/department/Ressources Humaines', [EntrepriseController::class, "showHr"]);
+	Route::get('/stock', [EntrepriseController::class, "showStock"])->name("stock");
 
-    Route::get('/command/create', [EntrepriseController::class, "showCommandMaker"])->name("approv");
-    Route::get('/stock', [EntrepriseController::class, "showStock"])->name("stock");
-    Route::get('/loans', [EntrepriseController::class, "showLoans"])->name("loans");
+	Route::get('/loans', [EntrepriseController::class, "showLoans"])->name("loans");
 });
 
 Route::prefix("supplier")->middleware(["auth", "supplier"])->group(function () {
@@ -44,6 +44,7 @@ Route::prefix("supplier")->middleware(["auth", "supplier"])->group(function () {
     Route::get('/dashboard', function () {
         return view('supplier.dashboard');
     })->name('supplier_dashboard');
+
     Route::get('/command/{id}', function ($id) {
         $entreprise_id = Command::where("command_id", "=", $id)->first()->entreprise_id;
         return view('supplier.single_command', ["command_id" => $id, "entreprise_id" => $entreprise_id]);
@@ -61,7 +62,7 @@ Route::get('/banker/dashboard', function () {
 
 
 Route::get('/leaderboard', function () {
-    return view('leaderboard');
+	return view('leaderboard');
 });
 
 require __DIR__ . '/auth.php';
