@@ -917,8 +917,7 @@ export default {
 
             return (
                 (this.selectedProd.prod_speed_factor *
-                    this.launch_data.quantity) /
-                (coeff * 10)
+                    this.launch_data.quantity) / (coeff)
             );
         },
     },

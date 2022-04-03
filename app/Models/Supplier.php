@@ -18,6 +18,6 @@ class Supplier extends Model
 
     public function raw_materials()
     {
-        return $this->belongsToMany(RawMaterial::class)->withPivot('price_factor', 'quantity_available', 'time_to_deliver');
+        return $this->belongsToMany(RawMaterial::class)->withPivot('price_factor', 'is_available', 'time_to_deliver');
     }
 }

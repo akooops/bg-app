@@ -6,6 +6,7 @@ use Laravel\Nova\Fields\ID;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Number;
+use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\Currency;
 use Laravel\Nova\Fields\BelongsToMany;
 use Laravel\Nova\Http\Requests\NovaRequest;
@@ -59,7 +60,7 @@ class RawMaterial extends Resource
             BelongsToMany::make('Suppliers')->fields(function () {
                 return [
                     Number::make('Price Factor')->min(0)->max(1)->step(0.01),
-                    Number::make('Quantity Available')->min(0),
+                    Boolean::make('Is Available')->default(true),
                     Number::make('Time To Deliver')->min(0),
                 ];
             }),

@@ -10,9 +10,9 @@ trait HelperTrait
     public function parseCommandStatus($status)
     {
         if ($status == "confirmed") {
-            return "Confirmé";
+            return "Reçue";
         } elseif ($status == "pending") {
-            return "En Attente";
+            return "Livraison...";
         }
     }
 

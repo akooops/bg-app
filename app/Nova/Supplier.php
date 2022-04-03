@@ -56,7 +56,7 @@ class Supplier extends Resource
             BelongsToMany::make('Raw Materials')->fields(function () {
                 return [
                     Number::make('Price Factor')->min(0)->max(1)->step(0.01),
-                    Number::make('Quantity Available')->min(0),
+                    Boolean::make('Is Available')->default(true),
                     Number::make('Time To Deliver')->min(0),
                 ];
             }),

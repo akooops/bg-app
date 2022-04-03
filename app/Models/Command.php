@@ -17,6 +17,7 @@ class Command extends Model
         'quantity',
         'status',
         'creation_date',
-        'item_id'
+        'item_id',
+        'time_to_ship'
     ];
 }

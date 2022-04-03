@@ -2,22 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Carbon\Carbon;
+use App\Models\Command;
+use App\Models\Product;
+use App\Models\Supplier;
 use App\Models\Department;
 use App\Models\Entreprise;
 use App\Models\RawMaterial;
-use App\Models\Supplier;
-use App\Models\Command;
-use App\Models\Product;
-use Illuminate\Support\Facades\Response;
-use Illuminate\Support\Facades\DB;
-use App\Events\CommandCreated;
-use App\Traits\HelperTrait;
 use App\Traits\DemandTrait;
+use App\Traits\HelperTrait;
+use Illuminate\Http\Request;
+use App\Events\CommandCreated;
+use App\Jobs\CommandScheduler;
 use App\Traits\IndicatorTrait;
-use App\Jobs\ProductionScheduler;
 use App\Events\NewNotification;
-use Carbon\Carbon;
+use App\Jobs\ProductionScheduler;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Response;
 
 
 class EntrepriseController extends Controller
@@ -113,13 +114,13 @@ class EntrepriseController extends Controller
     function getEntrepriseCommands(Request $request)
     {
         $entreprise_id = $request->entreprise_id;
-        $command_items = Command::where("entreprise_id", "=", $entreprise_id)->get();
+        $command_items = Command::where("entreprise_id", "=", $entreprise_id)->orderByDesc("creation_date")->get();
         $commands = $command_items->groupBy("command_id")->values()->toArray();
 
         $commands_data = collect($commands)->map(function ($cmd) {
             $data = [
                 "command_id" => $cmd[0]["command_id"],
-                "created" => $cmd[0]["creation_date"],
+                "creation_date" => $cmd[0]["creation_date"],
                 "num_items" => count($cmd),
                 "status" => $this->getCommandStatus($cmd)
             ];
@@ -131,15 +132,16 @@ class EntrepriseController extends Controller
 
                 $quantity = $item["quantity"];
                 $price = $item["price"];
-                $phrase = $item["quantity"] . " unités " . " de " . "$material->name" . " Chez " . ($supplier != null ? $supplier->name : "Unknown") . ", Prix: " . $price . " DA / Status : " . $this->parseCommandStatus($item["status"]);
 
-                return ["material" => $material->name, "unit" => $material->unit, "supplier" => ($supplier != null ? $supplier->name : "Unknown"), "quantity" => $quantity, "price" => $price, "status" => $item["status"], "phrase" => $phrase];
+                $reception_date = $item["creation_date"] + $item["time_to_ship"];
+
+                return ["material" => $material->name, "unit" => $material->unit, "supplier" => ($supplier != null ? $supplier->name : "Unknown"), "quantity" => $quantity, "price" => $price, "status" => $item["status"], "reception_date" => $reception_date];
             });
 
             return $data;
         });
-        $sorted_commands = $commands_data->sortByDesc("created");
-        return $sorted_commands->toArray();
+
+        return $commands_data->toArray();
     }
 
     function getCommandStatus($cmd)
@@ -179,15 +181,34 @@ class EntrepriseController extends Controller
             // Pull the command from the array of commands
             $cmd =  $request["commands"][$i];
 
+            // Get the supplier for this command with the associated raw materials data
+            $supplier = Supplier::with('raw_materials')->where("name", $cmd["supplier"])->first();
+
             // Get necessary ids
-            $supplier_id = Supplier::where("name", $cmd["supplier"])->first()->id;
+            $supplier_id = $supplier->id;
             $material_id = RawMaterial::where("name", $cmd["material"])->first()->id;
             $item_id = $cmd["item_id"];
+
+            // Check availability
+            $available = false;
+            foreach ($supplier->raw_materials as $mat) {
+                if ($mat->id == $material_id) {
+                    $available = $mat->pivot->is_available == 1 ? true : false;
+                }
+            }
+
+            if (!$available) {
+                // Stop the command and return error: raw material not available for this supplier
+                $message = "Impossible d'effectuer la commande: Les quantités doivent être positives.";
+                return Response::json(["message" => $message, "success" => false], 200);
+            }
 
             // Do a quantity check
             $quantity = $cmd["quantity"];
             if ($quantity <= 0) {
                 // Stop the command and return error: command's quantity must be positive
+                $message = "Impossible d'effectuer la commande: Les quantités doivent être positives.";
+                return Response::json(["message" => $message, "success" => false], 200);
             }
 
             // Do a price check to be sure that player can pay
@@ -196,10 +217,12 @@ class EntrepriseController extends Controller
 
             if ($final_price > $caisse) {
                 // Stop the command and return error: not enough money
+                $message = "Impossible d'effectuer la commande: Disponibilités insuffisantes.";
+                return Response::json(["message" => $message, "success" => false], 200);
             }
 
-            // Status will be "shipping" until the command is delivered to the  player
-            $status = "shipping";
+            // Status will be "pending" until the command is delivered to the player
+            $status = "pending";
 
             // I don't we'll have errors here since it's all in the back, but just in case
             $creation_date = $this->getSimulationTime();
@@ -207,6 +230,8 @@ class EntrepriseController extends Controller
 
             if ($time_to_ship <= 0) {
                 // Stop the command and return error: command's time to ship must be positive
+                $message = "Impossible d'effectuer la commande: Le temps de livraison doit être positif.";
+                return Response::json(["message" => $message, "success" => false], 200);
             }
 
             // Fill in the array to insert into the database later
@@ -234,19 +259,22 @@ class EntrepriseController extends Controller
 
             $supp_cmd->map(function ($supp_cmd_item) {
                 Command::create($supp_cmd_item);
+
+                CommandScheduler::dispatch($supp_cmd_item, $supp_cmd_item["item_id"])
+                    ->delay(now()->addSeconds($supp_cmd_item["time_to_ship"] * 60));
             });
+
         });
 
-        $message = "";
+        $message = "Commande effectuée. Livraison en cours...";
         $notification = [
             "type" => "CommandUpdate",
-            "entreprise_id" => $this->entreprise_id,
+            "entreprise_id" => $entreprise_id,
             "message" => $message,
             "title" => "Livraison de la commande"
         ];
         event(new NewNotification($notification));
 
-        $message = "Commande effectuée. Livraison en cours...";
         return Response::json(["message" => $message, "success" => true], 200);
     }
 
@@ -449,6 +477,7 @@ class EntrepriseController extends Controller
                 ->decrement("quantity", $product[$i]->quantity * $request->quantity);
         }
 
+        // Send stock change notification
         $message = "Stock de matières premières décru";
         $notification = [
             "type" => "StockUpdate",

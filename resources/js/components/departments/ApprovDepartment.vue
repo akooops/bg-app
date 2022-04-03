@@ -3,7 +3,7 @@
         <div class="w-full">
             <nav class="border-b text-sm flex justify-start">
                 <button
-                    @click="page_index = 'commands'"
+                    @click="changeTab('commands')"
                     :class="
                         page_index == 'commands'
                             ? 'border-b-2 border-indigo-600 text-indigo-600 font-semibold'
@@ -17,7 +17,7 @@
 
                 <!-- active -->
                 <button
-                    @click="page_index = 'stock'"
+                    @click="changeTab('stock')"
                     :class="
                         page_index == 'stock'
                             ? 'border-b-2 border-indigo-600 text-indigo-600 font-semibold'
@@ -30,7 +30,7 @@
                 </button>
 
                 <button
-                    @click="page_index = 'command_creator'"
+                    @click="changeTab('command_creator')"
                     :class="
                         page_index == 'command_creator'
                             ? 'border-b-2 border-indigo-600 text-indigo-600 font-semibold'
@@ -254,7 +254,7 @@
                                     lg:static
                                 "
                             >
-                                Jour N° {{ cmd.created }}
+                                Jour N° {{ cmd.creation_date }}
                             </td>
                             <td
                                 class="
@@ -313,7 +313,7 @@
                 v-if="show_details_modal"
                 id="modal"
                 class="align-center modal"
-                custom_css="w-1/3"
+                custom_css="w-3/5"
             >
                 <template v-slot:content>
                     <h3 class="font-extrabold text-lg my-3">
@@ -325,7 +325,7 @@
                         v-for="(item, key) in current_command.details"
                         v-bind:key="key"
                     >
-                        - {{ item.quantity }} {{ item.unit }} de
+                        * {{ item.quantity }} {{ item.unit }} de
                         {{ item.material }} chez <b>{{ item.supplier }}</b> -
                         <span
                             :class="
@@ -333,7 +333,8 @@
                                     ? 'text-green-500'
                                     : 'text-yellow-500'
                             "
-                            >{{ getStatus(item.status) }}</span
+                            >{{ getStatus(item.status) }} - Date de livraison:
+                            Jour N° {{ item.reception_date }}</span
                         >
                     </p>
 
@@ -358,20 +359,64 @@
         </div>
 
         <div v-if="page_index == 'stock' && stock.length > 0">
-            <Stock
-            :user="user"
-            :stock="stock"
-            ></Stock>
+            <Stock :user="user" :stock="stock"></Stock>
         </div>
 
         <div v-if="page_index == 'command_creator'">
-            <CommandMaker
-                :materials="materials"
-                :suppliers="suppliers"
-                :user="user"
-                :caisse="caisse"
-            ></CommandMaker>
+            <CommandMaker ref="command_maker" :user="user" :caisse="caisse"></CommandMaker>
         </div>
+
+        <Modal
+            v-if="show_change_tab_modal"
+            id="modal"
+            class="align-center modal"
+            custom_css="w-3/5"
+        >
+            <template v-slot:content>
+                <h3 class="font-extrabold text-lg my-3">
+                    Changer d'onglet et abandonner le travail sur celui-ci ?
+                </h3>
+
+                <div class="flex space-x-4 w-1/2 justify-center items-center">
+                    <button
+                        class="
+                            bg-red-400
+                            active:bg-red-600
+                            hover:bg-red-600
+                            text-white
+                            px-3
+                            py-2
+                            rounded
+                            w-1/2
+                            mt-4
+                        "
+                        @click="changeTab(null, true)"
+                    >
+                        Oui
+                    </button>
+
+                    <button
+                        class="
+                            bg-gray-200
+                            active:bg-gray-600
+                            hover:bg-gray-400
+                            text-back
+                            px-3
+                            py-2
+                            rounded
+                            w-1/2
+                            mt-4
+                        "
+                        @click="
+                            next_tab = null;
+                            show_change_tab_modal = false;
+                        "
+                    >
+                        Non
+                    </button>
+                </div>
+            </template>
+        </Modal>
     </div>
 </template>
 
@@ -392,17 +437,18 @@ export default {
 
             current_command: {},
 
+            show_change_tab_modal: false,
             show_details_modal: false,
+
             commands_loaded: false,
             stock_loaded: false,
 
             page_index: "commands",
+            next_tab: null,
 
             caisse: 0,
 
             commands: [],
-            materials: [],
-            suppliers: [],
             stock: [],
         };
     },
@@ -413,6 +459,7 @@ export default {
             this.current_command = command;
             this.show_details_modal = true;
         },
+
         getStatus(status) {
             if (status == "pending") {
                 return "Livraison...";
@@ -420,7 +467,8 @@ export default {
                 return "Reçue";
             }
         },
-         getCommands() {
+
+        getCommands() {
             axios
                 .get("/api/entreprise/commands", {
                     params: { entreprise_id: this.user.id },
@@ -430,17 +478,7 @@ export default {
                     this.commands_loaded = true;
                 });
         },
-        getSuppRawMat() {
-            axios
-            .get("/api/supp_raw_mats", {
-                params: {
-                },
-            })
-            .then((resp) => {
-                this.materials = resp.data["materials"];
-                this.suppliers = resp.data["suppliers"];
-            });
-        },
+
         getStock() {
             axios
                 .get("/api/entreprise/stock", {
@@ -452,6 +490,20 @@ export default {
                     this.stock = response.data;
                 })
                 .catch(function (error) {});
+        },
+
+        changeTab(tab_name = null, confirm = false) {
+            if (!confirm) {
+                if (this.page_index == "command_creator" && this.$refs.command_maker.commands.length > 0) {
+                    this.next_tab = tab_name;
+                    this.show_change_tab_modal = true;
+                } else {
+                    this.page_index = tab_name;
+                }
+            } else {
+                this.page_index = this.next_tab;
+                this.show_change_tab_modal = false;
+            }
         },
     },
     created() {
@@ -468,7 +520,6 @@ export default {
 
         this.getCommands();
         this.getStock();
-        this.getSuppRawMat();
     },
     mounted() {
         window.Echo.channel("entreprise_" + this.user.id)
@@ -479,10 +530,6 @@ export default {
                 }
                 if (e.notification.type == "StockUpdate") {
                     this.getStock();
-                    this.$forceUpdate();
-                }
-                if (e.notification.type == "SupplierUpdate") {
-                    this.getSuppRawMat();
                     this.$forceUpdate();
                 }
             })

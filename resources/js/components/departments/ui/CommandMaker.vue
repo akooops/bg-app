@@ -103,12 +103,15 @@
                         </td>
                         <td class="text-center">{{ cmd.price }} DA/KG</td>
                         <td class="text-center">
-                            {{ cmd.total_price }}
+                            {{ cmd.total_price }} DA
                         </td>
                         <td class="text-center">
                             <div
                                 class="flex w-full justify-center items-center"
                             >
+                                <button @click="editRow(key, false)">
+                                    Modifier
+                                </button>
                                 <button @click="deleteRow(key)">
                                     <i
                                         class="
@@ -125,7 +128,7 @@
             </table>
             <div class="flex w-full justify-center items-center">
                 <button
-                    @click="newCommandModal()"
+                    @click="commandModal()"
                     class="
                         bg-green-500
                         text-white
@@ -189,11 +192,18 @@
                         placeholder="Quantité en unité"
                         v-model="commandItem.quantity"
                     />
-                    <p>Prix Unitaire : {{ materialPrice }} DA/KG</p>
-                    <p>Prix Total : {{ totalPrice }} DA</p>
-                    <p>Délai de Livraison: {{ supplierDelay }}</p>
+                    <div v-if="!commandDisabled">
+                        <p>Prix Unitaire : {{ materialPrice }} DA/KG</p>
+                        <p>Prix Total : {{ totalPrice }} DA</p>
+                        <p>Délai de Livraison: {{ supplierDelay }}</p>
+                    </div>
+                    <div v-else>
+                        <p class="font-bold text-red-700">
+                            Matière première indisponnible ou informations entrées invalides.
+                        </p>
+                    </div>
                     <button
-                        @click="addRow"
+                        @click="editing_command_id == null ? addRow() : editRow(editing_command_id, true)"
                         :disabled="commandDisabled"
                         class="px-2 py-3 text-white w-40"
                         v-bind:class="{
@@ -204,7 +214,9 @@
                         Ajouter
                     </button>
                     <button
-                        @click="show_add_modal = false"
+                        @click="
+                            editing_command_id = null;
+                            show_add_modal = false;"
                         class="px-2 py-3 bg-gray-300 w-40"
                     >
                         Fermer
@@ -224,11 +236,16 @@ export default {
     data() {
         return {
             num_commands: 0,
+
             show_success: false,
             show_error: false,
             command_sent: false,
-            message: "Test",
+
+            message: "",
+
             show_add_modal: false,
+            editing_command_id: null,
+
             commandItem: {
                 material: "",
                 supplier: "",
@@ -239,9 +256,12 @@ export default {
             },
             commands: [],
             filtered_materials: [],
+
+            materials: [],
+            suppliers: [],
         };
     },
-    props: ["materials", "suppliers", "user", "caisse"],
+    props: ["user", "caisse"],
     computed: {
         supplierDelay() {
             if (this.commandItem.supplier != "" && this.commandItem.material != "") {
@@ -321,6 +341,10 @@ export default {
                 return true;
             }
 
+            if (this.commandItem.quantity <= 0) {
+                return true;
+            }
+
             let material = this.materials.find(
                 (item) => this.commandItem.material == item.name
             );
@@ -336,20 +360,18 @@ export default {
             if (supp_raw_mat == undefined) {
                 return true;
             }
+            else if (!supp_raw_mat.pivot.is_available) {
+                return true;
+            }
 
             return false;
         },
     },
     methods: {
-        newCommandModal() {
-            this.commandItem.material = "";
-            this.commandItem.supplier = "";
-            this.commandItem.quantity = 1;
-
-            // if (this.materials.length > 0 && this.suppliers.length > 0) {
-                this.show_add_modal = true;
-            // }
+        commandModal() {
+            this.getSuppRawMat(true);
         },
+
         addRow() {
             let command = {
                 material: this.commandItem.material,
@@ -360,10 +382,23 @@ export default {
                 total_price: this.totalPrice,
                 item_id: this.num_commands,
             };
-            this.commands.push(command);
-            this.num_commands += 1;
+
+            let cmd_id = this.commands.findIndex(
+                (item) => item.material == command.material && item.supplier == command.supplier
+            );
+
+            if (cmd_id == -1) {
+                this.commands.push(command);
+                this.num_commands += 1;
+            }
+            else {
+                this.commands[cmd_id].quantity = parseInt(this.commands[cmd_id].quantity) + parseInt(command.quantity);
+                this.commands[cmd_id].total_price = parseInt(this.commands[cmd_id].total_price) + parseInt(command.total_price);
+            }
+
             this.show_add_modal = false;
         },
+
         sendCommand() {
             this.show_error = false;
             this.show_success = false;
@@ -384,26 +419,89 @@ export default {
                     entreprise_id: this.user.id,
                 })
                 .then((resp) => {
-                    this.show_success = true;
-                    this.message = resp.data.message;
                     this.command_sent = false;
+                    this.commands = [];
+
+                    if (resp.data.success) {
+                        this.show_success = true;
+                        this.show_error = false;
+                    } else {
+                        this.show_success = false;
+                        this.show_error = true;
+                    }
+
+                    this.message = resp.data.message;
                 })
                 .catch((e) => {
+                    this.command_sent = false;
+                    this.commands = [];
+
                     this.show_error = true;
                     this.message = "Une erreur s'est produite";
                 });
         },
+
         deleteRow(index) {
             this.commands.splice(index, 1);
         },
+
+        editRow(index, save=false) {
+            if (!save) {
+                this.commandItem.material = this.commands[index].material;
+                this.commandItem.supplier = this.commands[index].supplier;
+                this.commandItem.quantity = this.commands[index].quantity;
+
+                this.editing_command_id = index;
+                this.show_add_modal = true;
+            }
+            else {
+                let command = {
+                    material: this.commandItem.material,
+                    supplier: this.commandItem.supplier,
+                    quantity: this.commandItem.quantity,
+                    time_to_ship: this.commandItem.time_to_ship,
+                    price: this.materialPrice,
+                    total_price: this.totalPrice,
+                    item_id: this.commands[index].num_commands,
+                };
+                this.commands[index] = command;
+
+                this.editing_command_id = null;
+                this.show_add_modal = false;
+            }
+        },
+
+        getSuppRawMat(open_command_modal = false) {
+            axios
+            .get("/api/supp_raw_mats", {
+                params: {
+                },
+            })
+            .then((resp) => {
+                this.materials = resp.data["materials"];
+                this.suppliers = resp.data["suppliers"];
+
+                if (open_command_modal) {
+                    this.commandItem.material = this.materials.length > 0 ? this.materials[0].name : "";
+                    this.commandItem.supplier = this.suppliers.length > 0 ? this.suppliers[0].name : "";
+                    this.commandItem.quantity = 1;
+
+                    this.show_add_modal = true;
+                }
+            });
+        },
+    },
+    created() {
+        this.getSuppRawMat();
     },
     mounted() {
-        // window.Echo.channel("entreprise_" + this.user.id).listen(
-        //     "NavbarDataChanged",
-        //     (e) => {
-        //         this.caisse = e.caisse;
-        //     }
-        // );
+        window.Echo.channel("entreprise_" + this.user.id)
+            .listen("NewNotification", (e) => {
+                if (e.notification.type == "SupplierUpdate") {
+                    this.getSuppRawMat();
+                    this.$forceUpdate();
+                }
+            });
     },
 };
 </script>
