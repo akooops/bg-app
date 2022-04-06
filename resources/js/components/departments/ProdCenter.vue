@@ -78,7 +78,7 @@
             </div>
 
             <div
-                class="flex-grow border-2 rounded-xl gap-6 text-center flex flex-col py-7 shadow-lg px-2"
+                class="flex-grow  rounded-xl gap-6 text-center flex flex-col py-7 shadow-xl px-2" style="border-width : 0.5px;"
             >
                 <img
                     class="mx-auto h-16 w-16"

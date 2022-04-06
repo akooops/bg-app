@@ -44,7 +44,10 @@
                 </div>
                 <Calendar v-bind:user="{{ Auth()->user() }}"></Calendar>
             </div>
-            {{ $slot }}
+            <div class="flex w-3/4">
+                {{ $slot }}
+            </div>
+
         </main>
     </div>
 </body>

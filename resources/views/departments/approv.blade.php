@@ -5,7 +5,7 @@
         </h2>
     </x-slot>
 
-    <div class="py-12">
+    <div class="py-12 w-full">
         <div class=" mx-auto sm:px-6 lg:px-8">
 
                 <div class = "w-full px-3">
