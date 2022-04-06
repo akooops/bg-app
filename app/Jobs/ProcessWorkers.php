@@ -69,12 +69,16 @@ class ProcessWorkers implements ShouldQueue
                 }
 
                 $notification = [
-                    "type" => "WorkersUpdate",
-                    "status" => "info",
                     "entreprise_id" => $entreprise->id,
-                    "data" => [],
-                    "message" => "L'humeur au sein de votre entreprise décroit",
-                    "title" => "L'humeur décroit"
+                    "type" => "WorkersUpdate",
+                    
+                    "store" => true,
+                    
+                    "text" => "L'humeur au sein de votre entreprise décroit",
+                    "title" => "L'humeur décroit",
+                    "icon_path" => "aaaaaaaaaaa",
+
+                    "style" => "info",
                 ];
                 event(new NewNotification($notification));
             }
@@ -83,12 +87,16 @@ class ProcessWorkers implements ShouldQueue
             if ($workers_mood - nova_get_setting('workers_mood_decay_rate') < $workers_mood_th && $nb_workers > 0) {
                 if ($current_date % 30 == 0) {
                     $notification = [
-                        "type" => "WorkersUpdate",
-                        "status" => "warning",
                         "entreprise_id" => $entreprise->id,
-                        "data" => [],
-                        "message" => "Attention, l'humeur de vos employés est mauvaise, Il y a des riques de démissions.",
-                        "title" => "Risques de démissions"
+                        "type" => "WorkersUpdate",
+                        
+                        "store" => true,
+                        
+                        "text" => "Attention, l'humeur de vos employés est mauvaise, Il y a des riques de démissions.",
+                        "title" => "Risques de démissions",
+                        "icon_path" => "aaaaaaaaaaa",
+
+                        "style" => "failure",
                     ];
                     event(new NewNotification($notification));
                 }
@@ -113,12 +121,16 @@ class ProcessWorkers implements ShouldQueue
 
                         $message = "Vos employés sont entrain de démissionner! Vous avez perdu un employé expert.";
                         $notification = [
-                            "type" => "WorkersUpdate",
-                            "status" => "warning",
                             "entreprise_id" => $entreprise->id,
-                            "data" => [],
-                            "message" => $message,
-                            "title" => "Les employés démissionnent"
+                            "type" => "WorkersUpdate",
+                            
+                            "store" => true,
+                            
+                            "text" => $message,
+                            "title" => "Les employés démissionnent",
+                            "icon_path" => "aaaaaaaaaaa",
+
+                            "style" => "failure",
                         ];
                         event(new NewNotification($notification));
                     }
@@ -131,12 +143,16 @@ class ProcessWorkers implements ShouldQueue
 
                         $message = "Vos employés sont entrain de démissionner! Vous avez perdu un employé simple.";
                         $notification = [
-                            "type" => "WorkersUpdate",
-                            "status" => "warning",
                             "entreprise_id" => $entreprise->id,
-                            "data" => [],
-                            "message" => $message,
-                            "title" => "Les employés démissionnent"
+                            "type" => "WorkersUpdate",
+                            
+                            "store" => true,
+                            
+                            "text" => $message,
+                            "title" => "Les employés démissionnent",
+                            "icon_path" => "aaaaaaaaaaa",
+
+                            "style" => "failure",
                         ];
                         event(new NewNotification($notification));
                     }
@@ -156,12 +172,16 @@ class ProcessWorkers implements ShouldQueue
 
                     $message = "Vous avez réussi à recruter un employé!";
                     $notification = [
-                        "type" => "WorkersUpdate",
-                        "status" => "info",
                         "entreprise_id" => $entreprise->id,
-                        "data" => [],
-                        "message" => $message,
-                        "title" => "Employé recruté"
+                        "type" => "WorkersUpdate",
+                        
+                        "store" => true,
+                        
+                        "text" => $message,
+                        "title" => "Employé recruté",
+                        "icon_path" => "aaaaaaaaaaa",
+
+                        "style" => "info",
                     ];
                     event(new NewNotification($notification));
                 }

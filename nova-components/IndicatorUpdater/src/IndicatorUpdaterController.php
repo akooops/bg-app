@@ -42,22 +42,30 @@ class IndicatorUpdaterController
             foreach ($entreprises as $entreprise) {
                 $notification = [
                     "type" => "NewNotif",
-                    "status" => $request->notification_type,
                     "entreprise_id" => $entreprise->id,
-                    "data" => [],
-                    "message" => $request->description,
+                    
+                    "store" => true,
+                    
+                    "text" => $request->description,
                     "title" => $request->title,
+                    "icon_path" => "aaaaaaaaaaa",
+                    
+                    "style" => $request->notification_type,
                 ];
                 event(new NewNotification($notification));
             }
         } else {
             $notification = [
-                "type" => "NewNotif",
-                "status" => $request->notification_type,
                 "entreprise_id" => $request->selected_entreprise,
-                "data" => [],
-                "message" => $request->description,
+                "type" => "NewNotif",
+                
+                "store" => true,
+                
+                "text" => $request->description,
                 "title" => $request->title,
+                "icon_path" => "aaaaaaaaaaa",
+                
+                "style" => $request->notification_type,
             ];
             event(new NewNotification($notification));
         }

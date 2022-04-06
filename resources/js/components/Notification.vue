@@ -62,8 +62,11 @@ export default {
             window.Echo.channel("entreprise_" + this.user.id).listen(
                 "NewNotification",
                 (e) => {
-                    this.new_notification = true;
-                    this.notification = e.notification;
+                    if (e.notification.store == true)
+                    {
+                        this.new_notification = true;
+                        this.notification = e.notification;
+                    }
                 }
             );
         }

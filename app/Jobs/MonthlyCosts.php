@@ -96,26 +96,34 @@ class MonthlyCosts implements ShouldQueue
                 ]);
                 $this->updateIndicator("dettes", $entreprise->id, $difference);
                 $notification = [
-                    "type" => "NewLoan",
-                    "status" => "warning",
                     "entreprise_id" => $entreprise->id,
-                    "data" => [],
-                    "message" => "Vos disponibilités ne suffisent pas pour payer les charges de ce mois, une nouvelle dette s'est ajoutée automatiquement",
-                    "title" => "Manque de disponibilités"
+                    "type" => "NewLoan",
+                    
+                    "store" => true,
+                    
+                    "title" => "Manque de disponibilités",
+                    "text" => "Vos disponibilités ne suffisent pas pour payer les charges de ce mois, une nouvelle dette s'est ajoutée automatiquement",
+                    "icon_path" => "aaaaaaaaaaa",
+
+                    "style" => "failure",
                 ];
                 event(new NewNotification($notification));
             } else {
                 $this->updateIndicator('caisse', $entreprise->id, -1 * $cost);
                 $notification = [
-                    "type" => "MonthlyCosts",
-                    "status" => "info",
                     "entreprise_id" => $entreprise->id,
-                    "data" => [],
-                    "message" => "Un mois est passé, vous payez:
+                    "type" => "MonthlyCosts",
+                    
+                    "store" => true,
+                    
+                    "text" => "Un mois est passé, vous payez:
                                   Salaires ( " . $salary_cost . " DA )
                                   - Stockage ( " . $stock_cost . " DA )
                                   - Pollution ( " . $pollution_cost . " DA ). Total: " . $cost . " DA.",
-                    "title" => "Frais mensuels"
+                    "title" => "Frais mensuels",
+                    "icon_path" => "aaaaaaaaaaa",
+
+                    "style" => "info",
                 ];
                 event(new NewNotification($notification));
             }
@@ -157,12 +165,16 @@ class MonthlyCosts implements ShouldQueue
             }
 
             $notification = [
-                "type" => "MachinesUpdate",
-                "status" => "info",
                 "entreprise_id" => $entreprise->id,
-                "data" => [],
-                "message" => "Santé des machines",
-                "title" => "La santé des machines décroit"
+                "type" => "MachinesUpdate",
+                
+                "store" => true,
+                
+                "title" => "Santé des machines",
+                "text" => "La santé des machines décroit",
+                "icon_path" => "aaaaaaaaaaa",
+
+                "style" => "info",
             ];
             event(new NewNotification($notification));
         }

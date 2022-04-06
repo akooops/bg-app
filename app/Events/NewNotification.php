@@ -2,13 +2,14 @@
 
 namespace App\Events;
 
+use App\Models\Notification;
 use Illuminate\Broadcasting\Channel;
-use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Broadcasting\PresenceChannel;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
 class NewNotification implements ShouldBroadcast
 {
@@ -22,7 +23,22 @@ class NewNotification implements ShouldBroadcast
      */
     public function __construct($notification)
     {
-        $this->notification = $notification;
+        $this->notification = [];
+        $this->notification["entreprise_id"] = $notification["entreprise_id"];
+        $this->notification["type"] = $notification["type"];
+        $this->notification["store"] = $notification["store"];
+        
+        if ($notification["store"] == true)
+        {
+            $notif = Notification::create([
+                'entreprise_id' => $notification['entreprise_id'],
+                'text' => $notification['text'],
+                'title' => $notification['title'],
+                'icon_path' => $notification['icon_path'],
+                'type' => $notification['style'],
+                'time' => nova_get_setting('current_date'),
+            ]);
+        }
     }
 
     /**

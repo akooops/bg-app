@@ -59,8 +59,14 @@ class AddToStock implements ShouldQueue
         $notification = [
             "type" => "CommandDelivered",
             "entreprise_id" => $entreprise_id,
-            "message" => $message,
-            "title" => "Commande Livrée"
+            
+            "store" => true,
+            
+            "text" => $message,
+            "title" => "Commande Livrée",
+            "icon_path" => "aaaaaaaaaaa",
+
+            "style" => "success",
         ];
         event(new NewNotification($notification));
     }

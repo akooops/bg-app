@@ -266,12 +266,18 @@ class EntrepriseController extends Controller
 
         });
 
-        $message = "Commande effectuée. Livraison en cours...";
+        $message = "Votre commande a été effectuée. Livraison en cours...";
         $notification = [
-            "type" => "CommandUpdate",
             "entreprise_id" => $entreprise_id,
-            "message" => $message,
-            "title" => "Livraison de la commande"
+            "type" => "CommandUpdate",
+
+            "store" => true,
+
+            "title" => "Commande effctuée",
+            "text" => $message,
+            "icon_path" => "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",      // ADD ICON HERE LATER
+
+            "style" => "info",
         ];
         event(new NewNotification($notification));
 
@@ -480,10 +486,16 @@ class EntrepriseController extends Controller
         // Send stock change notification
         $message = "Stock de matières premières décru";
         $notification = [
-            "type" => "StockUpdate",
             "entreprise_id" => $entreprise_id,
-            "message" => $message,
-            "title" => "Matières premières"
+            "type" => "StockUpdate",
+
+            "store" => false,
+
+            "title" => "",
+            "text" => "",
+            "icon_path" => "",                              // ADD ICON HERE LATER
+
+            "style" => "",
         ];
         event(new NewNotification($notification));
 
@@ -530,10 +542,16 @@ class EntrepriseController extends Controller
         if ($status == 'sold') {
             $message = "Vous avez déjà tout vendu pour la production" . $production_id . "";
             $notification = [
-                "type" => "ProductionUpdate",
                 "entreprise_id" => $entreprise_id,
-                "message" => $message,
-                "title" => "Production déjà vendue"
+                "type" => "ProductionUpdate",
+                
+                "store" => true,
+                
+                "text" => $message,
+                "title" => "Production déjà vendue",
+                "icon_path" => "aaaaaaaaaaa",
+
+                "style" => "info",
             ];
             event(new NewNotification($notification));
             return Response::json(["message" => $message], 200);
@@ -542,10 +560,16 @@ class EntrepriseController extends Controller
         if ($status == 'selling') {
             $message = "La production " . $production_id . " est déjà en vente.";
             $notification = [
-                "type" => "ProductionUpdate",
                 "entreprise_id" => $entreprise_id,
-                "message" => $message,
-                "title" => "Production déjà vendue"
+                "type" => "ProductionUpdate",
+
+                "store" => true,
+
+                "text" => $message,
+                "title" => "Production déjà en vente",
+                "icon_path" => "aaaaaaaaaaa",
+
+                "style" => "info",
             ];
             event(new NewNotification($notification));
             return Response::json(["message" => $message], 200);
@@ -555,10 +579,16 @@ class EntrepriseController extends Controller
 
         $message = "La production " . $production_id . " a été mise en vente.";
         $notification = [
-            "type" => "ProductionUpdate",
             "entreprise_id" => $entreprise_id,
-            "message" => $message,
-            "title" => "Production mise en vente"
+            "type" => "ProductionUpdate",
+
+            "store" => true,
+
+            "text" => $message,
+            "title" => "Production mise en vente",
+            "icon_path" => "aaaaaaaaaaa",
+
+            "style" => "failure",
         ];
         event(new NewNotification($notification));
         return Response::json(["message" => $message], 200);
@@ -588,8 +618,14 @@ class EntrepriseController extends Controller
             $notification = [
                 "type" => "MachinesUpdate",
                 "entreprise_id" => $entreprise_id,
-                "message" => $message,
-                "title" => "Echec de l'achat de machine"
+
+                "store" => true,
+
+                "text" => $message,
+                "title" => "Production déjà vendue",
+                "icon_path" => "aaaaaaaaaaa",
+
+                "style" => "failure",
             ];
             event(new NewNotification($notification));
             return Response::json(["message" => $message, "success" => false], 200);
@@ -598,10 +634,17 @@ class EntrepriseController extends Controller
         if ($number <= 0) {
             $message = "Impossible d'acheter des machines: Le nombre doit être positif.";
             $notification = [
-                "type" => "MachinesUpdate",
                 "entreprise_id" => $entreprise_id,
-                "message" => $message,
-                "title" => "Echec de l'achat de machine"
+                "type" => "MachinesUpdate",
+
+                "store" => true,
+
+                "text" => $message,
+                "title" => "Echec de l'achat de machine",
+
+                "icon_path" => "aaaaaaaaaaa",
+
+                "style" => "failure",
             ];
             event(new NewNotification($notification));
             return Response::json(["message" => $message, "success" => false], 200);
@@ -652,8 +695,15 @@ class EntrepriseController extends Controller
         $notification = [
             "type" => "MachinesUpdate",
             "entreprise_id" => $entreprise_id,
-            "message" => $message,
-            "title" => "Machine Achetée"
+
+            "store" => true,
+
+            "text" => $message,
+            "title" => "Machine achetée",
+
+            "icon_path" => "aaaaaaaaaaa",
+
+            "style" => "info",
         ];
         event(new NewNotification($notification));
         return Response::json(["message" => $message, "success" => true], 200);
@@ -688,8 +738,15 @@ class EntrepriseController extends Controller
             $notification = [
                 "type" => "MachinesUpdate",
                 "entreprise_id" => $entreprise_id,
-                "message" => $message,
-                "title" => "Échec de la vente de machine"
+                
+                "store" => true,
+                
+                "text" => $message,
+                "title" => "Échec de la vente de machine",
+
+                "icon_path" => "aaaaaaaaaaa",
+
+                "style" => "info",
             ];
             event(new NewNotification($notification));
             return Response::json(["message" => $message, "success" => false], 200);
@@ -700,8 +757,17 @@ class EntrepriseController extends Controller
             $notification = [
                 "type" => "MachinesUpdate",
                 "entreprise_id" => $entreprise_id,
-                "message" => $message,
-                "title" => "Echec de l'achat de machine"
+                
+                "store" => true,
+                
+                "text" => $message,
+                "title" => "Echec de l'achat de machine",
+
+                "entreprise_id" => $entreprise_id,
+
+                "icon_path" => "aaaaaaaaaaa",
+
+                "style" => "info",
             ];
             event(new NewNotification($notification));
             return Response::json(["message" => $message, "success" => false], 200);
@@ -712,8 +778,15 @@ class EntrepriseController extends Controller
             $notification = [
                 "type" => "MachinesUpdate",
                 "entreprise_id" => $entreprise_id,
-                "message" => $message,
-                "title" => "Échec de la vente de machine"
+                
+                "store" => true,
+                
+                "text" => $message,
+                "title" => "Échec de la vente de machine",
+
+                "icon_path" => "aaaaaaaaaaa",
+
+                "style" => "info",
             ];
             event(new NewNotification($notification));
             return Response::json(["message" => $message, "success" => false], 200);
@@ -724,8 +797,14 @@ class EntrepriseController extends Controller
             $notification = [
                 "type" => "MachinesUpdate",
                 "entreprise_id" => $entreprise_id,
-                "message" => $message,
-                "title" => "Échec de la vente de machine"
+                
+                "store" => true,
+                
+                "text" => $message,
+                "title" => "Échec de la vente de machine",
+                "icon_path" => "aaaaaaaaaaa",
+
+                "style" => "info",
             ];
             event(new NewNotification($notification));
             return Response::json(["message" => $message, "success" => false], 200);
@@ -773,8 +852,14 @@ class EntrepriseController extends Controller
         $notification = [
             "type" => "MachinesUpdate",
             "entreprise_id" => $entreprise_id,
-            "message" => $message,
-            "title" => "Machine Vendue"
+            
+            "store" => true,
+            
+            "text" => $message,
+            "title" => "Machine Vendue",
+            "icon_path" => "aaaaaaaaaaa",
+
+            "style" => "success",
         ];
         event(new NewNotification($notification));
         return Response::json(["message" => $message, "success" => true], 200);
@@ -792,8 +877,14 @@ class EntrepriseController extends Controller
             $notification = [
                 "type" => "ActionUpdate",
                 "entreprise_id" => $entreprise_id,
-                "message" => $message,
-                "title" => "Échec de l'action"
+                
+                "store" => true,
+                
+                "text" => $message,
+                "title" => "Échec de l'action",
+                "icon_path" => "aaaaaaaaaaa",
+
+                "style" => "failure",
             ];
             event(new NewNotification($notification));
             return Response::json(["message" => $message, "success" => false], 200);
@@ -808,8 +899,14 @@ class EntrepriseController extends Controller
                     $notification = [
                         "type" => "ActionUpdate",
                         "entreprise_id" => $entreprise_id,
-                        "message" => $message,
-                        "title" => "5S"
+                        
+                        "store" => true,
+                        
+                        "text" => $message,
+                        "title" => "5S",
+                        "icon_path" => "aaaaaaaaaaa",
+
+                        "style" => "failure",
                     ];
                     event(new NewNotification($notification));
                     return Response::json(["message" => $message, "success" => false], 200);
@@ -822,8 +919,14 @@ class EntrepriseController extends Controller
                     $notification = [
                         "type" => "ActionUpdate",
                         "entreprise_id" => $entreprise_id,
-                        "message" => $message,
-                        "title" => "5S"
+                        
+                        "store" => true,
+                        
+                        "text" => $message,
+                        "title" => "5S",
+                        "icon_path" => "aaaaaaaaaaa",
+
+                        "style" => "failure",
                     ];
                     event(new NewNotification($notification));
                     return Response::json(["message" => $message, "success" => false], 200);
@@ -836,8 +939,14 @@ class EntrepriseController extends Controller
                     $notification = [
                         "type" => "ActionUpdate",
                         "entreprise_id" => $entreprise_id,
-                        "message" => $message,
-                        "title" => "5S"
+                        
+                        "store" => true,
+                        
+                        "text" => $message,
+                        "title" => "5S",
+                        "icon_path" => "aaaaaaaaaaa",
+
+                        "style" => "success",
                     ];
                     event(new NewNotification($notification));
                     return Response::json(["message" => $message, "success" => true], 200);
@@ -851,8 +960,14 @@ class EntrepriseController extends Controller
                     $notification = [
                         "type" => "ActionUpdate",
                         "entreprise_id" => $entreprise_id,
-                        "message" => $message,
-                        "title" => "Audit"
+                        
+                        "store" => true,
+                        
+                        "text" => $message,
+                        "title" => "Audit",
+                        "icon_path" => "aaaaaaaaaaa",
+
+                        "style" => "failure",
                     ];
                     event(new NewNotification($notification));
                     return Response::json(["message" => $message, "success" => false], 200);
@@ -865,8 +980,14 @@ class EntrepriseController extends Controller
                     $notification = [
                         "type" => "ActionUpdate",
                         "entreprise_id" => $entreprise_id,
-                        "message" => $message,
-                        "title" => "Audit"
+                        
+                        "store" => true,
+                        
+                        "text" => $message,
+                        "title" => "Audit",
+                        "icon_path" => "aaaaaaaaaaa",
+
+                        "style" => "success",
                     ];
                     event(new NewNotification($notification));
                     return Response::json(["message" => $message, "success" => true], 200);
@@ -879,8 +1000,14 @@ class EntrepriseController extends Controller
                     $notification = [
                         "type" => "ActionUpdate",
                         "entreprise_id" => $entreprise_id,
-                        "message" => $message,
-                        "title" => "Réparation machines niveau 1"
+                        
+                        "store" => true,
+                        
+                        "text" => $message,
+                        "title" => "Réparation machines niveau 1",
+                        "icon_path" => "aaaaaaaaaaa",
+
+                        "style" => "failure",
                     ];
                     event(new NewNotification($notification));
                     return Response::json(["message" => $message, "success" => false], 200);
@@ -892,8 +1019,14 @@ class EntrepriseController extends Controller
                     $notification = [
                         "type" => "ActionUpdate",
                         "entreprise_id" => $entreprise_id,
-                        "message" => $message,
-                        "title" => "Réparation machines niveau 1"
+                        
+                        "store" => true,
+                        
+                        "text" => $message,
+                        "title" => "Réparation machines niveau 1",
+                        "icon_path" => "aaaaaaaaaaa",
+
+                        "style" => "failure",
                     ];
                     event(new NewNotification($notification));
                     return Response::json(["message" => $message, "success" => false], 200);
@@ -906,8 +1039,14 @@ class EntrepriseController extends Controller
                     $notification = [
                         "type" => "ActionUpdate",
                         "entreprise_id" => $entreprise_id,
-                        "message" => $message,
-                        "title" => "Réparation machines niveau 1"
+                        
+                        "store" => true,
+                        
+                        "text" => $message,
+                        "title" => "Réparation machines niveau 1",
+                        "icon_path" => "aaaaaaaaaaa",
+
+                        "style" => "success",
                     ];
                     event(new NewNotification($notification));
                     return Response::json(["message" => $message, "success" => true], 200);
@@ -920,8 +1059,14 @@ class EntrepriseController extends Controller
                     $notification = [
                         "type" => "ActionUpdate",
                         "entreprise_id" => $entreprise_id,
-                        "message" => $message,
-                        "title" => "Réparation machines niveau 2"
+                        
+                        "store" => true,
+                        
+                        "text" => $message,
+                        "title" => "Réparation machines niveau 2",
+                        "icon_path" => "aaaaaaaaaaa",
+
+                        "style" => "failure",
                     ];
                     event(new NewNotification($notification));
                     return Response::json(["message" => $message, "success" => false], 200);
@@ -933,8 +1078,14 @@ class EntrepriseController extends Controller
                     $notification = [
                         "type" => "ActionUpdate",
                         "entreprise_id" => $entreprise_id,
-                        "message" => $message,
-                        "title" => "Réparation machines niveau 2"
+                        
+                        "store" => true,
+                        
+                        "text" => $message,
+                        "title" => "Réparation machines niveau 2",
+                        "icon_path" => "aaaaaaaaaaa",
+
+                        "style" => "failure",
                     ];
                     event(new NewNotification($notification));
                     return Response::json(["message" => $message, "success" => false], 200);
@@ -946,8 +1097,14 @@ class EntrepriseController extends Controller
                     $notification = [
                         "type" => "ActionUpdate",
                         "entreprise_id" => $entreprise_id,
-                        "message" => $message,
-                        "title" => "Réparation machines niveau 2"
+                        
+                        "store" => true,
+                        
+                        "text" => $message,
+                        "title" => "Réparation machines niveau 2",
+                        "icon_path" => "aaaaaaaaaaa",
+
+                        "style" => "success",
                     ];
                     event(new NewNotification($notification));
                     return Response::json(["message" => $message, "success" => true], 200);
@@ -960,8 +1117,14 @@ class EntrepriseController extends Controller
                     $notification = [
                         "type" => "ActionUpdate",
                         "entreprise_id" => $entreprise_id,
-                        "message" => $message,
-                        "title" => "Réparation machines niveau 3"
+                        
+                        "store" => true,
+                        
+                        "text" => $message,
+                        "title" => "Réparation machines niveau 3",
+                        "icon_path" => "aaaaaaaaaaa",
+
+                        "style" => "failure",
                     ];
                     event(new NewNotification($notification));
                     return Response::json(["message" => $message, "success" => false], 200);
@@ -973,8 +1136,14 @@ class EntrepriseController extends Controller
                     $notification = [
                         "type" => "ActionUpdate",
                         "entreprise_id" => $entreprise_id,
-                        "message" => $message,
-                        "title" => "Réparation machines niveau 3"
+                        
+                        "store" => true,
+                        
+                        "text" => $message,
+                        "title" => "Réparation machines niveau 3",
+                        "icon_path" => "aaaaaaaaaaa",
+
+                        "style" => "failure",
                     ];
                     event(new NewNotification($notification));
                     return Response::json(["message" => $message, "success" => false], 200);
@@ -986,8 +1155,14 @@ class EntrepriseController extends Controller
                     $notification = [
                         "type" => "ActionUpdate",
                         "entreprise_id" => $entreprise_id,
-                        "message" => $message,
-                        "title" => "Réparation machines niveau 3"
+                        
+                        "store" => true,
+                        
+                        "text" => $message,
+                        "title" => "Réparation machines niveau 3",
+                        "icon_path" => "aaaaaaaaaaa",
+
+                        "style" => "success",
                     ];
                     event(new NewNotification($notification));
                     return Response::json(["message" => $message, "success" => true], 200);
