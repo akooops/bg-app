@@ -44,7 +44,10 @@
         <!-- stat cards  -->
 
         <div v-if="show_stat_cards" class="flex w-full justify-center gap-7">
-            <Indicator v-if="indicators_loaded" :indicators="indicators"></Indicator>
+            <Indicator
+                v-if="indicators_loaded"
+                :indicators="indicators"
+            ></Indicator>
 
             <div
                 class="relative flex w-1/4 gap-3 justify-evenly items-center rounded-xl px-3 bg-white shadow-sm"
@@ -66,9 +69,39 @@
                     v-if="showMachines"
                     class="flex items-center gap-2 absolute z-999 -bottom-11 right-0 bg-white border-opacity-5 border-vN shadow-md p-2 rounded-lg"
                 >
-                    Niveau 1: {{ indicators['nb_machines_lv1'].value }} | Occupés: {{ indicators['nb_machines_lv1_busy'].value }} | Santé: {{ (Math.round(indicators['machines_lv1_health'].value * Math.pow(10, 2)) * 100) / Math.pow(10, 2) }}%<br/>
-                    Niveau 2: {{ indicators['nb_machines_lv2'].value }} | Occupés: {{ indicators['nb_machines_lv2_busy'].value }} | Santé: {{ (Math.round(indicators['machines_lv2_health'].value * Math.pow(10, 2)) * 100) / Math.pow(10, 2) }}%<br/>
-                    Niveau 3: {{ indicators['nb_machines_lv3'].value }} | Occupés: {{ indicators['nb_machines_lv3_busy'].value }} | Santé: {{ (Math.round(indicators['machines_lv3_health'].value * Math.pow(10, 2)) * 100) / Math.pow(10, 2) }}%<br/>
+                    Niveau 1: {{ indicators["nb_machines_lv1"].value }} |
+                    Occupés: {{ indicators["nb_machines_lv1_busy"].value }} |
+                    Santé:
+                    {{
+                        (Math.round(
+                            indicators["machines_lv1_health"].value *
+                                Math.pow(10, 2)
+                        ) *
+                            100) /
+                        Math.pow(10, 2)
+                    }}%<br />
+                    Niveau 2: {{ indicators["nb_machines_lv2"].value }} |
+                    Occupés: {{ indicators["nb_machines_lv2_busy"].value }} |
+                    Santé:
+                    {{
+                        (Math.round(
+                            indicators["machines_lv2_health"].value *
+                                Math.pow(10, 2)
+                        ) *
+                            100) /
+                        Math.pow(10, 2)
+                    }}%<br />
+                    Niveau 3: {{ indicators["nb_machines_lv3"].value }} |
+                    Occupés: {{ indicators["nb_machines_lv3_busy"].value }} |
+                    Santé:
+                    {{
+                        (Math.round(
+                            indicators["machines_lv3_health"].value *
+                                Math.pow(10, 2)
+                        ) *
+                            100) /
+                        Math.pow(10, 2)
+                    }}%<br />
                 </div>
             </div>
 
@@ -92,9 +125,11 @@
                     v-if="showEmployees"
                     class="flex items-center gap-2 absolute z-999 -bottom-11 right-0 bg-white border-opacity-5 border-vN shadow-md p-2 rounded-lg"
                 >
-                    Simples: {{ indicators['nb_workers_lv1'].value }} <br/>
-                    Experts: {{ indicators['nb_workers_lv2'].value }} <br/>
-                    Humeur: {{ Math.round(indicators['workers_mood'].value * 100) }} % <br/>
+                    Simples: {{ indicators["nb_workers_lv1"].value }} <br />
+                    Experts: {{ indicators["nb_workers_lv2"].value }} <br />
+                    Humeur:
+                    {{ Math.round(indicators["workers_mood"].value * 100) }} %
+                    <br />
                 </div>
             </div>
         </div>
@@ -163,21 +198,29 @@
                                         class="bg-gray-100 font-semibold text-vN"
                                     >
                                         <tr>
-                                            <th class="border w-1/2 p-2 border-l-0">
+                                            <th
+                                                class="border w-1/2 p-2 border-l-0"
+                                            >
                                                 Matieres premiere
                                             </th>
-                                            <th class="border w-1/2 p-2 border-r-0">
+                                            <th
+                                                class="border w-1/2 p-2 border-r-0"
+                                            >
                                                 Quantités
                                             </th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr
-                                            v-for="(mat, i) in product_info.raw_materials"
+                                            v-for="(
+                                                mat, i
+                                            ) in product_info.raw_materials"
                                             :key="i"
                                             class="bg-gray-100 font-normal text-vN"
                                         >
-                                            <td class="flex justify-center icon-material py-1 border border-l-0">
+                                            <td
+                                                class="flex justify-center icon-material py-1 border border-l-0"
+                                            >
                                                 <img
                                                     src="/assets/icons/khobz.png"
                                                     alt="khobz"
@@ -186,7 +229,9 @@
                                                     {{ mat.name }}
                                                 </span>
                                             </td>
-                                            <td class="text-center border table-cell border-r-0">
+                                            <td
+                                                class="text-center border table-cell border-r-0"
+                                            >
                                                 {{ mat.pivot.quantity }}
                                             </td>
                                         </tr>
@@ -214,7 +259,12 @@
                         >
                             Numéro
                         </th>
-                        <th class="p-3 text-sm table-cell">Matiere</th>
+                        <th
+                            class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                            @click="sort('product')"
+                        >
+                            Matiere
+                        </th>
                         <th
                             class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
                             @click="sort('quantity')"
@@ -251,7 +301,12 @@
                         >
                             Chiffre d'Affaire
                         </th>
-                        <th class="p-3 text-md table-cell">Status</th>
+                        <th
+                            class="p-3 text-md table-cell cursor-pointer hover:text-vert select-none"
+                            @click="sort('status_code')"
+                        >
+                            Status
+                        </th>
                         <th class="p-3 text-md table-cell">Action</th>
                     </tr>
                 </thead>
@@ -303,13 +358,13 @@
                         </td>
                         <td
                             :class="
-                                prod.status_code == 'pending' ?
-                                'text-jaune' :
-                                prod.status_code == 'sold' ?
-                                'text-vert' :
-                                prod.status_code == 'selling' ?
-                                'text-blue-500' :
-                                'text-black'
+                                prod.status_code == 'pending'
+                                    ? 'text-jaune'
+                                    : prod.status_code == 'sold'
+                                    ? 'text-vert'
+                                    : prod.status_code == 'selling'
+                                    ? 'text-blue-500'
+                                    : 'text-black'
                             "
                             class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
                         >
@@ -320,7 +375,7 @@
                         >
                             <button
                                 @click="sell(prod)"
-                                class="p-1 px-2 rounded-full"
+                                class="p-1 px-2 rounded-full bg-vert text-vN"
                                 v-if="prod.status_code == 'completed'"
                             >
                                 {{
@@ -534,6 +589,7 @@ export default {
                 price: prod.price,
             };
             this.sell_info.production = data;
+            this.show_selling_info = true;
             axios
                 .get("/api/demand/real", {
                     params: data,
@@ -542,7 +598,6 @@ export default {
                     this.sell_info.sold_quant = resp.data.demand;
                     this.sell_info.stock_quant = resp.data.stock;
                     this.sell_info.price = data.price;
-                    this.show_selling_info = true;
                     this.sell_info.number = data.id;
                 });
         },

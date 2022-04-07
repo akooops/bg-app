@@ -21,7 +21,8 @@
         "laravelrotebal/nova-attach-many": "^2.0",
         "manou/indicator-explorer": "*",
         "manou/indicator-updater": "*",
-        "optimistdigital/nova-settings": "^3.1"
+        "optimistdigital/nova-settings": "^3.1",
+        "predis/predis": "^1.1"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.5",
