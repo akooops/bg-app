@@ -48,10 +48,16 @@ class SellProductionsScheduler implements ShouldQueue
             if ($product->left_demand <= 0) {
                 $message = "Il n'y a plus de demande sur le produit" . $product->name . " pour l'instant, impossible de continuer la vente de la production " . $production->id . ".";
                 $notification = [
-                    "type" => "ProductionUpdate",
                     "entreprise_id" => $entreprise_id,
-                    "message" => $message,
-                    "title" => "Plus de demande"
+                    "type" => "ProductionUpdate",
+
+                    "store" => true,
+
+                    "text" => $message,
+                    "title" => "Plus de demande",
+                    "icon_path" => "aaaaaaaaaaa",
+
+                    "style" => "failure",
                 ];
                 event(new NewNotification($notification));
 
@@ -62,7 +68,10 @@ class SellProductionsScheduler implements ShouldQueue
             $production_quantity_sold = $production->sold;
 
             $production_percentage_to_sell = nova_get_setting("production_percentage_to_sell");
-            $quantity_to_sell = round(min($this->productDemandReal($product_id, $entreprise_id, $price, round($production_quantity * $production_percentage_to_sell)), $production_quantity - $production_quantity_sold));
+            $quantity_to_sell = round(min($this->productDemandReal($product_id, $entreprise_id, $price, round($production_quantity * $production_percentage_to_sell)),
+                                          $production_quantity - $production_quantity_sold
+                                        )
+                                    );
 
             $dist_cost = $quantity_to_sell * nova_get_setting("dist_unit_cost");
             $sales = $quantity_to_sell * $price;
@@ -87,10 +96,10 @@ class SellProductionsScheduler implements ShouldQueue
             // Signal sale
             $message = "Vente d'une partie de la production " . $production->id;
             $notification = [
-                "type" => "ProductionUpdate",
                 "entreprise_id" => $entreprise_id,
-                "message" => $message,
-                "title" => "Production vendue"
+                "type" => "ProductionUpdate",
+
+                "store" => false,
             ];
             event(new NewNotification($notification));
 
@@ -106,10 +115,16 @@ class SellProductionsScheduler implements ShouldQueue
 
                 $message = "Production " . $production->id . " entièrement vendue.";
                 $notification = [
-                    "type" => "ProductionUpdate",
                     "entreprise_id" => $entreprise_id,
+                    "type" => "ProductionUpdate",
+
+                    "store" => true,
+
                     "message" => $message,
-                    "title" => "Production vendue"
+                    "title" => "Production vendue",
+                    "icon_path" => "aaaaaaaaaaa",
+
+                    "style" => "info",
                 ];
                 event(new NewNotification($notification));
             }

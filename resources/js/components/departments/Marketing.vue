@@ -391,12 +391,15 @@ export default {
         window.Echo.channel("entreprise_" + this.entreprise.id)
             .listen("NewNotification", (e) => {
                 if (e.notification.type == "AdStatusChanged") {
-                    let index = this.ads.findIndex(
-                        (ad) => ad.ad_id == e.notification.data.id
-                    );
-                    this.ads[index].result = e.notification.data.result;
-                    this.ads[index].status = e.notification.data.status;
+                    // let index = this.ads.findIndex(
+                    //     (ad) => ad.ad_id == e.notification.data.id
+                    // );
+                    // this.ads[index].result = e.notification.data.result;
+                    // this.ads[index].status = e.notification.data.status;
+
+                    this.getAds();
                     this.$forceUpdate();
+
                     //this.ads.unshift(e.notification.data)
                 }
             })

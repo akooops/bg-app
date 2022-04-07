@@ -67,22 +67,24 @@ class CommandScheduler implements ShouldQueue
                     $raw_mat->unit . " de " . $raw_mat->name .
                     " de la commande " . $this->command["command_id"] . " vous ont été livrés";
         $notification = [
-            "type" => "CommandUpdate",
             "entreprise_id" => $entreprise_id,
-            "message" => $message,
-            "title" => "Livraison de la commande"
+            "type" => "CommandUpdate",
+            
+            "store" => true,
+            
+            "text" => $message,
+            "title" => "Livraison de la commande",
+            "icon_path" => "aaaaaaaaaaa",
+
+            "style" => "success",
         ];
         event(new NewNotification($notification));
 
-
-        $message = "Les " . $this->command["quantity"] . " " .
-                    $raw_mat->unit . " de " . $raw_mat->name .
-                    " de la commande " . $this->command["command_id"] . " vous ont été livrés";
         $notification = [
-            "type" => "StockUpdate",
             "entreprise_id" => $entreprise_id,
-            "message" => $message,
-            "title" => "Livraison de la commande"
+            "type" => "StockUpdate",
+
+            "store" => false,
         ];
         event(new NewNotification($notification));
     }

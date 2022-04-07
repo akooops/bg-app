@@ -30,20 +30,27 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::prefix("entreprise")->group(function () {
 	Route::get("/commands", [EntrepriseController::class, "getEntrepriseCommands"]);
+
 	Route::get("/stock", [EntrepriseController::class, "getStock"]);
+
 	Route::get("/production/indicators", [EntrepriseController::class, "getProdIndicators"]);
+    Route::get("/marketing/indicators", [MarketingController::class, "getMarketingIndicators"]);
+    Route::get("/hr/indicators", [HrController::class, "getHrIndicators"]);
+
     Route::post("/machine/buy", [EntrepriseController::class, "buyMachine"]);
     Route::post("/machine/sell", [EntrepriseController::class, "sellMachine"]);
     Route::post("/machine/info", [EntrepriseController::class, "getMachinesInfo"]);
+
     Route::post("/action/apply", [EntrepriseController::class, "applyProdAction"]);
-    Route::get("/marketing/indicators", [MarketingController::class, "getMarketingIndicators"]);
-    Route::get("/hr/indicators", [HrController::class, "getHrIndicators"]);
+
     Route::post("/hr/hire", [HrController::class, "hireWorkers"]);
     Route::post("/hr/fire", [HrController::class, "fireWorkers"]);
+
     Route::post("/hr/launch-workshop", [HrController::class, "launchWorkshop"]);
     Route::post("/hr/prime-workers", [HrController::class, "primeWorkers"]);
 
-
+    Route::get("/notifications", [EntrepriseController::class, "getNotifications"]);
+    Route::post("/read-notifications", [EntrepriseController::class, "readNotifications"]);
 });
 
 Route::prefix("demand")->group(function() {

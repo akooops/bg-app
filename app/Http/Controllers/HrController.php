@@ -43,8 +43,14 @@ class HrController extends Controller
         $notification = [
             "type" => "WorkersUpdate",
             "entreprise_id" => $entreprise_id,
-            "message" => $message,
-            "title" => "Employés recrutés"
+            
+            "store" => true,
+            
+            "text" => $message,
+            "title" => "Employés recrutés",
+            "icon_path" => "aaaaaaaaaaa",
+
+            "style" => "info",
         ];
         event(new NewNotification($notification));
 
@@ -89,8 +95,14 @@ class HrController extends Controller
         $notification = [
             "type" => "WorkersUpdate",
             "entreprise_id" => $request->entreprise_id,
-            "message" => $message,
-            "title" => "Employés formés"
+            
+            "store" => true,
+            
+            "text" => $message,
+            "title" => "Employés formés",
+            "icon_path" => "aaaaaaaaaaa",
+
+            "style" => "success",
         ];
         event(new NewNotification($notification));
 
@@ -144,8 +156,14 @@ class HrController extends Controller
         $notification = [
             "type" => "WorkersUpdate",
             "entreprise_id" => $request->entreprise_id,
-            "message" => $message,
-            "title" => "Primes attribuées"
+            
+            "store" => true,
+            
+            "text" => $message,
+            "title" => "Primes attribuées",
+            "icon_path" => "aaaaaaaaaaa",
+
+            "style" => "success",
         ];
         event(new NewNotification($notification));
         return Response::json(["message" => $message, "success" => true], 200);
@@ -202,8 +220,14 @@ class HrController extends Controller
         $notification = [
             "type" => "WorkersUpdate",
             "entreprise_id" => $entreprise_id,
-            "message" => $message,
-            "title" => "Employés licenciés"
+            
+            "store" => true,
+            
+            "text" => $message,
+            "title" => "Employés licenciés",
+            "icon_path" => "aaaaaaaaaaa",
+
+            "style" => "success",
         ];
         event(new NewNotification($notification));
 

@@ -1,69 +1,108 @@
 <template>
-    <div
-        v-if="new_notification"
-        class="
-            shadow-lg
-            rounded-lg
-            bg-white
-            m-8
-            p-4
-            notification-box
-            mx-16
-            flex
-        "
-    >
-        <i
-            v-if="notification.status == 'warning'"
-            class="fas fa-exclamation-circle mt-1 mr-3 fa-2x text-yellow-600"
-        ></i>
-        <i v-else class="fas fa-info-circle mt-1 mr-3 fa-2x"></i>
-        <div class="w-full">
+    <div>
+        <button @click="openNotifBox" class="relative">
+            <img
+                src="/assets/icons/notifications.svg"
+                alt="notification icon"
+                class="h-9 w-9"
+            />
+
             <div
-                class="text-sm pb-2 font-bold"
-                :class="
-                    notification.status == 'warning' ? 'text-yellow-700' : ''
-                "
+                v-if="nb_unread_notifs > 0"
+                class="bg-red-500 absolute -top-1 right-0 w-5 h-5 rounded-full"
             >
-                {{ notification.title }}
-                <span class="float-right" @click="new_notification = null">
-                    <svg
-                        class="fill-current text-gray-600"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        width="22"
-                        height="22"
-                    >
-                        <path
-                            class="heroicon-ui"
-                            d="M16.24 14.83a1 1 0 0 1-1.41 1.41L12 13.41l-2.83 2.83a1 1 0 0 1-1.41-1.41L10.59 12 7.76 9.17a1 1 0 0 1 1.41-1.41L12 10.59l2.83-2.83a1 1 0 0 1 1.41 1.41L13.41 12l2.83 2.83z"
-                        />
-                    </svg>
-                </span>
+                <p
+                    class="text-white text-center my-auto mx-auto"
+                    style="font-size: 12px"
+                >
+                    {{ nb_unread_notifs }}
+                </p>
             </div>
-            <div class="text-sm text-gray-600 tracking-tight">
-                {{ notification.message }}
+
+            <div v-if="show_notifications" class="absolute flex flex-col gap-1 content-center items-center bottom-22 right-0 bg-blue-300 border-black w-80 h-96 rounded-lg overflow-x-hidden overflow-y-scroll z-100">
+                <NotificationItem
+                    v-for="(notif, i) in notifications"
+                    :key="i"
+                    :title="notif.title"
+                    :text="notif.text"
+                    :time="notif.time"
+                    :real_time="notif.created_at"
+                >
+                </NotificationItem>
+
+                <!-- <p v-for="(notif, i) in notifications" :key="i">
+                    {{ notif }}
+                </p> -->
             </div>
-        </div>
+        </button>
     </div>
 </template>
 
 <script>
+import NotificationItem from "./departments/ui/NotificationItem";
 export default {
     name: "Notification",
+    components: {
+        NotificationItem,
+    },
     props: ["user"],
     data() {
         return {
-            notification: null,
-            new_notification: false,
+            notifications: [],
+
+            show_notifications: false,
         };
+    },
+    computed: {
+        nb_unread_notifs() {
+            return this.notifications.filter((x) => x.read == false).length;
+        },
+    },
+    methods: {
+        getNotifications() {
+            axios
+                .get("/api/entreprise/notifications", {
+                    params: {
+                        entreprise_id: this.user.id,
+                    },
+                })
+                .then((resp) => {
+                    this.notifications = resp.data["notifications"];
+                })
+                .catch((e) => {
+                    console.log("Couldn't fetch notifications");
+                });
+        },
+        openNotifBox() {
+            this.show_notifications = !this.show_notifications;
+
+            if (this.show_notifications && this.nb_unread_notifs > 0) {
+                let unread_notifs = this.notifications.filter((x) => x.read == false);
+                let unread_notifs_ids = unread_notifs.map(x => x.id);
+
+                this.notifications.filter(x => unread_notifs_ids.includes(x.id)).forEach((notif) => {
+                    notif.read = true;
+                });
+
+                let data = {
+                    "read_notifications_ids": unread_notifs_ids,
+                };
+
+                axios
+                    .post("/api/entreprise/read-notifications", data);
+            }
+        }
+    },
+    created() {
+        this.getNotifications();
     },
     mounted() {
         if (this.user.type == "entreprise") {
             window.Echo.channel("entreprise_" + this.user.id).listen(
                 "NewNotification",
                 (e) => {
-                    this.new_notification = true;
-                    this.notification = e.notification;
+                    this.getNotifications();
+                    this.$forceUpdate();
                 }
             );
         }

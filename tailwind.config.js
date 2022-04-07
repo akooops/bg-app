@@ -24,6 +24,9 @@ module.exports = {
                 tableBorder: "#EEEEF2",
                 bleu: "#0B3434",
             },
+            zIndex: {
+                '100': '100',
+            },
         },
     },
 

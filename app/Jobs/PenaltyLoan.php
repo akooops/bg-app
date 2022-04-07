@@ -46,12 +46,16 @@ class PenaltyLoan
                 $loan->ratio += 0.1 * $loan->ratio;
                 $loan->save();
                 $notification = [
-                    "type" => "LoanRateChanged",
-                    "status" => "warning",
                     "entreprise_id" => $loan->entreprise_id,
-                    "data" => [],
-                    "message" => "Le taux d'intérêt de votre dette a augmenté, il est désormais " . $loan->ratio . " %",
-                    "title" => "Retard d'endettement"
+                    "type" => "LoanRateChanged",
+                    
+                    "store" => true,
+                    
+                    "text" => "Le taux d'intérêt de votre dette a augmenté, il est désormais " . $loan->ratio . " %",
+                    "title" => "Retard d'endettement",
+                    "icon_path" => "aaaaaaaaaaa",
+
+                    "style" => "failure",
                 ];
                 event(new NewNotification($notification));
             }
