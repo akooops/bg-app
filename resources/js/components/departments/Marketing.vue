@@ -108,9 +108,8 @@
                 </div>
             </template>
         </Modal>
-        <div class="flex">
+        <div class="flex gap-10">
             <StatCard
-                class="mr-3"
                 v-for="(key, id) in Object.keys(indicators)"
                 v-bind:key="id"
                 :title="indicators[key].name"

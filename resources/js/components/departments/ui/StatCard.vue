@@ -1,6 +1,6 @@
 <template>
     <div
-        class="w-full flex flex-col items-center rounded-2xl gap-3 shadow-md bg-white py-8"
+        class="w-full flex flex-col items-center rounded-2xl gap-3 shadow-md bg-white py-6"
     >
         <div
             class="rounded-full bg-gradient-to-t from-lightVert to-lighterVert p-4"
