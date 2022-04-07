@@ -1,22 +1,6 @@
 <template>
     <div class="flex items-center gap-3">
-        <div class="relative">
-            <img
-                src="/assets/icons/notifications.svg"
-                alt="notification icon"
-                class="h-9 w-9"
-            />
-            <div
-                class="bg-red-500 absolute -top-1 right-0 w-5 h-5 rounded-full"
-            >
-                <p
-                    class="text-white text-center my-auto mx-auto"
-                    style="font-size: 12px"
-                >
-                    21
-                </p>
-            </div>
-        </div>
+        <Notification :user="user"></Notification>
         <div class="flex items-center gap-3">
             <p class="font-semibold">
                 <span class="uppercase">{{ user.name }}</span>
@@ -58,8 +42,12 @@
 </template>
 
 <script>
+import Notification from "./Notification";
 export default {
     name: "SimulationTime",
+    components: {
+        Notification,
+    },
     props: ["user"],
     data() {
         return {

@@ -17,6 +17,7 @@ use App\Jobs\CommandScheduler;
 use App\Traits\IndicatorTrait;
 use App\Events\NewNotification;
 use App\Jobs\ProductionScheduler;
+use App\Models\Notification;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Response;
 
@@ -544,9 +545,9 @@ class EntrepriseController extends Controller
             $notification = [
                 "entreprise_id" => $entreprise_id,
                 "type" => "ProductionUpdate",
-                
+
                 "store" => true,
-                
+
                 "text" => $message,
                 "title" => "Production déjà vendue",
                 "icon_path" => "aaaaaaaaaaa",
@@ -738,9 +739,9 @@ class EntrepriseController extends Controller
             $notification = [
                 "type" => "MachinesUpdate",
                 "entreprise_id" => $entreprise_id,
-                
+
                 "store" => true,
-                
+
                 "text" => $message,
                 "title" => "Échec de la vente de machine",
 
@@ -757,9 +758,9 @@ class EntrepriseController extends Controller
             $notification = [
                 "type" => "MachinesUpdate",
                 "entreprise_id" => $entreprise_id,
-                
+
                 "store" => true,
-                
+
                 "text" => $message,
                 "title" => "Echec de l'achat de machine",
 
@@ -778,9 +779,9 @@ class EntrepriseController extends Controller
             $notification = [
                 "type" => "MachinesUpdate",
                 "entreprise_id" => $entreprise_id,
-                
+
                 "store" => true,
-                
+
                 "text" => $message,
                 "title" => "Échec de la vente de machine",
 
@@ -797,9 +798,9 @@ class EntrepriseController extends Controller
             $notification = [
                 "type" => "MachinesUpdate",
                 "entreprise_id" => $entreprise_id,
-                
+
                 "store" => true,
-                
+
                 "text" => $message,
                 "title" => "Échec de la vente de machine",
                 "icon_path" => "aaaaaaaaaaa",
@@ -852,9 +853,9 @@ class EntrepriseController extends Controller
         $notification = [
             "type" => "MachinesUpdate",
             "entreprise_id" => $entreprise_id,
-            
+
             "store" => true,
-            
+
             "text" => $message,
             "title" => "Machine Vendue",
             "icon_path" => "aaaaaaaaaaa",
@@ -877,9 +878,9 @@ class EntrepriseController extends Controller
             $notification = [
                 "type" => "ActionUpdate",
                 "entreprise_id" => $entreprise_id,
-                
+
                 "store" => true,
-                
+
                 "text" => $message,
                 "title" => "Échec de l'action",
                 "icon_path" => "aaaaaaaaaaa",
@@ -899,9 +900,9 @@ class EntrepriseController extends Controller
                     $notification = [
                         "type" => "ActionUpdate",
                         "entreprise_id" => $entreprise_id,
-                        
+
                         "store" => true,
-                        
+
                         "text" => $message,
                         "title" => "5S",
                         "icon_path" => "aaaaaaaaaaa",
@@ -919,9 +920,9 @@ class EntrepriseController extends Controller
                     $notification = [
                         "type" => "ActionUpdate",
                         "entreprise_id" => $entreprise_id,
-                        
+
                         "store" => true,
-                        
+
                         "text" => $message,
                         "title" => "5S",
                         "icon_path" => "aaaaaaaaaaa",
@@ -939,9 +940,9 @@ class EntrepriseController extends Controller
                     $notification = [
                         "type" => "ActionUpdate",
                         "entreprise_id" => $entreprise_id,
-                        
+
                         "store" => true,
-                        
+
                         "text" => $message,
                         "title" => "5S",
                         "icon_path" => "aaaaaaaaaaa",
@@ -960,9 +961,9 @@ class EntrepriseController extends Controller
                     $notification = [
                         "type" => "ActionUpdate",
                         "entreprise_id" => $entreprise_id,
-                        
+
                         "store" => true,
-                        
+
                         "text" => $message,
                         "title" => "Audit",
                         "icon_path" => "aaaaaaaaaaa",
@@ -980,9 +981,9 @@ class EntrepriseController extends Controller
                     $notification = [
                         "type" => "ActionUpdate",
                         "entreprise_id" => $entreprise_id,
-                        
+
                         "store" => true,
-                        
+
                         "text" => $message,
                         "title" => "Audit",
                         "icon_path" => "aaaaaaaaaaa",
@@ -1000,9 +1001,9 @@ class EntrepriseController extends Controller
                     $notification = [
                         "type" => "ActionUpdate",
                         "entreprise_id" => $entreprise_id,
-                        
+
                         "store" => true,
-                        
+
                         "text" => $message,
                         "title" => "Réparation machines niveau 1",
                         "icon_path" => "aaaaaaaaaaa",
@@ -1019,9 +1020,9 @@ class EntrepriseController extends Controller
                     $notification = [
                         "type" => "ActionUpdate",
                         "entreprise_id" => $entreprise_id,
-                        
+
                         "store" => true,
-                        
+
                         "text" => $message,
                         "title" => "Réparation machines niveau 1",
                         "icon_path" => "aaaaaaaaaaa",
@@ -1039,9 +1040,9 @@ class EntrepriseController extends Controller
                     $notification = [
                         "type" => "ActionUpdate",
                         "entreprise_id" => $entreprise_id,
-                        
+
                         "store" => true,
-                        
+
                         "text" => $message,
                         "title" => "Réparation machines niveau 1",
                         "icon_path" => "aaaaaaaaaaa",
@@ -1059,9 +1060,9 @@ class EntrepriseController extends Controller
                     $notification = [
                         "type" => "ActionUpdate",
                         "entreprise_id" => $entreprise_id,
-                        
+
                         "store" => true,
-                        
+
                         "text" => $message,
                         "title" => "Réparation machines niveau 2",
                         "icon_path" => "aaaaaaaaaaa",
@@ -1078,9 +1079,9 @@ class EntrepriseController extends Controller
                     $notification = [
                         "type" => "ActionUpdate",
                         "entreprise_id" => $entreprise_id,
-                        
+
                         "store" => true,
-                        
+
                         "text" => $message,
                         "title" => "Réparation machines niveau 2",
                         "icon_path" => "aaaaaaaaaaa",
@@ -1097,9 +1098,9 @@ class EntrepriseController extends Controller
                     $notification = [
                         "type" => "ActionUpdate",
                         "entreprise_id" => $entreprise_id,
-                        
+
                         "store" => true,
-                        
+
                         "text" => $message,
                         "title" => "Réparation machines niveau 2",
                         "icon_path" => "aaaaaaaaaaa",
@@ -1117,9 +1118,9 @@ class EntrepriseController extends Controller
                     $notification = [
                         "type" => "ActionUpdate",
                         "entreprise_id" => $entreprise_id,
-                        
+
                         "store" => true,
-                        
+
                         "text" => $message,
                         "title" => "Réparation machines niveau 3",
                         "icon_path" => "aaaaaaaaaaa",
@@ -1136,9 +1137,9 @@ class EntrepriseController extends Controller
                     $notification = [
                         "type" => "ActionUpdate",
                         "entreprise_id" => $entreprise_id,
-                        
+
                         "store" => true,
-                        
+
                         "text" => $message,
                         "title" => "Réparation machines niveau 3",
                         "icon_path" => "aaaaaaaaaaa",
@@ -1155,9 +1156,9 @@ class EntrepriseController extends Controller
                     $notification = [
                         "type" => "ActionUpdate",
                         "entreprise_id" => $entreprise_id,
-                        
+
                         "store" => true,
-                        
+
                         "text" => $message,
                         "title" => "Réparation machines niveau 3",
                         "icon_path" => "aaaaaaaaaaa",
@@ -1263,5 +1264,26 @@ class EntrepriseController extends Controller
             "materials" => $raw_materials,
             "suppliers" => $suppliers,
         ];
+    }
+
+    public function getNotifications(Request $request)
+    {
+        $entreprise_id = $request->entreprise_id;
+
+        $notifications = Notification::where('entreprise_id', $entreprise_id)->orderByDesc("created_at")->get();
+
+        return [
+            "notifications" => $notifications,
+        ];
+    }
+
+    public function readNotifications(Request $request)
+    {
+        $read_notifications_ids = $request->read_notifications_ids;
+
+
+        Notification::whereIn('id', $read_notifications_ids)->update(["read" => true]);
+
+        return Response::json(["message" => "Notifications read successfully"], 200);
     }
 }

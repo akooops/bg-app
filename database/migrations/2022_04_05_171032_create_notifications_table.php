@@ -22,6 +22,8 @@ class CreateNotificationsTable extends Migration
             $table->string("title");
             $table->string("icon_path");
 
+            $table->boolean("read")->default(false);
+
             $table->string('type')->default('info');
 
             $table->integer('time');

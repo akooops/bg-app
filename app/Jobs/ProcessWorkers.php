@@ -59,8 +59,8 @@ class ProcessWorkers implements ShouldQueue
             $workers_mood = $this->getIndicator("workers_mood", $entreprise->id)["value"];
             $workers_mood_th = nova_get_setting("mood_quitting_threshold");
 
-            // Workers mood decrease every month
-            if ($current_date % 30 == 0 && $nb_workers > 0) {
+            // Workers mood decreases every month
+            if ($current_date % 4 == 0 && $nb_workers > 0) {
                 $workers_mood_decay_rate = nova_get_setting('workers_mood_decay_rate');
                 if ($workers_mood - $workers_mood_decay_rate >= 0) {
                     $this->updateIndicator("workers_mood", $entreprise->id, -1 * $workers_mood_decay_rate);
@@ -71,9 +71,9 @@ class ProcessWorkers implements ShouldQueue
                 $notification = [
                     "entreprise_id" => $entreprise->id,
                     "type" => "WorkersUpdate",
-                    
+
                     "store" => true,
-                    
+
                     "text" => "L'humeur au sein de votre entreprise décroit",
                     "title" => "L'humeur décroit",
                     "icon_path" => "aaaaaaaaaaa",
@@ -89,9 +89,9 @@ class ProcessWorkers implements ShouldQueue
                     $notification = [
                         "entreprise_id" => $entreprise->id,
                         "type" => "WorkersUpdate",
-                        
+
                         "store" => true,
-                        
+
                         "text" => "Attention, l'humeur de vos employés est mauvaise, Il y a des riques de démissions.",
                         "title" => "Risques de démissions",
                         "icon_path" => "aaaaaaaaaaa",
@@ -123,9 +123,9 @@ class ProcessWorkers implements ShouldQueue
                         $notification = [
                             "entreprise_id" => $entreprise->id,
                             "type" => "WorkersUpdate",
-                            
+
                             "store" => true,
-                            
+
                             "text" => $message,
                             "title" => "Les employés démissionnent",
                             "icon_path" => "aaaaaaaaaaa",
@@ -145,9 +145,9 @@ class ProcessWorkers implements ShouldQueue
                         $notification = [
                             "entreprise_id" => $entreprise->id,
                             "type" => "WorkersUpdate",
-                            
+
                             "store" => true,
-                            
+
                             "text" => $message,
                             "title" => "Les employés démissionnent",
                             "icon_path" => "aaaaaaaaaaa",
@@ -174,9 +174,9 @@ class ProcessWorkers implements ShouldQueue
                     $notification = [
                         "entreprise_id" => $entreprise->id,
                         "type" => "WorkersUpdate",
-                        
+
                         "store" => true,
-                        
+
                         "text" => $message,
                         "title" => "Employé recruté",
                         "icon_path" => "aaaaaaaaaaa",

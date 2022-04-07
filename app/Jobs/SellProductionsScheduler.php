@@ -50,9 +50,9 @@ class SellProductionsScheduler implements ShouldQueue
                 $notification = [
                     "entreprise_id" => $entreprise_id,
                     "type" => "ProductionUpdate",
-                    
+
                     "store" => true,
-                    
+
                     "text" => $message,
                     "title" => "Plus de demande",
                     "icon_path" => "aaaaaaaaaaa",
@@ -68,7 +68,10 @@ class SellProductionsScheduler implements ShouldQueue
             $production_quantity_sold = $production->sold;
 
             $production_percentage_to_sell = nova_get_setting("production_percentage_to_sell");
-            $quantity_to_sell = round(min($this->productDemandReal($product_id, $entreprise_id, $price, round($production_quantity * $production_percentage_to_sell)), $production_quantity - $production_quantity_sold));
+            $quantity_to_sell = round(min($this->productDemandReal($product_id, $entreprise_id, $price, round($production_quantity * $production_percentage_to_sell)),
+                                          $production_quantity - $production_quantity_sold
+                                        )
+                                    );
 
             $dist_cost = $quantity_to_sell * nova_get_setting("dist_unit_cost");
             $sales = $quantity_to_sell * $price;
@@ -114,9 +117,9 @@ class SellProductionsScheduler implements ShouldQueue
                 $notification = [
                     "entreprise_id" => $entreprise_id,
                     "type" => "ProductionUpdate",
-                    
+
                     "store" => true,
-                    
+
                     "message" => $message,
                     "title" => "Production vendue",
                     "icon_path" => "aaaaaaaaaaa",

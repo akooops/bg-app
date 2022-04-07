@@ -20,6 +20,9 @@ module.exports = {
                 nav: "#0B3434",
                 gray: "#F9F9FC",
             },
+            zIndex: {
+                '100': '100',
+            },
         },
     },
 
