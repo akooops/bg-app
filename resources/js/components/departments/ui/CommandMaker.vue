@@ -73,7 +73,7 @@
                     class="sticky  top-0 border-b bg-white font-semibold text-vN"
                 >
                     <tr>
-                      
+
                         <th class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"  >
                           Matière premiere
                         </th>
@@ -95,7 +95,7 @@
                         <th class="p-3 text-sm table-cell cursor-pointer text-left hover:text-vert select-none"  >
                          Action
                         </th>
-                       
+
                     </tr>
                 </thead>
                 <tbody  >
@@ -126,10 +126,10 @@
                                 <button @click="deleteRow(key)">
                                     <img class="w-10 h-10 " src="/assets/icons/trash.png" alt="">
                                 </button>
-                               
+
                             </div>
                         </td>
-        
+
                     </tr>
                 </tbody>
             </table>
@@ -192,7 +192,8 @@
                     </tr>
                 </tbody>
             </table> -->
-            <div class="flex w-full justify-center items-center">
+            <div
+                class="flex w-full justify-center items-center">
                 <button
                     @click="commandModal()"
                     class="
@@ -237,6 +238,7 @@
                   <div class="w-2/5 flex flex-col ">
                    <h1 class="font-semibold">Matière</h1>
                     <select
+                        v-if="materials != null"
                         v-model="commandItem['material']"
                         class=" rounded-md w-auto"
                     >
@@ -248,8 +250,12 @@
                             {{ mp.name }}
                         </option>
                     </select>
+                    <select v-else>
+
+                    </select>
                    <h1 class="font-semibold mt-3">Fournisseur :</h1>
                    <select
+                        v-if="suppliers != null"
                         v-model="commandItem['supplier']"
                         class=" rounded-md"
                     >
@@ -257,13 +263,16 @@
                             {{ supp.name }}
                         </option>
                     </select>
+                    <select v-else>
+
+                    </select>
                     <h1 class="font-semibold mt-3">Quantité :</h1>
                     <input
                         class="rounded-md"
                         type="number"
                         min="1"
                         placeholder="Quantité en unité"
-                        v-model="commandItem.quantity" 
+                        v-model="commandItem.quantity"
                     />
                   </div>
 
@@ -271,113 +280,49 @@
                   <div >
                     <h1 class="font-semibold">Prx Unitaire :</h1>
                     <input type="number" class="rounded-md" :value="materialPrice" disabled>
-             
+
                     <h1 class="font-semibold mt-3">Prix Total :</h1>
                      <input type="number" class="rounded-md" v-bind:value="totalPrice"  disabled>
                      <h1 class="font-semibold mt-3">Délai de Livraison</h1>
                      <input type="text" class="rounded-md" v-bind:value="supplierDelay" disabled>
 
                   </div>
-                 
-
-
               </div>
+
               <div v-if="commandDisabled" class="text-center">
                         <p class="font-bold text-red-700">
                             Matière première indisponnible ou informations entrées invalides.
                         </p>
               </div>
+
               <div class="flex gap-4 justify-end mr-5">
                 <button
-                        @click="editing_command_id == null ? addRow() : editRow(editing_command_id, true)"
-                        :disabled="commandDisabled"
-                        class=" py-3 px-3 text-white rounded-md"
-                        v-bind:class="{
-                            'text-vN text-opacity-20': commandDisabled,
-                            'text-vN hover:bg-gray-200': !commandDisabled,
-                        }"
-                    >
-                        Ajouter
-                    </button>
-                    <button
-                        @click="
-                            editing_command_id = null;
-                            show_add_modal = false;"
-                        class=" py-3 px-3 text-vN text-opacity-80 hover:bg-gray-200 rounded-md"
-                    >
-                        Fermer
-                    </button>
+                    v-if="supp_raw_mat_updated"
+                    :disabled="commandDisabled"
+                    @click="editing_command_id == null ? addRow() : editRow(editing_command_id, true)"
+                    class=" py-3 px-3 text-white rounded-md"
+                    v-bind:class="{
+                        'text-vN text-opacity-20': commandDisabled,
+                        'text-vN hover:bg-gray-200': !commandDisabled,
+                    }"
+                >
+                    Ajouter
+                </button>
+                <button
+                    @click="
+                        editing_command_id = null;
+                        show_add_modal = false;"
+                    class=" py-3 px-3 text-vN text-opacity-80 hover:bg-gray-200 rounded-md"
+                >
+                    Fermer
+                </button>
               </div>
               </div>
-              
-              
+
+
           </template>
 
       </Modal>
-        <!-- <Modal v-if="show_add_modal">
-            <template v-slot:content>
-                <div class="w-full">
-                    <p>Matière :</p>
-                    <select
-                        v-model="commandItem['material']"
-                        class="w-full rounded"
-                    >
-                        <option
-                            :value="mp.name"
-                            :key="mp.name"
-                            v-for="mp in materials"
-                        >
-                            {{ mp.name }}
-                        </option>
-                    </select>
-                    <p>Fournisseur :</p>
-                    <select
-                        v-model="commandItem['supplier']"
-                        class="w-full rounded"
-                    >
-                        <option v-for="supp in suppliers" :key="supp.id">
-                            {{ supp.name }}
-                        </option>
-                    </select>
-                    <p>Quantité :</p>
-                    <input
-                        type="number"
-                        min="1"
-                        placeholder="Quantité en unité"
-                        v-model="commandItem.quantity"
-                    />
-                    <div v-if="!commandDisabled">
-                        <p>Prix Unitaire : {{ materialPrice }} DA/KG</p>
-                        <p>Prix Total : {{ totalPrice }} DA</p>
-                        <p>Délai de Livraison: {{ supplierDelay }}</p>
-                    </div>
-                    <div v-else>
-                        <p class="font-bold text-red-700">
-                            Matière première indisponnible ou informations entrées invalides.
-                        </p>
-                    </div>
-                    <button
-                        @click="editing_command_id == null ? addRow() : editRow(editing_command_id, true)"
-                        :disabled="commandDisabled"
-                        class="px-2 py-3 text-white w-40"
-                        v-bind:class="{
-                            'bg-gray-400': commandDisabled,
-                            'bg-green-400': !commandDisabled,
-                        }"
-                    >
-                        Ajouter
-                    </button>
-                    <button
-                        @click="
-                            editing_command_id = null;
-                            show_add_modal = false;"
-                        class="px-2 py-3 bg-gray-300 w-40"
-                    >
-                        Fermer
-                    </button>
-                </div>
-            </template>
-        </Modal> -->
     </div>
 </template>
 
@@ -411,8 +356,10 @@ export default {
             commands: [],
             filtered_materials: [],
 
-            materials: [],
-            suppliers: [],
+            materials: null,
+            suppliers: null,
+
+            supp_raw_mat_updated: false,
         };
     },
     props: ["user", "caisse"],
@@ -481,7 +428,7 @@ export default {
                 return (
                     Math.round(
                         this.materialPrice * this.commandItem.quantity * 100
-                    ) / 100 
+                    ) / 100
                 );
             } else {
                 return 0;
@@ -523,6 +470,11 @@ export default {
     },
     methods: {
         commandModal() {
+            this.commandItem.material = this.materials.length > 0 ? this.materials[0].name : "";
+            this.commandItem.supplier = this.suppliers.length > 0 ? this.suppliers[0].name : "";
+            this.commandItem.quantity = 1;
+
+            this.show_add_modal = true;
             this.getSuppRawMat(true);
         },
 
@@ -625,7 +577,8 @@ export default {
             }
         },
 
-        getSuppRawMat(open_command_modal = false) {
+        getSuppRawMat() {
+            this.supp_raw_mat_updated = false;
             axios
             .get("/api/supp_raw_mats", {
                 params: {
@@ -635,13 +588,7 @@ export default {
                 this.materials = resp.data["materials"];
                 this.suppliers = resp.data["suppliers"];
 
-                if (open_command_modal) {
-                    this.commandItem.material = this.materials.length > 0 ? this.materials[0].name : "";
-                    this.commandItem.supplier = this.suppliers.length > 0 ? this.suppliers[0].name : "";
-                    this.commandItem.quantity = 1;
-
-                    this.show_add_modal = true;
-                }
+                this.supp_raw_mat_updated = true;
             });
         },
     },
@@ -652,6 +599,10 @@ export default {
         window.Echo.channel("entreprise_" + this.user.id)
             .listen("NewNotification", (e) => {
                 if (e.notification.type == "SupplierUpdate") {
+                    this.getSuppRawMat();
+                    this.$forceUpdate();
+                }
+                if (e.notification.type == "RawMatUpdate") {
                     this.getSuppRawMat();
                     this.$forceUpdate();
                 }

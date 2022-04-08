@@ -36,7 +36,7 @@ class ProcessWorkers implements ShouldQueue
      */
     public function handle()
     {
-        $current_date = nova_get_setting("current_date");
+        $current_date = (int) nova_get_setting("current_date");
         $entreprises = Entreprise::get();
 
         foreach ($entreprises as $entreprise) {
