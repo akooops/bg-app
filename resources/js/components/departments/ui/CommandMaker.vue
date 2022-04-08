@@ -470,8 +470,8 @@ export default {
     },
     methods: {
         commandModal() {
-            this.commandItem.material = this.materials.length > 0 ? this.materials[0].name : "";
-            this.commandItem.supplier = this.suppliers.length > 0 ? this.suppliers[0].name : "";
+            this.commandItem.material = this.materials == null ? "" : this.materials.length > 0 ? this.materials[0].name : "";
+            this.commandItem.supplier = this.suppliers == null ? "" : this.suppliers.length > 0 ? this.suppliers[0].name : "";
             this.commandItem.quantity = 1;
 
             this.show_add_modal = true;
@@ -589,6 +589,15 @@ export default {
                 this.suppliers = resp.data["suppliers"];
 
                 this.supp_raw_mat_updated = true;
+
+                if (this.show_add_modal) {
+                    if (this.commandItem.material == "") {
+                        this.commandItem.material = this.materials.length > 0 ? this.materials[0].name : "";
+                    }
+                    if (this.commandItem.supplier == "") {
+                        this.commandItem.supplier = this.suppliers.length > 0 ? this.suppliers[0].name : "";
+                    }
+                }
             });
         },
     },
