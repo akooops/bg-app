@@ -42,6 +42,7 @@
                         {{ __('Classement') }}
                     </x-nav-link>
                 </div>
+                
                 <Calendar v-bind:user="{{ Auth()->user() }}"></Calendar>
             </div>
             <div class="flex w-3/4">

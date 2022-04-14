@@ -1,5 +1,6 @@
 <template>
     <div class="w-full">
+        <notifications v-if="notif" >{{notif.text}}</notifications>
         <div v-if="indicators_loaded" class="w-full">
             <nav class="mb-10 text-sm flex justify-start gap-8">
                 <button
@@ -483,6 +484,7 @@ export default {
     props: ["user"],
     data() {
         return {
+            notif :[],
             reverse: false,
             products: [],
             market_demand: [],
@@ -661,21 +663,25 @@ export default {
             "NewNotification",
             (e) => {
                 if (e.notification.type == "ProductionUpdate") {
+                    this.notif = e.notification;
                     this.updateProdData();
                     this.$forceUpdate();
                 }
 
                 if (e.notification.type == "ActionUpdate") {
+                    this.notif = e.notification;
                     this.updateProdData();
                     this.$forceUpdate();
                 }
 
                 if (e.notification.type == "MachinesUpdate") {
+                    this.notif = e.notification;
                     this.getProdNumbers();
                     this.$forceUpdate();
                 }
 
                 if (e.notification.type == "WorkersUpdate") {
+                    this.notif = e.notification;
                     this.getProdNumbers();
                     this.$forceUpdate();
                 }

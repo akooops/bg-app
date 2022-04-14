@@ -1,6 +1,6 @@
 <template>
     <div class="flex items-center gap-3">
-        <Notification :user="user"></Notification>
+        <Notification :user="user" :actual="time"></Notification>
         <div class="flex items-center gap-3">
             <p class="font-semibold">
                 <span class="uppercase">{{ user.name }}</span>

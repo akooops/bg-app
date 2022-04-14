@@ -1,10 +1,12 @@
 <template>
     <div>
-        <button @click="openNotifBox" class="relative">
+      <div class="relative ">
+        <button @click="openNotifBox" class=" icon-wrapper">
             <img
                 src="/assets/icons/notifications.svg"
                 alt="notification icon"
-                class="h-9 w-9"
+                class="h-9 w-9 "
+                :class="nb_unread_notifs > 0 ? 'horloge': '' "
             />
 
             <div
@@ -18,23 +20,30 @@
                     {{ nb_unread_notifs }}
                 </p>
             </div>
+             </button>
 
-            <div v-if="show_notifications" class="absolute flex flex-col gap-1 content-center items-center bottom-22 right-0 bg-blue-300 border-black w-80 h-96 rounded-lg overflow-x-hidden overflow-y-scroll z-100">
+            <div v-if="show_notifications" class="absolute notif z-20 flex flex-col gap-1 bottom-22  right-0 bg-white shadow-2xl  h-96 rounded-lg overflow-x-hidden overflow-y-scroll " style="width: 48vmin ; border : 0.5px solid rgba(128, 128, 128, 0.5);  ">
+                <div class="flex flex-row mx-5 my-3">
+                    <h1 class="text-vN font-semibold text-2xl mr-auto">Notifications</h1>
+                    <button class="ml-auto"><img src="/assets/icons/reload.svg" alt="" class="w-7 h-7"></button>
+                </div>
+               
                 <NotificationItem
                     v-for="(notif, i) in notifications"
                     :key="i"
                     :title="notif.title"
                     :text="notif.text"
                     :time="notif.time"
-                    :real_time="notif.created_at"
+                    :actual_time="actual"
+                    :type="notif.type"
+                    class="mx-3 border-b-2 py-3"
                 >
                 </NotificationItem>
 
-                <!-- <p v-for="(notif, i) in notifications" :key="i">
-                    {{ notif }}
-                </p> -->
+            
             </div>
-        </button>
+       
+        </div>
     </div>
 </template>
 
@@ -45,7 +54,7 @@ export default {
     components: {
         NotificationItem,
     },
-    props: ["user"],
+    props: ["user","actual"],
     data() {
         return {
             notifications: [],

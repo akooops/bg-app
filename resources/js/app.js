@@ -2,11 +2,17 @@ require("./bootstrap");
 
 import Vue from "vue";
 import VCalendar from "v-calendar";
+import Notifications from '@voerro/vue-notifications'
+
 
 axios.defaults.withCredentials = false;
 let local_url = "http://10.42.0.1:8000";
 let localhost = "http://localhost:8000";
 axios.defaults.baseURL = localhost;
+
+
+Vue.component('notifications', Notifications);
+
 
 Vue.component(
     "departmentcard",
