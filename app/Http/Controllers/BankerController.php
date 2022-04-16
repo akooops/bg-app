@@ -165,6 +165,10 @@ class BankerController extends Controller
         $loan = Loan::find($request->loan_id);
 
         // Do the checks
+        if ($loan->payment_status == true) {
+            return response()->json(["message" => "Impossible de payer la dette: Cette dette a déjà été remboursée", "success" => false], 200);
+        }
+
         if ($request->refund_amount <= 0) {
             return response()->json(["message" => "Impossible de payer la dette: Le montant à payer doit être positif", "success" => false], 200);
         }
