@@ -16,15 +16,15 @@
     "devDependencies": {
         "@tailwindcss/forms": "^0.2.1",
         "alpinejs": "^2.7.3",
-        "autoprefixer": "^10.1.0",
+        "autoprefixer": "^10.4.4",
         "axios": "^0.21",
         "laravel-echo": "^1.11.3",
         "laravel-mix": "^6.0.6",
         "lodash": "^4.17.19",
-        "postcss": "^8.2.1",
+        "postcss": "^8.4.12",
         "postcss-import": "^12.0.1",
         "pusher-js": "^7.0.6",
-        "tailwindcss": "^2.0.2",
+        "tailwindcss": "^3.0.24",
         "vue-loader": "^15.9.5",
         "vue-template-compiler": "^2.6.12"
     },
