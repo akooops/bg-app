@@ -238,7 +238,8 @@
                    <h1 class="font-semibold">Matière</h1>
                     <select
                         v-model="commandItem['material']"
-                        class=" rounded-md w-auto"
+                        class=" rounded-md w-auto border-gray "
+                        
                     >
                         <option
                             :value="mp.name"
@@ -248,18 +249,19 @@
                             {{ mp.name }}
                         </option>
                     </select>
-                   <h1 class="font-semibold mt-3">Fournisseur :</h1>
+                   <h1 class="font-semibold mt-4">Fournisseur :</h1>
                    <select
                         v-model="commandItem['supplier']"
-                        class=" rounded-md"
+                        class=" rounded-md border-gray"
+                       
                     >
                         <option v-for="supp in suppliers" :key="supp.id" :value="supp.name">
                             {{ supp.name }}
                         </option>
                     </select>
-                    <h1 class="font-semibold mt-3">Quantité :</h1>
+                    <h1 class="font-semibold mt-4">Quantité :</h1>
                     <input
-                        class="rounded-md"
+                        class="rounded-md border-gray"
                         type="number"
                         min="1"
                         placeholder="Quantité en unité"
@@ -269,13 +271,13 @@
 
                   <div class="w-1/5"></div>
                   <div >
-                    <h1 class="font-semibold">Prx Unitaire :</h1>
-                    <input type="number" class="rounded-md" :value="materialPrice" disabled>
+                    <h1 class="font-semibold mt-4">Prix Unitaire :</h1>
+                    <p class="rounded-md px-3 py-1" style="border : 1px solid;  border-color: rgba(128, 122, 122)">{{materialPrice}}</p>
              
                     <h1 class="font-semibold mt-3">Prix Total :</h1>
-                     <input type="number" class="rounded-md" v-bind:value="totalPrice"  disabled>
+                     <p class="rounded-md px-3 py-1" style="border : 1px solid;  border-color: rgba(128, 122, 122)">{{totalPrice}}</p>
                      <h1 class="font-semibold mt-3">Délai de Livraison</h1>
-                     <input type="text" class="rounded-md" v-bind:value="supplierDelay" disabled>
+                     <p class="rounded-md  px-3 py-1" style="border : 1px solid;  border-color: rgba(128, 122, 122)">{{supplierDelay ? supplierDelay : 0}}</p>
 
                   </div>
                  
@@ -291,7 +293,7 @@
                 <button
                         @click="editing_command_id == null ? addRow() : editRow(editing_command_id, true)"
                         :disabled="commandDisabled"
-                        class=" py-3 px-3 text-white rounded-md"
+                        class=" py-3 px-3 text-white rounded-md font-semibold"
                         v-bind:class="{
                             'text-vN text-opacity-20': commandDisabled,
                             'text-vN hover:bg-gray-200': !commandDisabled,
@@ -303,7 +305,7 @@
                         @click="
                             editing_command_id = null;
                             show_add_modal = false;"
-                        class=" py-3 px-3 text-vN text-opacity-80 hover:bg-gray-200 rounded-md"
+                        class=" py-3 px-3 text-vN font-semibold text-opacity-80 hover:bg-gray-200 rounded-md"
                     >
                         Fermer
                     </button>

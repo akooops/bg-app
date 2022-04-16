@@ -1,8 +1,15 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __("Liste des demandes d'endettements") }}
-        </h2>
-    </x-slot>
-<EntrepriseLoanListing v-bind:entreprise="{{auth()->user()}}" :caisse="{{$caisse}}"/>
-</x-app-layout>
+
+    <div class="mx-auto px-8 py-10">
+        <div class="flex flex-wrap sm:rounded-lg">
+            <div class="flex justify-center gap-6 mb-6 w-full ">
+                <Disponibility :user="{{ Auth::user() }}" :dette="false"></Disponibility>
+                <Disponibility :user="{{ Auth::user() }}" :dette="true"></Disponibility>
+            </div>
+            <div class="w-full px-2 h-full">
+                <EntrepriseLoanListing v-bind:entreprise="{{auth()->user()}}" :caisse="{{$caisse}}"/>
+                </div>
+        </div>
+    </div>
+    
+ </x-app-layout>

@@ -1,69 +1,217 @@
 <template>
     <div>
-        <Modal v-if="loan_modal" class="align-center" custom_css="w-1/3">
-	<template v-slot:content>
-		<h3 class="text-2xl font-bold mb-4">Demande d'endettement</h3>
-		<p v-if="message!=''" class="text-green-500" >{{message}}</p>
-		<p v-if="error_message!=''" class="text-red-600">{{error_message}}</p>
-		<div class="relative h-10 input-component mb-5">
-			<label for="amount" class=" left-2 transition-all bg-white px-1">
-				Montant à endetter
-			</label>
-			<input
-				id="amount"
-				type="text"
-				name="amount"
-				v-model="amount"
-				class="h-full w-full rounded-sm"
-			/>
+        <Modal v-if="loan_modal" class="align-center" >
+	      <template v-slot:content>
+            <div class="flex flex-col text-vN p-4"> 
+              <h1 class="font-semibold text-3xl text-center">Demande d'endettement</h1>
+              <h2 for="amount" class="font-semibold mt-5 text-xl my-1">Motant à endetter</h2>
+              <input type="number" id="amount" name="amount" v-model="amount" class="w-1/2">
+              <div class="mt-6 flex items-center">
+			    <input type="checkbox" @change="checkboxChanged" :checked="accept" class="focus:ring-gray-500 h-4 w-4 text-gray-600 border-gray-150 rounded "> 
+			    <label class="text-yellow-500 ml-2">Je veillerai, moi le representant de l'entreprise <span class="font-bold">{{entreprise.name}}</span>  à honorer les termes du contrat.</label>
+		      </div>
+
+              <div class="flex flex-row mt-9 gap-5 ml-auto">
+                      <button class="text-lg font-semibold hover:bg-gray-200 px-4 py-2 rounded-xl" :class="sent ? 'bg-gray-200 ':''" :disabled="sent" @click="createLoan">S'endetter</button>
+                      <button class="text-lg font-semibold opacity-80 hover:bg-gray-200 px-4 py-2 rounded-xl" @click="closeModal">Annuler</button>
 			
-		</div>
-		<div class="mt-12">
-			<input type="checkbox" @change="checkboxChanged" :checked="accept" class="focus:ring-gray-500 h-4 w-4 text-gray-600 border-gray-150 rounded"> 
-			<label>Je veillerai, moi le representant de l'entreprise <span class="font-bold">{{entreprise.name}}</span>  à honorer les termes du contrat.</label>
-		</div>
-		<div class="flex">
-		<button class="text-white px-3 py-2 rounded w-1/2 mt-4 mr-2" 
-        :class="sent?'bg-gray-800 ':'bg-green-400 hover:bg-green-800'" :disabled="sent"
-         @click="createLoan" >S'endetter</button>
-		<button class="bg-gray-200 active:bg-gray-600 hover:bg-gray-400 text-back px-3 py-2 rounded w-1/2 mt-4" @click="closeModal">Annuler</button>
-		</div>
+		         </div>
+
+            </div>
+ 
 	</template>
 	</Modal>
-    <Modal v-if="pay_loan_modal" class="align-center" custom_css="w-1/3">
+
+    <Modal v-if="pay_loan_modal" class="align-center">
 	<template v-slot:content>
-		<h3 class="text-2xl font-bold mb-4">Remboursement de dettes</h3>
-		<p v-if="pay_message!=''" class="text-green-500" >{{pay_message}}</p>
-		<p v-if="pay_error_message!=''" class="text-red-600">{{pay_error_message}}</p>
-        <p  class="mt-1">Le montant restant est <span class="text-yellow-600">{{selected_loan.remaining_amount}}</span></p>
-		<div class="relative h-10 input-component mb-5">
-			<label for="refund_amount" class=" left-2 transition-all bg-white px-1">
-				Montant à rembourser
-			</label>
-			<input
-				id="refund_amount"
-				type="number"
-				name="refund_amount"
-				v-model="refund_amount"
-				class="h-full w-full rounded-sm"
-                :max="selected_loan.remaining_amount"
-                :min="0"
-			/>
+
+        <div class="flex flex-col text-vN py-4 px-6">
+                <h1 class="font-semibold text-2xl text-vert">Remboursement de detttes</h1>
+                <h2  class="mt-3 font-semibold text-xl py-2">Montant restant</h2>
+                <p class="text-yellow-600 border-2 border-gray-200 py-2 pl-2 w-max pr-6">{{parseInt(selected_loan.remaining_amount)}} UM</p>
+              
+			    <label for="refund_amount" class="mt-3 text-xl py-2 font-semibold">
+			     	Montant à rembourser
+			    </label>
+			    <input
+				   id="refund_amount"
+				   type="number"
+				   name="refund_amount"
+				   v-model="refund_amount"
+				   class="w-full rounded-sm text-vert border-gray-200"
+                   :max="selected_loan.remaining_amount"
+                   :min="0"
+			      />
+
+                  <h2 class="font-semibold mt-3 text-xl py-2">Motant restant après payment</h2>
+                  <p class="border-2 border-gray-200 py-2 pl-2 ">{{selected_loan.remaining_amount-refund_amount}} UM</p>
+
+
+                  <div class="flex flex-row mt-9 gap-2 ml-auto">
+                      <button class="text-lg font-semibold hover:bg-gray-200 px-4 py-2 rounded-xl" :class="sent_payment ? 'bg-gray-200 ':''" :disabled="sent_payment" @click="payLoan">Payer</button>
+                      <button class="text-lg font-semibold opacity-80 hover:bg-gray-200 px-4 py-2 rounded-xl" @click="closePayModal">Annuler</button>
 			
-		</div>
-		<div class="mt-12">
-			<p>Le montant restant après le paiement de <span class="text-green-600">{{refund_amount}}</span> est {{selected_loan.remaining_amount-refund_amount}}</p>
-		</div>
-		<div class="flex">
-		<button class="  text-white px-3 py-2 rounded w-1/2 mt-4 mr-2" 
-        :class="sent_payment?'bg-gray-800 ':'bg-green-400 hover:bg-green-800'" :disabled="sent_payment" @click="payLoan">Payer</button>
-		<button class="bg-gray-200 active:bg-gray-600 hover:bg-gray-400 text-back px-3 py-2 rounded w-1/2 mt-4" @click="closePayModal">Annuler</button>
-		</div>
+		         </div>
+        </div>
+        
 	</template>
 	</Modal>
-        <div v-if="mounted">
+
+    <div class="w-full" v-if="mounted">
+           <div class="flex flex-row justify-between mt-5 ">
+                <h1 class="text-vN font-semibold text-2xl my-auto">Liste des demandes d'endettement :</h1>
+            <button v-if="loans.length > 0" class="text-vN rounded-3xl px-5 py-2 font-semibold "  @click="openModal"  style="background: linear-gradient(180deg, rgba(178, 208, 107, 0.09) 0%, rgba(178, 208, 107, 0.33) 100%);">
+                    Créer une demande d'endettement
+            </button>
+
+           </div>
+           
+           <div v-if="loans.length==0" class="text-center mt-12">
+                <p>Il semble que vous n'aviez pas encore créer votre première demande d'endettement</p>
+                <button class="text-vN rounded-3xl px-5 py-2 font-semibold mt-5"  @click="openModal"  style="background: linear-gradient(180deg, rgba(178, 208, 107, 0.09) 0%, rgba(178, 208, 107, 0.33) 100%);">
+                   Créer votre premier endettement
+                </button>
+            </div>
+
+
+            <div v-else class="mt-4">
+
+                <table class="w-full table-auto bg-white h-96 overflow-y-scroll">
+                <thead
+                    class="sticky  top-0 border-b bg-white font-semibold text-vN"
+                >
+                    <tr>
+                        <th
+                            class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                            
+                        >
+                            Banque
+                        </th>
+                        <th
+                            class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                            
+                        >
+                           Motant
+                        </th>
+                        <th
+                            class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                            
+                        >
+                           Date De Création
+                        </th>
+                        <th
+                            class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                            
+                        >
+                            Taux d'interet
+                        </th>
+                        <th
+                            class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                           
+                        >
+                           Délai en Semaines
+                        </th>
+                        <th
+                            class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                           
+                        >
+                           Montant restant
+                        </th>
+                        <th
+                            class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                           
+                        >
+                           Payé ?
+                        </th>
+                        <th
+                            class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                           
+                        >
+                           Statue
+                        </th>
+                         
+                        <th
+                            class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                           
+                        >
+                           Action
+                        </th>
+                       
+                    </tr>
+                </thead>
+                <tbody  >
+                    <tr
+                         v-for="loan in loans" v-bind:key="loan.loan_id"
+                        class="bg-white  flex lg:table-row flex-row lg:flex-row flex-wrap lg:flex-no-wrap lg:mb-0 border-b border-gray text-vN font-light text-sm h-14"
+                    >
+                        <td
+                            class="p-1 text-center  block lg:table-cell relative lg:static"
+                        >
+                           Banque locale
+                        </td>
+                        <td
+                            class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                        >
+                            {{loan.amount}}
+                        </td>
+                        <td
+                            class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                        >
+                              {{loan.loan_creation}}
+                        </td>
+                        
+                         <td
+                            class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                        >
+                            {{loan.ratio ? loan.ratio : "0" }} %
+                        </td>
+                         <td
+                            class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                        >
+                             {{loan.deadline ? loan.deadline : 'pas encore'}}
+                        </td>
+                        
+                        <td
+                            class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                        >
+                            {{parseInt(loan.remaining_amount)}}
+                        </td>
+                         <td
+                            class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                            :class="loan.payment_status==1 ?'text-green-500' : ''"
+                        >
+                            {{loan.payment_status==1 ?'Payé':'Non'}}
+                        </td>
+                         <td
+                            class="flex flex-wrap p-1 text-center block lg:table-cell relative lg:static w-12" 
+                            :class="loan.status=='En attente' ? 'text-yellow-600' : '' "
+                        >
+                              {{loan.status}}
+                        </td>
+                        <td
+                            class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static pl-4"
+                        >
+                            <button v-if=" loan.status=='Acceptée/Partiellement acceptée'" @click="openPayModal(loan)" class=" rounded-3xl font-semibold px-3 py-2 bg-vert"
+                            :disabled="loan.payment_status==1"
+                            :class="loan.payment_status!=1 ? 'hover:bg-opacity-50' :''" 
+                             >{{loan.payment_status==1 ? 'Compte reglé' : 'Payer la dette'}}</button>
+
+                            <button v-else @click="openPayModal(loan)" class="bg-gray-300  font-semibold text-vN rounded-3xl  px-3 py-2 " 
+                            :disabled="true"
+                             >Payer la dette</button>
+                        </td>
+                       
+                       
+                    </tr>
+                </tbody>
+            </table>
+
+            </div>
+        
+    </div> 
+        <!-- <div v-if="mounted">
         <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 bg-white border-b border-gray-200">
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8  overflow-hidden shadow-sm sm:rounded-lg p-6 bg-white border-b border-gray-200">
             <div v-if="loans.length==0" class="text-center">
                 <p>Il semble que vous n'aviez pas encore créer votre première demande d'endettement</p>
                 <button class="bg-green-400 hover:bg-green-800  text-white px-3 py-2 rounded w-1/2 mt-4 mr-2"  @click="openModal">Créer ma première demande d'endettement</button>
@@ -72,48 +220,119 @@
                 <div class="text-right mb-2">
                 <button class="bg-green-400 hover:bg-green-800  text-white px-3 py-2 rounded text-right"  @click="openModal">Créer une nouvelle demande d'endettement</button>
                 </div>
-            <table  class="border-collapse w-full">
-                <thead>
+                <table class="w-full bg-white h-96 overflow-y-scroll">
+                <thead
+                    class="sticky  top-0 border-b bg-white font-semibold text-vN"
+                >
                     <tr>
-                        <th class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">Banque</th>
-                        <th class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">Montant/ Montant accepté</th>
-                        <th class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">Date de creation</th>
-                        <th class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">Statut</th>
-                        <th class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">Taux d'interet</th>
-                        <th class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">Delai en jours</th>
-                        <th class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">Payé? </th>
-                        <th class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">Montant restant </th>
-                        <th class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">Action </th>
+                        <th
+                            class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                            @click="sort('command_id')"
+                        >
+                            Banque
+                        </th>
+                        <th
+                            class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                            @click="sort('num_items')"
+                        >
+                           Motant
+                        </th>
+                        <th
+                            class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                            @click="sort('creation_date')"
+                        >
+                           Date De Création
+                        </th>
+                        <th
+                            class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                            @click="sort('status')"
+                        >
+                            Taux d'interet
+                        </th>
+                        <th
+                            class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                           
+                        >
+                           Délai en Semaines
+                        </th>
+                        <th
+                            class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                           
+                        >
+                           Montant restant
+                        </th>
+                        <th
+                            class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                           
+                        >
+                           Payé ?
+                        </th>
+                        <th
+                            class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                           
+                        >
+                           Statue
+                        </th>
+                         
+                        <th
+                            class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                           
+                        >
+                           Action
+                        </th>
+                       
                     </tr>
                 </thead>
-                <tbody>
-                    <tr v-for="loan in loans" v-bind:key="loan.loan_id" class="bg-white lg:hover:bg-gray-100 flex lg:table-row flex-row lg:flex-row flex-wrap lg:flex-no-wrap mb-10 lg:mb-0">
-                        <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
-                            Banque locale
+                <tbody  >
+                    <tr
+                         v-for="loan in loans" v-bind:key="loan.loan_id"
+                        class="bg-white  flex lg:table-row flex-row lg:flex-row flex-wrap lg:flex-no-wrap lg:mb-0 border-b border-gray text-vN font-light text-sm h-14"
+                    >
+                        <td
+                            class="p-1 text-center  block lg:table-cell relative lg:static"
+                        >
+                           Banque locale
                         </td>
-                        <td class="w-full lg:w-auto p-3 font-bold text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
+                        <td
+                            class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                        >
                             {{loan.amount}}
                         </td>
-                        <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
-                            {{loan.loan_creation}}
+                        <td
+                            class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                        >
+                              {{loan.loan_creation}}
                         </td>
-                        <td class="w-full lg:w-auto p-3 font-bold text-center border border-b block lg:table-cell relative lg:static"
-                        :class="loan.status=='En attente'?'text-yellow-600':loan.status=='Rejettée'?' text-red-700':'text-green-600'">
-                            {{loan.status}}
-                        </td>
-                        <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
+                        
+                         <td
+                            class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                        >
                             {{loan.ratio}} %
                         </td>
-                        <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
-                            {{loan.deadline}} 
+                         <td
+                            class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                        >
+                             {{loan.deadline}}
                         </td>
-                        <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
-                            {{loan.payment_status==1?'Payé':'Non'}}
-                        </td>
-                        <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
+                        
+                        <td
+                            class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                        >
                             {{loan.remaining_amount}}
                         </td>
-                        <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
+                         <td
+                            class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                        >
+                            {{loan.payment_status==1?'Payé':'Non'}}
+                        </td>
+                         <td
+                            class="w-full flex text-wrap lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                        >
+                              {{loan.status}}
+                        </td>
+                        <td
+                            class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                        >
                             <button v-if=" loan.status=='Acceptée/Partiellement acceptée'" @click="openPayModal(loan)" class=" rounded text-white"
                             :class="loan.payment_status==1 ?'bg-gray-600':'bg-green-400 hover:bg-green-800'"
                             :disabled="loan.payment_status==1"
@@ -122,14 +341,21 @@
                             :disabled="true"
                              >Payer la dette</button>
                         </td>
+                       
+                       
                     </tr>
                 </tbody>
             </table>
+            
             </div>
         </div>
         </div>
+        </div> -->
+        <div v-else class="flex flex-col items-center mt-16">
+             <img class="w-16 h-16 load" src="/assets/logo/bg_logo.svg" alt="">
+        <div class="text-vN pt-2 font-semibold">Veillez attendre svp ... </div>
         </div>
-        <div v-else>Veillez attendre svp ... </div>
+       
     </div>
 </template>
 

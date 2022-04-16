@@ -113,13 +113,12 @@
         </div>
 
         <div v-if="page_index == 'commands'">
-            <p class="text-lg" v-if="commands.length == 0">
+            <p class="text-lg text-vN mt-2 ml-3" v-if="commands.length == 0">
                 Vous n'avez pas encore de commandes.
             </p>
 
-            <div v-else class="w-full bg-white shadow-md rounded mt-5 overscroll-contain">
-
-              <table class="w-full ">
+            <div v-else class="w-full bg-white shadow-md rounded mt-5  overflow-y-scroll" style="height : 60vh; ">
+              <table class="w-full   h-96 overflow-y-scroll">
                 <thead
                     class="sticky  top-0 border-b bg-white font-semibold text-vN"
                 >

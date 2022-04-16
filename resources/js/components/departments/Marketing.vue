@@ -239,7 +239,11 @@
                 </div>
             </div>
         </div>
-        <div v-else>Veuillez attendre svp ...</div>
+        
+        <div v-else class="flex flex-col items-center mt-16">
+             <img class="w-16 h-16 load" src="/assets/logo/bg_logo.svg" alt="">
+        <div class="text-vN pt-2 font-semibold">Veillez attendre svp ... </div>
+        </div>
     </div>
 </template>
 

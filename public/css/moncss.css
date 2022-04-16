@@ -4,6 +4,23 @@
     src: url("/css/webfonts/Ubuntu-Medium.ttf")
   }
 
+  @font-face{
+    font-family: "ubuntu-thin";
+    src: url("/css/webfonts/Ubuntu-Th.ttf")
+  }
+
+.load{
+  animation: rotation 1s infinite linear; 
+  
+}
+@keyframes rotation {
+  100%{ transform:rotatey(360deg); }
+}
+
+
+
+
+
 
 .horloge{
   animation : shake infinite 7s forwards ;

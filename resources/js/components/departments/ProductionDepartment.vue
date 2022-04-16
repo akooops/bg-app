@@ -1,6 +1,12 @@
 <template>
     <div class="w-full">
         <notifications v-if="notif" >{{notif.text}}</notifications>
+
+        <div v-if="!indicators_loaded" class="flex flex-col items-center mt-16">
+             <img class="w-16 h-16 load" src="/assets/logo/bg_logo.svg" alt="">
+        <div class="text-vN pt-2 font-semibold">Veillez attendre svp ... </div>
+        </div>
+
         <div v-if="indicators_loaded" class="w-full">
             <nav class="mb-10 text-sm flex justify-start gap-8">
                 <button
