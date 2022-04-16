@@ -681,11 +681,6 @@ export default {
             "NewNotification",
             (e) => {
 
-                if (e.notification.type == "MachinesUpdate") {
-                    this.getIndiators();
-                    this.$forceUpdate();
-                }
-
                 if (e.notification.type == "WorkersUpdate") {
                     this.getIndiators();
                     this.$forceUpdate();

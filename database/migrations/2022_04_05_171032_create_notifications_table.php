@@ -18,7 +18,7 @@ class CreateNotificationsTable extends Migration
 
             $table->integer("entreprise_id");
 
-            $table->string("text");
+            $table->string("text", 10000);
             $table->string("title");
             $table->string("icon_path");
 

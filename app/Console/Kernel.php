@@ -44,28 +44,28 @@ class Kernel extends ConsoleKernel
 
         if ($game_status == "1") {
             $schedule->call(function () {
-                $current_date = nova_get_setting("current_date");
+                $current_date = (int) nova_get_setting("current_date");
                 if ($current_date != null) {
                     $current_date += 1;
                 } else {
-                    $current_date = nova_get_setting("start_date");
+                    $current_date = (int) nova_get_setting("start_date");
                 }
 
                 nova_set_setting_value("current_date", $current_date);
                 event(new SimulationDateChanged($current_date));
             })->everyMinute();
 
-            // Take out penalty loans
-            $schedule->job(new PenaltyLoan)->everyMinute();
+            // Sell parts of productions that are on sale
+            $schedule->job(new SellProductionsScheduler)->everyMinute();
 
             // Apply action on every entreprise
             $schedule->job(new ProcessWorkers)->everyMinute();
 
             // Sell parts of productions that are on sale
-            $schedule->job(new SellProductionsScheduler)->everyMinute();
-
-            // Sell parts of productions that are on sale
             $schedule->job(new MonthlyCosts)->everyMinute();
+
+            // Take out penalty loans
+            $schedule->job(new PenaltyLoan)->everyMinute();
 
             //$schedule->job(new DailyStats)->everyMinute();
             // $schedule->command('inspire')->hourly();

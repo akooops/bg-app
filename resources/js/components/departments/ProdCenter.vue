@@ -70,7 +70,7 @@
                 </div>
 
                 <button
-                    @click="getStock(true)"
+                    @click="launch_prod_modal = true;"
                     class="rounded-xl bg-vert text-white mx-auto py-2 px-11 mb-8 text-lg font-medium"
                 >
                     Lancer
@@ -100,13 +100,19 @@
                 </div>
                 <div class="flex flex-col gap-3 mt-3">
                     <button
-                        @click="getMachineInfo('buy')"
+                        @click="
+                            machine.transaction = 'buy';
+                            machine.show_transaction_modal = true;
+                        "
                         class="rounded-xl bg-vert text-white mx-auto py-2 px-11 text-lg font-medium"
                     >
                         Acheter
                     </button>
                     <button
-                        @click="getMachineInfo('sell')"
+                        @click="
+                            machine.transaction = 'sell';
+                            machine.show_transaction_modal = true;
+                        "
                         class="rounded-xl bg-vert text-white mx-auto py-2 px-11 text-lg font-medium"
                     >
                         Vendre
@@ -235,8 +241,8 @@
                     </p>
                     <div class="flex flex-row justify-center gap-7 mt-12">
                         <button
+                            v-if="stock_updated == true && machine_info_updated == true"
                             :diabled="can_produce == false"
-                            v-if="can_produce == true"
                             @click="launchProduction()"
                             class="bg-vN text-white px-7 py-1 rounded-md"
                         >
@@ -294,6 +300,7 @@
                                         {{ material.pivot.quantity }}
                                     </td>
                                     <td
+                                        v-if="stock != null"
                                         class="text-center py-1"
                                         :class="
                                             material.pivot.quantity * launch_data.quantity <= stock.find((item) => { return ( item.id == material.pivot.raw_material_id); }).quantity
@@ -305,6 +312,13 @@
                                             {{ stock.find((element) => element.id == material.id).quantity }}
                                         </span>
                                         <span v-else>0</span>
+                                    </td>
+                                    <td
+                                        v-else
+                                        class="text-center text-black py-1"
+
+                                    >
+                                    0
                                     </td>
                                 </tr>
                             </tbody>
@@ -396,7 +410,7 @@
             </template>
         </Modal>
 
-        <Modal v-if="machine.show_transaction_modal" class="">
+        <Modal v-if="machine.show_transaction_modal">
             <template v-slot:content>
                 <div class="flex flex-col items-center gap-5 p-5">
                     <h2 v-if="machine.transaction == 'buy'" class="font-bold text-lg">
@@ -491,6 +505,7 @@
                         class="w-full flex items-center gap-4 justify-center mt-5"
                     >
                         <button
+                            v-if="machine_info_updated == true || machine.transaction == 'buy'"
                             @click="confirmMachineTransaction"
                             class="border-0 px-3 py-1 text-vN hover:text-vert"
                         >
@@ -593,7 +608,8 @@ export default {
             },
             can_produce_msg: "",
             can_produce: false,
-            stock: {},
+            stock: null,
+            
             show_success: false,
             show_error: false,
             message: "",
@@ -619,6 +635,9 @@ export default {
                 result_phrase: "",
                 show_info: false,
             },
+
+            stock_updated: false,
+            machine_info_updated: false,
         };
     },
     watch: {
@@ -817,7 +836,7 @@ export default {
                     this.launch_data.machine_lvl = 1;
                     this.launch_data.machine_nb = 1;
 
-                    this.getStock();
+                    // this.getStock();
 
                     this.$emit("prodLaunched");
                 })
@@ -836,10 +855,11 @@ export default {
                     this.launch_data.quantity = 1;
                     this.launch_data.machine_lvl = 1;
 
-                    this.getStock();
+                    // this.getStock();
                 });
         },
-        getStock(open_prod_modal = false) {
+        getStock() {
+            this.stock_updated = false;
             axios
                 .get("/api/entreprise/stock", {
                     params: {
@@ -859,9 +879,7 @@ export default {
 
                     this.verifyProd();
 
-                    if (open_prod_modal) {
-                        this.launch_prod_modal = true;
-                    }
+                    this.stock_updated = true;
                 });
         },
         verifyProd() {
@@ -978,6 +996,7 @@ export default {
             this.can_produce = resp;
         },
         getMachineInfo(type) {
+            this.machine_info_updated = false;
             axios
                 .post("/api/entreprise/machine/info", {
                     entreprise_id: this.user.id,
@@ -1003,13 +1022,10 @@ export default {
                     this.machine.pollution_lv2 = resp.data.pollution_lv2;
                     this.machine.pollution_lv3 = resp.data.pollution_lv3;
 
-                    if (type == "buy" || type == "sell") {
-                        this.machine.transaction = type;
-                        this.machine.show_transaction_modal = true;
-                    }
+                    this.machine_info_updated = true;
                 });
         },
-        confirmMachineTransaction(type) {
+        confirmMachineTransaction() {
             this.machine.show_transaction_modal = false;
             if (this.machine.transaction == "buy") {
                 // if (
@@ -1178,9 +1194,21 @@ export default {
                 });
         },
     },
-    created() {
+    mounted() {
         this.getMachineInfo();
         this.getStock();
-    },
+
+        window.Echo.channel("entreprise_" + this.user.id)
+            .listen("NewNotification", (e) => {
+                if (e.notification.type == "StockUpdate") {
+                    this.getStock();
+                    this.$forceUpdate();
+                }
+                if (e.notification.type == "MachinesUpdate") {
+                    this.getMachineInfo();
+                    this.$forceUpdate();
+                }
+            });
+    }
 };
 </script>

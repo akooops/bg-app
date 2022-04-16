@@ -40,18 +40,22 @@ class PenaltyLoan
             $time = (int) $this->getSimulationtime();
             if ($loan->days < $time) {
                 $loan->days += $loan->deadline;
+
                 $debt = round(0.1 * $loan->ratio * 0.01 * $loan->remaining_amount);
                 $loan->remaining_amount = round($loan->remaining_amount + $debt);
                 $this->updateIndicator('dettes', $loan->entreprise_id, $debt);
+
                 $loan->ratio += 0.1 * $loan->ratio;
+
                 $loan->save();
+
                 $notification = [
                     "entreprise_id" => $loan->entreprise_id,
-                    "type" => "LoanRateChanged",
-                    
+                    "type" => "LoansUpdate",
+
                     "store" => true,
-                    
-                    "text" => "Le taux d'intérêt de votre dette a augmenté, il est désormais " . $loan->ratio . " %",
+
+                    "text" => "Le taux d'intérêt de votre dette a augmenté, il est désormais de " . $loan->ratio . " %",
                     "title" => "Retard d'endettement",
                     "icon_path" => "aaaaaaaaaaa",
 

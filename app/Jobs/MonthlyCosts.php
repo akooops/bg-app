@@ -38,158 +38,156 @@ class MonthlyCosts implements ShouldQueue
     public function handle()
     {
         // Only do this job if the current week is a multiple of 4 (a month has passed)
-        $current_date = nova_get_setting("current_date");
-        if ($current_date % 4 != 0) {
-            return;
-        }
+        $current_date = (int) nova_get_setting("current_date");
+        if ($current_date % 4 == 0) {
+            // Get necessary settings
+            $salary_lv1 = (int) nova_get_setting('salary_lv1');
+            $salary_lv2 = (int) nova_get_setting('salary_lv2');
 
-        // Get necessary settings
-        $salary_lv1 = (int) nova_get_setting('salary_lv1');
-        $salary_lv2 = (int) nova_get_setting('salary_lv2');
+            $pollution_machines_lv1_factor = nova_get_setting('machines_lv1_pollution');
+            $pollution_machines_lv2_factor = nova_get_setting('machines_lv2_pollution');
+            $pollution_machines_lv3_factor = nova_get_setting('machines_lv3_pollution');
 
-        $pollution_machines_lv1_factor = nova_get_setting('machines_lv1_pollution');
-        $pollution_machines_lv2_factor = nova_get_setting('machines_lv2_pollution');
-        $pollution_machines_lv3_factor = nova_get_setting('machines_lv3_pollution');
+            $pollution_unit_cost = nova_get_setting('pollution_unit_cost');
 
-        $pollution_unit_cost = nova_get_setting('pollution_unit_cost');
+            $mp_stock_price = (int) nova_get_setting('mp_stock_price');
 
-        $mp_stock_price = (int) nova_get_setting('mp_stock_price');
+            // For every entreprise
+            $entreprises = Entreprise::get();
+            foreach ($entreprises as $entreprise) {
+                // Retrieve entreprise's funds
+                $caisse = $this->getIndicator('caisse', $entreprise->id)['value'];
+                $cost = 0;
 
-        // For every entreprise
-        $entreprises = Entreprise::get();
-        foreach ($entreprises as $entreprise) {
-            // Retrieve entreprise's funds
-            $caisse = $this->getIndicator('caisse', $entreprise->id)['value'];
-            $cost = 0;
+                // Compute salaries cost
+                $salary_cost = 0;
+                $workers_lv1 = $this->getIndicator('nb_workers_lv1', $entreprise->id)['value'];
+                $workers_lv2 = $this->getIndicator('nb_workers_lv2', $entreprise->id)['value'];
+                $salary_cost += $workers_lv1 * $salary_lv1 + $workers_lv2 * $salary_lv2;
 
-            // Compute salaries cost
-            $salary_cost = 0;
-            $workers_lv1 = $this->getIndicator('nb_workers_lv1', $entreprise->id)['value'];
-            $workers_lv2 = $this->getIndicator('nb_workers_lv2', $entreprise->id)['value'];
-            $salary_cost += $workers_lv1 * $salary_lv1 + $workers_lv2 * $salary_lv2;
+                // Compute raw materials stock cost
+                $stock_cost = 0;
+                $raw_materials =  DB::table("raw_materials_stock")->where("entreprise_id", "=", $entreprise->id)->where('quantity', '<>', 0)->get();
+                foreach ($raw_materials as $raw_material) {
+                    // Stock cost depends on quantity and volume of raw material
+                    $stock_cost += $raw_material->quantity * RawMaterial::find($raw_material->raw_material_id)->volume * $mp_stock_price;
+                }
 
-            // Compute raw materials stock cost
-            $stock_cost = 0;
-            $raw_materials =  DB::table("raw_materials_stock")->where("entreprise_id", "=", $entreprise->id)->where('quantity', '<>', 0)->get();
-            foreach ($raw_materials as $raw_material) {
-                // Stock cost depends on quantity and volume of raw material
-                $stock_cost += $raw_material->quantity * RawMaterial::find($raw_material->raw_material_id)->volume * $mp_stock_price;
-            }
+                // Compute pollution cost based on machines
+                $pollution_cost = 0;
+                $machines_lv1 = $this->getIndicator('nb_machines_lv1', $entreprise->id)['value'];
+                $machines_lv2 = $this->getIndicator('nb_machines_lv2', $entreprise->id)['value'];
+                $machines_lv3 = $this->getIndicator('nb_machines_lv3', $entreprise->id)['value'];
+                $pollution_cost += $pollution_unit_cost *
+                    ($machines_lv1 * $pollution_machines_lv1_factor +
+                    $machines_lv2 * $pollution_machines_lv2_factor +
+                    $machines_lv3 * $pollution_machines_lv3_factor);
 
-            // Compute pollution cost based on machines
-            $pollution_cost = 0;
-            $machines_lv1 = $this->getIndicator('nb_machines_lv1', $entreprise->id)['value'];
-            $machines_lv2 = $this->getIndicator('nb_machines_lv2', $entreprise->id)['value'];
-            $machines_lv3 = $this->getIndicator('nb_machines_lv3', $entreprise->id)['value'];
-            $pollution_cost += $pollution_unit_cost *
-                ($machines_lv1 * $pollution_machines_lv1_factor +
-                 $machines_lv2 * $pollution_machines_lv2_factor +
-                 $machines_lv3 * $pollution_machines_lv3_factor);
+                // Compute total cost
+                $cost = (int) ($salary_cost + $stock_cost + $pollution_cost);
 
-            // Compute total cost
-            $cost = (int) ($salary_cost + $stock_cost + $pollution_cost);
+                // Get a loan if funds not enough to pay costs
+                if ($cost > $caisse) {
+                    $difference = $cost - $caisse;
+                    $this->setIndicator("caisse", $entreprise->id, 0);
+                    $new_loan =  Loan::create([
+                        "entreprise_id" => $entreprise->id,
+                        "banker_id" => Banker::first()->id,
+                        "status"    => "accepted",
+                        "amount" => $difference,
+                        "remaining_amount" => $difference,
+                        "ratio" => 4.00,
+                        "payment_status" => 0,
+                        "creation_date" => (int) $this->getSimulationTime(),
+                        "deadline" => 15,
+                        "days" =>  $this->getSimulationTime() + 15
+                    ]);
+                    $this->updateIndicator("dettes", $entreprise->id, $difference);
+                    $notification = [
+                        "entreprise_id" => $entreprise->id,
+                        "type" => "NewLoan",
 
-            // Get a loan if funds not enough to pay costs
-            if ($cost > $caisse) {
-                $difference = $cost - $caisse;
-                $this->setIndicator("caisse", $entreprise->id, 0);
-                $new_loan =  Loan::create([
-                    "entreprise_id" => $entreprise->id,
-                    "banker_id" => Banker::first()->id,
-                    "status"    => "accepted",
-                    "amount" => $difference,
-                    "remaining_amount" => $difference,
-                    "ratio" => 4.00,
-                    "payment_status" => 0,
-                    "creation_date" => (int) $this->getSimulationTime(),
-                    "deadline" => 15,
-                    "days" =>  $this->getSimulationTime() + 15
-                ]);
-                $this->updateIndicator("dettes", $entreprise->id, $difference);
+                        "store" => true,
+
+                        "title" => "Manque de disponibilités",
+                        "text" => "Vos disponibilités ne suffisent pas pour payer les charges de ce mois, une nouvelle dette s'est ajoutée automatiquement",
+                        "icon_path" => "aaaaaaaaaaa",
+
+                        "style" => "failure",
+                    ];
+                    event(new NewNotification($notification));
+                }
+                // Otherwise, just take the money from the funds and go on
+                else {
+                    $this->updateIndicator('caisse', $entreprise->id, -1 * $cost);
+                    $notification = [
+                        "entreprise_id" => $entreprise->id,
+                        "type" => "MonthlyCosts",
+
+                        "store" => true,
+
+                        "text" => "Un mois est passé, vous payez:
+                                    - Salaires ( " . $salary_cost . " DA )
+                                    - Stockage ( " . $stock_cost . " DA )
+                                    - Pollution ( " . $pollution_cost . " DA ). Total: " . $cost . " DA.",
+                        "title" => "Frais mensuels",
+                        "icon_path" => "aaaaaaaaaaa",
+
+                        "style" => "info",
+                    ];
+                    event(new NewNotification($notification));
+                }
+
+                // This is to decrease the health of the machines
+
+                $nb_machines_lv1 = $this->getIndicator('nb_machines_lv1', $entreprise->id)['value'];
+                $machines_lv1_health = $this->getIndicator('machines_lv1_health', $entreprise->id)['value'];
+                $machines_lv1_durability = nova_get_setting('machines_lv1_durability');
+                if ($nb_machines_lv1 > 0) {
+                    if ($machines_lv1_health - $machines_lv1_durability > 0) {
+                        $this->updateIndicator("machines_lv1_health", $entreprise->id, -1 * $machines_lv1_durability);
+                    } else {
+                        $this->setIndicator("machines_lv1_health", $entreprise->id, 0);
+                    }
+                }
+
+                $nb_machines_lv2 = $this->getIndicator('nb_machines_lv2', $entreprise->id)['value'];
+                $machines_lv2_health = $this->getIndicator('machines_lv2_health', $entreprise->id)['value'];
+                $machines_lv2_durability = nova_get_setting('machines_lv2_durability');
+                if ($nb_machines_lv2 > 0) {
+                    if ($machines_lv2_health - $machines_lv2_durability > 0 && $nb_machines_lv2 > 0) {
+                        $this->updateIndicator("machines_lv2_health", $entreprise->id, -1 * $machines_lv2_durability);
+                    } else {
+                        $this->setIndicator("machines_lv2_health", $entreprise->id, 0);
+                    }
+                }
+
+                $nb_machines_lv3 = $this->getIndicator('nb_machines_lv3', $entreprise->id)['value'];
+                $machines_lv3_health = $this->getIndicator('machines_lv3_health', $entreprise->id)['value'];
+                $machines_lv3_durability = nova_get_setting('machines_lv3_durability');
+
+                if ($nb_machines_lv3) {
+                    if ($machines_lv3_health - $machines_lv3_durability > 0 && $nb_machines_lv3 > 0) {
+                        $this->updateIndicator("machines_lv3_health", $entreprise->id, -1 * $machines_lv3_durability);
+                    } else {
+                        $this->setIndicator("machines_lv3_health", $entreprise->id, 0);
+                    }
+                }
+
                 $notification = [
                     "entreprise_id" => $entreprise->id,
-                    "type" => "NewLoan",
+                    "type" => "MachinesUpdate",
 
                     "store" => true,
 
-                    "title" => "Manque de disponibilités",
-                    "text" => "Vos disponibilités ne suffisent pas pour payer les charges de ce mois, une nouvelle dette s'est ajoutée automatiquement",
-                    "icon_path" => "aaaaaaaaaaa",
-
-                    "style" => "failure",
-                ];
-                event(new NewNotification($notification));
-            }
-            // Otherwise, just take the money from the funds and go on
-            else {
-                $this->updateIndicator('caisse', $entreprise->id, -1 * $cost);
-                $notification = [
-                    "entreprise_id" => $entreprise->id,
-                    "type" => "MonthlyCosts",
-
-                    "store" => true,
-
-                    "text" => "Un mois est passé, vous payez:
-                                  - Salaires ( " . $salary_cost . " DA )
-                                  - Stockage ( " . $stock_cost . " DA )
-                                  - Pollution ( " . $pollution_cost . " DA ). Total: " . $cost . " DA.",
-                    "title" => "Frais mensuels",
+                    "title" => "Santé des machines",
+                    "text" => "La santé des machines décroit",
                     "icon_path" => "aaaaaaaaaaa",
 
                     "style" => "info",
                 ];
                 event(new NewNotification($notification));
             }
-
-            // This is to decrease the health of the machines
-            
-            $nb_machines_lv1 = $this->getIndicator('nb_machines_lv1', $entreprise->id)['value'];
-            $machines_lv1_health = $this->getIndicator('machines_lv1_health', $entreprise->id)['value'];
-            $machines_lv1_durability = nova_get_setting('machines_lv1_durability');
-            if ($nb_machines_lv1 > 0) {
-                if ($machines_lv1_health - $machines_lv1_durability > 0) {
-                    $this->updateIndicator("machines_lv1_health", $entreprise->id, -1 * $machines_lv1_durability);
-                } else {
-                    $this->setIndicator("machines_lv1_health", $entreprise->id, 0);
-                }
-            }
-
-            $nb_machines_lv2 = $this->getIndicator('nb_machines_lv2', $entreprise->id)['value'];
-            $machines_lv2_health = $this->getIndicator('machines_lv2_health', $entreprise->id)['value'];
-            $machines_lv2_durability = nova_get_setting('machines_lv2_durability');
-            if ($nb_machines_lv2 > 0) {
-                if ($machines_lv2_health - $machines_lv2_durability > 0 && $nb_machines_lv2 > 0) {
-                    $this->updateIndicator("machines_lv2_health", $entreprise->id, -1 * $machines_lv2_durability);
-                } else {
-                    $this->setIndicator("machines_lv2_health", $entreprise->id, 0);
-                }
-            }
-
-            $nb_machines_lv3 = $this->getIndicator('nb_machines_lv3', $entreprise->id)['value'];
-            $machines_lv3_health = $this->getIndicator('machines_lv3_health', $entreprise->id)['value'];
-            $machines_lv3_durability = nova_get_setting('machines_lv3_durability');
-
-            if ($nb_machines_lv3) {
-                if ($machines_lv3_health - $machines_lv3_durability > 0 && $nb_machines_lv3 > 0) {
-                    $this->updateIndicator("machines_lv3_health", $entreprise->id, -1 * $machines_lv3_durability);
-                } else {
-                    $this->setIndicator("machines_lv3_health", $entreprise->id, 0);
-                }
-            }
-
-            $notification = [
-                "entreprise_id" => $entreprise->id,
-                "type" => "MachinesUpdate",
-
-                "store" => true,
-
-                "title" => "Santé des machines",
-                "text" => "La santé des machines décroit",
-                "icon_path" => "aaaaaaaaaaa",
-
-                "style" => "info",
-            ];
-            event(new NewNotification($notification));
         }
     }
 }
