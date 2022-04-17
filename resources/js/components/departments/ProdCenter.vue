@@ -609,7 +609,7 @@ export default {
             can_produce_msg: "",
             can_produce: false,
             stock: null,
-            
+
             show_success: false,
             show_error: false,
             message: "",
@@ -626,7 +626,7 @@ export default {
                         15000 *
                         (1 - this.indicators["machines_lv2_health"]["value"]) *
                         this.indicators["nb_machines_lv2"]["value"],
-                    maintenance_lb3:
+                    maintenance_lv3:
                         20000 *
                         (1 - this.indicators["machines_lv3_health"]["value"]) *
                         this.indicators["nb_machines_lv3"]["value"],

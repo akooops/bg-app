@@ -23,6 +23,7 @@
                                     type="number"
                                     name="amount"
                                     :min="0"
+                                    :step="1000"
                                     v-model="new_ad.amount"
                                     class="text-bleu font-normal w-full rounded-sm ring-1 ring-tableBorder border-0 focus-within:ring-vert"
                                 />
@@ -126,7 +127,7 @@
                         class="text-center flex flex-col items-center gap-4"
                     >
                         <p>
-                            Il semble que vous n'aviez pas encore créer votre
+                            Il semble que vous n'ayez pas encore créer votre
                             première campagne publicitaire
                         </p>
                         <button
@@ -239,7 +240,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div v-else class="flex flex-col items-center mt-16">
              <img class="w-16 h-16 load" src="/assets/logo/bg_logo.svg" alt="">
         <div class="text-vN pt-2 font-semibold">Veillez attendre svp ... </div>
@@ -251,7 +252,7 @@
 import Modal from "../Modal.vue";
 import StatCard from "./ui/StatCard.vue";
 export default {
-    props: ["entreprise", "ad_coef", "caisse"],
+    props: ["entreprise", "ad_coef"],
     components: { Modal, StatCard },
     name: "Marketing",
     data() {
@@ -275,6 +276,8 @@ export default {
             icons: ["fa-users", "fa-hashtag", "fa-tv", "fa-calendar-week"],
             sent: false,
             reverse: false,
+
+            caisse: 0,
         };
     },
     computed: {
@@ -388,6 +391,18 @@ export default {
                 return 0;
             });
         },
+    },
+    created() {
+        axios
+            .get("/api/navbar", {
+                params: {
+                    entreprise_id: this.entreprise.id,
+                    type: this.entreprise.type,
+                },
+            })
+            .then((resp) => {
+                this.caisse = resp.data["caisse"];
+            });
     },
     mounted() {
         this.getAds();

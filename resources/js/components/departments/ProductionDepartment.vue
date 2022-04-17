@@ -1,7 +1,5 @@
 <template>
     <div class="w-full">
-        <notifications v-if="notif" >{{notif.text}}</notifications>
-
         <div v-if="!indicators_loaded" class="flex flex-col items-center mt-16">
              <img class="w-16 h-16 load" src="/assets/logo/bg_logo.svg" alt="">
         <div class="text-vN pt-2 font-semibold">Veillez attendre svp ... </div>
@@ -490,7 +488,6 @@ export default {
     props: ["user"],
     data() {
         return {
-            notif :[],
             reverse: false,
             products: [],
             market_demand: [],
@@ -669,25 +666,21 @@ export default {
             "NewNotification",
             (e) => {
                 if (e.notification.type == "ProductionUpdate") {
-                    this.notif = e.notification;
                     this.updateProdData();
                     this.$forceUpdate();
                 }
 
                 if (e.notification.type == "ActionUpdate") {
-                    this.notif = e.notification;
                     this.updateProdData();
                     this.$forceUpdate();
                 }
 
                 if (e.notification.type == "MachinesUpdate") {
-                    this.notif = e.notification;
                     this.getProdNumbers();
                     this.$forceUpdate();
                 }
 
                 if (e.notification.type == "WorkersUpdate") {
-                    this.notif = e.notification;
                     this.getProdNumbers();
                     this.$forceUpdate();
                 }

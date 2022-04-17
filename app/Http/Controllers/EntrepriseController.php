@@ -1015,7 +1015,7 @@ class EntrepriseController extends Controller
                 }
 
                 $machines_health = $this->getIndicator("machines_lv1_health", $entreprise_id)["value"];
-                if ($machines_health > 0.9) {
+                if ($machines_health >= 0.9) {
                     $message = "Vos machines de niveau 1 sont en bon état, vous ne pouvez pas les réparer plus que ça!";
                     $notification = [
                         "type" => "ActionUpdate",
@@ -1074,7 +1074,7 @@ class EntrepriseController extends Controller
                 }
 
                 $machines_health = $this->getIndicator("machines_lv2_health", $entreprise_id)["value"];
-                if ($machines_health > 0.9) {
+                if ($machines_health >= 0.9) {
                     $message = "Vos machines de niveau 2 sont en bon état, vous ne pouvez pas les réparer plus que ça!";
                     $notification = [
                         "type" => "ActionUpdate",
@@ -1132,7 +1132,7 @@ class EntrepriseController extends Controller
                 }
 
                 $machines_health = $this->getIndicator("machines_lv3_health", $entreprise_id)["value"];
-                if ($machines_health > 0.9) {
+                if ($machines_health >= 0.9) {
                     $message = "Vos machines de niveau 3 sont en bon état, vous ne pouvez pas les réparer plus que ça!";
                     $notification = [
                         "type" => "ActionUpdate",
@@ -1270,7 +1270,7 @@ class EntrepriseController extends Controller
     {
         $entreprise_id = $request->entreprise_id;
 
-        $notifications = Notification::where('entreprise_id', $entreprise_id)->orderByDesc("created_at")->get();
+        $notifications = Notification::where('entreprise_id', $entreprise_id)->orderByDesc("created_at")->take(20)->get();
 
         return [
             "notifications" => $notifications,
