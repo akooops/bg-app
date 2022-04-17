@@ -15,6 +15,7 @@ use App\Traits\IndicatorTrait;
 use App\Events\NewNotification;
 use Illuminate\Support\Facades\DB;
 use App\Events\SimulationDateChanged;
+use App\Jobs\AdScheduler;
 use App\Jobs\SellProductionsScheduler;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Console\Scheduling\Schedule;
@@ -66,6 +67,9 @@ class Kernel extends ConsoleKernel
 
             // Take out penalty loans
             $schedule->job(new PenaltyLoan)->everyMinute();
+
+            // Process ads that are still on going
+            $schedule->job(new AdScheduler)->everyMinute();
 
             //$schedule->job(new DailyStats)->everyMinute();
             // $schedule->command('inspire')->hourly();

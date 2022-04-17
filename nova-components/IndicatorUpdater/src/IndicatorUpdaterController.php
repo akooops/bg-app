@@ -25,9 +25,11 @@ class IndicatorUpdaterController
         if ($request->all_entreprises == false) {
             $indicator = $indicator->where('entreprise_id', $request->selected_entreprise);
         }
+
         if ($request->replace == true) {
             $indicator->update(["value" => (int)$request->value]);
         }
+
         if ($request->has_rate == true) {
             $indicator = $indicator->get();
             foreach ($indicator as $ind) {
@@ -43,13 +45,13 @@ class IndicatorUpdaterController
                 $notification = [
                     "type" => "NewNotif",
                     "entreprise_id" => $entreprise->id,
-                    
+
                     "store" => true,
-                    
+
                     "text" => $request->description,
                     "title" => $request->title,
                     "icon_path" => "aaaaaaaaaaa",
-                    
+
                     "style" => $request->notification_type,
                 ];
                 event(new NewNotification($notification));
@@ -58,18 +60,31 @@ class IndicatorUpdaterController
             $notification = [
                 "entreprise_id" => $request->selected_entreprise,
                 "type" => "NewNotif",
-                
+
                 "store" => true,
-                
+
                 "text" => $request->description,
                 "title" => $request->title,
                 "icon_path" => "aaaaaaaaaaa",
-                
+
                 "style" => $request->notification_type,
             ];
             event(new NewNotification($notification));
         }
 
         return response()->json("Success", 200);
+    }
+
+    public function getIndicators_2(NovaRequest $request)
+    {
+        return response()->json(DB::table('indicators')->get());
+    }
+
+    public function getEntrepriseIndicators(NovaRequest $request)
+    {
+        $data = DB::table('entreprise_indicator')
+            ->where('indicator_id', $request->indicator_id)
+            ->join('users', 'users.id', '=', 'entreprise_indicator.entreprise_id')->get();
+        return response()->json($data);
     }
 }
