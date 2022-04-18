@@ -4,7 +4,8 @@
 
         <div class="flex grid grid-cols-2 gap-6 content-center">
             <div class="bg-90 bg-white p-6 w-1/2" style="min-height: 300px">
-                <div class="mt-5 mb-5">
+
+                <div class="py-5">
                     <p class="text-left">Choisissez l'indicateur a modifier</p>
                     <select
                         v-model="data.selected_indicator"
@@ -19,6 +20,22 @@
                         </option>
                     </select>
                 </div>
+
+                <div class="py-5">
+                    <p class="text-left">Choisissez l'entreprise</p>
+
+                    <div class="flex flex-row flex-wrap">
+                        <div v-for="(entreprise, key) in entreprises" :key="key" class="form-check form-check-inline">
+                            <input
+                                :id="entreprise.id" :value="entreprise" v-model="selected_entreprises" type="checkbox"
+                            >
+                            <label class="ml-10" for="entreprise.id"> {{ entreprise.name }} </label>
+                        </div>
+                    </div>
+
+                    <p> {{selected_entreprises}} </p>
+                </div>
+
                 <div class="flex mt-5 mb-5">
                     <input
                         type="checkbox"
@@ -37,7 +54,7 @@
                         entreprises?</label
                     >
                 </div>
-                <p class="text-left">Choisissez l'entreprise</p>
+
                 <select
                     v-model="data.selected_entreprise"
                     class="w-full form-control form-input form-input-bordered pl-2"
@@ -230,7 +247,7 @@ export default {
                 title: "",
                 description: "",
                 selected_indicator: null,
-                selected_entreprise: null,
+                selected_entreprises: [],
                 increment: null,
                 all_entreprises: false,
                 value: null,

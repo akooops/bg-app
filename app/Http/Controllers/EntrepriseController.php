@@ -336,7 +336,7 @@ class EntrepriseController extends Controller
         // Check if enough money to launch prod
         $caisse = $this->getIndicator("caisse", $entreprise_id)["value"];
         if ($cost > $caisse) {
-            $message = "Impossible de lancer la production: disponnibiltiés insuffisantes.";
+            $message = "Impossible de lancer la production: Disponnibiltiés insuffisantes.";
             return Response::json(["message" => $message, "success" => false], 200);
         }
 
@@ -345,6 +345,11 @@ class EntrepriseController extends Controller
         // Check if enough raw materials to launch prod
         $product = DB::table("raw_materials_products")->where("product_id", "=", $product_id)->orderBy("raw_material_id")->get();
         $stock = DB::table("raw_materials_stock")->where("entreprise_id", "=", $entreprise_id)->orderBy("raw_material_id")->get();
+
+        if ($stock->count() == 0) {
+            $message = "Impossible de lancer la production: Matières premières insuffisantes.";
+            return Response::json(["message" => $message, "success" => false], 200);
+        }
 
         $quantity = $request->quantity * 100; // should be divided by 100 for nb lots
 
@@ -1281,9 +1286,21 @@ class EntrepriseController extends Controller
     {
         $read_notifications_ids = $request->read_notifications_ids;
 
-
         Notification::whereIn('id', $read_notifications_ids)->update(["read" => true]);
 
         return Response::json(["message" => "Notifications read successfully"], 200);
+    }
+
+    public function getIndicators(Request $request) {
+        $entreprise_id = $request->entreprise_id;
+        $indicators_list = $request->indicators;
+
+        $resp = [];
+        foreach ($indicators_list as $ind) {
+            $value = $this->getIndicator($ind, $entreprise_id);
+            $resp[$ind] = $value;
+        }
+
+        return $resp;
     }
 }

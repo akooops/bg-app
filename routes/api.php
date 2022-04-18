@@ -51,6 +51,8 @@ Route::prefix("entreprise")->group(function () {
 
     Route::get("/notifications", [EntrepriseController::class, "getNotifications"]);
     Route::post("/read-notifications", [EntrepriseController::class, "readNotifications"]);
+
+    Route::get("/indicators", [EntrepriseController::class, "getIndicators"]);
 });
 
 Route::prefix("demand")->group(function() {

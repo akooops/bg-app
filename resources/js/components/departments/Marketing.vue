@@ -159,14 +159,13 @@
             </template>
         </Modal>
         <div class="flex gap-10">
-            <StatCard
-                v-for="(key, id) in Object.keys(indicators)"
-                v-bind:key="id"
-                :title="indicators[key].name"
-                color="text-green-500"
-                :icon="'/assets/icons/' + key + '.svg'"
-                :value="[indicators[key].value]"
-            ></StatCard>
+                <StatCard
+                    v-for="(key, id) in Object.keys(indicators).filter(x => x != 'ca')" v-bind:key="id"
+                    :title="indicators[key].name"
+                    color="text-green-500"
+                    :icon="'/assets/icons/' + key + '.svg'"
+                    :value="[indicators[key].value]"
+                ></StatCard>
         </div>
         <div v-if="ads_loaded">
             <div class="py-12">
@@ -192,6 +191,18 @@
                             {{ ads.length }}
                             campagne(s) publicitaire(s)
                         </p>
+
+                        <p class="text-red-800" v-if="ads.length > 0">
+                            Risque de scandale médiatique actuel: {{ scandal_risk }}%
+                        </p>
+
+                        <button
+                            class="bg-gradient-to-t from-lightVert to-lighterVert hover:opacity-80 text-vN px-4 py-2 shadow-lg rounded-full text-center mx-auto"
+                            @click="openModal"
+                        >
+                            Créer une campagne publicitaire
+                        </button>
+
                         <table class="w-full border-collapse">
                             <thead
                                 class="sticky top-0 border-b border-t border-tableBorder bg-white font-medium text-vN"
@@ -290,12 +301,6 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <button
-                            class="bg-gradient-to-t from-lightVert to-lighterVert hover:opacity-80 text-vN px-4 py-2 shadow-lg rounded-full text-center mx-auto"
-                            @click="openModal"
-                        >
-                            Créer une campagne publicitaire
-                        </button>
                     </div>
                 </div>
             </div>
@@ -405,6 +410,23 @@ export default {
 
             return true;
         },
+
+        scandal_risk() {
+            let pending_ads = this.ads.filter(ad => ad.status == "En cours");
+
+            let sum = 0;
+
+            pending_ads.map(x => sum += x.amount * x.days);
+
+            let x = this.indicators["ca"].value > 0 ? sum / this.indicators["ca"].value : 0;
+
+            if (x > 0.1) {
+                return Math.min( Math.round(Math.sqrt(x / 77) * 100) / 100 , 1) * 100;
+            }
+            else {
+                return 0
+            }
+        }
     },
     methods: {
         getAds() {

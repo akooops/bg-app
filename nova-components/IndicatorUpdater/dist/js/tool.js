@@ -169,7 +169,7 @@ exports = module.exports = __webpack_require__(5)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n/* Scoped Styles */\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n/* Scoped Styles */\n", ""]);
 
 // exports
 
@@ -853,6 +853,23 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     metaInfo: function metaInfo() {
@@ -870,7 +887,7 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
                 title: "",
                 description: "",
                 selected_indicator: null,
-                selected_entreprise: null,
+                selected_entreprises: [],
                 increment: null,
                 all_entreprises: false,
                 value: null,
@@ -1811,7 +1828,7 @@ var render = function() {
             staticStyle: { "min-height": "300px" }
           },
           [
-            _c("div", { staticClass: "mt-5 mb-5" }, [
+            _c("div", { staticClass: "py-5" }, [
               _c("p", { staticClass: "text-left" }, [
                 _vm._v("Choisissez l'indicateur a modifier")
               ]),
@@ -1864,6 +1881,76 @@ var render = function() {
                 }),
                 0
               )
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "py-5" }, [
+              _c("p", { staticClass: "text-left" }, [
+                _vm._v("Choisissez l'entreprise")
+              ]),
+              _vm._v(" "),
+              _c(
+                "div",
+                { staticClass: "flex flex-row flex-wrap" },
+                _vm._l(_vm.entreprises, function(entreprise, key) {
+                  return _c(
+                    "div",
+                    { key: key, staticClass: "form-check form-check-inline" },
+                    [
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.selected_entreprises,
+                            expression: "selected_entreprises"
+                          }
+                        ],
+                        attrs: { id: entreprise.id, type: "checkbox" },
+                        domProps: {
+                          value: entreprise,
+                          checked: Array.isArray(_vm.selected_entreprises)
+                            ? _vm._i(_vm.selected_entreprises, entreprise) > -1
+                            : _vm.selected_entreprises
+                        },
+                        on: {
+                          change: function($event) {
+                            var $$a = _vm.selected_entreprises,
+                              $$el = $event.target,
+                              $$c = $$el.checked ? true : false
+                            if (Array.isArray($$a)) {
+                              var $$v = entreprise,
+                                $$i = _vm._i($$a, $$v)
+                              if ($$el.checked) {
+                                $$i < 0 &&
+                                  (_vm.selected_entreprises = $$a.concat([$$v]))
+                              } else {
+                                $$i > -1 &&
+                                  (_vm.selected_entreprises = $$a
+                                    .slice(0, $$i)
+                                    .concat($$a.slice($$i + 1)))
+                              }
+                            } else {
+                              _vm.selected_entreprises = $$c
+                            }
+                          }
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c(
+                        "label",
+                        {
+                          staticClass: "ml-10",
+                          attrs: { for: "entreprise.id" }
+                        },
+                        [_vm._v(" " + _vm._s(entreprise.name) + " ")]
+                      )
+                    ]
+                  )
+                }),
+                0
+              ),
+              _vm._v(" "),
+              _c("p", [_vm._v(" " + _vm._s(_vm.selected_entreprises) + " ")])
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "flex mt-5 mb-5" }, [
@@ -1919,10 +2006,6 @@ var render = function() {
                   "Changer l'indicateur pour toutes les\n                    entreprises?"
                 )
               ])
-            ]),
-            _vm._v(" "),
-            _c("p", { staticClass: "text-left" }, [
-              _vm._v("Choisissez l'entreprise")
             ]),
             _vm._v(" "),
             _c(

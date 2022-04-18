@@ -49,7 +49,7 @@
                 </svg>
             </span>
         </div>
-        
+
         <Modal v-if="loan_modal" class="align-center">
             <template v-slot:content>
                 <div class="flex flex-col text-vN p-4">
@@ -84,7 +84,7 @@
 
                     <p v-if="ratio != null">
                         Le ratio d'endettement sera de:
-                        {{ Math.round(ratio * 100) / 100 }}%
+                        {{ ratio }}%
                     </p>
 
                     <div class="mt-6 flex items-center">
@@ -285,39 +285,33 @@
                             <th
                                 class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
                             >
-                                Motant
+                                Montant prêté
                             </th>
                             <th
                                 class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
                             >
-                                Date De Création
+                                Semaine du prêt
                             </th>
                             <th
                                 class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
                             >
-                                Taux d'interet
+                                Semaine de remise (prévue)
                             </th>
                             <th
                                 class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
                             >
-                                Délai en Semaines
+                                Taux d'interets
                             </th>
                             <th
                                 class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
                             >
-                                Montant restant
+                                Montant à rendre restant
                             </th>
                             <th
                                 class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
                             >
                                 Payé ?
                             </th>
-                            <th
-                                class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
-                            >
-                                Statue
-                            </th>
-
                             <th
                                 class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
                             >
@@ -350,15 +344,15 @@
                             <td
                                 class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
                             >
-                                {{ loan.ratio ? loan.ratio : "0" }} %
+                                {{ loan.days }}
                             </td>
+
                             <td
                                 class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
                             >
-                                {{
-                                    loan.deadline ? loan.deadline : "pas encore"
-                                }}
+                                {{ loan.ratio ? loan.ratio : "0" }} %
                             </td>
+
 
                             <td
                                 class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
@@ -374,16 +368,6 @@
                                 "
                             >
                                 {{ loan.payment_status == 1 ? "Payé" : "Non" }}
-                            </td>
-                            <td
-                                class="flex flex-wrap p-1 text-center block lg:table-cell relative lg:static w-12"
-                                :class="
-                                    loan.status == 'En attente'
-                                        ? 'text-yellow-600'
-                                        : ''
-                                "
-                            >
-                                {{ loan.status }}
                             </td>
                             <td
                                 class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static pl-4"
@@ -467,6 +451,7 @@ export default {
             show_error: false,
 
             caisse: 0,
+            ca: 0,
         };
     },
     computed: {
@@ -474,11 +459,12 @@ export default {
             if (this.amount == 0 || this.deadline == 0) {
                 return null;
             }
+            let x = this.amount / this.ca;
+            let t = this.deadline;
 
-            return Math.max(
-                (100 * this.deadline) / (this.deadline + this.amount / 1000),
-                0.1
-            );
+            let rat = Math.sqrt(x / 2) * Math.pow( t / (Math.pow(2 * x, 1.11) * 4 * 6), 0.6);
+
+            return Math.round(rat * 1000) / 100;
         },
 
         can_create() {
@@ -543,6 +529,18 @@ export default {
                     this.loans_loaded = true;
                 })
                 .catch(function (error) {});
+        },
+        getCa() {
+            axios
+                .get("/api/entreprise/indicators", {
+                    params: {
+                        entreprise_id: this.entreprise.id,
+                        indicators: ['ca'],
+                    },
+                })
+                .then((response) => {
+                    this.ca = response.data['ca'].value;
+                })
         },
         openPayModal(loan) {
             this.selected_loan = loan;
@@ -627,6 +625,8 @@ export default {
             .then((resp) => {
                 this.caisse = resp.data["caisse"];
             });
+
+        this.getCa();
     },
     mounted() {
         this.getLoans();

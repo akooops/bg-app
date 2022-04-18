@@ -111,7 +111,7 @@ class MarketingController extends Controller
     public function getMarketingIndicators(Request $request)
     {
         // Return marketing useful indicators
-        $keys = ["nb_subscribers", "social_presence", "media_presence", "events_presence"];
+        $keys = ["nb_subscribers", "social_presence", "media_presence", "events_presence", "ca"];
         $entreprise_id = $request->entreprise_id;
         $resp = [];
         foreach ($keys as $ind) {

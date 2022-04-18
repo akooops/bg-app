@@ -34,6 +34,7 @@ class AdScheduler implements ShouldQueue
      */
     public function handle()
     {
+        // Get running ads from database
         $ads = DB::table("ads")->where("status", "=", "pending")->get();
 
         foreach ($ads as $ad) {
@@ -43,7 +44,7 @@ class AdScheduler implements ShouldQueue
 
             // Compute the presence of the company
             $nb_subscribers = $this->getIndicator('nb_subscribers', $ad->entreprise_id)["value"];
-            $presence = round($weekly_result / $nb_subscribers, 0);
+            $presence = round($weekly_result / $nb_subscribers, 2);
 
             // Update number of subscribers of the company
             $this->updateIndicator('nb_subscribers', $ad->entreprise_id, $weekly_result);
@@ -78,6 +79,71 @@ class AdScheduler implements ShouldQueue
                 "style" => "info",
             ];
             event(new NewNotification($notification));
+        }
+
+        // Computations for too much ads penalty
+        // Group ads by entreprise
+        $grouped_ads = $ads->groupBy('entreprise_id');
+
+        foreach ($grouped_ads as $entrep_ads) {
+            // Sum total amount spent on active ads for this entreprise
+            $entrep_id = $entrep_ads[0]->entreprise_id;
+            $total_active_amount = 0;
+            foreach($entrep_ads as $ad) {
+                $total_active_amount += $ad->amount;
+            }
+
+            // Compute ratio of amount spent on total chiffre d'affaire
+            $ca = $this->getIndicator("ca", $entrep_id)["value"];
+            $x = $ca > 0 ? $total_active_amount / $ca : 0;
+
+            // Compute probability of a media scandal this week
+            $prob = 0;
+            if ($x > 0.1) {
+                $prob = min(sqrt($x / 77), 1);
+
+                // Send warning notification
+                $notification = [
+                    "entreprise_id" => $entrep_id,
+                    "type" => "AdsUpdate",
+
+                    "store" => true,
+
+                    "text" => "Vous dépensez plus de 10% de votre chiffre d'affaires en publicités, attention aux scandales médiatiques!",
+                    "title" => "Risques de scandales",
+                    "icon_path" => "aaaaaaaaaaa",
+
+                    "style" => "warning",
+                ];
+                event(new NewNotification($notification));
+            }
+
+            // Now pick a random number and see if the media scandal happens
+            $pick = mt_rand() / mt_getrandmax();
+            if ($pick < $prob)
+            {
+                $this->setIndicator("nb_subscribers", $entrep_id, round(0.9 * $this->getIndicator("nb_subscribers", $entrep_id)["value"]));
+
+                $indicators = ["social_presence", "media_presence", "events_presence"];
+                foreach ($indicators as $ind) {
+                    $this->setIndicator($ind, $entrep_id, round(0.9 * $this->getIndicator($ind, $entrep_id)["value"], 2));
+                }
+
+                // Send notification for scandal
+                $notification = [
+                    "entreprise_id" => $entrep_id,
+                    "type" => "AdsUpdate",
+
+                    "store" => true,
+
+                    "text" => "Vous êtes tombé dans un scandale médiatique! Vous perdez 10% de vos chiffres média.",
+                    "title" => "Scandale médiatique",
+                    "icon_path" => "aaaaaaaaaaa",
+
+                    "style" => "failure",
+                ];
+                event(new NewNotification($notification));
+            }
         }
     }
 }
