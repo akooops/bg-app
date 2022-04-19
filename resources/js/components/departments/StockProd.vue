@@ -1,0 +1,138 @@
+<template>
+    <div class="mt-10">
+        <div v-if="!stock_loaded" class="flex flex-col items-center mt-16">
+            <img class="w-16 h-16 load" src="/assets/logo/bg_logo.svg" alt="">
+            <div class="text-vN pt-2 font-semibold">Chargement... </div>
+        </div>
+
+        <table v-else class="border-collapse w-full table-fixed">
+            <thead class="sticky top-0 border-b bg-white font-semibold text-vN">
+                <tr>
+                    <th
+                        class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                    >
+                    </th>
+
+                    <th
+                        class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                        @click="sort('material')"
+                    >
+                        Produit
+                    </th>
+
+                    <th
+                        class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                        @click="sort('quantity')"
+                    >
+                        Quantité en stock
+                    </th>
+
+                    <th
+                        class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                    >
+                        Quantité en vente
+                    </th>
+
+                    <th
+                        class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                        @click="sort('price_min')"
+                    >
+                        Prix Minimal
+                    </th>
+
+                    <th
+                        class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                        @click="sort('price_max')"
+                    >
+                        Prix Maximal
+                    </th>
+
+                    <th
+                        class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                    >
+                        Prix de vente
+                    </th>
+
+                    <th
+                        class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                    >
+
+                    </th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <tr
+                    v-for="(item, key) in stock"
+                    v-bind:key="key"
+                    is="StockProdItem"
+                    :user="user"
+                    :item="item"
+                >
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</template>
+
+<script>
+import StockProdItem from "./ui/StockProdItem";
+export default {
+    name: "StockProd",
+    components: {
+        StockProdItem
+    },
+    data() {
+        return {
+            stock: [],
+            stock_loaded: false,
+        };
+    },
+
+    props: ["user"],
+
+    methods: {
+        getStock() {
+            axios
+                .get("/api/entreprise/products-stock", {
+                    params: {
+                        entreprise_id: this.user.id,
+                    },
+                })
+                .then((response) => {
+                    this.stock = response.data;
+                    this.stock_loaded = true;
+                })
+                .catch(function (error) {});
+        },
+
+        sort(key) {
+            this.reverse = !this.reverse;
+            this.stock.sort((a, b) => {
+                if (a[key] < b[key]) {
+                    return this.reverse ? -1 : 1;
+                }
+                if (a[key] > b[key]) {
+                    return this.reverse ? 1 : -1;
+                }
+                // console.log(this.commands);
+                return 0;
+            });
+        },
+    },
+    mounted() {
+        window.Echo.channel("entreprise_" + this.user.id).listen(
+            "NewNotification",
+            (e) => {
+                if (e.notification.type == "ProductionUpdate") {
+                    this.getStock();
+                    this.$forceUpdate();
+                }
+            }
+        );
+    },
+    created() {
+        this.getStock();
+    }
+};
+</script>

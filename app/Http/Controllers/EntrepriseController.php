@@ -305,6 +305,33 @@ class EntrepriseController extends Controller
         return $data->toArray();
     }
 
+    public function getProductsStock(Request $request)
+    {
+        $entreprise_id = $request->entreprise_id;
+
+        $stock = DB::table("stock")->where("entreprise_id", "=", $entreprise_id)->get();
+
+        $data = collect([]);
+        if ($stock->count() > 0) {
+            $data = $stock->map(function ($item) {
+                $product = Product::where("id", "=", $item->product_id)->first();
+                $item_data = [
+                    "id" => $product->id,
+                    "product" => $product->name,
+                    "icon" => $product->icon,
+                    "quantity" => $item->quantity,
+                    "quantity_selling" => $item->quantity_selling,
+                    "price" => $item->price == 0 ? ($product->price_min + $product->price_max) / 2 : $item->price,
+                    "price_min" => $product->price_min,
+                    "price_max" => $product->price_max,
+                    "left_demand" => $product->left_demand,
+                ];
+                return $item_data;
+            });
+        }
+        return $data->toArray();
+    }
+
     // Production functions
 
     public function getProdIndicators(Request $request)
@@ -1302,5 +1329,26 @@ class EntrepriseController extends Controller
         }
 
         return $resp;
+    }
+
+    public function putProdToSell(Request $request) {
+        $entreprise_id = $request->entreprise_id;
+        $product_id = $request->product_id;
+
+        $new_selling_quantity = $request->new_selling_quantity;
+        $new_price = $request->new_price;
+
+        $product = DB::table('products')->where('id', '=', $product_id)->first();
+        if($new_price < $product->price_min || $product->price_max < $new_price) {
+            return Response::json(["message" => "Erreur: Le prix doit être entre le min et le max propres au produit.", "success" => false], 200);
+        }
+
+        $stock = DB::table('stock')->where('entreprise_id', '=', $entreprise_id)->where('product_id', '=', $product_id);
+        if($stock->first()->quantity < $new_selling_quantity) {
+            return Response::json(["message" => "Erreur: La quantité à vendre spécifiée dépasse votre stock", "success" => false], 200);
+        }
+
+        $stock->update(["quantity_selling" => $new_selling_quantity, "price" => $new_price]);
+        return Response::json(["message" => "Changement des données de vente réussi.", "success" => true], 200);
     }
 }

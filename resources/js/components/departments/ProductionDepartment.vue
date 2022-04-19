@@ -1,11 +1,7 @@
 <template>
     <div class="w-full">
-        <div v-if="!indicators_loaded" class="flex flex-col items-center mt-16">
-             <img class="w-16 h-16 load" src="/assets/logo/bg_logo.svg" alt="">
-        <div class="text-vN pt-2 font-semibold">Veillez attendre svp ... </div>
-        </div>
 
-        <div v-if="indicators_loaded" class="w-full">
+        <div class="w-full">
             <nav class="mb-10 text-sm flex justify-start gap-8">
                 <button
                     @click="page_index = 'prod_stats'"
@@ -19,7 +15,6 @@
                     Statistiques
                 </button>
 
-                <!-- active -->
                 <button
                     @click="page_index = 'production_list'"
                     :class="
@@ -30,6 +25,18 @@
                     class="inline-block py-2 focus:outline-none text-lg"
                 >
                     Productions
+                </button>
+
+                <button
+                    @click="page_index = 'stock_sell'"
+                    :class="
+                        page_index == 'stock_sell'
+                            ? 'border-b-2 border-vert text-vert font-medium'
+                            : 'text-vN hover:text-black'
+                    "
+                    class="inline-block py-2 focus:outline-none text-lg"
+                >
+                    Stock / Vendre
                 </button>
 
                 <button
@@ -45,8 +52,6 @@
                 </button>
             </nav>
         </div>
-
-        <!-- stat cards  -->
 
         <div v-if="show_stat_cards" class="flex w-full justify-center gap-7">
             <Indicator
@@ -138,6 +143,7 @@
                 </div>
             </div>
         </div>
+
         <div v-if="page_index == 'prod_stats'">
             <div
                 v-if="show_market_demand"
@@ -247,7 +253,13 @@
                     </template>
                 </Modal>
             </div>
+
+            <div v-else class="flex flex-col items-center mt-16">
+                <img class="w-16 h-16 load" src="/assets/logo/bg_logo.svg" alt="">
+                <div class="text-vN pt-2 font-semibold">Calcul des graphes... </div>
+            </div>
         </div>
+
         <div v-if="page_index == 'production_list'" class="w-full mt-10">
             <div class="flex items-center justify-between mb-7">
                 <h1 class="text-lg font-semibold text-vN">Vos Productions</h1>
@@ -455,14 +467,33 @@
                 </template>
             </Modal>
         </div>
+
+        <div v-if="page_index == 'stock_sell'">
+            <StockProd
+                v-if="indicators_loaded"
+                :user="user"
+            ></StockProd>
+
+            <div v-else class="flex flex-col items-center mt-16">
+                <img class="w-16 h-16 load" src="/assets/logo/bg_logo.svg" alt="">
+                <div class="text-vN pt-2 font-semibold">Chargement... </div>
+            </div>
+        </div>
+
         <div v-if="page_index == 'decision_center'">
             <ProdCenter
+                v-if="indicators_loaded"
                 @prodLaunched="updateProdData"
                 :user="user"
                 :products="products"
                 :indicators="indicators"
                 :caisse="caisse"
             ></ProdCenter>
+
+            <div v-else class="flex flex-col items-center mt-16">
+                <img class="w-16 h-16 load" src="/assets/logo/bg_logo.svg" alt="">
+                <div class="text-vN pt-2 font-semibold">Chargement... </div>
+            </div>
         </div>
     </div>
 </template>
@@ -471,6 +502,7 @@
 import LineGraph from "./ui/LineGraph";
 import StatCard from "./ui/StatCard";
 import ProdCenter from "./ProdCenter";
+import StockProd from "./StockProd";
 import Modal from "../Modal";
 import Indicator from "./ui/Indicator";
 import "echarts";
@@ -481,6 +513,7 @@ export default {
         LineGraph,
         StatCard,
         ProdCenter,
+        StockProd,
         Modal,
         Indicator,
         VChart,
@@ -489,29 +522,41 @@ export default {
     data() {
         return {
             reverse: false,
+
             products: [],
+
             market_demand: [],
+
             id_list: [1, 2, 3, 4],
+
             prod_data: [],
+
             show_market_demand: false,
             show_stat_cards: false,
+
             products: [],
             indicators: {},
             productions: [],
+
             page_index: "prod_stats",
+
             sell_info: {
                 sold_quant: 0,
                 stock_quant: 0,
                 price: 0,
                 number: 0,
             },
+
             show_selling_info: false,
             show_product_info: false,
             product_info: null,
             average_prices: [],
+
             caisse: 0,
+
             showMachines: false,
             showEmployees: false,
+
             indicators_loaded: false,
         };
     },

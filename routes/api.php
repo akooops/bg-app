@@ -32,6 +32,8 @@ Route::prefix("entreprise")->group(function () {
 	Route::get("/commands", [EntrepriseController::class, "getEntrepriseCommands"]);
 
 	Route::get("/stock", [EntrepriseController::class, "getStock"]);
+    Route::get("/products-stock", [EntrepriseController::class, "getProductsStock"]);
+    Route::post("/sell-product", [EntrepriseController::class, "putProdToSell"]);
 
 	Route::get("/production/indicators", [EntrepriseController::class, "getProdIndicators"]);
     Route::get("/marketing/indicators", [MarketingController::class, "getMarketingIndicators"]);
