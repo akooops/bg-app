@@ -264,7 +264,6 @@ class EntrepriseController extends Controller
                 CommandScheduler::dispatch($supp_cmd_item, $supp_cmd_item["item_id"])
                     ->delay(now()->addSeconds($supp_cmd_item["time_to_ship"] * 60));
             });
-
         });
 
         $message = "Votre commande a été effectuée. Livraison en cours...";
@@ -324,6 +323,7 @@ class EntrepriseController extends Controller
                     "price" => $item->price == 0 ? ($product->price_min + $product->price_max) / 2 : $item->price,
                     "price_min" => $product->price_min,
                     "price_max" => $product->price_max,
+                    "dist_cost" => $product->dist_cost,
                     "left_demand" => $product->left_demand,
                 ];
                 return $item_data;
@@ -410,8 +410,7 @@ class EntrepriseController extends Controller
             $nb_machines = $this->getIndicator("nb_machines_lv1", $entreprise_id)["value"];
             $nb_busy_machines = $this->getIndicator("nb_machines_lv1_busy", $entreprise_id)["value"];
             $machines_health = $this->getIndicator("machines_lv1_health", $entreprise_id)["value"];
-        }
-        else if ($machines_lvl == 2) {
+        } else if ($machines_lvl == 2) {
             if ($this->getIndicator("machines_lv2_health", $entreprise_id) <= 0) {
                 $message = "Impossible de lancer la production: veuillez réparer vos machines.";
                 return Response::json(["message" => $message, "success" => false], 200);
@@ -420,8 +419,7 @@ class EntrepriseController extends Controller
             $nb_machines = $this->getIndicator("nb_machines_lv2", $entreprise_id)["value"];
             $nb_busy_machines = $this->getIndicator("nb_machines_lv2_busy", $entreprise_id)["value"];
             $machines_health = $this->getIndicator("machines_lv2_health", $entreprise_id)["value"];
-        }
-        else if ($machines_lvl == 3) {
+        } else if ($machines_lvl == 3) {
             if ($this->getIndicator("machines_lv3_health", $entreprise_id) <= 0) {
                 $message = "Impossible de lancer la production: veuillez réparer vos machines.";
                 return Response::json(["message" => $message, "success" => false], 200);
@@ -463,8 +461,10 @@ class EntrepriseController extends Controller
         $nb_workers_lv1_to_use = $labor_lv1;
         $nb_workers_lv2_to_use = $labor_lv2;
 
-        if ($nb_workers_lv1 - $nb_busy_workers_lv1 < $nb_workers_lv1_to_use
-        && $nb_workers_lv1 + $nb_workers_lv2 - $nb_busy_workers_lv1 - $nb_busy_workers_lv2 -  $nb_workers_lv2_to_use < $nb_workers_lv1_to_use ) {
+        if (
+            $nb_workers_lv1 - $nb_busy_workers_lv1 < $nb_workers_lv1_to_use
+            && $nb_workers_lv1 + $nb_workers_lv2 - $nb_busy_workers_lv1 - $nb_busy_workers_lv2 -  $nb_workers_lv2_to_use < $nb_workers_lv1_to_use
+        ) {
             $message = "Impossible de lancer la production: Employés simples libres insuffisants.";
             return Response::json(["message" => $message, "success" => false], 200);
         }
@@ -865,15 +865,13 @@ class EntrepriseController extends Controller
             if ($this->getIndicator("nb_machines_lv1", $entreprise_id)["value"] == 0) {
                 $this->setIndicator("machines_lv1_health", $entreprise_id, 1);
             }
-        }
-        else if ($level == 2) {
+        } else if ($level == 2) {
             $this->updateIndicator("nb_machines_lv2", $entreprise_id, -1 * $number);
 
             if ($this->getIndicator("nb_machines_lv2", $entreprise_id)["value"] == 0) {
                 $this->setIndicator("machines_lv2_health", $entreprise_id, 1);
             }
-        }
-        else if ($level == 3) {
+        } else if ($level == 3) {
             $this->updateIndicator("nb_machines_lv3", $entreprise_id, -1 * $number);
 
             if ($this->getIndicator("nb_machines_lv3", $entreprise_id)["value"] == 0) {
@@ -963,8 +961,7 @@ class EntrepriseController extends Controller
                     ];
                     event(new NewNotification($notification));
                     return Response::json(["message" => $message, "success" => false], 200);
-                }
-                else {
+                } else {
                     $this->updateIndicator("caisse", $entreprise_id, -1 * $price);
                     $this->setIndicator("5s_day", $entreprise_id, 0);
 
@@ -1004,8 +1001,7 @@ class EntrepriseController extends Controller
                     ];
                     event(new NewNotification($notification));
                     return Response::json(["message" => $message, "success" => false], 200);
-                }
-                else {
+                } else {
                     $this->updateIndicator("reject_rate", $entreprise_id, -0.01);
                     $this->updateIndicator("caisse", $entreprise_id, -1 * $price);
 
@@ -1063,8 +1059,7 @@ class EntrepriseController extends Controller
                     ];
                     event(new NewNotification($notification));
                     return Response::json(["message" => $message, "success" => false], 200);
-                }
-                else {
+                } else {
                     $this->setIndicator("machines_lv1_health", $entreprise_id, 0.9);
                     $this->updateIndicator("caisse", $entreprise_id, -1 * $price);
 
@@ -1318,7 +1313,8 @@ class EntrepriseController extends Controller
         return Response::json(["message" => "Notifications read successfully"], 200);
     }
 
-    public function getIndicators(Request $request) {
+    public function getIndicators(Request $request)
+    {
         $entreprise_id = $request->entreprise_id;
         $indicators_list = $request->indicators;
 
@@ -1331,7 +1327,8 @@ class EntrepriseController extends Controller
         return $resp;
     }
 
-    public function putProdToSell(Request $request) {
+    public function putProdToSell(Request $request)
+    {
         $entreprise_id = $request->entreprise_id;
         $product_id = $request->product_id;
 
@@ -1339,16 +1336,33 @@ class EntrepriseController extends Controller
         $new_price = $request->new_price;
 
         $product = DB::table('products')->where('id', '=', $product_id)->first();
-        if($new_price < $product->price_min || $product->price_max < $new_price) {
+        if ($new_price < $product->price_min || $product->price_max < $new_price) {
             return Response::json(["message" => "Erreur: Le prix doit être entre le min et le max propres au produit.", "success" => false], 200);
         }
 
         $stock = DB::table('stock')->where('entreprise_id', '=', $entreprise_id)->where('product_id', '=', $product_id);
-        if($stock->first()->quantity < $new_selling_quantity) {
+        if ($stock->first()->quantity < $new_selling_quantity) {
             return Response::json(["message" => "Erreur: La quantité à vendre spécifiée dépasse votre stock", "success" => false], 200);
         }
 
-        $stock->update(["quantity_selling" => $new_selling_quantity, "price" => $new_price]);
+        $stock->update(["quantity" => $stock->first()->quantity - ($new_selling_quantity - $stock->first()->quantity_selling),
+                        "quantity_selling" => $new_selling_quantity,
+                        "price" => $new_price]);
+
+        $notification = [
+            "entreprise_id" => $entreprise_id,
+            "type" => "ProdStockUpdate",
+
+            "store" => false,
+
+            "text" => "",
+            "title" => "",
+            "icon_path" => "aaaaaaaaaaa",
+
+            "style" => "info",
+        ];
+        event(new NewNotification($notification));
+
         return Response::json(["message" => "Changement des données de vente réussi.", "success" => true], 200);
     }
 }

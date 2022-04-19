@@ -36,17 +36,18 @@ class SellProductionsScheduler implements ShouldQueue
      */
     public function handle()
     {
-        $productions = DB::table("productions")->where("status", "=", "selling")->get();
-        foreach ($productions as $production) {
+        // $productions = DB::table("productions")->where("status", "=", "selling")->get();
+        $stock = DB::table("stock")->where("quantity_selling", ">", 0)->get();
+        foreach ($stock as $s) {
             // Get production properties
-            $product_id = $production->product_id;
+            $product_id = $s->product_id;
             $product = DB::table("products")->where("id", "=", $product_id)->first();
-            $entreprise_id = $production->entreprise_id;
-            $price = $production->price;
+            $entreprise_id = $s->entreprise_id;
+            $price = $s->price;
 
             // Check if no demand left on the this product
             if ($product->left_demand <= 0) {
-                $message = "Il n'y a plus de demande sur le produit" . $product->name . " pour l'instant, impossible de continuer la vente de la production " . $production->id . ".";
+                $message = "Il n'y a plus de demande sur le produit" . $product->name . " pour l'instant, impossible de continuer la vente.";
                 $notification = [
                     "entreprise_id" => $entreprise_id,
                     "type" => "ProductionUpdate",
@@ -64,27 +65,33 @@ class SellProductionsScheduler implements ShouldQueue
                 continue;
             }
 
-            $production_quantity = $production->quantity;
-            $production_quantity_sold = $production->sold;
+            $production_quantity = $s->quantity;
+            $quantity_to_sell = $this->productDemandReal($product_id, $entreprise_id, $price, $s->quantity_selling);
 
-            $production_percentage_to_sell = nova_get_setting("production_percentage_to_sell");
-            $quantity_to_sell = round(
-                min(
-                    $this->productDemandReal($product_id, $entreprise_id, $price, round($production_quantity * $production_percentage_to_sell)),
-                    $production_quantity - $production_quantity_sold
-                )
-            );
+            // $production_quantity_sold = $production->sold;
 
-            $dist_cost = $quantity_to_sell * nova_get_setting("dist_unit_cost");
+            // $production_percentage_to_sell = nova_get_setting("production_percentage_to_sell");
+            // $quantity_to_sell = round(
+            //     min(
+            //         $this->productDemandReal($product_id, $entreprise_id, $price, round($production_quantity * $production_percentage_to_sell)),
+            //         $production_quantity - $production_quantity_sold
+            //     )
+            // );
+
+            $dist_cost = $quantity_to_sell * $product->dist_cost;
             $sales = $quantity_to_sell * $price;
             $profit_value = $sales - $dist_cost;
 
             $ca_key = "ca_" . $product_id;
 
-            // Update stock quantity and the production's sold quantity
+            // Update stock quantity and selling quantity
+            // DB::table("stock")->where("entreprise_id", "=", $entreprise_id)->where("product_id", "=", $product_id)
+            //     ->decrement("quantity", $quantity_to_sell);
+
             DB::table("stock")->where("entreprise_id", "=", $entreprise_id)->where("product_id", "=", $product_id)
-                ->decrement("quantity", $quantity_to_sell);
-            DB::table("productions")->where("id", "=", $production->id)->increment("sold", $quantity_to_sell);
+            ->decrement("quantity_selling", $quantity_to_sell);
+
+            // DB::table("productions")->where("id", "=", $production->id)->increment("sold", $quantity_to_sell);
 
             // Update caisse and chiffre d'affaire and distribution cost
             $this->updateIndicator("caisse", $entreprise_id, $profit_value);
@@ -95,41 +102,56 @@ class SellProductionsScheduler implements ShouldQueue
             // Update left demand on product
             DB::table("products")->where("id", "=", $product_id)->decrement("left_demand", $quantity_to_sell);
 
-            // Signal sale
-            $message = "Vente d'une partie de la production " . $production->id;
+            // Send notification
             $notification = [
                 "entreprise_id" => $entreprise_id,
-                "type" => "ProductionUpdate",
+                "type" => "ProdStockUpdate",
 
                 "store" => false,
+
+                "text" => "",
+                "title" => "",
+                "icon_path" => "aaaaaaaaaaa",
+
+                "style" => "info",
             ];
             event(new NewNotification($notification));
 
+            // Signal sale
+            // $message = "Vente d'une partie de la production " . $production->id;
+            // $notification = [
+            //     "entreprise_id" => $entreprise_id,
+            //     "type" => "ProductionUpdate",
+
+            //     "store" => false,
+            // ];
+            // event(new NewNotification($notification));
+
             // Mark production as sold if no more to sell after this
-            if (
-                $production_quantity_sold + $quantity_to_sell >= $production_quantity
-            ) {
-                DB::table("productions")->where("id", "=", $production->id)->update(["status" => "sold"]);
+            // if (
+            //     $production_quantity_sold + $quantity_to_sell >= $production_quantity
+            // ) {
+            //     DB::table("productions")->where("id", "=", $production->id)->update(["status" => "sold"]);
 
-                if ($production_quantity_sold + $quantity_to_sell > $production_quantity) {
-                    DB::table("productions")->where("id", "=", $production->id)->update(["sold" => $production_quantity]);
-                }
+            //     if ($production_quantity_sold + $quantity_to_sell > $production_quantity) {
+            //         DB::table("productions")->where("id", "=", $production->id)->update(["sold" => $production_quantity]);
+            //     }
 
-                $message = "Production " . $production->id . " entièrement vendue.";
-                $notification = [
-                    "entreprise_id" => $entreprise_id,
-                    "type" => "ProductionUpdate",
+            //     $message = "Production " . $production->id . " entièrement vendue.";
+            //     $notification = [
+            //         "entreprise_id" => $entreprise_id,
+            //         "type" => "ProductionUpdate",
 
-                    "store" => true,
+            //         "store" => true,
 
-                    "message" => $message,
-                    "title" => "Production vendue",
-                    "icon_path" => "aaaaaaaaaaa",
+            //         "message" => $message,
+            //         "title" => "Production vendue",
+            //         "icon_path" => "aaaaaaaaaaa",
 
-                    "style" => "info",
-                ];
-                event(new NewNotification($notification));
-            }
+            //         "style" => "info",
+            //     ];
+            //     event(new NewNotification($notification));
+            // }
         }
     }
 }

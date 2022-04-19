@@ -50,13 +50,19 @@
         <td
             class="lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
         >
+            {{ price - item.dist_cost }}
+        </td>
+
+        <td
+            class="lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+        >
             <button
                 @click="apply_changes(item)"
                 class="p-1 px-2 rounded-full text-vN"
                 :class="
-                    new_changes ? 'bg-vert' : 'bg-gray-400'
+                    new_changes ? 'bg-vert' : sending_changes ? 'bg-blue-200' : 'bg-gray-400'
                 "
-                :disabled="!new_changes"
+                :disabled="!new_changes || sending_changes"
             >
                 Appliquer changements
             </button>
@@ -73,6 +79,8 @@ export default {
         return {
             new_changes: false,
 
+            sending_changes: false,
+
             price: this.item.price,
             quantity_selling: this.item.quantity_selling,
         };
@@ -82,9 +90,11 @@ export default {
         apply_changes(product) {
             if (this.new_changes) {
                 this.item.price = this.price;
+                this.item.quantity -= (this.quantity_selling - this.item.quantity_selling);
                 this.item.quantity_selling = this.quantity_selling;
 
                 this.new_changes = false;
+                this.sending_changes = true;
 
                 let data = {
                     entreprise_id: this.user.id,
@@ -97,7 +107,7 @@ export default {
                 axios
                     .post("/api/entreprise/sell-product", data)
                     .then((resp) => {
-
+                        this.sending_changes = false;
                     });
             }
         }
@@ -108,7 +118,7 @@ export default {
             if (this.quantity_selling < this.item.quantity_selling) {
                 this.quantity_selling = this.item.quantity_selling;
             }
-            else if (this.quantity_selling >= this.item.quantity) {
+            else if (this.quantity_selling - this.item.quantity_selling >= this.item.quantity) {
                 this.quantity_selling = this.item.quantity;
             }
             else if (this.quantity_selling == this.item.quantity_selling && this.price == this.item.price) {

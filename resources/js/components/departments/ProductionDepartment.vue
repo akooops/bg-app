@@ -715,6 +715,11 @@ export default {
                     this.$forceUpdate();
                 }
 
+                if (e.notification.type == "ProdStockUpdate") {
+                    this.updateProdData();
+                    this.$forceUpdate();
+                }
+
                 if (e.notification.type == "ActionUpdate") {
                     this.updateProdData();
                     this.$forceUpdate();

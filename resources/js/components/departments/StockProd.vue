@@ -15,14 +15,12 @@
 
                     <th
                         class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
-                        @click="sort('material')"
                     >
                         Produit
                     </th>
 
                     <th
                         class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
-                        @click="sort('quantity')"
                     >
                         Quantité en stock
                     </th>
@@ -35,14 +33,12 @@
 
                     <th
                         class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
-                        @click="sort('price_min')"
                     >
                         Prix Minimal
                     </th>
 
                     <th
                         class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
-                        @click="sort('price_max')"
                     >
                         Prix Maximal
                     </th>
@@ -51,6 +47,12 @@
                         class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
                     >
                         Prix de vente
+                    </th>
+
+                    <th
+                        class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                    >
+                        Profit unitaire
                     </th>
 
                     <th
@@ -105,26 +107,17 @@ export default {
                 })
                 .catch(function (error) {});
         },
-
-        sort(key) {
-            this.reverse = !this.reverse;
-            this.stock.sort((a, b) => {
-                if (a[key] < b[key]) {
-                    return this.reverse ? -1 : 1;
-                }
-                if (a[key] > b[key]) {
-                    return this.reverse ? 1 : -1;
-                }
-                // console.log(this.commands);
-                return 0;
-            });
-        },
     },
     mounted() {
         window.Echo.channel("entreprise_" + this.user.id).listen(
             "NewNotification",
             (e) => {
                 if (e.notification.type == "ProductionUpdate") {
+                    this.getStock();
+                    this.$forceUpdate();
+                }
+
+                if (e.notification.type == "ProdStockUpdate") {
                     this.getStock();
                     this.$forceUpdate();
                 }
