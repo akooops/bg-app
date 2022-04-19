@@ -84,14 +84,15 @@ export default {
     components: {
         StockProdItem
     },
+
+    props: ["user", "stock", "stock_loaded"],
+
     data() {
         return {
-            stock: [],
-            stock_loaded: false,
+            // stock: [],
+            // stock_loaded: false,
         };
     },
-
-    props: ["user"],
 
     methods: {
         getStock() {
@@ -109,23 +110,23 @@ export default {
         },
     },
     mounted() {
-        window.Echo.channel("entreprise_" + this.user.id).listen(
-            "NewNotification",
-            (e) => {
-                if (e.notification.type == "ProductionUpdate") {
-                    this.getStock();
-                    this.$forceUpdate();
-                }
+        // window.Echo.channel("entreprise_" + this.user.id).listen(
+        //     "NewNotification",
+        //     (e) => {
+        //         if (e.notification.type == "ProductionUpdate") {
+        //             this.getStock();
+        //             this.$forceUpdate();
+        //         }
 
-                if (e.notification.type == "ProdStockUpdate") {
-                    this.getStock();
-                    this.$forceUpdate();
-                }
-            }
-        );
+        //         if (e.notification.type == "ProdStockUpdate") {
+        //             this.getStock();
+        //             this.$forceUpdate();
+        //         }
+        //     }
+        // );
     },
     created() {
-        this.getStock();
+        // this.getStock();
     }
 };
 </script>

@@ -280,51 +280,51 @@
                             class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
                             @click="sort('product')"
                         >
-                            Matiere
+                            Produit
                         </th>
                         <th
                             class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
                             @click="sort('quantity')"
                         >
-                            Qt. Produite
+                            Quantité
                         </th>
-                        <th
+                        <!-- <th
                             class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
                             @click="sort('sold')"
                         >
                             Qt. Vendue
-                        </th>
-                        <th
+                        </th> -->
+                        <!-- <th
                             class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
                             @click="sort('stock')"
                         >
                             Stock
-                        </th>
-                        <th
+                        </th> -->
+                        <!-- <th
                             class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
                             @click="sort('price')"
                         >
                             Prix
-                        </th>
-                        <th
+                        </th> -->
+                        <!-- <th
                             class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
                             @click="sort('cost')"
                         >
                             Coût
-                        </th>
-                        <th
+                        </th> -->
+                        <!-- <th
                             class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
                             @click="sort('CA')"
                         >
                             Chiffre d'Affaire
-                        </th>
+                        </th> -->
                         <th
                             class="p-3 text-md table-cell cursor-pointer hover:text-vert select-none"
                             @click="sort('status_code')"
                         >
-                            Status
+                            Statut
                         </th>
-                        <th class="p-3 text-md table-cell">Action</th>
+                        <!-- <th class="p-3 text-md table-cell">Action</th> -->
                     </tr>
                 </thead>
                 <tbody v-if="productions.length > 0">
@@ -348,46 +348,40 @@
                         >
                             {{ prod.quantity }}
                         </td>
-                        <td
+                        <!-- <td
                             class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
                         >
                             {{ prod.sold }}
-                        </td>
-                        <td
+                        </td> -->
+                        <!-- <td
                             class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
                         >
                             {{ prod.quantity - prod.sold }}
-                        </td>
-                        <td
+                        </td> -->
+                        <!-- <td
                             class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
                         >
                             {{ prod.price }}
-                        </td>
-                        <td
+                        </td> -->
+                        <!-- <td
                             class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
                         >
                             {{ prod.cost }}
-                        </td>
-                        <td
+                        </td> -->
+                        <!-- <td
                             class="w-full lg:w-auto p-1 text-center lg:table-cell relative lg:static"
                         >
                             {{ prod.sold * prod.price }} UM
-                        </td>
+                        </td> -->
                         <td
                             :class="
-                                prod.status_code == 'pending'
-                                    ? 'text-jaune'
-                                    : prod.status_code == 'sold'
-                                    ? 'text-vert'
-                                    : prod.status_code == 'selling'
-                                    ? 'text-blue-500'
-                                    : 'text-black'
+                                prod.status_code == 'pending' ? 'text-jaune' : 'text-black'
                             "
                             class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
                         >
                             {{ prod.status }}
                         </td>
-                        <td
+                        <!-- <td
                             class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
                         >
                             <button
@@ -403,7 +397,7 @@
                                         : "Vendre"
                                 }}
                             </button>
-                        </td>
+                        </td> -->
                     </tr>
                 </tbody>
             </table>
@@ -472,6 +466,8 @@
             <StockProd
                 v-if="indicators_loaded"
                 :user="user"
+                :stock="products_stock"
+                :stock_loaded="products_stock_loaded"
             ></StockProd>
 
             <div v-else class="flex flex-col items-center mt-16">
@@ -537,6 +533,9 @@ export default {
             products: [],
             indicators: {},
             productions: [],
+
+            products_stock: [],
+            products_stock_loaded: false,
 
             page_index: "prod_stats",
 
@@ -673,6 +672,20 @@ export default {
             this.updateProdData();
         },
 
+        getProductsStock() {
+            axios
+                .get("/api/entreprise/products-stock", {
+                    params: {
+                        entreprise_id: this.user.id,
+                    },
+                })
+                .then((response) => {
+                    this.products_stock = response.data;
+                    this.products_stock_loaded = true;
+                })
+                .catch(function (error) {});
+        },
+
         updateProdData() {
             this.getProdNumbers();
             this.getProductions();
@@ -695,6 +708,7 @@ export default {
     created() {
         this.updateProdData();
         this.getMarketDemands();
+
         axios
             .get("/api/navbar", {
                 params: {
@@ -705,6 +719,8 @@ export default {
             .then((resp) => {
                 this.caisse = resp.data["caisse"];
             });
+
+        this.getProductsStock();
     },
     mounted() {
         window.Echo.channel("entreprise_" + this.user.id).listen(
@@ -712,11 +728,13 @@ export default {
             (e) => {
                 if (e.notification.type == "ProductionUpdate") {
                     this.updateProdData();
+                    this.getProductsStock();
                     this.$forceUpdate();
                 }
 
                 if (e.notification.type == "ProdStockUpdate") {
                     this.updateProdData();
+                    this.getProductsStock();
                     this.$forceUpdate();
                 }
 

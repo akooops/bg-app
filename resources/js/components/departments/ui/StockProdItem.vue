@@ -26,7 +26,7 @@
             class="lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
         >
             <!-- {{ item.quantity_selling }} -->
-            <input type="number" v-model.number="quantity_selling" :min="item.quantity_selling" :max="item.quantity" class="w-2/3 text-center">
+            <input type="number" v-model.number="quantity_selling" :min="item.quantity_selling" :max="item.quantity_selling + item.quantity" class="w-4/5 text-center">
         </td>
 
         <td
@@ -44,7 +44,7 @@
         <td
             class="lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
         >
-            <input type="number" v-model.number="price" :min="item.price_min" :max="item.price_max" class="w-2/3 text-center">
+            <input type="number" v-model.number="price" :min="item.price_min" :max="item.price_max" class="w-4/5 text-center">
         </td>
 
         <td
