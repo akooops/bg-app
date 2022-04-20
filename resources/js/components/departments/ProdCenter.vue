@@ -1228,6 +1228,10 @@ export default {
                     this.getMachineInfo();
                     this.$forceUpdate();
                 }
+                if (e.notification.type == "AdminNotif") {
+                    this.getMachineInfo();
+                    this.$forceUpdate();
+                }
             });
     },
     created() {

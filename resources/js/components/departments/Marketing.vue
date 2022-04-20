@@ -361,10 +361,7 @@ export default {
             }
 
             return parseInt(
-                this.ad_coef *
-                    this.type_coef[this.new_ad.type] *
-                    this.new_ad.amount *
-                    0.5
+                this.ad_coef * this.type_coef[this.new_ad.type] * this.new_ad.amount * 0.5
             );
         },
         totalPredictedFollowers() {
@@ -515,17 +512,15 @@ export default {
         window.Echo.channel("entreprise_" + this.entreprise.id)
             .listen("NewNotification", (e) => {
                 if (e.notification.type == "AdsUpdate") {
-                    // let index = this.ads.findIndex(
-                    //     (ad) => ad.ad_id == e.notification.data.id
-                    // );
-                    // this.ads[index].result = e.notification.data.result;
-                    // this.ads[index].status = e.notification.data.status;
-
                     this.getAds();
                     this.getIndicators();
                     this.$forceUpdate();
+                }
 
-                    //this.ads.unshift(e.notification.data)
+                if (e.notification.type == "AdminNotif") {
+                    this.getAds();
+                    this.getIndicators();
+                    this.$forceUpdate();
                 }
             })
             .listen("NavbarDataChanged", (e) => {

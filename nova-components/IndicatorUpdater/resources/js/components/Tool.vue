@@ -2,14 +2,14 @@
     <div>
         <heading class="mb-6">Indicators</heading>
 
-        <div class="flex grid grid-cols-2 gap-6 content-center">
-            <div class="bg-90 bg-white p-6 w-1/2" style="min-height: 300px">
+        <div class="flex">
+            <div class="bg-90 bg-white p-6 w-1/2 mr-2">
 
-                <div class="py-5">
-                    <p class="text-left">Choisissez l'indicateur a modifier</p>
+                <div class="mb-6">
+                    <p class="text-left mb-2">Indicateur à modifier:</p>
                     <select
-                        v-model="data.selected_indicator"
-                        class="w-full form-control form-input form-input-bordered pl-2"
+                        v-model="selected_indicator"
+                        class="w-1/3 form-control form-input form-input-bordered pl-2"
                     >
                         <option
                             v-for="indicator in indicators"
@@ -21,27 +21,64 @@
                     </select>
                 </div>
 
-                <div class="py-5">
-                    <p class="text-left">Choisissez l'entreprise</p>
+                <div class="mb-8">
+                    <p class="text-left mb-2">Entreprise:</p>
 
-                    <div class="flex flex-row flex-wrap">
-                        <div v-for="(entreprise, key) in entreprises" :key="key" class="form-check form-check-inline">
-                            <input
-                                :id="entreprise.id" :value="entreprise" v-model="selected_entreprises" type="checkbox"
-                            >
-                            <label class="ml-10" for="entreprise.id"> {{ entreprise.name }} </label>
-                        </div>
+                    <div class="ml-8 mb-2">
+                        <button @click="checkAllEntrep" class="ml-4">
+                            Select all
+                        </button>
+                        <button @click="uncheckAllEntrep" class="ml-4">
+                            Unselect all
+                        </button>
                     </div>
 
-                    <p> {{selected_entreprises}} </p>
+                    <div class="flex">
+                        <div v-for="(entreprise, key) in entreprises" :key="key" class="ml-4">
+                            <input
+                                :id="entreprise.id" :value="entreprise.id" v-model="selected_entreprises" type="checkbox">
+                            <label class="" for="entreprise.id"> {{ entreprise.name }} </label>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="flex mt-5 mb-5">
+                <div class="flex mb-6">
+                    <div class="mr-8">
+                        <p class="text-left mb-2 mr-4">Opération:</p>
+                        <select
+                            v-model="selected_operation"
+                            class="form-control form-input form-input-bordered pl-2"
+                        >
+                            <option
+                                v-for="(op, key) in operations"
+                                :key="key"
+                                :value="op['key']"
+                            >
+                                {{ op.name }}
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="mr-8">
+                        <p class="text-left mb-2 mr-4">Valeur:</p>
+                        <input
+                            type="number"
+                            v-model.number="operation_value"
+                            :disabled="selected_operation=='reset'"
+                            class="form-control form-input form-input-bordered pl-2">
+                    </div>
+                </div>
+
+                <button @click="update" class="btn btn-default btn-primary mr-4">
+                    Send
+                </button>
+
+                <!-- <div class="flex py-6">
                     <input
                         type="checkbox"
                         v-model="data.all_entreprises"
                         class="
-                            focus:ring-gray-500
+                            focus:ring-gray-100
                             h-4
                             w-4
                             text-gray-600
@@ -53,11 +90,11 @@
                         >Changer l'indicateur pour toutes les
                         entreprises?</label
                     >
-                </div>
+                </div> -->
 
-                <select
+                <!-- <select
                     v-model="data.selected_entreprise"
-                    class="w-full form-control form-input form-input-bordered pl-2"
+                    class="w-full form-control form-input form-input-bordered py-6"
                 >
                     <option
                         v-for="entreprise in entreprises"
@@ -178,24 +215,27 @@
                     class="btn btn-default btn-primary mr-4"
                 >
                     Send
-                </button>
+                </button> -->
             </div>
 
-            <div class="bg-90 bg-white p-6 w-1/2" style="min-height: 300px">
-                <p class="text-left">Choisissez l'indicateur à afficher</p>
-                <select
-                    v-model="selected_indicator"
-                    @change="getEntrepriseIndicators"
-                    class="w-full form-control form-input form-input-bordered pl-2"
-                >
-                    <option
-                        v-for="indicator in indicators_2"
-                        :key="indicator.code"
-                        :value="indicator.id"
-                        >{{ indicator.name }}</option
+            <div class="bg-90 bg-white p-6 w-1/2">
+                <div class="">
+                    <p class="text-left mb-2">Indicateur à afficher</p>
+                    <select
+                        v-model="selected_indicator_2"
+                        @change="getEntrepriseIndicators"
+                        class="w-1/3 form-control form-input form-input-bordered pl-2"
                     >
-                </select>
-                <table v-if="loaded" class="mt-4 w-full">
+                        <option
+                            v-for="indicator in indicators_2"
+                            :key="indicator.code"
+                            :value="indicator.id"
+                            >{{ indicator.name }}</option
+                        >
+                    </select>
+                </div>
+
+                <table v-if="indicator_2_loaded" class="mt-4 w-full">
                     <thead>
                         <tr>
                             <th
@@ -211,7 +251,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="datum in data_2" v-bind:key="datum.id">
+                        <tr v-for="datum in data" v-bind:key="datum.id">
                             <th
                                 class="p-3 font-bold text-gray-600 border border-gray-300  "
                             >
@@ -240,26 +280,24 @@ export default {
     data() {
         return {
             indicators: [],
-            entreprises: [],
-            data: {
-                has_notification: false,
-                notification_type: "",
-                title: "",
-                description: "",
-                selected_indicator: null,
-                selected_entreprises: [],
-                increment: null,
-                all_entreprises: false,
-                value: null,
-                replace: false,
-                has_rate: false,
-                rate: null
-            },
-
-            loaded: false,
             selected_indicator: null,
+
+            entreprises: [],
+            selected_entreprises: [],
+
+            operations: [
+                {'key': 'replace', 'name': 'Remplacer'},
+                {'key': 'add', 'name': 'Ajouter'},
+                {'key': 'mult', 'name': 'Multiplier'},
+                {'key': 'reset', 'name': 'Réinitialiser'},
+            ],
+            selected_operation: 'replace',
+            operation_value: 0,
+
+            indicator_2_loaded: false,
+            selected_indicator_2: null,
             indicators_2: [],
-            data_2: [],
+            data: [],
         };
     },
     methods: {
@@ -270,25 +308,22 @@ export default {
             this.indicators = data["indicators"];
             this.entreprises = data["entreprises"];
         },
-        checkboxChanged() {
-            this.data.has_notification = !this.data.has_notification;
-        },
-        allChanged() {
-            this.data.all_entreprises = !this.data.all_entreprises;
-        },
-        replaceChanged() {
-            this.data.replace = !this.data.replace;
-        },
-        rateChanged() {
-            this.data.has_rate = !this.data.has_rate;
-        },
+
         update() {
+            let req = {
+                entreprise_ids: this.selected_entreprises,
+                selected_indicator: this.selected_indicator,
+                selected_operation: this.selected_operation,
+                value: this.operation_value,
+            };
+
             Nova.request()
                 .post(
                     "/nova-vendor/indicator-updater/update-indicator",
-                    this.data
+                    req
                 )
-                .then(({ data }) => {});
+                .then(({ resp }) => {
+                });
         },
 
         async getIndicators_2() {
@@ -297,17 +332,32 @@ export default {
             );
             this.indicators_2 = data;
         },
+
         getEntrepriseIndicators() {
             Nova.request()
                 .post("/nova-vendor/indicator-updater/entreprise-indicators", {
-                    indicator_id: this.selected_indicator,
+                    indicator_id: this.selected_indicator_2,
                 })
                 .then(({ data }) => {
-                    this.data_2 = data;
-                    this.loaded = true;
+                    this.data = data;
+                    this.indicator_2_loaded = true;
                 });
         },
+
+        checkAllEntrep() {
+            this.selected_entreprises = this.entreprises.map(x => x.id);
+        },
+
+        uncheckAllEntrep() {
+            this.selected_entreprises = [];
+        }
+
     },
+
+    watch: {
+
+    },
+
     async mounted() {
         await this.getIndicators();
         await this.getIndicators_2();

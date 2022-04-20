@@ -638,6 +638,9 @@ export default {
                 if (e.notification.type == "LoansUpdate") {
                     this.getLoans();
                 }
+                if (e.notification.type == "AdminNotif") {
+                    this.getLoans();
+                }
             })
             .listen("NavbarDataChanged", (e) => {
                 this.caisse = e.caisse;

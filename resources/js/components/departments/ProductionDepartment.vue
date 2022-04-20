@@ -752,6 +752,11 @@ export default {
                     this.getProdNumbers();
                     this.$forceUpdate();
                 }
+
+                if (e.notification.type == "AdminNotif") {
+                    this.updateProdData();
+                    this.$forceUpdate();
+                }
             }
         );
 

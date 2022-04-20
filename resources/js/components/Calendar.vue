@@ -57,6 +57,7 @@ export default {
         const datePicker = this.$refs.datepicker;
         this.getSimulationData();
         datePicker.move(new Date(2022, 1, this.time));
+        
         window.Echo.channel("simulation_date").listen(
             "SimulationDateChanged",
             (e) => {

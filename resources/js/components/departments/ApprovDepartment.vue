@@ -149,11 +149,11 @@
                         </th>
                         <th
                             class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
-                           
+
                         >
-                           
+
                         </th>
-                       
+
                     </tr>
                 </thead>
                 <tbody  >
@@ -192,16 +192,16 @@
                         <td
                             class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
                         >
-                            <button @click="showDetails(cmd)"> 
+                            <button @click="showDetails(cmd)">
                                 <img class="text-white" src="/assets/icons/menu-points-vertical.svg" alt="un triangle aux trois côtés égaux" height="20px" width="15px" /></button>
                         </td>
-                       
+
                     </tr>
                 </tbody>
             </table>
 
             </div>
-            
+
          <Modal v-if="show_details_modal" id="modal" class="align-content-center " >
 
              <template v-slot:content >
@@ -233,7 +233,7 @@
                                             src="/assets/icons/khobz.png"
                                             alt="khobz"
                                         />
-                                        
+
                                     </td>
                                     <td class="text-center py-1 px-4">
                                         {{ item.quantity }} {{ item.unit }}
@@ -275,7 +275,7 @@
 
                  </div>
 
-                
+
              </template>
 
 
@@ -283,7 +283,7 @@
          </Modal>
 
 
-<!-- 
+<!--
             <Modal
                 v-if="show_details_modal"
                 id="modal"
@@ -391,7 +391,7 @@
                     </button>
                 </div>
                 </div>
-                
+
             </template>
         </Modal>
     </div>
@@ -520,6 +520,10 @@ export default {
                     this.$forceUpdate();
                 }
                 if (e.notification.type == "StockUpdate") {
+                    this.getStock();
+                    this.$forceUpdate();
+                }
+                if (e.notification.type == "AdminNotif") {
                     this.getStock();
                     this.$forceUpdate();
                 }

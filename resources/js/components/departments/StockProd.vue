@@ -110,23 +110,10 @@ export default {
         },
     },
     mounted() {
-        // window.Echo.channel("entreprise_" + this.user.id).listen(
-        //     "NewNotification",
-        //     (e) => {
-        //         if (e.notification.type == "ProductionUpdate") {
-        //             this.getStock();
-        //             this.$forceUpdate();
-        //         }
 
-        //         if (e.notification.type == "ProdStockUpdate") {
-        //             this.getStock();
-        //             this.$forceUpdate();
-        //         }
-        //     }
-        // );
     },
     created() {
-        // this.getStock();
+        
     }
 };
 </script>

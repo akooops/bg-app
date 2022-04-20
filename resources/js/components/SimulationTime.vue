@@ -76,6 +76,16 @@ export default {
     },
     mounted() {
         this.getSimulationData();
+        
+        window.Echo.channel("entreprise_" + this.user.id).listen(
+                "NewNotification",
+                (e) => {
+                    if (e.notification.type == "AdminNotif") {
+                        this.getSimulationData();
+                        this.$forceUpdate();
+                    }
+                }
+            );
         window.Echo.channel("simulation_date").listen(
             "SimulationDateChanged",
             (e) => {
