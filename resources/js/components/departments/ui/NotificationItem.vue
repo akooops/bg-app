@@ -11,7 +11,7 @@
             </div>
             <div v-if="show" class="text-sm text-vN text-left">{{ text }}</div>
             <div v-if="!show" class="text-gray-400 text-sm text-left">
-                Semaine {{ time }} • production department
+                 {{ timeConvert(actual_time - time) }} • production department
             </div>
         </div>
         <button @click="show = !show">

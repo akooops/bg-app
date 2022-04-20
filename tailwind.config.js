@@ -5,6 +5,7 @@ module.exports = {
         "./vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php",
         "./storage/framework/views/*.php",
         "./resources/views/**/*.blade.php",
+        "./resources/**/*.vue",
     ],
 
     theme: {
@@ -18,7 +19,7 @@ module.exports = {
                 vN: "#0B3434",
                 jaune: "#FFBC3E",
                 nav: "#0B3434",
-                gray: "#807A7A",
+               
                 lightVert: "#B2D06B54",
                 lighterVert: "#B2D06B17",
                 tableBorder: "#EEEEF2",

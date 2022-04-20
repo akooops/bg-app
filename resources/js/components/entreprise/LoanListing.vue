@@ -112,11 +112,11 @@
 
                     <div class="flex flex-row mt-9 gap-5 ml-auto">
                         <button
-                            class="text-lg font-semibold hover:bg-gray-200 px-4 py-2 rounded-xl"
+                            class="text-lg font-semibold px-4 py-2 rounded-xl"
                             :class="
                                 can_create == true
-                                    ? 'bg-green-400 hover:bg-green-800'
-                                    : 'bg-red-400'
+                                    ? 'hover:bg-gray-200'
+                                    : 'hover:bg-white opacity-50'
                             "
                             :disabled="!can_create"
                             @click="
@@ -203,11 +203,11 @@
 
                     <div class="flex flex-row mt-9 gap-2 ml-auto">
                         <button
-                            class="text-lg font-semibold hover:bg-gray-200 px-4 py-2 rounded-xl"
+                            class="text-lg font-semibold  px-4 py-2 rounded-xl "
                             :class="
                                 can_pay
-                                    ? 'bg-green-400 hover:bg-green-800'
-                                    : 'bg-gray-800 '
+                                    ? 'hover:bg-gray-200'
+                                    : 'hover:bg-white opacity-50'
                             "
                             :disabled="!can_pay"
                             @click="
@@ -237,13 +237,7 @@
                     v-if="loans.length > 0"
                     class="text-vN rounded-3xl px-5 py-2 font-semibold"
                     @click="openModal"
-                    style="
-                        background: linear-gradient(
-                            180deg,
-                            rgba(178, 208, 107, 0.09) 0%,
-                            rgba(178, 208, 107, 0.33) 100%
-                        );
-                    "
+                    style="background: linear-gradient(180deg, rgba(178, 208, 107, 0.09) 0%, rgba(178, 208, 107, 0.33) 100%);  "
                 >
                     Créer une demande d'endettement
                 </button>
@@ -257,13 +251,7 @@
                 <button
                     class="text-vN rounded-3xl px-5 py-2 font-semibold mt-5"
                     @click="openModal"
-                    style="
-                        background: linear-gradient(
-                            180deg,
-                            rgba(178, 208, 107, 0.09) 0%,
-                            rgba(178, 208, 107, 0.33) 100%
-                        );
-                    "
+                    style="background: linear-gradient(180deg, rgba(178, 208, 107, 0.09) 0%, rgba(178, 208, 107, 0.33) 100%);  "
                 >
                     Créer votre premier endettement
                 </button>

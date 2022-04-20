@@ -79,6 +79,7 @@ export default {
         window.Echo.channel("simulation_date").listen(
             "SimulationDateChanged",
             (e) => {
+                console.log("kimmm");
                 this.time = e.date;
             }
         );

@@ -1,9 +1,5 @@
 <x-app-layout>
-    <!-- <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Business Game - Production') }}
-        </h2>
-    </x-slot> -->
+
 
     <div class="mx-auto px-8 py-10">
         <div class="flex flex-wrap sm:rounded-lg">

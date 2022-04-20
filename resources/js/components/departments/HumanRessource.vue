@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div >
         <div
             v-if="show_success"
             class="
@@ -363,122 +363,71 @@
 
 
         <!-- Adding some details -->
-        <div v-if="indicators_loaded" class="flex">
-            <StatCard
-                title="Nb. Employés"
-                class="mr-5 h-96"
-                color="text-indigo-600"
-                icon="fa-users"
-                :value="[
-                    'Simple: ' + indicators['nb_workers_lv1'].value,
-                    'Expert: ' + indicators['nb_workers_lv2'].value,
-                    'Humeur: ' + Math.round(
-                                    indicators['workers_mood'].value *
-                                        Math.pow(10, 2)
-                                ) / Math.pow(10, 2),
-                    '',
-                    'Recherche: ' + indicators['nb_workers_to_hire'].value,
-                ]"
-                :second-value="[
-                    indicators['nb_workers_lv1_busy'].value + ' occupés.',
-                    indicators['nb_workers_lv2_busy'].value + ' occupés.',
-                ]"
-            ></StatCard>
-            <div class="w-96 shadow-md rounded-lg text-center mr-5">
-                <speedo-meter
-                    :data="[
-                        {
-                            value:
-                                Math.round(
-                                    indicators['workers_mood'].value *
-                                        Math.pow(10, 2)
-                                ) / Math.pow(10, 2),
-                            name: '',
-                        },
-                    ]"
-                    class="h-64"
-                ></speedo-meter>
-                <p class="">Humeur des employés</p>
+        <div v-if="indicators_loaded" class="flex flex-row ">
+            <div class="flex flex-col gap-5 justify-center">
+                <div class="flex flex-row items-center border-2 shadow-lg rounded-2xl px-2">
+                    <img src="/assets/icons/employees.svg" alt="" class="w-16 h-16 ">
+                    <div class="flex flex-col">
+                        <p>
+                    Simple:  {{indicators['nb_workers_lv1'].value}}</p>
+                    <p> Occupé :   {{indicators['nb_workers_lv1_busy'].value}} </p>
+                </div>
+                    </div>
+                    
+                <div class="flex flex-row items-center border-2 shadow-lg rounded-2xl px-2">
+                    <img src="/assets/icons/employees.svg" alt="" class="w-16 h-16">
+                    <div class="flex flex-col">
+                          <p>  
+                    Expert: {{indicators['nb_workers_lv2'].value}}</p>
+                   <p> Occupé : {{indicators['nb_workers_lv1_busy'].value}}
+                     </p>
+                    </div>
+                    
+                </div>
+                <div class="flex flex-row items-center border-2 shadow-lg rounded-2xl px-2">
+                    <img src="/assets/icons/employees.svg" alt="" class="w-16 h-16">
+                    <p>  
+                    Recherche: {{indicators['nb_workers_to_hire'].value}}
+                    
+                     </p>
+                </div>
+                <div class="flex flex-row items-center border-2 shadow-lg rounded-2xl px-2">
+                    <img src="/assets/icons/humeur.png" alt="" class="w-16 h-16 p-3">
+                    <p>  
+                    Humeur: {{indicators['workers_mood'].value}}
+                    
+                     </p>
+                </div>
+
             </div>
-            <!-- <div class="w-96 shadow-md rounded-lg text-center">
+            
+        
+            <div class="rounded-lg text-center ">
+                
                 <speedo-meter
                     :data="[
                         {
                             value:
                                 Math.round(
-                                    indicators['productivity_coeff'].value *
+                                    indicators['workers_mood'].value *
                                         Math.pow(10, 2)
                                 ) / Math.pow(10, 2),
                             name: '',
                         },
                     ]"
+                    
                 ></speedo-meter>
-                <p class="">Productivité</p>
-            </div> -->
+                
+            </div>
+            <div class="flex flex-col justify-center gap-6">
+                <button @click="workers_modal=true" :disabled="!indicators_loaded" class="rounded-3xl font-semibold bg-vN text-white py-2 " >Recuruter des employés</button>
+                <button @click="workshop_modal=true" :disabled="!indicators_loaded" class="rounded-3xl font-semibold bg-vN text-white py-2 " >Former des employées</button>
+                <button @click="prime_modal = true" :disabled="!indicators_loaded" class="rounded-3xl  font-semibold bg-vN text-white py-2 px-3">Ajouter une prime au employées</button>
+                <button  @click="fire_modal = true"  :disabled="!indicators_loaded" class="rounded-3xl font-semibold bg-vN text-white py-2 ">Virer des employées</button>
+
+            </div>
         </div>
-        <h3 class="mt-10 font-bold text-md">Actions:</h3>
-        <div class="mt-6 flex">
-            <button
-                @click="workers_modal = true"
-                class="
-                    bg-green-400
-                    hover:bg-green-800
-                    text-white
-                    px-3
-                    py-2
-                    rounded
-                    mr-5
-                "
-                :disabled="!indicators_loaded"
-            >
-                Recruter des employés
-            </button>
-            <button
-                @click="workshop_modal = true"
-                class="
-                    bg-green-400
-                    hover:bg-green-800
-                    text-white
-                    px-3
-                    py-2
-                    rounded
-                    mr-5
-                "
-                :disabled="!indicators_loaded"
-            >
-                Former les employés
-            </button>
-            <button
-                @click="prime_modal = true"
-                class="
-                    bg-green-400
-                    hover:bg-green-800
-                    text-white
-                    px-3
-                    py-2
-                    rounded
-                    mr-5
-                "
-                :disabled="!indicators_loaded"
-            >
-                Ajouter une prime aux employés
-            </button>
-            <button
-                @click="fire_modal = true"
-                class="
-                    bg-green-400
-                    hover:bg-green-800
-                    text-white
-                    px-3
-                    py-2
-                    rounded
-                    mr-5
-                "
-                :disabled="!indicators_loaded"
-            >
-                Virer des employés
-            </button>
-        </div>
+        
     </div>
 </template>
 
