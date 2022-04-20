@@ -1,11 +1,7 @@
 <template>
     <div class="w-full">
-        <div v-if="!indicators_loaded" class="flex flex-col items-center mt-16">
-             <img class="w-16 h-16 load" src="/assets/logo/bg_logo.svg" alt="">
-        <div class="text-vN pt-2 font-semibold">Veillez attendre svp ... </div>
-        </div>
 
-        <div v-if="indicators_loaded" class="w-full">
+        <div class="w-full">
             <nav class="mb-10 text-sm flex justify-start gap-8">
                 <button
                     @click="page_index = 'prod_stats'"
@@ -19,7 +15,6 @@
                     Statistiques
                 </button>
 
-                <!-- active -->
                 <button
                     @click="page_index = 'production_list'"
                     :class="
@@ -30,6 +25,18 @@
                     class="inline-block py-2 focus:outline-none text-lg"
                 >
                     Productions
+                </button>
+
+                <button
+                    @click="page_index = 'stock_sell'"
+                    :class="
+                        page_index == 'stock_sell'
+                            ? 'border-b-2 border-vert text-vert font-medium'
+                            : 'text-vN hover:text-black'
+                    "
+                    class="inline-block py-2 focus:outline-none text-lg"
+                >
+                    Stock / Vendre
                 </button>
 
                 <button
@@ -45,8 +52,6 @@
                 </button>
             </nav>
         </div>
-
-        <!-- stat cards  -->
 
         <div v-if="show_stat_cards" class="flex w-full justify-center gap-7">
             <Indicator
@@ -138,6 +143,7 @@
                 </div>
             </div>
         </div>
+
         <div v-if="page_index == 'prod_stats'">
             <div
                 v-if="show_market_demand"
@@ -247,7 +253,13 @@
                     </template>
                 </Modal>
             </div>
+
+            <div v-else class="flex flex-col items-center mt-16">
+                <img class="w-16 h-16 load" src="/assets/logo/bg_logo.svg" alt="">
+                <div class="text-vN pt-2 font-semibold">Calcul des graphes... </div>
+            </div>
         </div>
+
         <div v-if="page_index == 'production_list'" class="w-full mt-10">
             <div class="flex items-center justify-between mb-7">
                 <h1 class="text-lg font-semibold text-vN">Vos Productions</h1>
@@ -268,51 +280,51 @@
                             class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
                             @click="sort('product')"
                         >
-                            Matiere
+                            Produit
                         </th>
                         <th
                             class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
                             @click="sort('quantity')"
                         >
-                            Qt. Produite
+                            Quantité
                         </th>
-                        <th
+                        <!-- <th
                             class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
                             @click="sort('sold')"
                         >
                             Qt. Vendue
-                        </th>
-                        <th
+                        </th> -->
+                        <!-- <th
                             class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
                             @click="sort('stock')"
                         >
                             Stock
-                        </th>
-                        <th
+                        </th> -->
+                        <!-- <th
                             class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
                             @click="sort('price')"
                         >
                             Prix
-                        </th>
-                        <th
+                        </th> -->
+                        <!-- <th
                             class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
                             @click="sort('cost')"
                         >
                             Coût
-                        </th>
-                        <th
+                        </th> -->
+                        <!-- <th
                             class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
                             @click="sort('CA')"
                         >
                             Chiffre d'Affaire
-                        </th>
+                        </th> -->
                         <th
                             class="p-3 text-md table-cell cursor-pointer hover:text-vert select-none"
                             @click="sort('status_code')"
                         >
-                            Status
+                            Statut
                         </th>
-                        <th class="p-3 text-md table-cell">Action</th>
+                        <!-- <th class="p-3 text-md table-cell">Action</th> -->
                     </tr>
                 </thead>
                 <tbody v-if="productions.length > 0">
@@ -336,46 +348,40 @@
                         >
                             {{ prod.quantity }}
                         </td>
-                        <td
+                        <!-- <td
                             class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
                         >
                             {{ prod.sold }}
-                        </td>
-                        <td
+                        </td> -->
+                        <!-- <td
                             class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
                         >
                             {{ prod.quantity - prod.sold }}
-                        </td>
-                        <td
+                        </td> -->
+                        <!-- <td
                             class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
                         >
                             {{ prod.price }}
-                        </td>
-                        <td
+                        </td> -->
+                        <!-- <td
                             class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
                         >
                             {{ prod.cost }}
-                        </td>
-                        <td
+                        </td> -->
+                        <!-- <td
                             class="w-full lg:w-auto p-1 text-center lg:table-cell relative lg:static"
                         >
                             {{ prod.sold * prod.price }} UM
-                        </td>
+                        </td> -->
                         <td
                             :class="
-                                prod.status_code == 'pending'
-                                    ? 'text-jaune'
-                                    : prod.status_code == 'sold'
-                                    ? 'text-vert'
-                                    : prod.status_code == 'selling'
-                                    ? 'text-blue-500'
-                                    : 'text-black'
+                                prod.status_code == 'pending' ? 'text-jaune' : 'text-black'
                             "
                             class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
                         >
                             {{ prod.status }}
                         </td>
-                        <td
+                        <!-- <td
                             class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
                         >
                             <button
@@ -391,7 +397,7 @@
                                         : "Vendre"
                                 }}
                             </button>
-                        </td>
+                        </td> -->
                     </tr>
                 </tbody>
             </table>
@@ -455,14 +461,35 @@
                 </template>
             </Modal>
         </div>
+
+        <div v-if="page_index == 'stock_sell'">
+            <StockProd
+                v-if="indicators_loaded"
+                :user="user"
+                :stock="products_stock"
+                :stock_loaded="products_stock_loaded"
+            ></StockProd>
+
+            <div v-else class="flex flex-col items-center mt-16">
+                <img class="w-16 h-16 load" src="/assets/logo/bg_logo.svg" alt="">
+                <div class="text-vN pt-2 font-semibold">Chargement... </div>
+            </div>
+        </div>
+
         <div v-if="page_index == 'decision_center'">
             <ProdCenter
+                v-if="indicators_loaded"
                 @prodLaunched="updateProdData"
                 :user="user"
                 :products="products"
                 :indicators="indicators"
                 :caisse="caisse"
             ></ProdCenter>
+
+            <div v-else class="flex flex-col items-center mt-16">
+                <img class="w-16 h-16 load" src="/assets/logo/bg_logo.svg" alt="">
+                <div class="text-vN pt-2 font-semibold">Chargement... </div>
+            </div>
         </div>
     </div>
 </template>
@@ -471,6 +498,7 @@
 import LineGraph from "./ui/LineGraph";
 import StatCard from "./ui/StatCard";
 import ProdCenter from "./ProdCenter";
+import StockProd from "./StockProd";
 import Modal from "../Modal";
 import Indicator from "./ui/Indicator";
 import "echarts";
@@ -481,6 +509,7 @@ export default {
         LineGraph,
         StatCard,
         ProdCenter,
+        StockProd,
         Modal,
         Indicator,
         VChart,
@@ -489,29 +518,44 @@ export default {
     data() {
         return {
             reverse: false,
+
             products: [],
+
             market_demand: [],
+
             id_list: [1, 2, 3, 4],
+
             prod_data: [],
+
             show_market_demand: false,
             show_stat_cards: false,
+
             products: [],
             indicators: {},
             productions: [],
+
+            products_stock: [],
+            products_stock_loaded: false,
+
             page_index: "prod_stats",
+
             sell_info: {
                 sold_quant: 0,
                 stock_quant: 0,
                 price: 0,
                 number: 0,
             },
+
             show_selling_info: false,
             show_product_info: false,
             product_info: null,
             average_prices: [],
+
             caisse: 0,
+
             showMachines: false,
             showEmployees: false,
+
             indicators_loaded: false,
         };
     },
@@ -628,6 +672,20 @@ export default {
             this.updateProdData();
         },
 
+        getProductsStock() {
+            axios
+                .get("/api/entreprise/products-stock", {
+                    params: {
+                        entreprise_id: this.user.id,
+                    },
+                })
+                .then((response) => {
+                    this.products_stock = response.data;
+                    this.products_stock_loaded = true;
+                })
+                .catch(function (error) {});
+        },
+
         updateProdData() {
             this.getProdNumbers();
             this.getProductions();
@@ -650,6 +708,7 @@ export default {
     created() {
         this.updateProdData();
         this.getMarketDemands();
+
         axios
             .get("/api/navbar", {
                 params: {
@@ -660,6 +719,8 @@ export default {
             .then((resp) => {
                 this.caisse = resp.data["caisse"];
             });
+
+        this.getProductsStock();
     },
     mounted() {
         window.Echo.channel("entreprise_" + this.user.id).listen(
@@ -667,6 +728,13 @@ export default {
             (e) => {
                 if (e.notification.type == "ProductionUpdate") {
                     this.updateProdData();
+                    this.getProductsStock();
+                    this.$forceUpdate();
+                }
+
+                if (e.notification.type == "ProdStockUpdate") {
+                    this.updateProdData();
+                    this.getProductsStock();
                     this.$forceUpdate();
                 }
 
@@ -682,6 +750,11 @@ export default {
 
                 if (e.notification.type == "WorkersUpdate") {
                     this.getProdNumbers();
+                    this.$forceUpdate();
+                }
+
+                if (e.notification.type == "AdminNotif") {
+                    this.updateProdData();
                     this.$forceUpdate();
                 }
             }

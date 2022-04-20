@@ -11,6 +11,7 @@ class Ad extends Model
 
     protected $fillable = [
         'entreprise_id',
+        'predicted_result',
         'result',
         'amount',
         'product_id',
@@ -22,6 +23,6 @@ class Ad extends Model
 
     public function entreprises(){
         return $this->belongsTo('App\Models\Entreprise','entreprise_id','id');
-        
+
     }
 }

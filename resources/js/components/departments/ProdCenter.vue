@@ -158,22 +158,34 @@
         </div>
         <Modal v-if="launch_prod_modal">
             <template v-slot:content>
+
                 <div class="flex flex-col w-2/5 px-6 mx-auto">
+
                     <h1 class="text-vert font-semibold text-2xl">
                         Lancer une production
                     </h1>
+
                     <h1 class="text-vN text-lg mt-4">Produit :</h1>
-                    <select v-model="launch_data.prod_id">
-                        <option
-                            :value="product.id"
-                            v-for="(product, key) in products"
-                            :key="key"
-                        >
-                            {{ product.name }}
-                        </option>
-                    </select>
+
+                    <div v-if="products.length > 0">
+                        <select v-model="launch_data.prod_id">
+                            <option
+                                :value="product.id"
+                                v-for="(product, key) in products"
+                                :key="key"
+                            >
+                                {{ product.name }}
+                            </option>
+                        </select>
+                    </div>
+                    <div v-else>
+
+                    </div>
+
                     <h1 class="text-vN text-lg mt-2">Choix de la machine :</h1>
+
                     <div class="flex flex-col m-3 gap-4 mx-auto">
+
                         <div class="flex gap-3 items-center">
                             <input
                                 v-model="launch_data.machine_lvl"
@@ -184,6 +196,7 @@
                                 :value="1"
                             /><label for="machine1">Niveau 1</label>
                         </div>
+
                         <div class="flex gap-3 items-center">
                             <input
                                 v-model="launch_data.machine_lvl"
@@ -194,6 +207,7 @@
                                 :value="2"
                             /><label for="machine2">Niveau 2</label>
                         </div>
+
                         <div class="flex gap-3 items-center">
                             <input
                                 v-model="launch_data.machine_lvl"
@@ -204,8 +218,11 @@
                                 :value="3"
                             /><label for="machine3">Niveau 3</label>
                         </div>
+
                     </div>
+
                     <h1 class="text-vN text-lg mt-2">Nombre de machines:</h1>
+
                     <input
                         class="mx-4 w-2/3"
                         v-model="launch_data.machine_nb"
@@ -219,15 +236,18 @@
                             indicators['nb_machines_lv3'].value - indicators['nb_machines_lv3_busy'].value
                         "
                     />
+
                     <h1 class="text-vN text-lg">
                         Quantité( en lot de 100 pièces)
                     </h1>
+
                     <input
                         type="number "
                         v-model="launch_data.quantity"
                         class="px-2 text-lg text-yellow-500 border rounded-md border-gray-200"
                         min="1"
                     />
+
                     <h1 class="text-vN text-lg mt-3 pt-3">Prix (Unitaire)</h1>
                     <input
                         type="number "
@@ -239,10 +259,13 @@
                     <p class="text-red-500" v-if="can_produce == false">
                         {{ can_produce_msg }}
                     </p>
+                    <p v-else>
+
+                    </p>
                     <div class="flex flex-row justify-center gap-7 mt-12">
                         <button
-                            v-if="stock_updated == true && machine_info_updated == true"
-                            :diabled="can_produce == false"
+                            v-if="stock_updated == true && machine_info_updated == true && can_produce == true"
+                            :disabled="can_produce == false"
                             @click="launchProduction()"
                             class="bg-vN text-white px-7 py-1 rounded-md"
                         >
@@ -300,7 +323,7 @@
                                         {{ material.pivot.quantity }}
                                     </td>
                                     <td
-                                        v-if="stock != null"
+                                        v-if="stock != null && stock.length > 0"
                                         class="text-center py-1"
                                         :class="
                                             material.pivot.quantity * launch_data.quantity <= stock.find((item) => { return ( item.id == material.pivot.raw_material_id); }).quantity
@@ -1195,9 +1218,6 @@ export default {
         },
     },
     mounted() {
-        this.getMachineInfo();
-        this.getStock();
-
         window.Echo.channel("entreprise_" + this.user.id)
             .listen("NewNotification", (e) => {
                 if (e.notification.type == "StockUpdate") {
@@ -1208,7 +1228,15 @@ export default {
                     this.getMachineInfo();
                     this.$forceUpdate();
                 }
+                if (e.notification.type == "AdminNotif") {
+                    this.getMachineInfo();
+                    this.$forceUpdate();
+                }
             });
+    },
+    created() {
+        this.getMachineInfo();
+        this.getStock();
     }
 };
 </script>

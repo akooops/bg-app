@@ -19,7 +19,8 @@ module.exports = {
                 vN: "#0B3434",
                 jaune: "#FFBC3E",
                 nav: "#0B3434",
-               
+
+                // gray: "#807A7A",
                 lightVert: "#B2D06B54",
                 lighterVert: "#B2D06B17",
                 tableBorder: "#EEEEF2",

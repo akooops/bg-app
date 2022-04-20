@@ -40,7 +40,8 @@ class BankerController extends Controller
                     "loan_creation" => $loan->creation_date,
                     "payment_status" => $loan->payment_status,
                     "remaining_amount" => $loan->remaining_amount,
-                    "deadline" => $loan->deadline
+                    "deadline" => $loan->deadline,
+                    "days" => $loan->days,
                 ];
             });
         }
@@ -74,7 +75,7 @@ class BankerController extends Controller
         }
 
         // Create new loan and add it to database
-        Loan::create([
+        $loan = Loan::create([
             "entreprise_id" =>  $request->entreprise_id,
 
             "banker_id" => Banker::first()->id, // This is now useless, should drop column
@@ -89,13 +90,13 @@ class BankerController extends Controller
             "days" => (int) $this->getSimulationTime() + $request->deadline,
             "creation_date" => (int) $this->getSimulationTime(),
 
-            "remaining_amount" => $request->amount,
+            "remaining_amount" => round($request->amount * (1 + $request->ratio / 100)),
             "payment_status" => false,
         ]);
 
         // Update indicators
         $this->updateIndicator('caisse', $request->entreprise_id, $request->amount);
-        $this->updateIndicator('dettes', $request->entreprise_id, $request->amount);
+        $this->updateIndicator('dettes', $request->entreprise_id, $loan->remaining_amount);
 
         // Send notification
         $notification = [

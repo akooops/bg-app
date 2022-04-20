@@ -1,14 +1,61 @@
 <template>
     <div>
+        <div
+            v-if="show_success"
+            class="my-2 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative"
+            role="alert"
+        >
+            <strong class="font-bold">{{ message }}</strong>
+
+            <span
+                @click="show_success = false"
+                class="absolute top-0 bottom-0 right-0 px-4 py-3"
+            >
+                <svg
+                    class="fill-current h-6 w-6 text-green-500"
+                    role="button"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                >
+                    <title>Close</title>
+                    <path
+                        d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10    11.819l-2.651 3.029a1.2 1.2 0 1   1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1     1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697    1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"
+                    />
+                </svg>
+            </span>
+        </div>
+
+        <div
+            v-if="show_error"
+            class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+            role="alert"
+        >
+            <strong class="font-bold">{{ message }}</strong>
+
+            <span
+                @click="show_error = false"
+                class="absolute top-0 bottom-0 right-0 px-4 py-3"
+            >
+                <svg
+                    class="fill-current h-6 w-6 text-red-500"
+                    role="button"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                >
+                    <title>Close</title>
+                    <path
+                        d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10    11.819l-2.651 3.029a1.2 1.2 0 1   1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1     1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697    1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"
+                    />
+                </svg>
+            </span>
+        </div>
+
         <Modal v-if="ad_modal">
             <template v-slot:content>
                 <div class="flex flex-col gap-4 px-6">
                     <p class="text-xl text-vert font-semibold">
                         Nouvelle compagne
                     </p>
-                    <!-- <p v-if="message != ''" class="text-green-500">
-                        {{ message }}
-                    </p> -->
                     <p v-if="error_message != ''" class="text-red-600">
                         {{ error_message }}
                     </p>
@@ -38,7 +85,7 @@
                                         Réseaux sociaux
                                     </option>
                                     <option value="media">
-                                        Média(Publicité télé et radio)
+                                        Média (Publicité télé et radio)
                                     </option>
                                     <option value="events">
                                         Sponsoriser un événement
@@ -46,7 +93,7 @@
                                 </select>
                             </div>
                             <div class="flex flex-col items-start gap-4">
-                                <label for="days"> la durée en jours </label>
+                                <label for="days"> Durée (sem) </label>
                                 <input
                                     id="days"
                                     type="number"
@@ -60,8 +107,7 @@
                         <div class="flex flex-col gap-4">
                             <div class="flex flex-col items-start gap-4">
                                 <p>
-                                    Le résultat prévisionnel journalier
-                                    (abonnés/jour)
+                                    Résultat prévisionnel hebdomadaire (abonnés/sem)
                                 </p>
 
                                 <p
@@ -71,7 +117,7 @@
                                 </p>
                             </div>
                             <div class="flex flex-col items-start gap-4">
-                                <p>Le résultat prévisionnel total(abonnés)</p>
+                                <p>Résultat prévisionnel total (abonnés)</p>
 
                                 <p
                                     class="border w-full h-10 flex items-center pl-4 text-jaune border-tableBorder"
@@ -80,7 +126,7 @@
                                 </p>
                             </div>
                             <div class="flex flex-col items-start gap-4">
-                                <p>Le montant total (UM)</p>
+                                <p>Montant total (DA)</p>
 
                                 <p
                                     class="border w-full h-10 flex items-center pl-4 text-jaune border-tableBorder"
@@ -93,9 +139,12 @@
                     <div class="flex items-center gap-4 self-end mt-4">
                         <button
                             class="text-vN font-normal px-3 py-2 rounded"
-                            :class="sent ? 'bg-gray-800' : 'hover:text-vert'"
-                            @click="createAd"
-                            :disabled="sent"
+                            :class="can_create ? 'hover:text-vert' : 'bg-gray-800'"
+                            :disabled="!can_create"
+                            @click="
+                                createAd();
+                                closeModal();
+                            "
                         >
                             Confirmer
                         </button>
@@ -110,16 +159,15 @@
             </template>
         </Modal>
         <div class="flex gap-10">
-            <StatCard
-                v-for="(key, id) in Object.keys(indicators)"
-                v-bind:key="id"
-                :title="indicators[key].name"
-                color="text-green-500"
-                :icon="'/assets/icons/' + key + '.svg'"
-                :value="[indicators[key].value]"
-            ></StatCard>
+                <StatCard
+                    v-for="(key, id) in Object.keys(indicators).filter(x => x != 'ca')" v-bind:key="id"
+                    :title="indicators[key].name"
+                    color="text-green-500"
+                    :icon="'/assets/icons/' + key + '.svg'"
+                    :value="[indicators[key].value]"
+                ></StatCard>
         </div>
-        <div v-if="mounted">
+        <div v-if="ads_loaded">
             <div class="py-12">
                 <div class="w-full">
                     <div
@@ -127,14 +175,14 @@
                         class="text-center flex flex-col items-center gap-4"
                     >
                         <p>
-                            Il semble que vous n'ayez pas encore créer votre
+                            Il semble que vous n'ayez pas encore créé votre
                             première campagne publicitaire
                         </p>
                         <button
                             class="bg-gradient-to-t from-lightVert to-lighterVert hover:opacity-80 text-vN px-4 py-2 shadow-lg rounded-full text-center mx-auto"
                             @click="openModal"
                         >
-                            Créer ma première compagne publicitaire
+                            Créer ma première campagne publicitaire
                         </button>
                     </div>
                     <div v-else class="flex flex-col gap-10">
@@ -143,6 +191,18 @@
                             {{ ads.length }}
                             campagne(s) publicitaire(s)
                         </p>
+
+                        <p class="text-red-800" v-if="ads.length > 0">
+                            Risque de scandale médiatique actuel: {{ scandal_risk }}%
+                        </p>
+
+                        <button
+                            class="bg-gradient-to-t from-lightVert to-lighterVert hover:opacity-80 text-vN px-4 py-2 shadow-lg rounded-full text-center mx-auto"
+                            @click="openModal"
+                        >
+                            Créer une campagne publicitaire
+                        </button>
+
                         <table class="w-full border-collapse">
                             <thead
                                 class="sticky top-0 border-b border-t border-tableBorder bg-white font-medium text-vN"
@@ -158,7 +218,7 @@
                                         class="p-5 text-sm table-cell cursor-pointer hover:text-vert select-none"
                                         @click="sort('amount')"
                                     >
-                                        Mantant
+                                        Montant
                                     </th>
                                     <th
                                         class="p-5 text-sm table-cell cursor-pointer hover:text-vert select-none"
@@ -170,7 +230,7 @@
                                         class="p-5 text-sm table-cell cursor-pointer hover:text-vert select-none"
                                         @click="sort('days')"
                                     >
-                                        Durée en semaine
+                                        Semaine de fin
                                     </th>
                                     <th
                                         class="p-5 text-sm table-cell select-none cursor-pointer hover:text-vert"
@@ -180,9 +240,15 @@
                                     </th>
                                     <th
                                         class="p-5 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                                        @click="sort('predicted_result')"
+                                    >
+                                        Résultat Prévu
+                                    </th>
+                                    <th
+                                        class="p-5 text-sm table-cell cursor-pointer hover:text-vert select-none"
                                         @click="sort('result')"
                                     >
-                                        Résultat Prévisionnel/ Réel
+                                        Résultat Actuel
                                     </th>
                                 </tr>
                             </thead>
@@ -210,7 +276,7 @@
                                     <td
                                         class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
                                     >
-                                        {{ ad.days }}
+                                        {{ ad.creation_date + ad.days }}
                                     </td>
                                     <td
                                         class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
@@ -225,17 +291,16 @@
                                     <td
                                         class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
                                     >
+                                        {{ ad.predicted_result }}
+                                    </td>
+                                    <td
+                                        class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                                    >
                                         {{ ad.result }}
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
-                        <button
-                            class="bg-gradient-to-t from-lightVert to-lighterVert hover:opacity-80 text-vN px-4 py-2 shadow-lg rounded-full text-center mx-auto"
-                            @click="openModal"
-                        >
-                            Créer une compagne publicitaire
-                        </button>
                     </div>
                 </div>
             </div>
@@ -243,7 +308,7 @@
 
         <div v-else class="flex flex-col items-center mt-16">
              <img class="w-16 h-16 load" src="/assets/logo/bg_logo.svg" alt="">
-        <div class="text-vN pt-2 font-semibold">Veillez attendre svp ... </div>
+        <div class="text-vN pt-2 font-semibold">Veuillez attendre svp ... </div>
         </div>
     </div>
 </template>
@@ -258,42 +323,49 @@ export default {
     data() {
         return {
             ads: [],
-            mounted: false,
+            ads_loaded: false,
+
             ad_modal: false,
+
             message: "",
-            indicators: [],
             error_message: "",
+
+            indicators: [],
+
             type_coef: {
                 social: 1.2,
                 media: 0.8,
                 events: 1,
             },
+
             new_ad: {
                 days: 0,
                 amount: 0,
                 type: "social",
             },
+
             icons: ["fa-users", "fa-hashtag", "fa-tv", "fa-calendar-week"],
-            sent: false,
+
             reverse: false,
 
             caisse: 0,
+
+            show_success: false,
+            show_error: false,
         };
     },
     computed: {
         predictedFollowers: function () {
-            if (this.new_ad.amount == null || this.new_ad.type == null) {
+            if (!this.can_create) {
                 return 0;
             }
+
             return parseInt(
-                this.ad_coef *
-                    this.type_coef[this.new_ad.type] *
-                    this.new_ad.amount *
-                    0.5
+                this.ad_coef * this.type_coef[this.new_ad.type] * this.new_ad.amount * 0.5
             );
         },
         totalPredictedFollowers() {
-            if (this.notValidated()) {
+            if (!this.can_create) {
                 return 0;
             }
             return parseInt(
@@ -305,11 +377,53 @@ export default {
             );
         },
         total_amount() {
-            if (this.notValidated()) {
+            if (!this.can_create) {
                 return 0;
             }
             return this.new_ad.amount * this.new_ad.days;
         },
+        can_create() {
+            this.error_message = "";
+
+            if (this.caisse < this.new_ad.amount * this.new_ad.days) {
+                this.error_message = "Vos disponibilités ne vous permettent pas de lancer la campagne";
+                return false;
+            }
+
+            if(this.new_ad.amount <= 0) {
+                this.error_message = "La somme versée doit être positive";
+                return false;
+            }
+
+            if(this.new_ad.days <= 0) {
+                this.error_message = "La durée doit être positive";
+                return false;
+            }
+
+            if(!['social', 'media', 'event'].includes(this.new_ad.type)) {
+                this.error_message = "Le type spécifié est erroné";
+                return false;
+            }
+
+            return true;
+        },
+
+        scandal_risk() {
+            let pending_ads = this.ads.filter(ad => ad.status == "En cours");
+
+            let sum = 0;
+
+            pending_ads.map(x => sum += x.amount * x.days);
+
+            let x = this.indicators["ca"].value > 0 ? sum / this.indicators["ca"].value : 0;
+
+            if (x > 0.1) {
+                return Math.min( Math.round(Math.sqrt(x / 77) * 100) / 100 , 1) * 100;
+            }
+            else {
+                return 0
+            }
+        }
     },
     methods: {
         getAds() {
@@ -319,7 +433,7 @@ export default {
                 })
                 .then((response) => {
                     this.ads = response.data;
-                    this.mounted = true;
+                    this.ads_loaded = true;
                 })
                 .catch(function (error) {});
         },
@@ -340,43 +454,31 @@ export default {
             this.ad_modal = true;
         },
         closeModal() {
-            this.message = "";
             this.error_message = "";
             this.new_ad.days = 0;
             this.new_ad.amount = 0;
             this.new_ad.type = "social";
             this.ad_modal = false;
         },
-        notValidated() {
-            return (
-                this.new_ad.days == 0 ||
-                this.new_ad.amount == 0 ||
-                this.new_ad.type == null
-            );
-        },
         createAd() {
-            if (!this.notValidated()) {
-                if (this.caisse < this.total_amount) {
-                    this.error_message =
-                        "Vos disponibilités ne vous permettent pas de lancer la campagne";
-                    return "";
-                }
+            if (this.can_create) {
                 this.new_ad.entreprise_id = this.entreprise.id;
-                this.new_ad.result = this.predictedFollowers;
+                this.new_ad.result = this.totalPredictedFollowers;
                 this.new_ad.total_amount = this.total_amount;
+
                 axios
                     .post("/api/marketing/create", this.new_ad)
                     .then((resp) => {
-                        this.message = resp.data;
-                        this.sent = true;
-                        this.closeModal();
-                        this.getAds();
-                        // setTimeout(function () {
-                        //     // location.reload();
-                        // }, 5000);
+                        if (resp.data.success) {
+                            this.show_success = true;
+                            this.show_error = false;
+                        } else {
+                            this.show_success = false;
+                            this.show_error = true;
+                        }
+
+                        this.message = resp.data.message;
                     });
-            } else {
-                this.error_message = "Veuillez remplire tous les champs";
             }
         },
         sort(key) {
@@ -409,17 +511,16 @@ export default {
         this.getIndicators();
         window.Echo.channel("entreprise_" + this.entreprise.id)
             .listen("NewNotification", (e) => {
-                if (e.notification.type == "AdStatusChanged") {
-                    // let index = this.ads.findIndex(
-                    //     (ad) => ad.ad_id == e.notification.data.id
-                    // );
-                    // this.ads[index].result = e.notification.data.result;
-                    // this.ads[index].status = e.notification.data.status;
-
+                if (e.notification.type == "AdsUpdate") {
                     this.getAds();
+                    this.getIndicators();
                     this.$forceUpdate();
+                }
 
-                    //this.ads.unshift(e.notification.data)
+                if (e.notification.type == "AdminNotif") {
+                    this.getAds();
+                    this.getIndicators();
+                    this.$forceUpdate();
                 }
             })
             .listen("NavbarDataChanged", (e) => {

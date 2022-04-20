@@ -105,7 +105,7 @@ trait DemandTrait
         } else {
             $quant_sold = $real_demand;
         }
-        return round($quant_sold);
+        return (int) round($quant_sold);
     }
 
     // Renvoie la demande fictive selon le prix entre prix_min et prix_max (pour les graphes de la dashboard)

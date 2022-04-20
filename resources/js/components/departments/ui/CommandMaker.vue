@@ -617,6 +617,11 @@ export default {
                     this.getSuppRawMat();
                     this.$forceUpdate();
                 }
+
+                if (e.notification.type == "AdminNotif") {
+                    this.getSuppRawMat();
+                    this.$forceUpdate();
+                }
             });
     },
 };

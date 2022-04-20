@@ -16,7 +16,7 @@ use App\Traits\HelperTrait;
 
 class UpdateAdStatus implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels,IndicatorTrait,HelperTrait;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, IndicatorTrait, HelperTrait;
     public $result;
     public $ad;
     public $presence;
@@ -25,7 +25,7 @@ class UpdateAdStatus implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(Ad $ad,$result,$presence)
+    public function __construct(Ad $ad, $result, $presence)
     {
         $this->ad = $ad;
         $this->result = $result;
@@ -42,21 +42,23 @@ class UpdateAdStatus implements ShouldQueue
         $this->ad->status = "done";
         $this->ad->result = $this->result;
         $this->ad->save();
+
+        $this->updateIndicator('nb_subscribers', $this->ad->entreprise_id, $this->result);
+        $this->updateIndicator($this->ad->type . '_presence', $this->ad->entreprise_id, $this->presence);
+
         $notification = [
             "entreprise_id" => $this->ad->entreprise_id,
-            "type" => "AdStatusChanged",
+            "type" => "AdsUpdate",
             // "data" =>  $this->ad,
-            
+
             "store" => true,
-            
-            "text" => "Votre campagne publicitaire sur " . $this->parseAdType($this->ad->type) ." est terminée. Veuillez consulter votre département Marketing.",
+
+            "text" => "Votre campagne publicitaire sur " . $this->parseAdType($this->ad->type) . " est terminée.",
             "title" => "Campagne publicitaire",
             "icon_path" => "aaaaaaaaaaa",
 
             "style" => "info",
         ];
-        $this->updateIndicator('nb_subscribers',$this->ad->entreprise_id,$this->result);
-        $this->updateIndicator($this->ad->type.'_presence',$this->ad->entreprise_id,$this->presence);
         event(new NewNotification($notification));
     }
 }

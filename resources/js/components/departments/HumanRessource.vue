@@ -634,6 +634,11 @@ export default {
                     this.getIndiators();
                     this.$forceUpdate();
                 }
+
+                if (e.notification.type == "AdminNotif") {
+                    this.getIndiators();
+                    this.$forceUpdate();
+                }
             }
         );
 

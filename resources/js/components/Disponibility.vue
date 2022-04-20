@@ -133,6 +133,16 @@ export default {
         this.getSimulationData();
         if (this.user.type == "entreprise") {
             window.Echo.channel("entreprise_" + this.user.id).listen(
+                "NewNotification",
+                (e) => {
+                    if (e.notification.type == "AdminNotif") {
+                        this.getSimulationData();
+                        this.$forceUpdate();
+                    }
+                }
+            );
+
+            window.Echo.channel("entreprise_" + this.user.id).listen(
                 "NavbarDataChanged",
                 (e) => {
                     this.caisse = e.caisse;
