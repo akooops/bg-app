@@ -43,7 +43,9 @@ class CommandScheduler implements ShouldQueue
         $raw_mat = DB::table("raw_materials")->where("id", "=", $raw_mat_id)->first();
 
         // Update stock quantity for bought raw material
-        $raw_mat_stock = DB::table("raw_materials_stock")->where("entreprise_id", "=", $entreprise_id);
+        $raw_mat_stock = DB::table("raw_materials_stock")
+            ->where("entreprise_id", "=", $entreprise_id)
+            ->where("raw_material_id", "=", $raw_mat_id);
 
         if (count($raw_mat_stock->get()->toArray()) == 0) {
             DB::table("raw_materials_stock")->insert([
@@ -69,9 +71,9 @@ class CommandScheduler implements ShouldQueue
         $notification = [
             "entreprise_id" => $entreprise_id,
             "type" => "CommandUpdate",
-            
+
             "store" => true,
-            
+
             "text" => $message,
             "title" => "Livraison de la commande",
             "icon_path" => "aaaaaaaaaaa",

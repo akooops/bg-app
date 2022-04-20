@@ -23,8 +23,8 @@ window.io = require('socket.io-client')
 
  window.Echo = new Echo({
      broadcaster: 'socket.io',
-     host:  'localhost:6001',
+     host:  '10.90.90.22:6001',
      namespace: 'App.Events',
-     
-    
+
+
  });

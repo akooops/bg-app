@@ -123,7 +123,7 @@
                     src="/assets/icons/employees.svg"
                     alt="employees icon"
                 />
-                <h1 class="text-vN text-lg font-medium">Nombre d'employé</h1>
+                <h1 class="text-vN text-lg font-medium">Nombre d'employés</h1>
                 <button @click="showEmployees = !showEmployees">
                     <img
                         class="h-5 w-5"
@@ -288,6 +288,18 @@
                         >
                             Quantité
                         </th>
+                        <th
+                            class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                            @click="sort('quantity')"
+                        >
+                            Semaine début
+                        </th>
+                        <th
+                            class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                            @click="sort('quantity')"
+                        >
+                            Semaine fin
+                        </th>
                         <!-- <th
                             class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
                             @click="sort('sold')"
@@ -347,6 +359,16 @@
                             class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
                         >
                             {{ prod.quantity }}
+                        </td>
+                        <td
+                            class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                        >
+                            {{ prod.creation_date }}
+                        </td>
+                        <td
+                            class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                        >
+                            {{ prod.finish_date }}
                         </td>
                         <!-- <td
                             class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
@@ -575,6 +597,7 @@ export default {
             this.getAvgPrice(this.products[i]);
             this.show_product_info = true;
         },
+
         getProdNumbers() {
             // Numbers to show in cards
             axios
@@ -589,6 +612,7 @@ export default {
                     this.indicators_loaded = true;
                 });
         },
+
         async getMarketDemands() {
             for (var i = 1; i < 5; i++) {
                 let resp = await axios.get("/api/demand/prev", {
@@ -600,9 +624,11 @@ export default {
             }
             this.show_market_demand = true;
         },
+
         getProductByName(name) {
             return this.products.find((p) => p.name == name);
         },
+
         getProductions() {
             axios
                 .get("/api/production/all", {
@@ -612,14 +638,9 @@ export default {
                 })
                 .then((resp) => {
                     this.productions = resp.data.reverse();
-                })
-                .then(() => {
-                    this.productions.forEach((prod) => {
-                        prod.stock = prod.quantity - prod.sold;
-                        prod.CA = prod.sold * prod.price;
-                    });
                 });
         },
+
         getAvgPrice(product) {
             axios
                 .get("/api/production/avg-price", {
@@ -629,47 +650,11 @@ export default {
                     this.product_info["avg_price"] = resp.data;
                 });
         },
-        sell(prod) {
-            let data = {
-                entreprise_id: this.user.id,
-                id: prod.id,
-                product_id: this.getProductByName(prod.product).id,
-                quantity: prod.quantity - prod.sold,
-                price: prod.price,
-            };
-            this.sell_info.production = data;
-            this.show_selling_info = true;
-            axios
-                .get("/api/demand/real", {
-                    params: data,
-                })
-                .then((resp) => {
-                    this.sell_info.sold_quant = resp.data.demand;
-                    this.sell_info.stock_quant = resp.data.stock;
-                    this.sell_info.price = data.price;
-                    this.sell_info.number = data.id;
-                });
-        },
+
         getProducts() {
             axios.get("/api/products").then((resp) => {
                 this.products = resp.data;
             });
-        },
-        confirmSell() {
-            this.show_selling_info = false;
-            let data = {
-                entreprise_id: this.user.id,
-                product_id: this.sell_info.production.product_id,
-                production_id: this.sell_info.production.id,
-                dist_cost: this.distCost,
-                sold: this.sell_info.sold_quant,
-                stock: this.sell_info.stock_quant,
-                price: this.sell_info.price,
-            };
-            axios.post("/api/production/sell", data).then((resp) => {
-                this.show_selling_info = false;
-            });
-            this.updateProdData();
         },
 
         getProductsStock() {
@@ -691,6 +676,7 @@ export default {
             this.getProductions();
             this.getProducts();
         },
+        
         sort(key) {
             this.reverse = !this.reverse;
             this.productions.sort((a, b) => {
@@ -700,7 +686,7 @@ export default {
                 if (a[key] > b[key]) {
                     return this.reverse ? 1 : -1;
                 }
-                console.log(this.productions);
+                // console.log(this.productions);
                 return 0;
             });
         },

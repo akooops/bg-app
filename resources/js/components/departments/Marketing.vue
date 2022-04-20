@@ -87,8 +87,8 @@
                                     <option value="media">
                                         Média (Publicité télé et radio)
                                     </option>
-                                    <option value="events">
-                                        Sponsoriser un événement
+                                    <option value="event">
+                                        Sponsoriser un évènement
                                     </option>
                                 </select>
                             </div>
@@ -158,7 +158,7 @@
                 </div>
             </template>
         </Modal>
-        <div class="flex gap-10">
+        <div v-if="indicators.length > 0" class="flex gap-10">
                 <StatCard
                     v-for="(key, id) in Object.keys(indicators).filter(x => x != 'ca')" v-bind:key="id"
                     :title="indicators[key].name"
@@ -335,7 +335,7 @@ export default {
             type_coef: {
                 social: 1.2,
                 media: 0.8,
-                events: 1,
+                event: 1,
             },
 
             new_ad: {
@@ -409,6 +409,10 @@ export default {
         },
 
         scandal_risk() {
+            if (this.indicators.length == 0) {
+                return 0;
+            }
+
             let pending_ads = this.ads.filter(ad => ad.status == "En cours");
 
             let sum = 0;

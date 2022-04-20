@@ -24,7 +24,7 @@ class ProductionScheduler implements ShouldQueue
      */
     public $production;
     public $production_id;
-    
+
     public function __construct($production, $prod_id)
     {
         $this->production = $production;
@@ -42,13 +42,18 @@ class ProductionScheduler implements ShouldQueue
         $product_id = $this->production["product_id"];
 
         // Update stock quantity for produced product
-        $stock = DB::table("stock")->where("product_id", "=", $product_id)->where("entreprise_id", "=", $entreprise_id);
+        $stock = DB::table("stock")
+            ->where("entreprise_id", "=", $entreprise_id)
+            ->where("product_id", "=", $product_id);
+
         if (count($stock->get()->toArray()) == 0) {
             DB::table("stock")->insert([
                 "entreprise_id" => $entreprise_id,
                 "product_id" => $product_id,
                 "quantity" => $this->production["quantity"],
-                "phase" => 0
+                "quantity_selling" => 0,
+                "price" => 0,
+                "phase" => 0,
             ]);
         } else {
             $quant = $this->production["quantity"];
@@ -75,9 +80,9 @@ class ProductionScheduler implements ShouldQueue
         $notification = [
             "entreprise_id" => $entreprise_id,
             "type" => "ProductionUpdate",
-            
+
             "store" => true,
-            
+
             "text" => $message,
             "title" => "Production Finie",
             "icon_path" => "aaaaaaaaaaa",

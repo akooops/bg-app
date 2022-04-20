@@ -481,10 +481,8 @@ class EntrepriseController extends Controller
             "entreprise_id" => $entreprise_id,
             "product_id" => $product_id,
             "quantity" => round($real_produced_quant),
-            "finish_date" => now()->addSeconds($delay),
-            "price" => $request->price,
-            "cost" => $cost,
-            "name" => "", // Bug, should be removed from DB
+            "creation_date" => (int) $this->getSimulationTime(),
+            "finish_date" => round((int) $this->getSimulationTime() + ($delay / 60)),
             "status" => "pending",
             "machines_lv1" => $machines_lvl == 1 ? $nb_machines_needed : 0,
             "machines_lv2" => $machines_lvl == 2 ? $nb_machines_needed : 0,
@@ -554,12 +552,11 @@ class EntrepriseController extends Controller
             return [
                 "id" => $p->id,
                 "product" => $product->name,
-                "price" => $p->price,
                 "quantity" => $p->quantity,
+                "creation_date" => $p->creation_date,
+                "finish_date" => $p->finish_date,
                 "status" => $this->parseProductionStatus($p->status),
                 "status_code" => $p->status,
-                "cost" => $p->cost,
-                "sold" => $p->sold
             ];
         });
         return $productions->toArray();
@@ -584,10 +581,10 @@ class EntrepriseController extends Controller
                 "title" => "Production déjà vendue",
                 "icon_path" => "aaaaaaaaaaa",
 
-                "style" => "info",
+                "style" => "failure",
             ];
             event(new NewNotification($notification));
-            return Response::json(["message" => $message], 200);
+            return Response::json(["message" => $message, "success" => false], 200);
         }
 
         if ($status == 'selling') {
@@ -602,10 +599,10 @@ class EntrepriseController extends Controller
                 "title" => "Production déjà en vente",
                 "icon_path" => "aaaaaaaaaaa",
 
-                "style" => "info",
+                "style" => "failure",
             ];
             event(new NewNotification($notification));
-            return Response::json(["message" => $message], 200);
+            return Response::json(["message" => $message, "success" => false], 200);
         }
 
         DB::table("productions")->where("id", "=", $production_id)->update(["status" => "selling"]);
@@ -621,10 +618,10 @@ class EntrepriseController extends Controller
             "title" => "Production mise en vente",
             "icon_path" => "aaaaaaaaaaa",
 
-            "style" => "failure",
+            "style" => "success",
         ];
         event(new NewNotification($notification));
-        return Response::json(["message" => $message], 200);
+        return Response::json(["message" => $message, "success" => true], 200);
     }
 
     // Machine functions
@@ -1345,9 +1342,11 @@ class EntrepriseController extends Controller
             return Response::json(["message" => "Erreur: La quantité à vendre spécifiée dépasse votre stock", "success" => false], 200);
         }
 
-        $stock->update(["quantity" => $stock->first()->quantity - ($new_selling_quantity - $stock->first()->quantity_selling),
-                        "quantity_selling" => $new_selling_quantity,
-                        "price" => $new_price]);
+        $stock->update([
+            "quantity" => $stock->first()->quantity - ($new_selling_quantity - $stock->first()->quantity_selling),
+            "quantity_selling" => $new_selling_quantity,
+            "price" => $new_price
+        ]);
 
         $notification = [
             "entreprise_id" => $entreprise_id,

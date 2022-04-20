@@ -216,7 +216,7 @@
                                     <th class="px-4 py-3">
                                         Quantité Nécessaire
                                     </th>
-                                    <th class="px-4 py-3">Fournsseur</th>
+                                    <th class="px-4 py-3">Fournisseur</th>
                                     <th class="px-4 py-3">Date de Livraison</th>
                                     <th class="px-4 py-3"> Statue</th>
                                 </tr>
@@ -228,12 +228,15 @@
                                     :key="key"
                                     class="text-vN border-b"
                                 >
-                                    <td class="flex justify-center icon-material py-1 px-4" >
+                                    <!-- <td class="flex justify-center icon-material py-1 px-4" >
                                         <img
                                             src="/assets/icons/khobz.png"
                                             alt="khobz"
                                         />
 
+                                    </td> -->
+                                    <td class="text-center py-1 px-4">
+                                        {{ item.material }}
                                     </td>
                                     <td class="text-center py-1 px-4">
                                         {{ item.quantity }} {{ item.unit }}

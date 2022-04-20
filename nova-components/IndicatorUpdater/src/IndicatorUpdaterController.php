@@ -27,16 +27,16 @@ class IndicatorUpdaterController
         $operation = $request->selected_operation;
         $value = $request->value;
 
-        if($indicator_id == null) {
+        if($indicator_id === null) {
             return response()->json(["message" => "Opération impossible: Vous n'avez pas spécifié un indicateur valide.", "success" => false], 200);
         }
-        if ($entreprise_ids == null) {
+        if ($entreprise_ids === null) {
             return response()->json(["message" => "Opération impossible: Vous n'avez pas spécifié une liste d'entreprises valide.", "success" => false], 200);
         }
-        if ($operation == null) {
+        if ($operation === null) {
             return response()->json(["message" => "Opération impossible: Vous n'avez pas spécifié une opération valide.", "success" => false], 200);
         }
-        if ($value == null) {
+        if ($value === null) {
             return response()->json(["message" => "Opération impossible: Vous n'avez pas spécifié une valeur valide.", "success" => false], 200);
         }
 

@@ -225,7 +225,7 @@
 
                     <input
                         class="mx-4 w-2/3"
-                        v-model="launch_data.machine_nb"
+                        v-model.number="launch_data.machine_nb"
                         type="number"
                         min="1"
                         :max="
@@ -248,24 +248,23 @@
                         min="1"
                     />
 
-                    <h1 class="text-vN text-lg mt-3 pt-3">Prix (Unitaire)</h1>
+                    <!-- <h1 class="text-vN text-lg mt-3 pt-3">Prix (Unitaire)</h1>
                     <input
                         type="number "
-                        v-model="launch_data.price"
+                        v-model.number="launch_data.price"
                         class="px-2 text-lg text-yellow-500 border rounded-md border-gray-200"
                         :min="selectedProd.price_min"
                         :max="selectedProd.price_max"
-                    />
+                    /> -->
+
                     <p class="text-red-500" v-if="can_produce == false">
                         {{ can_produce_msg }}
                     </p>
-                    <p v-else>
 
-                    </p>
                     <div class="flex flex-row justify-center gap-7 mt-12">
                         <button
                             v-if="stock_updated == true && machine_info_updated == true && can_produce == true"
-                            :disabled="can_produce == false"
+                            :disabled="can_produce == false || prod_launched == true"
                             @click="launchProduction()"
                             class="bg-vN text-white px-7 py-1 rounded-md"
                         >
@@ -273,6 +272,7 @@
                         </button>
                         <button
                             class="bg-vN text-white px-7 py-1 rounded-md"
+                            :disabled="prod_launched == true"
                             @click="
                                 launch_prod_modal = false;
                                 launch_data.price = (selectedProd.price_min + selectedProd.price_max) / 2;
@@ -323,7 +323,7 @@
                                         {{ material.pivot.quantity }}
                                     </td>
                                     <td
-                                        v-if="stock != null && stock.length > 0"
+                                        v-if="stock != null && stock.length > 0 && stock.find( (element) => element.id == material.id ) != undefined"
                                         class="text-center py-1"
                                         :class="
                                             material.pivot.quantity * launch_data.quantity <= stock.find((item) => { return ( item.id == material.pivot.raw_material_id); }).quantity
@@ -339,7 +339,6 @@
                                     <td
                                         v-else
                                         class="text-center text-black py-1"
-
                                     >
                                     0
                                     </td>
@@ -393,28 +392,28 @@
                         <table class="w-full" style="background-color: #f9f9fc">
                             <thead class="text-xs text-gray-700 uppercase">
                                 <tr class="border-b border-t">
-                                    <th class="px-4 py-1 text-vN">
+                                    <!-- <th class="px-4 py-1 text-vN">
                                         Chiffre d’Affaire Estimés
-                                    </th>
+                                    </th> -->
                                     <th class="px-4 py-1 text-vN">
                                         Coût Total Estimé
                                     </th>
-                                    <th class="px-4 py-1 text-vN">
+                                    <!-- <th class="px-4 py-1 text-vN">
                                         Profit Estimé
-                                    </th>
+                                    </th> -->
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr class="border-b">
-                                    <td class="flex justify-center icon-material text-yellow-500 py-1">
+                                    <!-- <td class="flex justify-center icon-material text-yellow-500 py-1">
                                         {{ salesRevenues }} UM
-                                    </td>
+                                    </td> -->
                                     <td class="text-center text-yellow-500 py-1">
                                         {{ totalCost }} UM
                                     </td>
-                                    <td class="text-center text-yellow-500 py-1">
+                                    <!-- <td class="text-center text-yellow-500 py-1">
                                         {{ profit }} UM
-                                    </td>
+                                    </td> -->
                                 </tr>
                             </tbody>
                         </table>
@@ -450,7 +449,7 @@
                             <select
                                 class="rounded-sm focus:border-vert focus:ring-0 w-full border-gray-200"
                                 style="border-width: 1px"
-                                v-model="machine.transaction_lv"
+                                v-model.number="machine.transaction_lv"
                             >
                                 <option value="1">1</option>
                                 <option value="2">2</option>
@@ -463,7 +462,7 @@
                                 {{ machine.transaction == "buy" ? "acheter" : "vendre" }}
                             </p>
                             <input
-                                v-model="machine.transaction_nb"
+                                v-model.number="machine.transaction_nb"
                                 min="1"
                                 :max="
                                     machine.transaction == 'sell' ?
@@ -592,7 +591,7 @@ export default {
             launch_prod_modal: false,
             launch_data: {
                 prod_id: 1,
-                price: 0,
+                // price: 0,
                 quantity: 1,
                 machine_lvl: 1,
                 machine_nb: 1,
@@ -633,6 +632,8 @@ export default {
             can_produce: false,
             stock: null,
 
+            prod_launched: false,
+
             show_success: false,
             show_error: false,
             message: "",
@@ -665,8 +666,8 @@ export default {
     },
     watch: {
         "launch_data.prod_id": function () {
-            this.launch_data.price =
-                (this.selectedProd.price_min + this.selectedProd.price_max) / 2;
+            // this.launch_data.price =
+            //     (this.selectedProd.price_min + this.selectedProd.price_max) / 2;
             this.can_produce = false;
             this.verifyProd();
         },
@@ -674,10 +675,10 @@ export default {
             this.can_produce = false;
             this.verifyProd();
         },
-        "launch_data.price": function () {
-            this.can_produce = false;
-            this.verifyProd();
-        },
+        // "launch_data.price": function () {
+        //     this.can_produce = false;
+        //     this.verifyProd();
+        // },
         "launch_data.machine_lvl": function () {
             this.can_produce = false;
 
@@ -783,12 +784,12 @@ export default {
                 (item) => item.id == this.launch_data.prod_id
             );
         },
-        salesRevenues() {
-            let coeff = 1 - this.indicators["reject_rate"].value;
-            return (
-                this.launch_data.price * this.launch_data.quantity * 100 * coeff
-            );
-        },
+        // salesRevenues() {
+        //     let coeff = 1 - this.indicators["reject_rate"].value;
+        //     return (
+        //         this.launch_data.price * this.launch_data.quantity * 100 * coeff
+        //     );
+        // },
         totalCost() {
             return (
                 this.launch_data.quantity *
@@ -796,9 +797,9 @@ export default {
                 100
             );
         },
-        profit() {
-            return this.salesRevenues - this.totalCost;
-        },
+        // profit() {
+        //     return this.salesRevenues - this.totalCost;
+        // },
         prodDelay() {
             let coeff =
                 (this.indicators["5s_day"].value < 30 ? 1.5 : 1) *
@@ -817,11 +818,13 @@ export default {
     },
     methods: {
         launchProduction() {
+            this.prod_launched = true;
+
             let data = {
                 product_id: this.selectedProd.id, // slected product id
                 entreprise_id: this.user.id, // this users's id
                 quantity: this.launch_data.quantity, // number of lots (100 units) to be produced
-                price: this.launch_data.price, // price of selling
+                // price: this.launch_data.price, // price of selling
                 cost: this.totalCost, // cost of production
                 delay: this.prodDelay * 60, // time it takes to produce
                 machines: this.prod_factors.machines, // number of necessary free machines to produce
@@ -848,7 +851,9 @@ export default {
                         this.show_error = true;
                     }
                     this.message = resp.data.message;
+
                     this.launch_prod_modal = false;
+                    this.prod_launched = true;
 
                     this.launch_data.prod_id = 1;
                     this.launch_data.price =
