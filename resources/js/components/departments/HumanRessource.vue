@@ -394,9 +394,8 @@
                 <div class="flex flex-row items-center border-2 shadow-lg rounded-2xl px-2">
                     <img src="/assets/icons/humeur.png" alt="" class="w-16 h-16 p-3">
                     <p>
-                    Humeur: {{ Math.round(indicators['workers_mood'].value * 100) }}%
-
-                     </p>
+                        Humeur: {{ Math.round(indicators['workers_mood'].value * 100) }}%
+                    </p>
                 </div>
 
             </div>
