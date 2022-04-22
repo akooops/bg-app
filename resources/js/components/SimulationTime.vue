@@ -76,7 +76,7 @@ export default {
     },
     mounted() {
         this.getSimulationData();
-        
+
         window.Echo.channel("entreprise_" + this.user.id).listen(
                 "NewNotification",
                 (e) => {
@@ -89,7 +89,7 @@ export default {
         window.Echo.channel("simulation_date").listen(
             "SimulationDateChanged",
             (e) => {
-                console.log("kimmm");
+                // console.log("kimmm");
                 this.time = e.date;
             }
         );

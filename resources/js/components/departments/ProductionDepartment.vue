@@ -4,15 +4,15 @@
         <div class="w-full">
             <nav class="mb-10 text-sm flex justify-start gap-8">
                 <button
-                    @click="page_index = 'prod_stats'"
+                    @click="page_index = 'decision_center'"
                     :class="
-                        page_index == 'prod_stats'
+                        page_index == 'decision_center'
                             ? 'border-b-2 border-vert text-vert font-medium'
                             : 'text-vN hover:text-black'
                     "
                     class="inline-block py-2 focus:outline-none text-lg"
                 >
-                    Statistiques
+                    Centre de décision
                 </button>
 
                 <button
@@ -40,15 +40,15 @@
                 </button>
 
                 <button
-                    @click="page_index = 'decision_center'"
+                    @click="page_index = 'prod_stats'"
                     :class="
-                        page_index == 'decision_center'
+                        page_index == 'prod_stats'
                             ? 'border-b-2 border-vert text-vert font-medium'
                             : 'text-vN hover:text-black'
                     "
                     class="inline-block py-2 focus:outline-none text-lg"
                 >
-                    Centre de décision
+                    Statistiques
                 </button>
             </nav>
         </div>
@@ -300,43 +300,12 @@
                         >
                             Semaine fin
                         </th>
-                        <!-- <th
-                            class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
-                            @click="sort('sold')"
-                        >
-                            Qt. Vendue
-                        </th> -->
-                        <!-- <th
-                            class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
-                            @click="sort('stock')"
-                        >
-                            Stock
-                        </th> -->
-                        <!-- <th
-                            class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
-                            @click="sort('price')"
-                        >
-                            Prix
-                        </th> -->
-                        <!-- <th
-                            class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
-                            @click="sort('cost')"
-                        >
-                            Coût
-                        </th> -->
-                        <!-- <th
-                            class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
-                            @click="sort('CA')"
-                        >
-                            Chiffre d'Affaire
-                        </th> -->
                         <th
                             class="p-3 text-md table-cell cursor-pointer hover:text-vert select-none"
                             @click="sort('status_code')"
                         >
                             Statut
                         </th>
-                        <!-- <th class="p-3 text-md table-cell">Action</th> -->
                     </tr>
                 </thead>
                 <tbody v-if="productions.length > 0">
@@ -370,31 +339,6 @@
                         >
                             {{ prod.finish_date }}
                         </td>
-                        <!-- <td
-                            class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
-                        >
-                            {{ prod.sold }}
-                        </td> -->
-                        <!-- <td
-                            class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
-                        >
-                            {{ prod.quantity - prod.sold }}
-                        </td> -->
-                        <!-- <td
-                            class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
-                        >
-                            {{ prod.price }}
-                        </td> -->
-                        <!-- <td
-                            class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
-                        >
-                            {{ prod.cost }}
-                        </td> -->
-                        <!-- <td
-                            class="w-full lg:w-auto p-1 text-center lg:table-cell relative lg:static"
-                        >
-                            {{ prod.sold * prod.price }} UM
-                        </td> -->
                         <td
                             :class="
                                 prod.status_code == 'pending' ? 'text-jaune' : 'text-black'
@@ -403,85 +347,9 @@
                         >
                             {{ prod.status }}
                         </td>
-                        <!-- <td
-                            class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
-                        >
-                            <button
-                                @click="sell(prod)"
-                                class="p-1 px-2 rounded-full bg-vert text-vN"
-                                v-if="prod.status_code == 'completed'"
-                            >
-                                {{
-                                    prod.status_code == "sold"
-                                        ? "Vendu!"
-                                        : prod.status_code == "pending"
-                                        ? "En attente"
-                                        : "Vendre"
-                                }}
-                            </button>
-                        </td> -->
                     </tr>
                 </tbody>
             </table>
-            <Modal v-if="show_selling_info" class="mt-10">
-                <template v-slot:content>
-                    <div class="flex flex-col gap-6 w-80 px-2 pb-4">
-                        <p class="text-center font-bold text-lg">
-                            Vendre la commande N° {{ sell_info.number }}
-                        </p>
-                        <div class="flex flex-col">
-                            <p class="font-medium text-lg">Unités</p>
-                            <p
-                                class="px-2 text-lg py-2 w-2/5 border rounded-md border-gray-200"
-                            >
-                                {{ sell_info.sold_quant }}
-                            </p>
-                        </div>
-                        <div class="flex flex-col">
-                            <p class="font-medium text-lg">Prix</p>
-                            <p
-                                class="px-2 text-lg py-2 text-yellow-500 w-2/5 border rounded-md border-gray-200"
-                            >
-                                {{ sell_info.price }}
-                            </p>
-                        </div>
-                        <div class="flex flex-col">
-                            <p class="font-medium text-lg">Stock</p>
-                            <p
-                                class="px-2 text-lg py-2 text-vert border w-2/5 rounded-md border-gray-200"
-                            >
-                                {{ sell_info.stock_quant }}
-                            </p>
-                        </div>
-                        <div class="flex flex-col">
-                            <p class="font-medium text-lg">
-                                Cout de distrubution total
-                            </p>
-                            <p
-                                class="px-2 text-lg py-2 text-yellow-500 border w-2/3 rounded-md border-gray-200"
-                            >
-                                {{ distCost }}
-                            </p>
-                        </div>
-                        <div
-                            class="ml-auto flex items-center gap-4 justify-center mt-5"
-                        >
-                            <button
-                                @click="confirmSell"
-                                class="border-0 px-3 py-1 text-vN hover:text-vert"
-                            >
-                                Confirmer
-                            </button>
-                            <button
-                                @click="show_selling_info = false"
-                                class="px-3 py-1 text-vN opacity-80"
-                            >
-                                Annuler
-                            </button>
-                        </div>
-                    </div>
-                </template>
-            </Modal>
         </div>
 
         <div v-if="page_index == 'stock_sell'">
@@ -559,7 +427,7 @@ export default {
             products_stock: [],
             products_stock_loaded: false,
 
-            page_index: "prod_stats",
+            page_index: "decision_center",
 
             sell_info: {
                 sold_quant: 0,
@@ -676,7 +544,7 @@ export default {
             this.getProductions();
             this.getProducts();
         },
-        
+
         sort(key) {
             this.reverse = !this.reverse;
             this.productions.sort((a, b) => {

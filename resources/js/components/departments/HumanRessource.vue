@@ -373,51 +373,46 @@
                     <p> Occupé :   {{indicators['nb_workers_lv1_busy'].value}} </p>
                 </div>
                     </div>
-                    
+
                 <div class="flex flex-row items-center border-2 shadow-lg rounded-2xl px-2">
                     <img src="/assets/icons/employees.svg" alt="" class="w-16 h-16">
                     <div class="flex flex-col">
-                          <p>  
+                          <p>
                     Expert: {{indicators['nb_workers_lv2'].value}}</p>
                    <p> Occupé : {{indicators['nb_workers_lv1_busy'].value}}
                      </p>
                     </div>
-                    
+
                 </div>
                 <div class="flex flex-row items-center border-2 shadow-lg rounded-2xl px-2">
                     <img src="/assets/icons/employees.svg" alt="" class="w-16 h-16">
-                    <p>  
+                    <p>
                     Recherche: {{indicators['nb_workers_to_hire'].value}}
-                    
+
                      </p>
                 </div>
                 <div class="flex flex-row items-center border-2 shadow-lg rounded-2xl px-2">
                     <img src="/assets/icons/humeur.png" alt="" class="w-16 h-16 p-3">
-                    <p>  
-                    Humeur: {{indicators['workers_mood'].value}}
-                    
+                    <p>
+                    Humeur: {{ Math.round(indicators['workers_mood'].value * 100) }}%
+
                      </p>
                 </div>
 
             </div>
-            
-        
+
+
             <div class="rounded-lg text-center ">
-                
+
                 <speedo-meter
                     :data="[
                         {
-                            value:
-                                Math.round(
-                                    indicators['workers_mood'].value *
-                                        Math.pow(10, 2)
-                                ) / Math.pow(10, 2),
-                            name: '',
+                            value: Math.round(indicators['workers_mood'].value * 100),
                         },
                     ]"
-                    
+
                 ></speedo-meter>
-                
+
             </div>
             <div class="flex flex-col justify-center gap-6">
                 <button @click="workers_modal=true" :disabled="!indicators_loaded" class="rounded-3xl font-semibold bg-vN text-white py-2 " >Recuruter des employés</button>
@@ -427,7 +422,7 @@
 
             </div>
         </div>
-        
+
     </div>
 </template>
 
@@ -530,6 +525,7 @@ export default {
         },
         primeWorkers() {
             this.prime_sent = true;
+            this.prime_modal = false;
             axios
                 .post("/api/entreprise/hr/prime-workers", {
                     entreprise_id: this.user.id,
@@ -547,13 +543,13 @@ export default {
 
                     this.message = resp.data.message;
 
-                    this.prime_modal = false;
                     this.prime_sent = false;
                     this.bonus = 0;
                 });
         },
         hireWorker() {
             this.hire_sent = true;
+            this.workers_modal = false;
             axios
                 .post("/api/entreprise/hr/hire", {
                     workers: this.workers,
@@ -570,13 +566,13 @@ export default {
 
                     this.message = resp.data.message;
 
-                    this.workers_modal = false;
                     this.hire_sent = false;
                     this.workers = 0;
                 });
         },
         fireWorkers() {
             this.fire_sent = true;
+            this.fire_modal = false;
             axios
                 .post("/api/entreprise/hr/fire", {
                     nb_workers_lv1_to_fire: this.nb_workers_lv1_to_fire,
@@ -594,7 +590,6 @@ export default {
 
                     this.message = resp.data.message;
 
-                    this.fire_modal = false;
                     this.fire_sent = false;
                     this.nb_workers_lv1_to_fire = 0;
                     this.nb_workers_lv2_to_fire = 0;

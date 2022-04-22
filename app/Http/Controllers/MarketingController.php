@@ -62,7 +62,7 @@ class MarketingController extends Controller
             return response()->json(["message" => "Le résultat doit être positif.", "success" => false], 404);
         }
 
-        if (! in_array($request->type, ['social', 'media', 'event'])) {
+        if (! in_array($request->type, ['social', 'media', 'events'])) {
             return response()->json(["message" => "Le type spécifié est erroné.", "success" => false], 404);
         }
 

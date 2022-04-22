@@ -87,7 +87,7 @@
                                     <option value="media">
                                         Média (Publicité télé et radio)
                                     </option>
-                                    <option value="event">
+                                    <option value="events">
                                         Sponsoriser un évènement
                                     </option>
                                 </select>
@@ -158,13 +158,13 @@
                 </div>
             </template>
         </Modal>
-        <div v-if="indicators.length > 0" class="flex gap-10">
+        <div class="flex gap-10">
                 <StatCard
                     v-for="(key, id) in Object.keys(indicators).filter(x => x != 'ca')" v-bind:key="id"
                     :title="indicators[key].name"
                     color="text-green-500"
                     :icon="'/assets/icons/' + key + '.svg'"
-                    :value="[indicators[key].value]"
+                    :value="[Math.round(indicators[key].value * 100) / 100]"
                 ></StatCard>
         </div>
         <div v-if="ads_loaded">
@@ -308,7 +308,7 @@
 
         <div v-else class="flex flex-col items-center mt-16">
              <img class="w-16 h-16 load" src="/assets/logo/bg_logo.svg" alt="">
-        <div class="text-vN pt-2 font-semibold">Veuillez attendre svp ... </div>
+        <div class="text-vN pt-2 font-semibold">Chargement... </div>
         </div>
     </div>
 </template>
@@ -335,7 +335,7 @@ export default {
             type_coef: {
                 social: 1.2,
                 media: 0.8,
-                event: 1,
+                events: 1,
             },
 
             new_ad: {
@@ -400,7 +400,7 @@ export default {
                 return false;
             }
 
-            if(!['social', 'media', 'event'].includes(this.new_ad.type)) {
+            if(!['social', 'media', 'events'].includes(this.new_ad.type)) {
                 this.error_message = "Le type spécifié est erroné";
                 return false;
             }

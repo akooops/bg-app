@@ -70,7 +70,7 @@
                 </div>
 
                 <button
-                    @click="launch_prod_modal = true;"
+                    @click="launch_prod_modal = true"
                     class="rounded-xl bg-vert text-white mx-auto py-2 px-11 mb-8 text-lg font-medium"
                 >
                     Lancer
@@ -78,7 +78,8 @@
             </div>
 
             <div
-                class="flex-grow  rounded-xl gap-6 text-center flex flex-col py-7 shadow-xl px-2" style="border-width : 0.5px;"
+                class="flex-grow rounded-xl gap-6 text-center flex flex-col py-7 shadow-xl px-2"
+                style="border-width: 0.5px"
             >
                 <img
                     class="mx-auto h-16 w-16"
@@ -142,11 +143,21 @@
                     class="rounded-md focus:border-vert focus:ring-0 w-5/6 mx-auto border-vert"
                     style="border-width: 1px"
                 >
-                    <option value="5s">Appliquer les 5S</option>
-                    <option value="audit">Effectuer un audit qualité</option>
-                    <option value="maintenance_lv1">Réparer les machines de niveau 1</option>
-                    <option value="maintenance_lv2">Réparer les machines de niveau 2</option>
-                    <option value="maintenance_lv3">Réparer les machines de niveau 3</option>
+                    <option value="maintenance_lv1">
+                        Réparation machines niveau 1
+                    </option>
+                    <option value="maintenance_lv2">
+                        Réparation machines niveau 2
+                    </option>
+                    <option value="maintenance_lv3">
+                        Réparation machines niveau 3
+                    </option>
+                    <option value="5s">
+                        Appliquer les 5S
+                    </option>
+                    <option value="audit">
+                        Effectuer un audit qualité
+                    </option>
                 </select>
                 <button
                     @click="showActionInfo"
@@ -158,9 +169,7 @@
         </div>
         <Modal v-if="launch_prod_modal">
             <template v-slot:content>
-
                 <div class="flex flex-col w-2/5 px-6 mx-auto">
-
                     <h1 class="text-vert font-semibold text-2xl">
                         Lancer une production
                     </h1>
@@ -178,14 +187,11 @@
                             </option>
                         </select>
                     </div>
-                    <div v-else>
-
-                    </div>
+                    <div v-else></div>
 
                     <h1 class="text-vN text-lg mt-2">Choix de la machine :</h1>
 
                     <div class="flex flex-col m-3 gap-4 mx-auto">
-
                         <div class="flex gap-3 items-center">
                             <input
                                 v-model="launch_data.machine_lvl"
@@ -218,7 +224,6 @@
                                 :value="3"
                             /><label for="machine3">Niveau 3</label>
                         </div>
-
                     </div>
 
                     <h1 class="text-vN text-lg mt-2">Nombre de machines:</h1>
@@ -229,11 +234,14 @@
                         type="number"
                         min="1"
                         :max="
-                            launch_data.machine_lvl == 1 ?
-                            indicators['nb_machines_lv1'].value - indicators['nb_machines_lv1_busy'].value :
-                            launch_data.machine_lvl == 2 ?
-                            indicators['nb_machines_lv2'].value - indicators['nb_machines_lv2_busy'].value :
-                            indicators['nb_machines_lv3'].value - indicators['nb_machines_lv3_busy'].value
+                            launch_data.machine_lvl == 1
+                                ? indicators['nb_machines_lv1'].value -
+                                  indicators['nb_machines_lv1_busy'].value
+                                : launch_data.machine_lvl == 2
+                                ? indicators['nb_machines_lv2'].value -
+                                  indicators['nb_machines_lv2_busy'].value
+                                : indicators['nb_machines_lv3'].value -
+                                  indicators['nb_machines_lv3_busy'].value
                         "
                     />
 
@@ -248,23 +256,20 @@
                         min="1"
                     />
 
-                    <!-- <h1 class="text-vN text-lg mt-3 pt-3">Prix (Unitaire)</h1>
-                    <input
-                        type="number "
-                        v-model.number="launch_data.price"
-                        class="px-2 text-lg text-yellow-500 border rounded-md border-gray-200"
-                        :min="selectedProd.price_min"
-                        :max="selectedProd.price_max"
-                    /> -->
-
                     <p class="text-red-500" v-if="can_produce == false">
                         {{ can_produce_msg }}
                     </p>
 
                     <div class="flex flex-row justify-center gap-7 mt-12">
                         <button
-                            v-if="stock_updated == true && machine_info_updated == true && can_produce == true"
-                            :disabled="can_produce == false || prod_launched == true"
+                            v-if="
+                                stock_updated == true &&
+                                machine_info_updated == true &&
+                                can_produce == true
+                            "
+                            :disabled="
+                                can_produce == false || prod_launched == true
+                            "
                             @click="launchProduction()"
                             class="bg-vN text-white px-7 py-1 rounded-md"
                         >
@@ -275,7 +280,6 @@
                             :disabled="prod_launched == true"
                             @click="
                                 launch_prod_modal = false;
-                                launch_data.price = (selectedProd.price_min + selectedProd.price_max) / 2;
                                 launch_data.quantity = 1;
                                 launch_data.machine_lvl = 1;
                                 launch_data.machine_nb = 1;
@@ -295,11 +299,11 @@
                         <table class="w-full" style="background-color: #f9f9fc">
                             <thead class="text-xs text-gray-700 uppercase">
                                 <tr class="border-b border-t text-vN">
-                                    <th class="px-3 py-1">Matière Premiere</th>
+                                    <th class="px-3 py-1">Matière première</th>
                                     <th class="px-3 py-1">
-                                        Quantité Nécessaire
+                                        Quantité nécessaire
                                     </th>
-                                    <th class="px-3 py-1">Quantité Stockés</th>
+                                    <th class="px-3 py-1">Quantité en stock</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -320,19 +324,48 @@
                                         <span>{{ material.name }}</span>
                                     </td>
                                     <td class="text-center py-1">
-                                        {{ material.pivot.quantity }}
+                                        {{ material.pivot.quantity * launch_data.quantity}}
                                     </td>
                                     <td
-                                        v-if="stock != null && stock.length > 0 && stock.find( (element) => element.id == material.id ) != undefined"
+                                        v-if="
+                                            stock != null &&
+                                            stock.length > 0 &&
+                                            stock.find(
+                                                (element) =>
+                                                    element.id == material.id
+                                            ) != undefined
+                                        "
                                         class="text-center py-1"
                                         :class="
-                                            material.pivot.quantity * launch_data.quantity <= stock.find((item) => { return ( item.id == material.pivot.raw_material_id); }).quantity
-                                            ? 'text-blue-700' : 'text-red-700'
+                                            material.pivot.quantity *
+                                                launch_data.quantity <=
+                                            stock.find((item) => {
+                                                return (
+                                                    item.id ==
+                                                    material.pivot
+                                                        .raw_material_id
+                                                );
+                                            }).quantity
+                                                ? 'text-blue-700'
+                                                : 'text-red-700'
                                         "
-
                                     >
-                                        <span v-if=" stock.find( (element) => element.id == material.id ) != undefined ">
-                                            {{ stock.find((element) => element.id == material.id).quantity }}
+                                        <span
+                                            v-if="
+                                                stock.find(
+                                                    (element) =>
+                                                        element.id ==
+                                                        material.id
+                                                ) != undefined
+                                            "
+                                        >
+                                            {{
+                                                stock.find(
+                                                    (element) =>
+                                                        element.id ==
+                                                        material.id
+                                                ).quantity
+                                            }}
                                         </span>
                                         <span v-else>0</span>
                                     </td>
@@ -340,7 +373,7 @@
                                         v-else
                                         class="text-center text-black py-1"
                                     >
-                                    0
+                                        0
                                     </td>
                                 </tr>
                             </tbody>
@@ -355,31 +388,80 @@
                                     <th class="px-4 py-1 text-vN">
                                         Temps Total estimé
                                     </th>
-                                    <th class="px-4 py-1 text-vN">
+                                    <!-- <th class="px-4 py-1 text-vN">
                                         Temps unitaire
-                                    </th>
+                                    </th> -->
                                     <th class="px-4 py-1 text-vN">
-                                        Nombre d'employés
+                                        Employés libres
                                     </th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr class="border-b">
-                                    <td class="flex justify-center icon-material text-yellow-500 py-1">
-                                        {{ Math.round(prodDelay * Math.pow(10, 2)) / Math.pow(10, 2) }} J
+                                    <td
+                                        class="flex justify-center icon-material text-yellow-500 py-1"
+                                    >
+                                        {{
+                                            Math.round(
+                                                prodDelay * Math.pow(10, 2)
+                                            ) / Math.pow(10, 2)
+                                        }}
+                                        J
                                     </td>
-                                    <td class="text-center text-yellow-500 py-1">
+                                    <!-- <td
+                                        class="text-center text-yellow-500 py-1"
+                                    >
                                         FILL THIS (lot/min)
-                                    </td>
-                                    <td class="text-center text-yellow-500 py-1">
+                                    </td> -->
+                                    <td
+                                        class="text-center text-yellow-500 py-1"
+                                    >
                                         Simples:
-                                        <span class="font-bold" :class="indicators['nb_workers_lv1'].value - indicators['nb_workers_lv1_busy'].value >= prod_factors.labor_lv1 ? 'text-blue-700' : 'text-red-700'">
-                                            {{ prod_factors.labor_lv1 }} / {{ indicators["nb_workers_lv1"].value - indicators["nb_workers_lv1_busy"].value }}
+                                        <span
+                                            class="font-bold"
+                                            :class="
+                                                indicators['nb_workers_lv1']
+                                                    .value -
+                                                    indicators[
+                                                        'nb_workers_lv1_busy'
+                                                    ].value >=
+                                                prod_factors.labor_lv1
+                                                    ? 'text-blue-700'
+                                                    : 'text-red-700'
+                                            "
+                                        >
+                                            {{ prod_factors.labor_lv1 }} /
+                                            {{
+                                                indicators["nb_workers_lv1"]
+                                                    .value -
+                                                indicators[
+                                                    "nb_workers_lv1_busy"
+                                                ].value
+                                            }}
                                         </span>
                                         <br />
                                         Experts:
-                                        <span class="font-bold" :class="indicators['nb_workers_lv2'].value - indicators['nb_workers_lv2_busy'].value >= prod_factors.labor_lv2 ? 'text-blue-700' : 'text-red-700'">
-                                            {{ prod_factors.labor_lv2 }} / {{ indicators["nb_workers_lv2"].value - indicators["nb_workers_lv2_busy"].value }}
+                                        <span
+                                            class="font-bold"
+                                            :class="
+                                                indicators['nb_workers_lv2']
+                                                    .value -
+                                                    indicators[
+                                                        'nb_workers_lv2_busy'
+                                                    ].value >=
+                                                prod_factors.labor_lv2
+                                                    ? 'text-blue-700'
+                                                    : 'text-red-700'
+                                            "
+                                        >
+                                            {{ prod_factors.labor_lv2 }} /
+                                            {{
+                                                indicators["nb_workers_lv2"]
+                                                    .value -
+                                                indicators[
+                                                    "nb_workers_lv2_busy"
+                                                ].value
+                                            }}
                                         </span>
                                     </td>
                                 </tr>
@@ -408,7 +490,9 @@
                                     <!-- <td class="flex justify-center icon-material text-yellow-500 py-1">
                                         {{ salesRevenues }} UM
                                     </td> -->
-                                    <td class="text-center text-yellow-500 py-1">
+                                    <td
+                                        class="text-center text-yellow-500 py-1"
+                                    >
                                         {{ totalCost }} UM
                                     </td>
                                     <!-- <td class="text-center text-yellow-500 py-1">
@@ -418,15 +502,19 @@
                             </tbody>
                         </table>
                     </div>
-                    <h1 class="text-yellow-500 my-2 pl-3">Remarques :</h1>
-                    <p class="text-vN text-sm pl-3">
+                    <h1 class="text-yellow-500 my-2 pl-3">Remarque:</h1>
+                    <!-- <p class="text-vN text-sm pl-3">
                         - Les prévisions sont calculés dans le cas ou toutes la
                         quantité produite est vendue
-                    </p>
+                    </p> -->
                     <p class="text-vN text-sm pl-3">
-                        - Votre taux de rebut est de
-                        {{ Math.round(indicators["reject_rate"].value * Math.pow(10, 2)) }}%,
-                        pour le réduire, lancez une étude AMDEC.
+                        Votre taux de rebut est de
+                        {{
+                            Math.round(
+                                indicators["reject_rate"].value *
+                                    Math.pow(10, 2)
+                            )
+                        }}%, pour le réduire, lancez une étude AMDEC.
                     </p>
                 </div>
             </template>
@@ -435,10 +523,16 @@
         <Modal v-if="machine.show_transaction_modal">
             <template v-slot:content>
                 <div class="flex flex-col items-center gap-5 p-5">
-                    <h2 v-if="machine.transaction == 'buy'" class="font-bold text-lg">
+                    <h2
+                        v-if="machine.transaction == 'buy'"
+                        class="font-bold text-lg"
+                    >
                         Acheter une Machine
                     </h2>
-                    <h2 v-if="machine.transaction == 'sell'" class="font-semibold text-lg">
+                    <h2
+                        v-if="machine.transaction == 'sell'"
+                        class="font-semibold text-lg"
+                    >
                         Vendre une Machine
                     </h2>
                     <div class="w-full gap-4 flex-col flex">
@@ -459,19 +553,32 @@
                         <div class="flex flex-col items-start gap-2">
                             <p class="text-md font-medium text-nav">
                                 Nombre que vous souhaitez
-                                {{ machine.transaction == "buy" ? "acheter" : "vendre" }}
+                                {{
+                                    machine.transaction == "buy"
+                                        ? "acheter"
+                                        : "vendre"
+                                }}
                             </p>
                             <input
                                 v-model.number="machine.transaction_nb"
                                 min="1"
                                 :max="
-                                    machine.transaction == 'sell' ?
-                                        (machine.transaction_lv == 1 ?
-                                            indicators['nb_machines_lv1'].value - indicators['nb_machines_lv1_busy'].value :
-                                        machine.transaction_lv == 2 ?
-                                            indicators['nb_machines_lv2'].value - indicators['nb_machines_lv2_busy'].value :
-                                            indicators['nb_machines_lv3'].value - indicators['nb_machines_lv3_busy'].value) :
-                                        undefined
+                                    machine.transaction == 'sell'
+                                        ? machine.transaction_lv == 1
+                                            ? indicators['nb_machines_lv1']
+                                                  .value -
+                                              indicators['nb_machines_lv1_busy']
+                                                  .value
+                                            : machine.transaction_lv == 2
+                                            ? indicators['nb_machines_lv2']
+                                                  .value -
+                                              indicators['nb_machines_lv2_busy']
+                                                  .value
+                                            : indicators['nb_machines_lv3']
+                                                  .value -
+                                              indicators['nb_machines_lv3_busy']
+                                                  .value
+                                        : undefined
                                 "
                                 type="number"
                                 class="rounded-sm focus:border-vert w-full focus:ring-0 border-gray-200"
@@ -486,15 +593,12 @@
                                 style="border-width: 1px"
                             >
                                 {{
-                                    (
-                                        machine.transaction_lv == 1 ?
-                                        machine.buy_price_lv1 :
-                                        machine.transaction_lv == 2 ?
-                                        machine.buy_price_lv2 :
-                                        machine.buy_price_lv3
-                                    )
-
-                                    * machine.transaction_nb
+                                    (machine.transaction_lv == 1
+                                        ? machine.buy_price_lv1
+                                        : machine.transaction_lv == 2
+                                        ? machine.buy_price_lv2
+                                        : machine.buy_price_lv3) *
+                                    machine.transaction_nb
                                 }}
                             </p>
                             <p
@@ -503,21 +607,18 @@
                                 style="border-width: 1px"
                             >
                                 {{
-                                    (
-                                        machine.transaction_lv == 1 ?
-                                        machine.buy_price_lv1 :
-                                        machine.transaction_lv == 2 ?
-                                        machine.buy_price_lv2 :
-                                        machine.buy_price_lv3
-                                    )
-
-                                    * machine.transaction_nb *
+                                    (machine.transaction_lv == 1
+                                        ? machine.buy_price_lv1
+                                        : machine.transaction_lv == 2
+                                        ? machine.buy_price_lv2
+                                        : machine.buy_price_lv3) *
+                                    machine.transaction_nb *
                                     indicators[
-                                        machine.transaction_lv == 1 ?
-                                        "machines_lv1_health" :
-                                        machine.transaction_lv == 2 ?
-                                        "machines_lv2_health" :
-                                        "machines_lv3_health"
+                                        machine.transaction_lv == 1
+                                            ? "machines_lv1_health"
+                                            : machine.transaction_lv == 2
+                                            ? "machines_lv2_health"
+                                            : "machines_lv3_health"
                                     ].value
                                 }}
                             </p>
@@ -527,7 +628,10 @@
                         class="w-full flex items-center gap-4 justify-center mt-5"
                     >
                         <button
-                            v-if="machine_info_updated == true || machine.transaction == 'buy'"
+                            v-if="
+                                machine_info_updated == true ||
+                                machine.transaction == 'buy'
+                            "
                             @click="confirmMachineTransaction"
                             class="border-0 px-3 py-1 text-vN hover:text-vert"
                         >
@@ -536,9 +640,12 @@
                         <button
                             @click="
                                 machine.transaction_nb =
-                                machine.transaction == 'buy' ? 1 : machine.transaction_nb;
+                                    machine.transaction == 'buy'
+                                        ? 1
+                                        : machine.transaction_nb;
                                 machine.transaction_lv = 1;
-                                machine.show_transaction_modal = false;"
+                                machine.show_transaction_modal = false;
+                            "
                             class="px-3 py-1 text-vN opacity-80"
                         >
                             Annuler
@@ -628,9 +735,10 @@ export default {
                 transaction_nb: 1,
                 transaction_lv: 1,
             },
+
             can_produce_msg: "",
             can_produce: false,
-            stock: null,
+            stock: [],
 
             prod_launched: false,
 
@@ -638,7 +746,7 @@ export default {
             show_error: false,
             message: "",
             action: {
-                value: "5s",
+                value: "maintenance_lv1",
                 price: {
                     "5s": 40000,
                     audit: 60000,
@@ -666,57 +774,20 @@ export default {
     },
     watch: {
         "launch_data.prod_id": function () {
-            // this.launch_data.price =
-            //     (this.selectedProd.price_min + this.selectedProd.price_max) / 2;
             this.can_produce = false;
             this.verifyProd();
         },
         "launch_data.quantity": function () {
+            this.launch_data.quantity = Math.round(this.launch_data.quantity);
             this.can_produce = false;
             this.verifyProd();
         },
-        // "launch_data.price": function () {
-        //     this.can_produce = false;
-        //     this.verifyProd();
-        // },
         "launch_data.machine_lvl": function () {
             this.can_produce = false;
-
-            // let free_workers_lv1 =
-            //     this.indicators["nb_workers_lv1"].value -
-            //     this.indicators["nb_workers_lv1_busy"].value;
-            // let free_workers_lv2 =
-            //     this.indicators["nb_workers_lv2"].value -
-            //     this.indicators["nb_workers_lv2_busy"].value;
-
-            // if (
-            //     this.prod_factors.labor_lv1 > free_workers_lv1 &&
-            //     free_workers_lv2 > 0
-            // ) {
-            //     this.prod_factors.labor_lv2 =
-            //         parseInt(this.prod_factors.labor_lv2) +
-            //         parseInt(this.prod_factors.labor_lv1) -
-            //         free_workers_lv1;
-            //     this.prod_factors.labor_lv1 = free_workers_lv1;
-            // }
-
-            // let free_machines =
-            //     this.launch_data.machine_lvl == 1
-            //         ? this.indicators["nb_machiness_lv1"].value -
-            //           this.indicators["nb_machiness_lv1_busy"].value
-            //         : this.launch_data.machine_lvl == 2
-            //         ? this.indicators["nb_machiness_lv2"].value -
-            //           this.indicators["nb_machiness_lv2_busy"].value
-            //         : this.indicators["nb_machiness_lv3"].value -
-            //           this.indicators["nb_machiness_lv3_busy"].value;
-
-            // if (this.launch_data.machine_nb > free_machines) {
-            //     this.launch_data.machine_nb = free_machines;
-            // }
-
             this.verifyProd();
         },
         "launch_data.machine_nb": function () {
+            this.launch_data.machine_nb = Math.round(this.launch_data.machine_nb);
             this.can_produce = false;
             this.verifyProd();
         },
@@ -784,12 +855,7 @@ export default {
                 (item) => item.id == this.launch_data.prod_id
             );
         },
-        // salesRevenues() {
-        //     let coeff = 1 - this.indicators["reject_rate"].value;
-        //     return (
-        //         this.launch_data.price * this.launch_data.quantity * 100 * coeff
-        //     );
-        // },
+
         totalCost() {
             return (
                 this.launch_data.quantity *
@@ -797,9 +863,7 @@ export default {
                 100
             );
         },
-        // profit() {
-        //     return this.salesRevenues - this.totalCost;
-        // },
+
         prodDelay() {
             let coeff =
                 (this.indicators["5s_day"].value < 30 ? 1.5 : 1) *
@@ -812,7 +876,8 @@ export default {
 
             return (
                 (this.selectedProd.prod_speed_factor *
-                    this.launch_data.quantity) / (coeff)
+                    this.launch_data.quantity) /
+                coeff
             );
         },
     },
@@ -824,7 +889,6 @@ export default {
                 product_id: this.selectedProd.id, // slected product id
                 entreprise_id: this.user.id, // this users's id
                 quantity: this.launch_data.quantity, // number of lots (100 units) to be produced
-                // price: this.launch_data.price, // price of selling
                 cost: this.totalCost, // cost of production
                 delay: this.prodDelay * 60, // time it takes to produce
                 machines: this.prod_factors.machines, // number of necessary free machines to produce
@@ -856,10 +920,7 @@ export default {
                     this.prod_launched = true;
 
                     this.launch_data.prod_id = 1;
-                    this.launch_data.price =
-                        (this.selectedProd.price_min +
-                            this.selectedProd.price_max) /
-                        2;
+
                     this.launch_data.quantity = 1;
                     this.launch_data.machine_lvl = 1;
                     this.launch_data.machine_nb = 1;
@@ -876,10 +937,6 @@ export default {
                     this.launch_prod_modal = false;
 
                     this.launch_data.prod_id = 1;
-                    this.launch_data.price =
-                        (this.selectedProd.price_min +
-                            this.selectedProd.price_max) /
-                        2;
                     this.launch_data.quantity = 1;
                     this.launch_data.machine_lvl = 1;
 
@@ -897,13 +954,9 @@ export default {
                 .then((resp) => {
                     this.stock = resp.data;
 
-                    this.launch_data.prod_id = 1;
-                    this.launch_data.machine_lvl = 1;
-                    this.launch_data.quantity = 1;
-                    this.launch_data.price =
-                        (this.selectedProd.price_min +
-                            this.selectedProd.price_max) /
-                        2;
+                    // this.launch_data.prod_id = 1;
+                    // this.launch_data.machine_lvl = 1;
+                    // this.launch_data.quantity = 1;
 
                     this.verifyProd();
 
@@ -926,101 +979,121 @@ export default {
             };
 
             let resp = true;
+
+            let free_machines = 0;
+            let machines_health = 0;
+
+            let free_workers_lv1 =
+                this.indicators["nb_workers_lv1"].value -
+                this.indicators["nb_workers_lv1_busy"].value;
+            let free_workers_lv2 =
+                this.indicators["nb_workers_lv2"].value -
+                this.indicators["nb_workers_lv2_busy"].value;
+
+            if (this.launch_data.machine_lvl == 1) {
+                free_machines =
+                    this.indicators["nb_machines_lv1"].value -
+                    this.indicators["nb_machines_lv1_busy"].value;
+
+                machines_health = this.indicators["machines_lv1_health"].value;
+            }
+            else if (this.launch_data.machine_lvl == 2) {
+                free_machines =
+                    this.indicators["nb_machines_lv2"].value -
+                    this.indicators["nb_machines_lv2_busy"].value;
+
+                machines_health = this.indicators["machines_lv2_health"].value;
+            }
+            else if (this.launch_data.machine_lvl == 3) {
+                free_machines =
+                    this.indicators["nb_machines_lv3"].value -
+                    this.indicators["nb_machines_lv3_busy"].value;
+
+                machines_health = this.indicators["machines_lv3_health"].value;
+            }
+
             if (
-                this.launch_data.price > this.selectedProd.price_max ||
-                this.launch_data.price < this.selectedProd.price_min
+                this.prod_factors.labor_lv1 > free_workers_lv1 &&
+                free_workers_lv2 > 0
             ) {
-                resp = false;
-                this.can_produce_msg =
-                    "Le prix doit être entre " +
-                    this.selectedProd.price_min +
-                    " DA - " +
-                    this.selectedProd.price_max +
-                    " DA";
-            } else {
-                let free_machines = 0;
+                this.prod_factors.labor_lv2 =
+                    parseInt(this.prod_factors.labor_lv2) +
+                    parseInt(this.prod_factors.labor_lv1) -
+                    free_workers_lv1;
+                this.prod_factors.labor_lv1 = free_workers_lv1;
+            }
 
-                let free_workers_lv1 =
-                    this.indicators["nb_workers_lv1"].value -
-                    this.indicators["nb_workers_lv1_busy"].value;
-                let free_workers_lv2 =
-                    this.indicators["nb_workers_lv2"].value -
-                    this.indicators["nb_workers_lv2_busy"].value;
-
-                if (this.launch_data.machine_lvl == 1) {
-                    free_machines =
-                        this.indicators["nb_machines_lv1"].value -
-                        this.indicators["nb_machines_lv1_busy"].value;
-                } else if (this.launch_data.machine_lvl == 2) {
-                    free_machines =
-                        this.indicators["nb_machines_lv2"].value -
-                        this.indicators["nb_machines_lv2_busy"].value;
-                } else if (this.launch_data.machine_lvl == 3) {
-                    free_machines =
-                        this.indicators["nb_machines_lv3"].value -
-                        this.indicators["nb_machines_lv3_busy"].value;
+            if (
+                this.prod_factors.machines <= free_machines &&
+                this.prod_factors.labor_lv1 <= free_workers_lv1 &&
+                this.prod_factors.labor_lv2 <= free_workers_lv2
+            ) {
+                if (machines_health < 0.05) {
+                    resp = false;
+                    this.can_produce_msg =
+                        "Les machines de niveau " +
+                        this.launch_data.machine_lvl +
+                        " sont HS (santé < 5%), veuillez les réparer pour pouvoir les utiliser.";
                 }
 
-                if (
-                    this.prod_factors.labor_lv1 > free_workers_lv1 &&
-                    free_workers_lv2 > 0
-                ) {
-                    this.prod_factors.labor_lv2 =
-                        parseInt(this.prod_factors.labor_lv2) +
-                        parseInt(this.prod_factors.labor_lv1) -
-                        free_workers_lv1;
-                    this.prod_factors.labor_lv1 = free_workers_lv1;
-                }
-
-                if (
-                    this.prod_factors.machines <= free_machines &&
-                    this.prod_factors.labor_lv1 <= free_workers_lv1 &&
-                    this.prod_factors.labor_lv2 <= free_workers_lv2
-                ) {
-                    for (const material of this.selectedProd.raw_materials) {
-                        let stock_material = this.stock.find((item) => {
-                            return item.id == material.pivot.raw_material_id;
-                        });
-                        if (stock_material == undefined) {
+                for (const material of this.selectedProd.raw_materials) {
+                    if (this.stock != null && this.stock.length > 0 && this.stock.find((element) => element.id == material.id) != undefined) {
+                        if (material.pivot.quantity * this.launch_data.quantity > this.stock.find((item) => { return (item.id == material.pivot.raw_material_id); }).quantity) {
                             resp = false;
-                            this.can_produce_msg =
-                                "Pas assez de matière " +
-                                material.name +
-                                " vous ne pouvez pas lancer la production !";
-                            break;
-                        }
-                        if (material.pivot.quantity < stock_material.quantity) {
-                            continue;
-                        } else {
-                            resp = false;
-                            this.can_produce_msg =
-                                "Pas assez de matière " +
-                                material.name +
-                                " vous ne pouvez pas lancer la production !";
+                            this.can_produce_msg = "Pas assez de matière " + material.name + ", vous ne pouvez pas lancer la production !";
                             break;
                         }
                     }
+                    else {
+                        resp = false;
+                        this.can_produce_msg = "Pas assez de matière " + material.name + ", vous ne pouvez pas lancer la production !";
+                        break;
+                    }
+
+
+                    // let stock_material = this.stock.find((item) => {
+                    //     return item.id == material.pivot.raw_material_id;
+                    // });
+                    // if (stock_material == undefined) {
+                    //     resp = false;
+                    //     this.can_produce_msg =
+                    //         "Pas assez de matière " +
+                    //         material.name +
+                    //         " vous ne pouvez pas lancer la production !";
+                    //     break;
+                    // }
+                    // if (material.pivot.quantity < stock_material.quantity) {
+                    //     continue;
+                    // } else {
+                    //     resp = false;
+                    //     this.can_produce_msg =
+                    //         "Pas assez de matière " +
+                    //         material.name +
+                    //         " vous ne pouvez pas lancer la production !";
+                    //     break;
+                    // }
+                }
+            } else {
+                resp = false;
+                if (this.prod_factors.machines > free_machines) {
+                    this.can_produce_msg =
+                        "Pas assez de machines libres, vous ne pouvez pas lancer la production !";
                 } else {
-                    resp = false;
-                    if (this.prod_factors.machines > free_machines) {
-                        this.can_produce_msg =
-                            "Pas assez de machines libres, vous ne pouvez pas lancer la production !";
-                    } else {
-                        this.can_produce_msg =
-                            "Pas assez d'employés libres, vous ne pouvez pas lancer la production !";
+                    this.can_produce_msg =
+                        "Pas assez d'employés libres, vous ne pouvez pas lancer la production !";
 
-                        if (this.launch_data.machine_lvl == 3) {
+                    if (this.launch_data.machine_lvl == 3) {
+                        this.can_produce_msg =
+                            "Pas assez d'employés qualifiés libres pour utiliser des machines de niveau 3 !";
+
+                        if (free_workers_lv2 == 0) {
                             this.can_produce_msg =
-                                "Pas assez d'employés qualifiés libres pour utiliser des machines de niveau 3 !";
-
-                            if (free_workers_lv2 == 0) {
-                                this.can_produce_msg =
-                                    "Vous n'avez pas d'employés qualifiés pour utiliser des machines de niveau 3 !";
-                            }
+                                "Vous n'avez pas d'employés qualifiés pour utiliser des machines de niveau 3 !";
                         }
                     }
                 }
             }
+
             this.can_produce = resp;
         },
         getMachineInfo(type) {
@@ -1223,8 +1296,9 @@ export default {
         },
     },
     mounted() {
-        window.Echo.channel("entreprise_" + this.user.id)
-            .listen("NewNotification", (e) => {
+        window.Echo.channel("entreprise_" + this.user.id).listen(
+            "NewNotification",
+            (e) => {
                 if (e.notification.type == "StockUpdate") {
                     this.getStock();
                     this.$forceUpdate();
@@ -1237,11 +1311,12 @@ export default {
                     this.getMachineInfo();
                     this.$forceUpdate();
                 }
-            });
+            }
+        );
     },
     created() {
         this.getMachineInfo();
         this.getStock();
-    }
+    },
 };
 </script>

@@ -6,21 +6,26 @@ import VCalendar from "v-calendar";
 
 axios.defaults.withCredentials = false;
 let local_url = "http://10.42.0.1:8000";
-let localhost = "http://10.90.90.22:8000";
+let localhost = "http://127.0.0.1:8000";
 axios.defaults.baseURL = localhost;
 
 
-
+Vue.component(
+    "statcard",
+    require("./components/departments/ui/StatCard.vue").default
+);
 
 Vue.component(
     "departmentcard",
     require("./components/DepartmentCard.vue").default
 );
+
 // Departments
 Vue.component(
     "approvdepartment",
     require("./components/departments/ApprovDepartment.vue").default
 );
+
 Vue.component(
     "productiondepartment",
     require("./components/departments/ProductionDepartment.vue").default
@@ -34,11 +39,17 @@ Vue.component(
     "stock",
     require("./components/departments/ui/Stock.vue").default
 );
+
 Vue.component(
     "entrepriseloanlisting",
     require("./components/entreprise/LoanListing.vue").default
 );
-Vue.component("notification", require("./components/Notification.vue").default);
+
+Vue.component(
+    "notification",
+    require("./components/Notification.vue").default
+);
+
 Vue.component(
     "marketing",
     require("./components/departments/Marketing.vue").default
