@@ -3,7 +3,6 @@ require("./bootstrap");
 import Vue from "vue";
 import VCalendar from "v-calendar";
 
-
 axios.defaults.withCredentials = false;
 let local_url = "http://10.42.0.1:8000";
 let localhost = "http://127.0.0.1:8000";

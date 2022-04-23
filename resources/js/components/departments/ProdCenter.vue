@@ -1124,6 +1124,8 @@ export default {
                     this.machine.pollution_lv3 = resp.data.pollution_lv3;
 
                     this.machine_info_updated = true;
+
+                    this.verifyProd();
                 });
         },
         confirmMachineTransaction() {
