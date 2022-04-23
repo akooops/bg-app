@@ -1,7 +1,6 @@
 <template>
     <div
-        class="fixed z-50 inset-0 h-full bg-gray-50 bg-opacity-50 overflow-auto rounded-sm m-auto w-full"
-        v-bind:class="description ? 'w-1/2' : 'w-full'"
+        class="fixed z-50 inset-0 h-full bg-gray-50 bg-opacity-50 overflow-auto rounded-sm m-auto w-screen"
     >
         <div class="flex h-full">
             <!-- <div class="z-10" aria-hidden="true">
@@ -19,8 +18,9 @@
                 leave-to-class="opacity-0 translate-y-4 md:translate-y-0 md:scale-95"
             >
                 <div
-                    class="flex px-4 py-6 mx-auto my-auto bg-white rounded-md " style="box-shadow : 2px 6px 47px 4px rgba(0,0,0,0.25)
-"
+                    class="flex px-4 py-6 mx-auto my-auto bg-white rounded-md"
+                    v-bind:class="description ? 'w-1/2' : 'w-fit'"
+                    style="box-shadow: 2px 6px 47px 4px rgba(0, 0, 0, 0.25)"
                     role="dialog"
                     aria-modal="true"
                     aria-labelledby="modal-headline"

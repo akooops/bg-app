@@ -9,14 +9,14 @@
         />
         <div class="text-center">
             <a
-                class="font-semibold block mb-5 hover:text-vert text-vN text-2xl"
+                class="font-medium block mb-5 hover:text-vert text-vN text-2xl font-heading"
                 :href="'/entreprise/department/' + name"
                 >{{ name }}</a
             >
 
             <a
                 :href="'/entreprise/department/' + name"
-                class="bg-vert text-white px-3 py-2 rounded-full text-sm hover:bg-white hover:text-vert transition-all border border-transparent hover:border-vert text-center"
+                class="bg-vert text-white px-4 py-2 rounded-full text-sm hover:bg-white hover:text-vert transition-all border border-transparent hover:border-vert text-center"
             >
                 Accéder
             </a>

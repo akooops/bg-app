@@ -4,7 +4,7 @@
         <div class="flex justify-between py-4">
             <!-- Logo -->
             <x-logo />
-            @if (request()->routeIs('dashboard') || Request::is('entreprise/department/*'))
+            @if (Request::is('entreprise/department/*'))
             <div class="flex flex-row gap-3 justify-center  rounded-3xl px-3 py-2 bg-vert bg-opacity-10" >
                 <x-bar-dep name="Production" :active="request()->routeIs('production')" link="{{ route('production') }}"></x-bar-dep>
                 <x-bar-dep name="Approvisement" :active="request()->routeIs('approv')" link="{{ route('approv') }}"></x-bar-dep>

@@ -11,8 +11,9 @@ module.exports = {
     theme: {
         extend: {
             fontFamily: {
-                sans: ["Ubuntu", ...defaultTheme.fontFamily.sans],
+                sans: ["Inter", "Ubuntu", ...defaultTheme.fontFamily.sans],
                 serif: ["Aclonica", ...defaultTheme.fontFamily.serif],
+                heading: ["IBM Plex Sans", ...defaultTheme.fontFamily.sans],
             },
             colors: {
                 vert: "#B2D06B",
@@ -20,14 +21,14 @@ module.exports = {
                 jaune: "#FFBC3E",
                 nav: "#0B3434",
 
-                // gray: "#807A7A",
+                gris: "#EEEEF2",
                 lightVert: "#B2D06B54",
                 lighterVert: "#B2D06B17",
                 tableBorder: "#EEEEF2",
                 bleu: "#0B3434",
             },
             zIndex: {
-                '100': '100',
+                100: "100",
             },
         },
     },

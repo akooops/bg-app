@@ -105,7 +105,10 @@
                         <p v-if="create_message != ''" class="text-green-500">
                             {{ create_message }}
                         </p>
-                        <p v-if="create_error_message != ''" class="text-red-600">
+                        <p
+                            v-if="create_error_message != ''"
+                            class="text-red-600"
+                        >
                             {{ create_error_message }}
                         </p>
                     </div>
@@ -203,7 +206,7 @@
 
                     <div class="flex flex-row mt-9 gap-2 ml-auto">
                         <button
-                            class="text-lg font-semibold  px-4 py-2 rounded-xl "
+                            class="text-lg font-semibold px-4 py-2 rounded-xl"
                             :class="
                                 can_pay
                                     ? 'hover:bg-gray-200'
@@ -237,7 +240,13 @@
                     v-if="loans.length > 0"
                     class="text-vN rounded-3xl px-5 py-2 font-semibold"
                     @click="openModal"
-                    style="background: linear-gradient(180deg, rgba(178, 208, 107, 0.09) 0%, rgba(178, 208, 107, 0.33) 100%);  "
+                    style="
+                        background: linear-gradient(
+                            180deg,
+                            rgba(178, 208, 107, 0.09) 0%,
+                            rgba(178, 208, 107, 0.33) 100%
+                        );
+                    "
                 >
                     Créer une demande d'endettement
                 </button>
@@ -251,153 +260,160 @@
                 <button
                     class="text-vN rounded-3xl px-5 py-2 font-semibold mt-5"
                     @click="openModal"
-                    style="background: linear-gradient(180deg, rgba(178, 208, 107, 0.09) 0%, rgba(178, 208, 107, 0.33) 100%);  "
+                    style="
+                        background: linear-gradient(
+                            180deg,
+                            rgba(178, 208, 107, 0.09) 0%,
+                            rgba(178, 208, 107, 0.33) 100%
+                        );
+                    "
                 >
                     Créer votre premier endettement
                 </button>
             </div>
 
-
-
             <div v-else class="mt-4">
-               <div  class="w-full bg-transparent shadow-md rounded mt-5  overflow-y-scroll" style="height : 50vh; ">
-
-                <table
-                    class="w-full table-auto bg-white"
+                <div
+                    class="w-full bg-transparent shadow-md rounded mt-5 overflow-y-scroll"
+                    style="height: 50vh"
                 >
-                    <thead
-                        class="sticky top-0 border-b bg-white font-semibold text-vN"
-                    >
-                        <tr>
-                            <th
-                                class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
-                            >
-                                Banque
-                            </th>
-                            <th
-                                class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
-                            >
-                                Montant prêté
-                            </th>
-                            <th
-                                class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
-                            >
-                                Semaine du prêt
-                            </th>
-                            <th
-                                class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
-                            >
-                                Semaine de remise (prévue)
-                            </th>
-                            <th
-                                class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
-                            >
-                                Taux d'interets
-                            </th>
-                            <th
-                                class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
-                            >
-                                Montant à rendre restant
-                            </th>
-                            <th
-                                class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
-                            >
-                                Payé ?
-                            </th>
-                            <th
-                                class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
-                            >
-                                Action
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr
-                            v-for="loan in loans"
-                            v-bind:key="loan.loan_id"
-                            class="flex lg:table-row flex-row lg:flex-row flex-wrap lg:flex-no-wrap lg:mb-0 border-b border-gray text-vN font-light text-sm h-14"
+                    <table class="w-full table-auto bg-white">
+                        <thead
+                            class="sticky top-0 border-b bg-white font-semibold text-vN"
                         >
-                            <td
-                                class="p-1 text-center block lg:table-cell relative lg:static"
+                            <tr>
+                                <th
+                                    class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                                >
+                                    Banque
+                                </th>
+                                <th
+                                    class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                                >
+                                    Montant prêté
+                                </th>
+                                <th
+                                    class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                                >
+                                    Semaine du prêt
+                                </th>
+                                <th
+                                    class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                                >
+                                    Semaine de remise (prévue)
+                                </th>
+                                <th
+                                    class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                                >
+                                    Taux d'interets
+                                </th>
+                                <th
+                                    class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                                >
+                                    Montant à rendre restant
+                                </th>
+                                <th
+                                    class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                                >
+                                    Payé ?
+                                </th>
+                                <th
+                                    class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                                >
+                                    Action
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr
+                                v-for="loan in loans"
+                                v-bind:key="loan.loan_id"
+                                class="flex lg:table-row flex-row lg:flex-row flex-wrap lg:flex-no-wrap lg:mb-0 border-b border-gray text-vN font-light text-sm h-14"
                             >
-                                B locale
-                            </td>
-                            <td
-                                class="w-full lg:w-auto p-1 text-center  lg:table-cell relative lg:static"
-                            >
-                                {{ loan.amount }}
-                            </td>
-                            <td
-                                class="w-full lg:w-auto p-1 text-center  lg:table-cell relative lg:static"
-                            >
-                                {{ loan.loan_creation }}
-                            </td>
+                                <td
+                                    class="p-1 text-center block lg:table-cell relative lg:static"
+                                >
+                                    B locale
+                                </td>
+                                <td
+                                    class="w-full lg:w-auto p-1 text-center lg:table-cell relative lg:static"
+                                >
+                                    {{ loan.amount }}
+                                </td>
+                                <td
+                                    class="w-full lg:w-auto p-1 text-center lg:table-cell relative lg:static"
+                                >
+                                    {{ loan.loan_creation }}
+                                </td>
 
-                            <td
-                                class="w-full lg:w-auto p-1 text-center  lg:table-cell relative lg:static"
-                            >
-                                {{ loan.days }}
-                            </td>
+                                <td
+                                    class="w-full lg:w-auto p-1 text-center lg:table-cell relative lg:static"
+                                >
+                                    {{ loan.days }}
+                                </td>
 
-                            <td
-                                class="w-full lg:w-auto p-1 text-center  lg:table-cell relative lg:static"
-                            >
-                                {{ loan.ratio ? loan.ratio : "0" }} %
-                            </td>
+                                <td
+                                    class="w-full lg:w-auto p-1 text-center lg:table-cell relative lg:static"
+                                >
+                                    {{ loan.ratio ? loan.ratio : "0" }} %
+                                </td>
 
-
-                            <td
-                                class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
-                            >
-                                {{ parseInt(loan.remaining_amount) }}
-                            </td>
-                            <td
-                                class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
-                                :class="
-                                    loan.payment_status == 1
-                                        ? 'text-green-500'
-                                        : ''
-                                "
-                            >
-                                {{ loan.payment_status == 1 ? "Payé" : "Non" }}
-                            </td>
-                            <td
-                                class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static pl-4"
-                            >
-                                <button
-                                    v-if="
-                                        loan.status ==
-                                        'Acceptée/Partiellement acceptée'
-                                    "
-                                    @click="openPayModal(loan)"
-                                    class="rounded-3xl font-semibold px-3 py-2 bg-vert"
-                                    :disabled="loan.payment_status == 1"
+                                <td
+                                    class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                                >
+                                    {{ parseInt(loan.remaining_amount) }}
+                                </td>
+                                <td
+                                    class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
                                     :class="
-                                        loan.payment_status != 1
-                                            ? 'hover:bg-opacity-50'
+                                        loan.payment_status == 1
+                                            ? 'text-green-500'
                                             : ''
                                     "
                                 >
                                     {{
                                         loan.payment_status == 1
-                                            ? "Compte reglé"
-                                            : "Payer la dette"
+                                            ? "Payé"
+                                            : "Non"
                                     }}
-                                </button>
-
-                                <button
-                                    v-else
-                                    @click="openPayModal(loan)"
-                                    class="bg-gray-300 font-semibold text-vN rounded-3xl px-3 py-2"
-                                    :disabled="true"
+                                </td>
+                                <td
+                                    class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static pl-4"
                                 >
-                                    Payer la dette
-                                </button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+                                    <button
+                                        v-if="
+                                            loan.status ==
+                                            'Acceptée/Partiellement acceptée'
+                                        "
+                                        @click="openPayModal(loan)"
+                                        class="rounded-3xl font-semibold px-3 py-2 bg-vert text-white"
+                                        :disabled="loan.payment_status == 1"
+                                        :class="
+                                            loan.payment_status != 1
+                                                ? 'hover:bg-opacity-50'
+                                                : ''
+                                        "
+                                    >
+                                        {{
+                                            loan.payment_status == 1
+                                                ? "Compte reglé"
+                                                : "Payer la dette"
+                                        }}
+                                    </button>
+
+                                    <button
+                                        v-else
+                                        @click="openPayModal(loan)"
+                                        class="bg-gray-300 font-semibold text-vN rounded-3xl px-3 py-2"
+                                        :disabled="true"
+                                    >
+                                        Payer la dette
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
         <div v-else class="flex flex-col items-center mt-16">
@@ -455,7 +471,9 @@ export default {
             let x = this.amount / this.ca;
             let t = this.deadline;
 
-            let rat = Math.sqrt(x / 2) * Math.pow( t / (Math.pow(2 * x, 1.11) * 4 * 6), 0.6);
+            let rat =
+                Math.sqrt(x / 2) *
+                Math.pow(t / (Math.pow(2 * x, 1.11) * 4 * 6), 0.6);
 
             return Math.round(rat * 1000) / 100;
         },
@@ -528,12 +546,12 @@ export default {
                 .get("/api/entreprise/indicators", {
                     params: {
                         entreprise_id: this.entreprise.id,
-                        indicators: ['ca'],
+                        indicators: ["ca"],
                     },
                 })
                 .then((response) => {
-                    this.ca = response.data['ca'].value;
-                })
+                    this.ca = response.data["ca"].value;
+                });
         },
         openPayModal(loan) {
             this.selected_loan = loan;

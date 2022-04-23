@@ -22,9 +22,6 @@
             :disabled-dates="{}"
             is-range
         ></vc-date-picker>
-   
-       
-       
     </div>
 </template>
 
@@ -35,16 +32,14 @@ export default {
     data() {
         return {
             time: 1,
-            
+
             range: {
-                start: new Date('2022-04-17'),
-                end: new Date('2022-04-25'),
+                start: new Date("2022-04-17"),
+                end: new Date("2022-04-25"),
             },
         };
     },
     methods: {
-
-       
         getSimulationData() {
             axios
                 .get("/api/navbar", {
@@ -58,15 +53,14 @@ export default {
                 });
         },
     },
-    
 
     mounted() {
-         this.enddate();
+        //  this.enddate();
 
-        const datePicker = this.$refs.datepicker;
+        // const datePicker = this.$refs.datepicker;
         this.getSimulationData();
-        datePicker.move(new Date(2022, 1, this.time));
-        
+        // datePicker.move(new Date(2022, 1, this.time));
+
         window.Echo.channel("simulation_date").listen(
             "SimulationDateChanged",
             (e) => {

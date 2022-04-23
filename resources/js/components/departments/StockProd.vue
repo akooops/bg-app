@@ -1,66 +1,30 @@
 <template>
-    <div class="mt-10">
+    <div class="mt-10 py-2">
         <div v-if="!stock_loaded" class="flex flex-col items-center mt-16">
-            <img class="w-16 h-16 load" src="/assets/logo/bg_logo.svg" alt="">
-            <div class="text-vN pt-2 font-semibold">Chargement... </div>
+            <img class="w-16 h-16 load" src="/assets/logo/bg_logo.svg" alt="" />
+            <div class="text-vN pt-2 font-semibold">Chargement...</div>
         </div>
 
-        <table v-else class="border-collapse w-full table-fixed">
+        <table v-else class="border-collapse w-full table-auto shadow-md">
             <thead class="sticky top-0 border-b bg-white font-semibold text-vN">
                 <tr>
-                    <th
-                        class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
-                    >
-                    </th>
+                    <th class="p-3 text-sm table-cell"></th>
 
-                    <th
-                        class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
-                    >
-                        Produit
-                    </th>
+                    <th class="p-3 text-sm table-cell">Produit</th>
 
-                    <th
-                        class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
-                    >
-                        Quantité en stock
-                    </th>
+                    <th class="p-3 text-sm table-cell">Quantité en stock</th>
 
-                    <th
-                        class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
-                    >
-                        Quantité en vente
-                    </th>
+                    <th class="p-3 text-sm table-cell">Quantité en vente</th>
 
-                    <th
-                        class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
-                    >
-                        Prix Minimal
-                    </th>
+                    <th class="p-3 text-sm table-cell">Prix Minimal</th>
 
-                    <th
-                        class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
-                    >
-                        Prix Maximal
-                    </th>
+                    <th class="p-3 text-sm table-cell">Prix Maximal</th>
 
-                    <th
-                        class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
-                    >
-                        Prix de vente
-                    </th>
+                    <th class="p-3 text-sm table-cell">Prix de vente</th>
 
-                    <th
-                        class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
-                    >
-                        Profit unitaire
-                    </th>
+                    <th class="p-3 text-sm table-cell">Profit unitaire</th>
 
-                    <th
-                        class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
-                    >
-
-                    </th>
-
+                    <th class="p-3 text-sm table-cell"></th>
                 </tr>
             </thead>
             <tbody>
@@ -70,8 +34,7 @@
                     is="StockProdItem"
                     :user="user"
                     :item="item"
-                >
-                </tr>
+                ></tr>
             </tbody>
         </table>
     </div>
@@ -82,7 +45,7 @@ import StockProdItem from "./ui/StockProdItem";
 export default {
     name: "StockProd",
     components: {
-        StockProdItem
+        StockProdItem,
     },
 
     props: ["user", "stock", "stock_loaded"],
@@ -104,16 +67,11 @@ export default {
                 })
                 .then((response) => {
                     this.stock = response.data;
-                    this.stock_loaded = true;
                 })
                 .catch(function (error) {});
         },
     },
-    mounted() {
-
-    },
-    created() {
-        
-    }
+    mounted() {},
+    created() {},
 };
 </script>

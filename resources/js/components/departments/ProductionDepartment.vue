@@ -1,16 +1,15 @@
 <template>
     <div class="w-full">
-
         <div class="w-full">
             <nav class="mb-10 text-sm flex justify-start gap-8">
                 <button
                     @click="page_index = 'decision_center'"
                     :class="
                         page_index == 'decision_center'
-                            ? 'border-b-2 border-vert text-vert font-medium'
-                            : 'text-vN hover:text-black'
+                            ? 'border-b-2 border-vert text-vert'
+                            : ' hover:text-black'
                     "
-                    class="inline-block py-2 focus:outline-none text-lg"
+                    class="inline-block py-2 focus:outline-none text-lg font-heading font-medium text-vN"
                 >
                     Centre de décision
                 </button>
@@ -19,10 +18,10 @@
                     @click="page_index = 'production_list'"
                     :class="
                         page_index == 'production_list'
-                            ? 'border-b-2 border-vert text-vert font-medium'
+                            ? 'border-b-2 border-vert text-vert'
                             : 'text-vN hover:text-black'
                     "
-                    class="inline-block py-2 focus:outline-none text-lg"
+                    class="inline-block py-2 focus:outline-none text-lg font-heading font-medium text-vN"
                 >
                     Productions
                 </button>
@@ -31,10 +30,10 @@
                     @click="page_index = 'stock_sell'"
                     :class="
                         page_index == 'stock_sell'
-                            ? 'border-b-2 border-vert text-vert font-medium'
-                            : 'text-vN hover:text-black'
+                            ? 'border-b-2 border-vert text-vert'
+                            : 'hover:text-black'
                     "
-                    class="inline-block py-2 focus:outline-none text-lg"
+                    class="inline-block py-2 focus:outline-none text-lg font-heading font-medium text-vN"
                 >
                     Stock / Vendre
                 </button>
@@ -43,10 +42,10 @@
                     @click="page_index = 'prod_stats'"
                     :class="
                         page_index == 'prod_stats'
-                            ? 'border-b-2 border-vert text-vert font-medium'
-                            : 'text-vN hover:text-black'
+                            ? 'border-b-2 border-vert text-vert'
+                            : 'hover:text-black'
                     "
-                    class="inline-block py-2 focus:outline-none text-lg"
+                    class="inline-block py-2 focus:outline-none text-lg font-heading font-medium text-vN"
                 >
                     Statistiques
                 </button>
@@ -67,7 +66,9 @@
                     src="/assets/icons/machine.svg"
                     alt="machine icon"
                 />
-                <h1 class="text-vN text-lg font-medium">Nombre de Machine</h1>
+                <h1 class="text-vN text-lg font-medium font-heading">
+                    Machines
+                </h1>
                 <button @click="showMachines = !showMachines">
                     <img
                         class="h-5 w-5"
@@ -123,7 +124,9 @@
                     src="/assets/icons/employees.svg"
                     alt="employees icon"
                 />
-                <h1 class="text-vN text-lg font-medium">Nombre d'employés</h1>
+                <h1 class="text-vN text-lg font-medium font-heading">
+                    Employés
+                </h1>
                 <button @click="showEmployees = !showEmployees">
                     <img
                         class="h-5 w-5"
@@ -155,7 +158,7 @@
                     class="rounded mt-2 flex-1"
                 >
                     <div class="flex flex-col gap-5">
-                        <h2 class="font-medium text-lg">
+                        <h2 class="font-medium text-xl font-heading">
                             Demande Prévisionelle - {{ products[i].name }} :
                         </h2>
                         <div class="flex gap-4">
@@ -186,7 +189,9 @@
                     <template v-slot:content>
                         <div class="w-full flex flex-col gap-8 p-3">
                             <div class="flex justify-between item-center">
-                                <h1 class="text-lg text-vert font-bold">
+                                <h1
+                                    class="text-lg text-vert font-bold font-heading"
+                                >
                                     Description - {{ product_info.name }}
                                 </h1>
                                 <img
@@ -200,7 +205,7 @@
                                 {{ product_info.description }}
                             </p>
                             <div>
-                                <p class="font-medium mb-3">
+                                <p class="font-medium font-heading mb-3">
                                     Pour produire un lot de 100 unités de ce
                                     produit vous avez besoin de :
                                 </p>
@@ -255,101 +260,118 @@
             </div>
 
             <div v-else class="flex flex-col items-center mt-16">
-                <img class="w-16 h-16 load" src="/assets/logo/bg_logo.svg" alt="">
-                <div class="text-vN pt-2 font-semibold">Calcul des graphes... </div>
+                <img
+                    class="w-16 h-16 load"
+                    src="/assets/logo/bg_logo.svg"
+                    alt=""
+                />
+                <div class="text-vN pt-2 font-semibold">
+                    Calcul des graphes...
+                </div>
             </div>
         </div>
 
-        <div v-if="page_index == 'production_list'" class="w-full mt-10">
+        <div
+            v-if="page_index == 'production_list'"
+            class="flex flex-col w-full mt-10"
+        >
             <div class="flex items-center justify-between mb-7">
-                <h1 class="text-lg font-semibold text-vN">Vos Productions</h1>
+                <h1 class="text-xl font-semibold text-vN font-heading">
+                    Vos Productions
+                </h1>
             </div>
-
-            <table class="w-full">
-                <thead
-                    class="sticky top-0 border-b bg-white font-semibold text-vN"
-                >
-                    <tr>
-                        <th
-                            class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
-                            @click="sort('id')"
-                        >
-                            Numéro
-                        </th>
-                        <th
-                            class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
-                            @click="sort('product')"
-                        >
-                            Produit
-                        </th>
-                        <th
-                            class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
-                            @click="sort('quantity')"
-                        >
-                            Quantité
-                        </th>
-                        <th
-                            class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
-                            @click="sort('quantity')"
-                        >
-                            Semaine début
-                        </th>
-                        <th
-                            class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
-                            @click="sort('quantity')"
-                        >
-                            Semaine fin
-                        </th>
-                        <th
-                            class="p-3 text-md table-cell cursor-pointer hover:text-vert select-none"
-                            @click="sort('status_code')"
-                        >
-                            Statut
-                        </th>
-                    </tr>
-                </thead>
-                <tbody v-if="productions.length > 0">
-                    <tr
-                        v-for="(prod, key) in productions"
-                        v-bind:key="key"
-                        class="bg-white flex lg:table-row flex-row lg:flex-row flex-wrap lg:flex-no-wrap lg:mb-0 border-b text-vN font-light text-sm h-14"
+            <div
+                class="w-full bg-white shadow-md rounded mt-5 overflow-y-scroll"
+                style="max-height: 60vh"
+            >
+                <table class="w-full table-auto">
+                    <thead
+                        class="sticky top-0 border-b bg-white font-semibold text-vN"
                     >
-                        <td
-                            class="p-1 text-center block lg:table-cell relative lg:static"
+                        <tr>
+                            <th
+                                class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                                @click="sort('id')"
+                            >
+                                Numéro
+                            </th>
+                            <th
+                                class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                                @click="sort('product')"
+                            >
+                                Produit
+                            </th>
+                            <th
+                                class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                                @click="sort('quantity')"
+                            >
+                                Quantité
+                            </th>
+                            <th
+                                class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                                @click="sort('creation_date')"
+                            >
+                                Semaine début
+                            </th>
+                            <th
+                                class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                                @click="sort('finish_date')"
+                            >
+                                Semaine fin
+                            </th>
+                            <th
+                                class="p-3 text-md table-cell cursor-pointer hover:text-vert select-none"
+                                @click="sort('status_code')"
+                            >
+                                Statut
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody v-if="productions.length > 0">
+                        <tr
+                            v-for="(prod, key) in productions"
+                            v-bind:key="key"
+                            class="bg-white flex lg:table-row flex-row lg:flex-row flex-wrap lg:flex-no-wrap lg:mb-0 border-b text-vN font-light text-sm h-14"
                         >
-                            {{ prod.id }}
-                        </td>
-                        <td
-                            class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
-                        >
-                            {{ prod.product }}
-                        </td>
-                        <td
-                            class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
-                        >
-                            {{ prod.quantity }}
-                        </td>
-                        <td
-                            class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
-                        >
-                            {{ prod.creation_date }}
-                        </td>
-                        <td
-                            class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
-                        >
-                            {{ prod.finish_date }}
-                        </td>
-                        <td
-                            :class="
-                                prod.status_code == 'pending' ? 'text-jaune' : 'text-black'
-                            "
-                            class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
-                        >
-                            {{ prod.status }}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                            <td
+                                class="p-1 text-center block lg:table-cell relative lg:static"
+                            >
+                                {{ prod.id }}
+                            </td>
+                            <td
+                                class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                            >
+                                {{ prod.product }}
+                            </td>
+                            <td
+                                class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                            >
+                                {{ prod.quantity }}
+                            </td>
+                            <td
+                                class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                            >
+                                {{ prod.creation_date }}
+                            </td>
+                            <td
+                                class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                            >
+                                {{ prod.finish_date }}
+                            </td>
+                            <td
+                                :class="
+                                    prod.status_code == 'pending'
+                                        ? 'text-jaune'
+                                        : 'text-black'
+                                "
+                                class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                            >
+                                {{ prod.status }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <div v-if="page_index == 'stock_sell'">
@@ -361,8 +383,12 @@
             ></StockProd>
 
             <div v-else class="flex flex-col items-center mt-16">
-                <img class="w-16 h-16 load" src="/assets/logo/bg_logo.svg" alt="">
-                <div class="text-vN pt-2 font-semibold">Chargement... </div>
+                <img
+                    class="w-16 h-16 load"
+                    src="/assets/logo/bg_logo.svg"
+                    alt=""
+                />
+                <div class="text-vN pt-2 font-semibold">Chargement...</div>
             </div>
         </div>
 
@@ -377,8 +403,12 @@
             ></ProdCenter>
 
             <div v-else class="flex flex-col items-center mt-16">
-                <img class="w-16 h-16 load" src="/assets/logo/bg_logo.svg" alt="">
-                <div class="text-vN pt-2 font-semibold">Chargement... </div>
+                <img
+                    class="w-16 h-16 load"
+                    src="/assets/logo/bg_logo.svg"
+                    alt=""
+                />
+                <div class="text-vN pt-2 font-semibold">Chargement...</div>
             </div>
         </div>
     </div>

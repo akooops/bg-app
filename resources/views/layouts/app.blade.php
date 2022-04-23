@@ -11,6 +11,9 @@
 
     <!-- Fonts -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap">
+    <link rel="preload" href="/webfonts/Aclonica-Regular.ttf" as='font' type='font/ttf'>
+    <link rel="preload" href="/webfonts/ibm-plex-sans-var.woff2" as='font' type='font/woff'>
+    <link rel="preload" href="/webfonts/Inter-VariableFont_slnt,wght.ttf" as='font' type='font/ttf'>
 
     <!-- Styles -->
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
@@ -45,7 +48,7 @@
                 
                 <Calendar v-bind:user="{{ Auth()->user() }}"></Calendar>
             </div>
-            <div class="flex w-4/5">
+            <div class="flex-1 w-4/5">
                 {{ $slot }}
             </div>
 

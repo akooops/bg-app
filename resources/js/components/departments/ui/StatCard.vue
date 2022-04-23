@@ -40,13 +40,7 @@
 <script type="text/javascript">
 export default {
     name: "StatCard",
-    props: [
-        "title",
-        "value",
-        "icon",
-        "secondValue",
-        "thirdValue",
-    ],
+    props: ["title", "value", "icon", "secondValue", "thirdValue"],
     mounted() {},
 };
 </script>
