@@ -1,6 +1,6 @@
 <template>
     <div class="flex flex-col items-center gap-5 ml-6">
-        <div class="flex item-center gap-6">
+        <div class="flex item-center gap-6 my-5">
             <div class="flex flex-col font-semibold items-center">
                 <p class="text-jaune py-2 px-4 shadow-sm rounded-md mb-1">
                     {{ time }}
@@ -22,6 +22,9 @@
             :disabled-dates="{}"
             is-range
         ></vc-date-picker>
+   
+       
+       
     </div>
 </template>
 
@@ -32,13 +35,16 @@ export default {
     data() {
         return {
             time: 1,
+            
             range: {
-                start: new Date(2022, 1, 7),
-                end: new Date(2022, 1, 13),
+                start: new Date('2022-04-17'),
+                end: new Date('2022-04-25'),
             },
         };
     },
     methods: {
+
+       
         getSimulationData() {
             axios
                 .get("/api/navbar", {
@@ -52,8 +58,11 @@ export default {
                 });
         },
     },
+    
 
     mounted() {
+         this.enddate();
+
         const datePicker = this.$refs.datepicker;
         this.getSimulationData();
         datePicker.move(new Date(2022, 1, this.time));

@@ -16,7 +16,7 @@
             <p class="font-bold text-vN pl-4">
                 {{ Math.round(dettes).toLocaleString() }}
             </p>
-            <p class="text-vert font-bold">-449</p>
+            <p class="text-vert font-bold">5555</p>
         </div>
         <v-chart ref="chart" class="chart" :option="option2" autoresize />
     </div>
@@ -56,6 +56,7 @@ export default {
             show_menu: false,
             caisse: 0,
             dettes: 0,
+            dettes_payed: 0,
             option: {
                 xAxis: {
                     boundaryGap: false,
@@ -126,6 +127,7 @@ export default {
                 .then((resp) => {
                     this.caisse = resp.data["caisse"];
                     this.dettes = resp.data["dettes"];
+                   
                 });
         },
     },
@@ -147,6 +149,7 @@ export default {
                 (e) => {
                     this.caisse = e.caisse;
                     this.dettes = e.dettes;
+                    
                 }
             );
         }

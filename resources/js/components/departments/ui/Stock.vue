@@ -1,8 +1,11 @@
 <template>
     <div>
-        <p v-if="stock.length == 0">
+        
+        <p v-if="stock.length == 0" class="text-vN text-center">
             Votre stock est vide pour le moment, lancez des commandes !
-        </p>
+        </p> 
+
+       
 
         <table v-else class="border-collapse w-full table-fixed">
                 <thead

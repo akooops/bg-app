@@ -264,19 +264,20 @@
                         <button
                             v-if="
                                 stock_updated == true &&
-                                machine_info_updated == true &&
-                                can_produce == true
+                                machine_info_updated == true
+                               
                             "
+                            :class=" can_produce == false ? 'opacity-40 bg-gray-600' : 'bg-vN'"
                             :disabled="
                                 can_produce == false || prod_launched == true
                             "
                             @click="launchProduction()"
-                            class="bg-vN text-white px-7 py-1 rounded-md"
+                            class=" text-white px-7 py-1 rounded-md"
                         >
                             Lancer
                         </button>
                         <button
-                            class="bg-vN text-white px-7 py-1 rounded-md"
+                            class="bg-vN text-white px-7 py-1 rounded-md hover:opacity-75"
                             :disabled="prod_launched == true"
                             @click="
                                 launch_prod_modal = false;

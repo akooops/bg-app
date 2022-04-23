@@ -257,9 +257,13 @@
                 </button>
             </div>
 
+
+
             <div v-else class="mt-4">
+               <div  class="w-full bg-transparent shadow-md rounded mt-5  overflow-y-scroll" style="height : 50vh; ">
+
                 <table
-                    class="w-full table-auto bg-white h-96 overflow-y-scroll"
+                    class="w-full table-auto bg-white"
                 >
                     <thead
                         class="sticky top-0 border-b bg-white font-semibold text-vN"
@@ -311,32 +315,32 @@
                         <tr
                             v-for="loan in loans"
                             v-bind:key="loan.loan_id"
-                            class="bg-white flex lg:table-row flex-row lg:flex-row flex-wrap lg:flex-no-wrap lg:mb-0 border-b border-gray text-vN font-light text-sm h-14"
+                            class="flex lg:table-row flex-row lg:flex-row flex-wrap lg:flex-no-wrap lg:mb-0 border-b border-gray text-vN font-light text-sm h-14"
                         >
                             <td
                                 class="p-1 text-center block lg:table-cell relative lg:static"
                             >
-                                Banque locale
+                                B locale
                             </td>
                             <td
-                                class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                                class="w-full lg:w-auto p-1 text-center  lg:table-cell relative lg:static"
                             >
                                 {{ loan.amount }}
                             </td>
                             <td
-                                class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                                class="w-full lg:w-auto p-1 text-center  lg:table-cell relative lg:static"
                             >
                                 {{ loan.loan_creation }}
                             </td>
 
                             <td
-                                class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                                class="w-full lg:w-auto p-1 text-center  lg:table-cell relative lg:static"
                             >
                                 {{ loan.days }}
                             </td>
 
                             <td
-                                class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                                class="w-full lg:w-auto p-1 text-center  lg:table-cell relative lg:static"
                             >
                                 {{ loan.ratio ? loan.ratio : "0" }} %
                             </td>
@@ -393,6 +397,7 @@
                         </tr>
                     </tbody>
                 </table>
+            </div>
             </div>
         </div>
         <div v-else class="flex flex-col items-center mt-16">

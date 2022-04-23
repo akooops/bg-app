@@ -118,7 +118,86 @@
             </p>
 
             <div v-else class="w-full bg-white shadow-md rounded mt-5  overflow-y-scroll" style="height : 60vh; ">
-              <table class="w-full   h-96 overflow-y-scroll">
+              <table  class="border-collapse w-full table-auto ">
+                <thead
+                    class="sticky  top-0 border-b bg-white font-semibold text-vN"
+                >
+                    <tr >
+                      
+                        <th
+                            class="p-3 text-sm table-cell  cursor-pointer hover:text-vert select-none"
+                            @click="sort('command_id')"
+                         >
+                          Numéro
+                        </th>
+                        <th
+                            class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                           @click="sort('num_items')"
+                        >
+                          Nombre d'items 
+                        </th>
+                        <th
+                            class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                           @click="sort('creation_date')"
+                        >
+                            date de création
+                        </th>
+                        <th
+                            class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                            @click="sort('status')"
+                        >
+                            Status
+                        </th>
+                        
+                       
+                    </tr>
+                </thead>
+                <tbody  >
+                    <tr
+                      v-for="(cmd, key) in commands"
+                        v-bind:key="key"
+                        class="bg-white  flex lg:table-row flex-row lg:flex-row flex-wrap lg:flex-no-wrap lg:mb-0 border-b border-gray text-vN font-light text-sm h-14"
+                    >
+                        <td   class="w-full  lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                        
+                                    >
+                                {{ cmd.command_id }}          
+                        </td>
+                        <td
+                            class="lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                        >
+                            {{ cmd.num_items }}
+                        </td>
+                        <td
+                            class=" lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                        >
+                           Jour N° {{ cmd.creation_date }}
+                        </td>
+                        <td
+                            class=" lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                        >
+                        <span
+                                    :class="
+                                        cmd.status == 'confirmed'
+                                            ? 'text-vert'
+                                            : 'text-yellow-500'
+                                    "
+                                    >{{ getStatus(cmd.status) }}</span>
+                           
+                        </td> 
+                        <td
+                            class=" lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                        >
+                        <button @click="showDetails(cmd)">
+                                <img class="text-white" src="/assets/icons/menu-points-vertical.svg" alt="un triangle aux trois côtés égaux" height="20px" width="15px" /></button>
+                           
+                        </td>
+                       
+                       
+                    </tr>
+                </tbody>
+            </table>
+              <!-- <table class="w-full   h-96 overflow-y-scroll">
                 <thead
                     class="sticky  top-0 border-b bg-white font-semibold text-vN"
                 >
@@ -163,22 +242,22 @@
                         class="bg-white  flex lg:table-row flex-row lg:flex-row flex-wrap lg:flex-no-wrap lg:mb-0 border-b border-gray text-vN font-light text-sm h-14"
                     >
                         <td
-                            class="p-1 text-center   block lg:table-cell relative lg:static"
+                            class="  "
                         >
                             {{ cmd.command_id }}
                         </td>
                         <td
-                            class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                            class=""
                         >
                             {{ cmd.num_items }}
                         </td>
                         <td
-                            class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                            class=""
                         >
                               Jour N° {{ cmd.creation_date }}
                         </td>
                         <td
-                            class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                            class=""
                         >
                             <span
                                     :class="
@@ -190,7 +269,7 @@
                                 >
                         </td>
                         <td
-                            class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                            class=""
                         >
                             <button @click="showDetails(cmd)">
                                 <img class="text-white" src="/assets/icons/menu-points-vertical.svg" alt="un triangle aux trois côtés égaux" height="20px" width="15px" /></button>
@@ -198,7 +277,7 @@
 
                     </tr>
                 </tbody>
-            </table>
+            </table> -->
 
             </div>
 
@@ -336,7 +415,7 @@
             </Modal> -->
         </div>
 
-        <div v-if="page_index == 'stock' && stock.length > 0" class="mt-5">
+        <div v-if="page_index == 'stock'" class="mt-5">
             <Stock :user="user" :stock="stock"></Stock>
         </div>
 

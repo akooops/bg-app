@@ -1235,9 +1235,23 @@ class EntrepriseController extends Controller
         if ($request->type == 'entreprise') {
             $caisse = $this->getIndicator("caisse", $request->entreprise_id)['value'];
             $dettes = $this->getIndicator("dettes", $request->entreprise_id)['value'];
+            // $dettes_instances = DB::table("loans")->where("entreprise_id", "=", $request->entreprise_id)->get();
+            // $dettes_totale=0;
+            // $dettes_remains=0;
+            // foreach ( $dettes_instances as $dette){
+            //     $dettes_totale = $dettes_totale + round($dette->amount * (1 + $dette->ratio/100));
+            //     $dettes_remains = $dettes_remains + $dette->remaining_amount;   
+            // }
+
+            // $dettes_payed= $dettes_totale - $dettes_remains;
+            
+
+           
+            // $dettes_payed = $dettes - $dettes_remains ; 
         } else {
             $caisse = 0;
             $dettes = 0;
+            
         }
         return ["time" => $time, "caisse" => $caisse, "dettes" => $dettes];
     }
