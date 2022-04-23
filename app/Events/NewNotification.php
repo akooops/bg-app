@@ -27,7 +27,7 @@ class NewNotification implements ShouldBroadcast
         $this->notification["entreprise_id"] = $notification["entreprise_id"];
         $this->notification["type"] = $notification["type"];
         $this->notification["store"] = $notification["store"];
-        
+
         if ($notification["store"] == true)
         {
             $notif = Notification::create([
@@ -36,7 +36,7 @@ class NewNotification implements ShouldBroadcast
                 'title' => $notification['title'],
                 'icon_path' => $notification['icon_path'],
                 'type' => $notification['style'],
-                'time' => nova_get_setting('current_date'),
+                'time' => (int) nova_get_setting('current_date'),
             ]);
         }
     }

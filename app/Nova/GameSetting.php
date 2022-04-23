@@ -2,25 +2,20 @@
 
 namespace App\Nova;
 
-use Illuminate\Http\Request;
 use Laravel\Nova\Fields\ID;
+use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Number;
-use Laravel\Nova\Fields\Password;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use NovaAttachMany\AttachMany;
-use Laravel\Nova\Fields\HasMany;
-use Laravel\Nova\Fields\BelongsToMany;
 
-
-class Product extends Resource
+class GameSetting extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
      * @var string
      */
-    public static $model = \App\Models\Product::class;
+    public static $model = \App\Models\GameSetting::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
@@ -36,7 +31,7 @@ class Product extends Resource
      */
     public static $search = [
         'id',
-        'name'
+        'name',
     ];
 
     /**
@@ -49,38 +44,22 @@ class Product extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
+
             Text::make('Name')
                 ->sortable()
                 ->rules('required', 'max:255'),
 
-            Number::make("Prix Min", "price_min"),
-            Number::make("Prix Max", "price_max"),
+            Text::make('Code')
+                ->sortable()
+                ->rules('required', 'max:255'),
 
-            // Number::make("Nombre de Machines", "machine_units"),
-            // Number::make("Nombre d'Employés", "labor_units"),
+            Number::make('Value')
+                ->rules('required')
+                ->step(0.01),
 
-            Number::make("Facteur vitesse de prod", "prod_speed_factor")->step(0.01),
-
-            Number::make("Cout de production unitaire", "unit_prod_price")->step(0.01),
-
-            Number::make("Coef publicité", "ad_coef"),
-
-            Number::make("Demande Mensuelle", "avg_demand"),
-            Number::make("Demande Restante", "left_demand"),
-
-            Text::make('Icon'),
-
-            Text::make("Description", "description"),
-
-            // AttachMany::make("Raw Materials", "RawMaterials", "App\Nova\RawMaterial")
-            //     ->showCounts()
-            //     ->help("Sélectionnez des matieres premiers pour les ajouter à ce produit"),
-
-            BelongsToMany::make('RawMaterials')->fields(function () {
-                return [
-                    Number::make('Quantité', 'quantity')->min(0)->step(0.01)->sortable(),
-                ];
-            })
+            Number::make('Default Value')
+                ->rules('required')
+                ->step(0.01),
         ];
     }
 
@@ -126,9 +105,5 @@ class Product extends Resource
     public function actions(Request $request)
     {
         return [];
-    }
-    public static function label()
-    {
-        return 'Produits';
     }
 }

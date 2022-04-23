@@ -104,9 +104,9 @@ class EntrepriseController extends Controller
     {
         $caisse = $this->getIndicator('caisse', auth()->user()->id)["value"];
         return view("departments.hr", [
-            "workshop_price" => nova_get_setting('workshop_price', ''),
-            "salary_lv1" => nova_get_setting("salary_lv1"),
-            "salary_lv2" => nova_get_setting("salary_lv2"),
+            "workshop_price" => (int) nova_get_setting('workshop_price', ''),
+            "salary_lv1" => (int) nova_get_setting("salary_lv1"),
+            "salary_lv2" => (int) nova_get_setting("salary_lv2"),
             "bonus_coeff" => nova_get_setting("bonus_coeff"),
             "caisse" => $caisse
         ]);

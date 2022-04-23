@@ -16,7 +16,7 @@
                             :key="indicator.code"
                             :value="indicator.id"
                         >
-                            {{ indicator.name }}
+                            {{ indicator.code }} |------| {{ indicator.name }}
                         </option>
                     </select>
                 </div>
@@ -103,11 +103,12 @@
                         class="w-1/3 form-control form-input form-input-bordered pl-2"
                     >
                         <option
-                            v-for="indicator in indicators_2"
+                            v-for="indicator in indicators"
                             :key="indicator.code"
                             :value="indicator.id"
-                            >{{ indicator.name }}</option
                         >
+                            {{ indicator.code }} |------| {{ indicator.name }}
+                        </option>
                     </select>
                 </div>
 

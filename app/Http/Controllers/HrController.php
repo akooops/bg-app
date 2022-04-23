@@ -43,9 +43,9 @@ class HrController extends Controller
         $notification = [
             "type" => "WorkersUpdate",
             "entreprise_id" => $entreprise_id,
-            
+
             "store" => true,
-            
+
             "text" => $message,
             "title" => "Employés recrutés",
             "icon_path" => "aaaaaaaaaaa",
@@ -95,9 +95,9 @@ class HrController extends Controller
         $notification = [
             "type" => "WorkersUpdate",
             "entreprise_id" => $request->entreprise_id,
-            
+
             "store" => true,
-            
+
             "text" => $message,
             "title" => "Employés formés",
             "icon_path" => "aaaaaaaaaaa",
@@ -115,13 +115,13 @@ class HrController extends Controller
 
         $workers_mood = $this->getIndicator('workers_mood', $request->entreprise_id)['value'];
 
-        $salary_lv1 = nova_get_setting('salary_lv1');
-        $salary_lv2 = nova_get_setting('salary_lv2');
+        $salary_lv1 = (int) nova_get_setting('salary_lv1');
+        $salary_lv2 = (int) nova_get_setting('salary_lv2');
 
         $bonus = $request->bonus;
         $total_bonus = $bonus * ($nb_workers_lv1 + $nb_workers_lv2);
 
-        $bonus_coeff = nova_get_setting('bonus_coeff');
+        $bonus_coeff = (float) nova_get_setting('bonus_coeff');
 
         $bonus_max = ((1 - $workers_mood) * ($nb_workers_lv1 * $salary_lv1 + $nb_workers_lv2 * $salary_lv2)) / ($bonus_coeff * ($nb_workers_lv1 + $nb_workers_lv2));
 
@@ -156,9 +156,9 @@ class HrController extends Controller
         $notification = [
             "type" => "WorkersUpdate",
             "entreprise_id" => $request->entreprise_id,
-            
+
             "store" => true,
-            
+
             "text" => $message,
             "title" => "Primes attribuées",
             "icon_path" => "aaaaaaaaaaa",
@@ -220,9 +220,9 @@ class HrController extends Controller
         $notification = [
             "type" => "WorkersUpdate",
             "entreprise_id" => $entreprise_id,
-            
+
             "store" => true,
-            
+
             "text" => $message,
             "title" => "Employés licenciés",
             "icon_path" => "aaaaaaaaaaa",

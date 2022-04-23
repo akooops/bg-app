@@ -13,7 +13,7 @@ class IndicatorUpdaterController
     public function getIndicators(NovaRequest $request)
     {
         $data = [
-            "indicators" => DB::table('indicators')->get(),
+            "indicators" => DB::table('indicators')->orderBy('code')->get(),
             "entreprises" => Entreprise::get()
         ];
         return response()->json($data);
