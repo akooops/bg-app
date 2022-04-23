@@ -107,7 +107,8 @@
                         <div class="flex flex-col gap-4">
                             <div class="flex flex-col items-start gap-4">
                                 <p>
-                                    Résultat prévisionnel hebdomadaire (abonnés/sem)
+                                    Résultat prévisionnel hebdomadaire
+                                    (abonnés/sem)
                                 </p>
 
                                 <p
@@ -139,7 +140,11 @@
                     <div class="flex items-center gap-4 self-end mt-4">
                         <button
                             class="text-vN font-normal px-3 py-2 rounded"
-                            :class="can_create ? 'hover:text-vert' : 'bg-gray-800'"
+                            :class="
+                                can_create
+                                    ? 'hover:text-vert'
+                                    : 'bg-gray-100 text-opacity-50'
+                            "
                             :disabled="!can_create"
                             @click="
                                 createAd();
@@ -159,13 +164,16 @@
             </template>
         </Modal>
         <div class="flex gap-10">
-                <StatCard
-                    v-for="(key, id) in Object.keys(indicators).filter(x => x != 'ca')" v-bind:key="id"
-                    :title="indicators[key].name"
-                    color="text-green-500"
-                    :icon="'/assets/icons/' + key + '.svg'"
-                    :value="[Math.round(indicators[key].value * 100) / 100]"
-                ></StatCard>
+            <StatCard
+                v-for="(key, id) in Object.keys(indicators).filter(
+                    (x) => x != 'ca'
+                )"
+                v-bind:key="id"
+                :title="indicators[key].name"
+                color="text-green-500"
+                :icon="'/assets/icons/' + key + '.svg'"
+                :value="[Math.round(indicators[key].value * 100) / 100]"
+            ></StatCard>
         </div>
         <div v-if="ads_loaded">
             <div class="py-12">
@@ -193,7 +201,8 @@
                         </p>
 
                         <p class="text-red-800" v-if="ads.length > 0">
-                            Risque de scandale médiatique actuel: {{ scandal_risk }}%
+                            Risque de scandale médiatique actuel:
+                            {{ scandal_risk }}%
                         </p>
 
                         <button
@@ -307,8 +316,8 @@
         </div>
 
         <div v-else class="flex flex-col items-center mt-16">
-             <img class="w-16 h-16 load" src="/assets/logo/bg_logo.svg" alt="">
-        <div class="text-vN pt-2 font-semibold">Chargement... </div>
+            <img class="w-16 h-16 load" src="/assets/logo/bg_logo.svg" alt="" />
+            <div class="text-vN pt-2 font-semibold">Chargement...</div>
         </div>
     </div>
 </template>
@@ -361,7 +370,10 @@ export default {
             }
 
             return parseInt(
-                this.ad_coef * this.type_coef[this.new_ad.type] * this.new_ad.amount * 0.5
+                this.ad_coef *
+                    this.type_coef[this.new_ad.type] *
+                    this.new_ad.amount *
+                    0.5
             );
         },
         totalPredictedFollowers() {
@@ -386,21 +398,22 @@ export default {
             this.error_message = "";
 
             if (this.caisse < this.new_ad.amount * this.new_ad.days) {
-                this.error_message = "Vos disponibilités ne vous permettent pas de lancer la campagne";
+                this.error_message =
+                    "Vos disponibilités ne vous permettent pas de lancer la campagne";
                 return false;
             }
 
-            if(this.new_ad.amount <= 0) {
+            if (this.new_ad.amount <= 0) {
                 this.error_message = "La somme versée doit être positive";
                 return false;
             }
 
-            if(this.new_ad.days <= 0) {
+            if (this.new_ad.days <= 0) {
                 this.error_message = "La durée doit être positive";
                 return false;
             }
 
-            if(!['social', 'media', 'events'].includes(this.new_ad.type)) {
+            if (!["social", "media", "events"].includes(this.new_ad.type)) {
                 this.error_message = "Le type spécifié est erroné";
                 return false;
             }
@@ -413,21 +426,25 @@ export default {
                 return 0;
             }
 
-            let pending_ads = this.ads.filter(ad => ad.status == "En cours");
+            let pending_ads = this.ads.filter((ad) => ad.status == "En cours");
 
             let sum = 0;
 
-            pending_ads.map(x => sum += x.amount * x.days);
+            pending_ads.map((x) => (sum += x.amount * x.days));
 
-            let x = this.indicators["ca"].value > 0 ? sum / this.indicators["ca"].value : 0;
+            let x =
+                this.indicators["ca"].value > 0
+                    ? sum / this.indicators["ca"].value
+                    : 0;
 
             if (x > 0.1) {
-                return Math.min( Math.round(Math.sqrt(x / 77) * 100) / 100 , 1) * 100;
+                return (
+                    Math.min(Math.round(Math.sqrt(x / 77) * 100) / 100, 1) * 100
+                );
+            } else {
+                return 0;
             }
-            else {
-                return 0
-            }
-        }
+        },
     },
     methods: {
         getAds() {

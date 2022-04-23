@@ -1,8 +1,7 @@
 <template>
     <div>
-
         <div>
-            <nav class=" text-sm flex justify-start">
+            <nav class="mb-10 text-sm flex justify-start gap-8">
                 <button
                     @click="changeTab('commands')"
                     :class="
@@ -10,7 +9,7 @@
                             ? 'border-b-2 border-vert text-vert font-semibold'
                             : 'text-vN hover:text-black'
                     "
-                    class="inline-block px-4 py-2 focus:outline-none text-lg"
+                    class="inline-block py-2 focus:outline-none text-lg font-heading font-medium text-vN"
                     href="#"
                 >
                     Vos commandes
@@ -21,10 +20,10 @@
                     @click="changeTab('stock')"
                     :class="
                         page_index == 'stock'
-                           ? 'border-b-2 border-vert text-vert font-semibold'
+                            ? 'border-b-2 border-vert text-vert font-semibold'
                             : 'text-vN hover:text-black'
                     "
-                    class="inline-block px-4 py-2 focus:outline-none text-lg"
+                    class="inline-block py-2 focus:outline-none text-lg font-heading font-medium text-vN"
                     href="#"
                 >
                     Stock
@@ -37,7 +36,7 @@
                             ? 'border-b-2 border-vert text-vert font-semibold'
                             : 'text-vN hover:text-black'
                     "
-                    class="inline-block px-4 py-2 focus:outline-none text-lg"
+                    class="inline-block py-2 focus:outline-none text-lg font-heading font-medium text-vN"
                     href="#"
                 >
                     Créer une commande
@@ -47,16 +46,7 @@
 
         <div
             v-if="show_success"
-            class="
-                my-2
-                bg-green-100
-                border border-green-400
-                text-green-700
-                px-4
-                py-3
-                rounded
-                relative
-            "
+            class="my-2 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative"
             role="alert"
         >
             <strong class="font-bold">{{ message }}</strong>
@@ -81,15 +71,7 @@
 
         <div
             v-if="show_error"
-            class="
-                bg-red-100
-                border border-red-400
-                text-red-700
-                px-4
-                py-3
-                rounded
-                relative
-            "
+            class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
             role="alert"
         >
             <strong class="font-bold">{{ message }}</strong>
@@ -113,91 +95,108 @@
         </div>
 
         <div v-if="page_index == 'commands'">
-            <p class="text-lg text-vN mt-2 ml-3" v-if="commands.length == 0">
-                Vous n'avez pas encore de commandes.
-            </p>
-
-            <div v-else class="w-full bg-white shadow-md rounded mt-5  overflow-y-scroll" style="height : 60vh; ">
-              <table  class="border-collapse w-full table-auto ">
-                <thead
-                    class="sticky  top-0 border-b bg-white font-semibold text-vN"
+            <div
+                v-if="commands.length == 0"
+                class="w-full flex flex-col items-center"
+            >
+                <p class="text-lg text-vN mt-2 ml-3">
+                    Vous n'avez pas encore de commandes.
+                </p>
+                <button
+                    @click="changeTab('command_creator')"
+                    class="text-vN rounded-3xl px-5 py-2 font-semibold mt-5 bg-gradient-to-t from-[#B2D06B40] to-[#B2D06B11]"
+                    href="#"
                 >
-                    <tr >
-                      
-                        <th
-                            class="p-3 text-sm table-cell  cursor-pointer hover:text-vert select-none"
-                            @click="sort('command_id')"
-                         >
-                          Numéro
-                        </th>
-                        <th
-                            class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
-                           @click="sort('num_items')"
-                        >
-                          Nombre d'items 
-                        </th>
-                        <th
-                            class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
-                           @click="sort('creation_date')"
-                        >
-                            date de création
-                        </th>
-                        <th
-                            class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
-                            @click="sort('status')"
-                        >
-                            Status
-                        </th>
-                        
-                       
-                    </tr>
-                </thead>
-                <tbody  >
-                    <tr
-                      v-for="(cmd, key) in commands"
-                        v-bind:key="key"
-                        class="bg-white  flex lg:table-row flex-row lg:flex-row flex-wrap lg:flex-no-wrap lg:mb-0 border-b border-gray text-vN font-light text-sm h-14"
+                    Créer une commande
+                </button>
+            </div>
+
+            <div
+                v-else
+                class="w-full bg-white shadow-md rounded mt-5 overflow-y-scroll"
+                style="max-height: 60vh"
+            >
+                <table class="border-collapse w-full table-auto">
+                    <thead
+                        class="sticky top-0 border-b bg-white font-semibold text-vN"
                     >
-                        <td   class="w-full  lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
-                        
-                                    >
-                                {{ cmd.command_id }}          
-                        </td>
-                        <td
-                            class="lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                        <tr>
+                            <th
+                                class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                                @click="sort('command_id')"
+                            >
+                                Numéro
+                            </th>
+                            <th
+                                class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                                @click="sort('num_items')"
+                            >
+                                Nombre d'items
+                            </th>
+                            <th
+                                class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                                @click="sort('creation_date')"
+                            >
+                                date de création
+                            </th>
+                            <th
+                                class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                                @click="sort('status')"
+                            >
+                                Status
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr
+                            v-for="(cmd, key) in commands"
+                            v-bind:key="key"
+                            class="bg-white flex lg:table-row flex-row lg:flex-row flex-wrap lg:flex-no-wrap lg:mb-0 border-b border-gray text-vN font-light text-sm h-14"
                         >
-                            {{ cmd.num_items }}
-                        </td>
-                        <td
-                            class=" lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
-                        >
-                           Jour N° {{ cmd.creation_date }}
-                        </td>
-                        <td
-                            class=" lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
-                        >
-                        <span
+                            <td
+                                class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                            >
+                                {{ cmd.command_id }}
+                            </td>
+                            <td
+                                class="lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                            >
+                                {{ cmd.num_items }}
+                            </td>
+                            <td
+                                class="lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                            >
+                                Jour N° {{ cmd.creation_date }}
+                            </td>
+                            <td
+                                class="lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                            >
+                                <span
                                     :class="
                                         cmd.status == 'confirmed'
                                             ? 'text-vert'
                                             : 'text-yellow-500'
                                     "
-                                    >{{ getStatus(cmd.status) }}</span>
-                           
-                        </td> 
-                        <td
-                            class=" lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
-                        >
-                        <button @click="showDetails(cmd)">
-                                <img class="text-white" src="/assets/icons/menu-points-vertical.svg" alt="un triangle aux trois côtés égaux" height="20px" width="15px" /></button>
-                           
-                        </td>
-                       
-                       
-                    </tr>
-                </tbody>
-            </table>
-              <!-- <table class="w-full   h-96 overflow-y-scroll">
+                                    >{{ getStatus(cmd.status) }}</span
+                                >
+                            </td>
+                            <td
+                                class="lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                            >
+                                <button @click="showDetails(cmd)">
+                                    <img
+                                        class="text-white"
+                                        src="/assets/icons/menu-points-vertical.svg"
+                                        alt="un triangle aux trois côtés égaux"
+                                        height="20px"
+                                        width="15px"
+                                    />
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <!-- <table class="w-full   h-96 overflow-y-scroll">
                 <thead
                     class="sticky  top-0 border-b bg-white font-semibold text-vN"
                 >
@@ -278,94 +277,89 @@
                     </tr>
                 </tbody>
             </table> -->
-
             </div>
 
-         <Modal v-if="show_details_modal" id="modal" class="align-content-center " >
+            <Modal
+                v-if="show_details_modal"
+                id="modal"
+                class="align-content-center"
+            >
+                <template v-slot:content>
+                    <div class="flex flex-col p-4 items-start">
+                        <div class="flex justify-between item-center w-full">
+                            <h1 class="text-vert text-2xl font-bold">
+                                Détails sur la commande N°
+                                {{ current_command.command_id }}
+                            </h1>
+                            <img
+                                src="/assets/icons/close.svg"
+                                class="w-6 h-6 cursor-pointer"
+                                alt="close icon"
+                                @click="show_details_modal = false"
+                            />
+                        </div>
 
-             <template v-slot:content >
-                 <div class="flex flex-col p-4">
-                       <h1 class="text-vert text-2xl text-center">Détails sur la commande N° {{current_command.command_id}}</h1><br>
+                        <br />
 
-                <table class="w-full mt-3" style="background-color: #f9f9fc">
-
-                            <thead class="text-xs text-gray-700 uppercase">
-                                <tr class="border-b border-t text-vN">
-                                    <th class="px-4 py-3 ">Matière Premiere</th>
+                        <table class="w-full mt-3 bg-[#f9f9fc]">
+                            <thead class="text-xs uppercase">
+                                <tr
+                                    class="border-b border-t border-tableBorder text-vN"
+                                >
+                                    <th class="px-4 py-3">Matière Premiere</th>
                                     <th class="px-4 py-3">
                                         Quantité Nécessaire
                                     </th>
                                     <th class="px-4 py-3">Fournisseur</th>
                                     <th class="px-4 py-3">Date de Livraison</th>
-                                    <th class="px-4 py-3"> Statue</th>
+                                    <th class="px-4 py-3">Statue</th>
                                 </tr>
                             </thead>
 
                             <tbody>
                                 <tr
-                                   v-for="(item, key) in current_command.details"
+                                    v-for="(
+                                        item, key
+                                    ) in current_command.details"
                                     :key="key"
-                                    class="text-vN border-b"
+                                    class="text-vN border-b border-tableBorder"
                                 >
-                                    <!-- <td class="flex justify-center icon-material py-1 px-4" >
-                                        <img
-                                            src="/assets/icons/khobz.png"
-                                            alt="khobz"
-                                        />
-
-                                    </td> -->
-                                    <td class="text-center py-1 px-4">
+                                    <td class="text-center py-3 px-4">
                                         {{ item.material }}
                                     </td>
-                                    <td class="text-center py-1 px-4">
+                                    <td class="text-center py-3 px-4">
                                         {{ item.quantity }} {{ item.unit }}
                                     </td>
-                                    <td
-                                        class="text-center py-1 px-4"
-                                    >
-                                       {{ item.supplier }}
+                                    <td class="text-center py-3 px-4">
+                                        {{ item.supplier }}
                                     </td>
-                                    <td>Semaine N° {{ item.reception_date }}</td>
                                     <td>
-                                        <span :class="
-                                        item.status == 'confirmed'
-                                    ? 'text-vert px-4 text-center'
-                                    : 'text-yellow-500 px-4 text-center'
-                            "
-                            >{{ getStatus(item.status) }} </span>
+                                        Semaine N° {{ item.reception_date }}
+                                    </td>
+                                    <td>
+                                        <span
+                                            :class="
+                                                item.status == 'confirmed'
+                                                    ? 'text-vert px-4 text-center'
+                                                    : 'text-jaune px-4 text-center'
+                                            "
+                                            >{{ getStatus(item.status) }}
+                                        </span>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
-                        <button
-                        class="
-                            bg-gray-200
-                            active:bg-gray-600
-                            hover:bg-gray-400
-                            text-back
-                            px-3
-                            py-2
-                            rounded
-                            w-1/2
-                            mt-7
-                            mx-auto
-                        "
-                        @click="show_details_modal = false"
-                    >
-                        Fermer
-                    </button>
+                        <!-- <button
+                            class="bg-gray-200 active:bg-gray-600 hover:bg-gray-400 text-back px-3 py-2 rounded w-1/2 mt-7 mx-auto"
+                            @click="show_details_modal = false"
+                        >
+                            Fermer
+                        </button> -->
+                    </div>
+                </template>
+            </Modal>
 
-                 </div>
-
-
-             </template>
-
-
-
-         </Modal>
-
-
-<!--
+            <!--
             <Modal
                 v-if="show_details_modal"
                 id="modal"
@@ -416,11 +410,19 @@
         </div>
 
         <div v-if="page_index == 'stock'" class="mt-5">
-            <Stock :user="user" :stock="stock"></Stock>
+            <Stock
+                :user="user"
+                :stock="stock"
+                @create-command="changeTab('command_creator')"
+            ></Stock>
         </div>
 
         <div v-if="page_index == 'command_creator'">
-            <CommandMaker ref="command_maker" :user="user" :caisse="caisse"></CommandMaker>
+            <CommandMaker
+                ref="command_maker"
+                :user="user"
+                :caisse="caisse"
+            ></CommandMaker>
         </div>
 
         <Modal
@@ -432,48 +434,28 @@
             <template v-slot:content>
                 <div class="flex flex-col p-2">
                     <h3 class="font-extrabold text-lg my-3 text-vN">
-                    Voulez vous annuler la commande ?
-                </h3>
+                        Voulez vous annuler la commande ?
+                    </h3>
 
-                <div class="flex gap-3 ">
-                    <button
-                        class="
-                            active:bg-red-600
-                            text-vN
-                            hover:bg-gray-200
-                            px-3
-                            py-2
-                            rounded
-                            w-1/2
-                            mt-4
-                        "
-                        @click="changeTab(null, true)"
-                    >
-                        Continuer
-                    </button>
+                    <div class="flex gap-3">
+                        <button
+                            class="active:bg-red-600 text-vN hover:bg-gray-200 px-3 py-2 rounded w-1/2 mt-4"
+                            @click="changeTab(null, true)"
+                        >
+                            Continuer
+                        </button>
 
-                    <button
-                        class="
-                            active:bg-gray-600
-                            hover:bg-gray-200
-                            text-vN
-                            text-opacity-80
-                            px-3
-                            py-2
-                            rounded
-                            w-1/2
-                            mt-4
-                        "
-                        @click="
-                            next_tab = null;
-                            show_change_tab_modal = false;
-                        "
-                    >
-                        Annuler
-                    </button>
+                        <button
+                            class="active:bg-gray-600 hover:bg-gray-200 text-vN text-opacity-80 px-3 py-2 rounded w-1/2 mt-4"
+                            @click="
+                                next_tab = null;
+                                show_change_tab_modal = false;
+                            "
+                        >
+                            Annuler
+                        </button>
+                    </div>
                 </div>
-                </div>
-
             </template>
         </Modal>
     </div>
@@ -514,7 +496,6 @@ export default {
     props: ["user"],
     computed: {},
     methods: {
-
         sort(key) {
             this.reverse = !this.reverse;
             this.commands.sort((a, b) => {
@@ -567,7 +548,10 @@ export default {
 
         changeTab(tab_name = null, confirm = false) {
             if (!confirm) {
-                if (this.page_index == "command_creator" && this.$refs.command_maker.commands.length > 0) {
+                if (
+                    this.page_index == "command_creator" &&
+                    this.$refs.command_maker.commands.length > 0
+                ) {
                     this.next_tab = tab_name;
                     this.show_change_tab_modal = true;
                 } else {

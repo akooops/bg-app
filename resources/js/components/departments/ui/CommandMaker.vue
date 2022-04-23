@@ -2,16 +2,7 @@
     <div>
         <div
             v-if="show_success"
-            class="
-                my-2
-                bg-green-100
-                border border-green-400
-                text-green-700
-                px-4
-                py-3
-                rounded
-                relative
-            "
+            class="my-2 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative"
             role="alert"
         >
             <strong class="font-bold">{{ message }}</strong>
@@ -36,15 +27,7 @@
 
         <div
             v-if="show_error"
-            class="
-                bg-red-100
-                border border-red-400
-                text-red-700
-                px-4
-                py-3
-                rounded
-                relative
-            "
+            class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
             role="alert"
         >
             <strong class="font-bold">{{ message }}</strong>
@@ -67,69 +50,87 @@
             </span>
         </div>
         <div v class="w-full bg-white shadow-md rounded my-2">
-
-            <table  class="border-collapse w-full table-fixed">
+            <table class="border-collapse w-full table-fixed">
                 <thead
-                    class="sticky  top-0 border-b bg-white font-semibold text-vN"
+                    class="sticky top-0 border-b bg-white font-semibold text-vN"
                 >
                     <tr>
-
-                        <th class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"  >
-                          Matière premiere
+                        <th class="p-3 text-sm table-cell text-center">
+                            Matière premiere
                         </th>
-                        <th class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"  >
-                         Fournisseur
+                        <th class="p-3 text-sm table-cell text-center">
+                            Fournisseur
                         </th>
-                        <th class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"  >
-                         Délai de Livraison
+                        <th class="p-3 text-sm table-cell text-center">
+                            Délai de Livraison
                         </th>
-                        <th class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"  >
-                         Quantité
+                        <th class="p-3 text-sm table-cell text-center">
+                            Quantité
                         </th>
-                        <th class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"  >
-                          Prix Unitaire
+                        <th class="p-3 text-sm table-cell text-center">
+                            Prix Unitaire
                         </th>
-                        <th class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"  >
-                          Prix Total
+                        <th class="p-3 text-sm table-cell text-center">
+                            Prix Total
                         </th>
-                        <th class="p-3 text-sm table-cell cursor-pointer text-left hover:text-vert select-none"  >
-                         Action
+                        <th class="p-3 text-sm table-cell text-center">
+                            Action
                         </th>
-
                     </tr>
                 </thead>
-                <tbody  >
-                     <tr v-for="(cmd, key) in commands" :key="key">
-                        <td class="lg:w-auto p-1 text-center block lg:table-cell relative lg:static">
+                <tbody>
+                    <tr v-for="(cmd, key) in commands" :key="key">
+                        <td
+                            class="lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                        >
                             {{ cmd.material }}
                         </td>
-                        <td class="lg:w-auto p-1 text-center block lg:table-cell relative lg:static">
+                        <td
+                            class="lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                        >
                             {{ cmd.supplier }}
                         </td>
-                        <td class="lg:w-auto p-1 text-center block lg:table-cell relative lg:static">
+                        <td
+                            class="lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                        >
                             {{ cmd.time_to_ship }} sem
                         </td>
-                        <td class="lg:w-auto p-1 text-center block lg:table-cell relative lg:static">
+                        <td
+                            class="lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                        >
                             {{ cmd.quantity }} KG
                         </td>
-                        <td class="lg:w-auto p-1 text-center block lg:table-cell relative lg:static">{{ cmd.price }} DA/KG</td>
-                        <td class="lg:w-auto p-1 text-center block lg:table-cell relative lg:static">
+                        <td
+                            class="lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                        >
+                            {{ cmd.price }} DA/KG
+                        </td>
+                        <td
+                            class="lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                        >
                             {{ cmd.total_price }} DA
                         </td>
-                        <td class="lg:w-auto p-1 text-center block lg:table-cell relative lg:static">
+                        <td
+                            class="lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                        >
                             <div
                                 class="flex w-full justify-center gap-3 align-middle"
                             >
-                                <button @click="editRow(key, false)" class="bg-vert rounded-3xl bg-opacity-70 text-white px-3">
+                                <button
+                                    @click="editRow(key, false)"
+                                    class="bg-vert rounded-3xl bg-opacity-70 text-white px-3"
+                                >
                                     Modifier
                                 </button>
                                 <button @click="deleteRow(key)">
-                                    <img class="w-10 h-10 " src="/assets/icons/trash.png" alt="">
+                                    <img
+                                        class="w-10 h-10"
+                                        src="/assets/icons/trash.png"
+                                        alt=""
+                                    />
                                 </button>
-
                             </div>
                         </td>
-
                     </tr>
                 </tbody>
             </table>
@@ -192,21 +193,10 @@
                     </tr>
                 </tbody>
             </table> -->
-            <div
-                class="flex w-full justify-center items-center">
+            <div class="flex w-full justify-center items-center">
                 <button
                     @click="commandModal()"
-                    class="
-                        bg-vert
-                        bg-opacity-70
-                        text-white
-                        my-3
-                        rounded-3xl
-                        w-34
-                        h-10
-                        px-3
-                        py-2
-                    "
+                    class="bg-vert bg-opacity-70 text-white my-3 rounded-3xl w-34 h-10 px-3 py-2"
                 >
                     Ajouter une ligne
                 </button>
@@ -217,7 +207,7 @@
             >
                 <button
                     @click="sendCommand"
-                    class="text-white my-3  w-34 h-10 px-3 py-2 rounded-full"
+                    class="text-white my-3 w-34 h-10 px-3 py-2 rounded-full"
                     v-bind:class="{
                         'bg-gray-500': this.command_sent == true,
                         'bg-vN': this.command_sent == false,
@@ -229,102 +219,122 @@
             </div>
         </div>
 
+        <Modal v-if="show_add_modal">
+            <template v-slot:content>
+                <div class="flex flex-col">
+                    <h1 class="text-vert text-2xl font-bold">
+                        Ajouter une nouvelle commande
+                    </h1>
+                    <div class="flex flex-row my-4 px-6 py-4 text-vN">
+                        <div class="w-2/5 flex flex-col">
+                            <h1 class="font-semibold">Matière</h1>
+                            <select
+                                v-if="materials != null"
+                                v-model="commandItem['material']"
+                                class="ring-tableBorder border-0 focus-within:ring-vert ring-1 rounded-md"
+                            >
+                                <option
+                                    :value="mp.name"
+                                    :key="mp.name"
+                                    v-for="mp in materials"
+                                >
+                                    {{ mp.name }}
+                                </option>
+                            </select>
+                            <select
+                                v-else
+                                class="ring-tableBorder border-0 focus-within:ring-vert ring-1 rounded-md"
+                            ></select>
+                            <h1 class="font-semibold mt-3">Fournisseur :</h1>
+                            <select
+                                v-if="suppliers != null"
+                                v-model="commandItem['supplier']"
+                                class="ring-tableBorder border-0 focus-within:ring-vert ring-1 rounded-md"
+                            >
+                                <option
+                                    v-for="supp in suppliers"
+                                    :key="supp.id"
+                                    :value="supp.name"
+                                >
+                                    {{ supp.name }}
+                                </option>
+                            </select>
+                            <select
+                                v-else
+                                class="ring-tableBorder border-0 focus-within:ring-vert ring-1 rounded-md"
+                            ></select>
+                            <h1 class="font-semibold mt-3">Quantité :</h1>
+                            <input
+                                class="ring-tableBorder border-0 focus-within:ring-vert ring-1 rounded-md"
+                                type="number"
+                                min="1"
+                                placeholder="Quantité en unité"
+                                v-model="commandItem.quantity"
+                            />
+                        </div>
 
-      <Modal v-if="show_add_modal">
-          <template v-slot:content>
-             <div class="flex flex-col">
-                <h1 class="text-vert text-center text-2xl">Ajouter une nouvelle commande</h1>
-                <div class="flex flex-row my-4 px-6 py-4 text-vN">
-                  <div class="w-2/5 flex flex-col ">
-                   <h1 class="font-semibold">Matière</h1>
-                    <select
-                        v-if="materials != null"
-                        v-model="commandItem['material']"
-                        class=" rounded-md w-auto border-gray "
+                        <div class="w-1/5"></div>
+                        <div class="flex flex-col">
+                            <h1 class="font-semibold">Prix Unitaire :</h1>
+                            <p
+                                class="py-2 px-4 border-gray-200 w-40 text-jaune border rounded-md h-10"
+                            >
+                                {{ materialPrice }}
+                            </p>
 
-                    >
-                        <option
-                            :value="mp.name"
-                            :key="mp.name"
-                            v-for="mp in materials"
-                        >
-                            {{ mp.name }}
-                        </option>
-                    </select>
-                    <select v-else>
+                            <h1 class="font-semibold mt-3">Prix Total :</h1>
+                            <p
+                                class="py-2 px-4 border-gray-200 w-40 text-jaune border rounded-md h-10"
+                            >
+                                {{ totalPrice }}
+                            </p>
+                            <h1 class="font-semibold mt-3">
+                                Délai de Livraison
+                            </h1>
+                            <p
+                                class="py-2 px-4 border-gray-200 w-40 text-vert border rounded-md h-10"
+                            >
+                                {{ supplierDelay ? supplierDelay : 0 }}
+                            </p>
+                        </div>
+                    </div>
 
-                    </select>
-                   <h1 class="font-semibold mt-4">Fournisseur :</h1>
-                   <select
-                        v-if="suppliers != null"
-                        v-model="commandItem['supplier']"
-                        class=" rounded-md border-gray"
-
-                    >
-                        <option v-for="supp in suppliers" :key="supp.id" :value="supp.name">
-                            {{ supp.name }}
-                        </option>
-                    </select>
-                    <select v-else>
-
-                    </select>
-                    <h1 class="font-semibold mt-4">Quantité :</h1>
-                    <input
-                        class="rounded-md border-gray"
-                        type="number"
-                        min="1"
-                        placeholder="Quantité en unité"
-                        v-model="commandItem.quantity"
-                    />
-                  </div>
-
-                  <div class="w-1/5"></div>
-                  <div >
-                    <h1 class="font-semibold mt-4">Prix Unitaire :</h1>
-                    <p class="rounded-md px-3 py-1" style="border : 1px solid;  border-color: rgba(128, 122, 122)">{{materialPrice}}</p>
-
-                    <h1 class="font-semibold mt-3">Prix Total :</h1>
-                     <p class="rounded-md px-3 py-1" style="border : 1px solid;  border-color: rgba(128, 122, 122)">{{totalPrice}}</p>
-                     <h1 class="font-semibold mt-3">Délai de Livraison</h1>
-                     <p class="rounded-md  px-3 py-1" style="border : 1px solid;  border-color: rgba(128, 122, 122)">{{supplierDelay ? supplierDelay : 0}}</p>
-
-                  </div>
-              </div>
-
-              <div v-if="commandDisabled" class="text-center">
+                    <div v-if="commandDisabled" class="text-center">
                         <p class="font-bold text-red-700">
-                            Matière première indisponnible ou informations entrées invalides.
+                            Matière première indisponnible ou informations
+                            entrées invalides.
                         </p>
-              </div>
+                    </div>
 
-              <div class="flex gap-4 justify-end mr-5">
-                <button
-                        @click="editing_command_id == null ? addRow() : editRow(editing_command_id, true)"
-                        v-if="supp_raw_mat_updated"
-                        :disabled="commandDisabled"
-                        class=" py-3 px-3 text-white rounded-md font-semibold"
-                        v-bind:class="{
-                            'text-vN text-opacity-20': commandDisabled,
-                            'text-vN hover:bg-gray-200': !commandDisabled,
-                        }"
-                    >
-                        Ajouter
-                    </button>
-                    <button
-                        @click="
-                            editing_command_id = null;
-                            show_add_modal = false;"
-                        class=" py-3 px-3 text-vN font-semibold text-opacity-80 hover:bg-gray-200 rounded-md"
-                    >
-                        Fermer
-                    </button>
-              </div>
-              </div>
-
-
-          </template>
-
-      </Modal>
+                    <div class="flex gap-4 justify-end mr-5">
+                        <button
+                            @click="
+                                editing_command_id == null
+                                    ? addRow()
+                                    : editRow(editing_command_id, true)
+                            "
+                            :disabled="commandDisabled && supp_raw_mat_updated"
+                            class="py-3 px-3 text-vN rounded-md font-semibold"
+                            v-bind:class="{
+                                'text-vN text-opacity-20': commandDisabled,
+                                'text-vN  hover:text-vert': !commandDisabled,
+                            }"
+                        >
+                            Ajouter
+                        </button>
+                        <button
+                            @click="
+                                editing_command_id = null;
+                                show_add_modal = false;
+                            "
+                            class="py-3 px-3 text-vN font-semibold text-opacity-80 hover:text-opacity-100 rounded-md"
+                        >
+                            Fermer
+                        </button>
+                    </div>
+                </div>
+            </template>
+        </Modal>
     </div>
 </template>
 
@@ -367,8 +377,10 @@ export default {
     props: ["user", "caisse"],
     computed: {
         supplierDelay() {
-            if (this.commandItem.supplier != "" && this.commandItem.material != "") {
-
+            if (
+                this.commandItem.supplier != "" &&
+                this.commandItem.material != ""
+            ) {
                 let material = this.materials.find(
                     (item) => this.commandItem.material == item.name
                 );
@@ -383,17 +395,14 @@ export default {
 
                 if (supp_raw_mat == undefined) {
                     return "";
-                }
-                else {
+                } else {
                     supp_raw_mat = supp_raw_mat.pivot;
                 }
 
                 this.commandItem.time_to_ship = supp_raw_mat.time_to_deliver;
                 return supp_raw_mat.time_to_deliver + " sem";
-            }
-
-            else {
-                return ""
+            } else {
+                return "";
             }
         },
         materialPrice() {
@@ -415,8 +424,7 @@ export default {
 
                 if (supp_raw_mat == undefined) {
                     return 0;
-                }
-                else {
+                } else {
                     supp_raw_mat = supp_raw_mat.pivot;
                 }
 
@@ -462,8 +470,7 @@ export default {
 
             if (supp_raw_mat == undefined) {
                 return true;
-            }
-            else if (!supp_raw_mat.pivot.is_available) {
+            } else if (!supp_raw_mat.pivot.is_available) {
                 return true;
             }
 
@@ -472,8 +479,18 @@ export default {
     },
     methods: {
         commandModal() {
-            this.commandItem.material = this.materials == null ? "" : this.materials.length > 0 ? this.materials[0].name : "";
-            this.commandItem.supplier = this.suppliers == null ? "" : this.suppliers.length > 0 ? this.suppliers[0].name : "";
+            this.commandItem.material =
+                this.materials == null
+                    ? ""
+                    : this.materials.length > 0
+                    ? this.materials[0].name
+                    : "";
+            this.commandItem.supplier =
+                this.suppliers == null
+                    ? ""
+                    : this.suppliers.length > 0
+                    ? this.suppliers[0].name
+                    : "";
             this.commandItem.quantity = 1;
 
             this.show_add_modal = true;
@@ -492,16 +509,21 @@ export default {
             };
 
             let cmd_id = this.commands.findIndex(
-                (item) => item.material == command.material && item.supplier == command.supplier
+                (item) =>
+                    item.material == command.material &&
+                    item.supplier == command.supplier
             );
 
             if (cmd_id == -1) {
                 this.commands.push(command);
                 this.num_commands += 1;
-            }
-            else {
-                this.commands[cmd_id].quantity = parseInt(this.commands[cmd_id].quantity) + parseInt(command.quantity);
-                this.commands[cmd_id].total_price = parseInt(this.commands[cmd_id].total_price) + parseInt(command.total_price);
+            } else {
+                this.commands[cmd_id].quantity =
+                    parseInt(this.commands[cmd_id].quantity) +
+                    parseInt(command.quantity);
+                this.commands[cmd_id].total_price =
+                    parseInt(this.commands[cmd_id].total_price) +
+                    parseInt(command.total_price);
             }
 
             this.show_add_modal = false;
@@ -553,7 +575,7 @@ export default {
             this.commands.splice(index, 1);
         },
 
-        editRow(index, save=false) {
+        editRow(index, save = false) {
             if (!save) {
                 this.commandItem.material = this.commands[index].material;
                 this.commandItem.supplier = this.commands[index].supplier;
@@ -561,8 +583,7 @@ export default {
 
                 this.editing_command_id = index;
                 this.show_add_modal = true;
-            }
-            else {
+            } else {
                 let command = {
                     material: this.commandItem.material,
                     supplier: this.commandItem.supplier,
@@ -582,33 +603,39 @@ export default {
         getSuppRawMat() {
             this.supp_raw_mat_updated = false;
             axios
-            .get("/api/supp_raw_mats", {
-                params: {
-                },
-            })
-            .then((resp) => {
-                this.materials = resp.data["materials"];
-                this.suppliers = resp.data["suppliers"];
+                .get("/api/supp_raw_mats", {
+                    params: {},
+                })
+                .then((resp) => {
+                    this.materials = resp.data["materials"];
+                    this.suppliers = resp.data["suppliers"];
 
-                this.supp_raw_mat_updated = true;
+                    this.supp_raw_mat_updated = true;
 
-                if (this.show_add_modal) {
-                    if (this.commandItem.material == "") {
-                        this.commandItem.material = this.materials.length > 0 ? this.materials[0].name : "";
+                    if (this.show_add_modal) {
+                        if (this.commandItem.material == "") {
+                            this.commandItem.material =
+                                this.materials.length > 0
+                                    ? this.materials[0].name
+                                    : "";
+                        }
+                        if (this.commandItem.supplier == "") {
+                            this.commandItem.supplier =
+                                this.suppliers.length > 0
+                                    ? this.suppliers[0].name
+                                    : "";
+                        }
                     }
-                    if (this.commandItem.supplier == "") {
-                        this.commandItem.supplier = this.suppliers.length > 0 ? this.suppliers[0].name : "";
-                    }
-                }
-            });
+                });
         },
     },
     created() {
         this.getSuppRawMat();
     },
     mounted() {
-        window.Echo.channel("entreprise_" + this.user.id)
-            .listen("NewNotification", (e) => {
+        window.Echo.channel("entreprise_" + this.user.id).listen(
+            "NewNotification",
+            (e) => {
                 if (e.notification.type == "SupplierUpdate") {
                     this.getSuppRawMat();
                     this.$forceUpdate();
@@ -622,7 +649,8 @@ export default {
                     this.getSuppRawMat();
                     this.$forceUpdate();
                 }
-            });
+            }
+        );
     },
 };
 </script>
