@@ -1,8 +1,34 @@
 <template>
     <div>
-        <heading class="mb-6">Indicators</heading>
+        <div class="w-full">
+            <nav class="mb-10 text-lg flex justify-start gap-8">
+                <button
+                    @click="page_index = 'indicators'"
+                    :class="
+                        page_index == 'indicators'
+                            ? 'border-b-2 border-vert text-vert font-medium'
+                            : 'text-vN hover:text-black'
+                    "
+                    class="inline-block py-2 focus:outline-none text-lg"
+                >
+                    Indicateurs
+                </button>
 
-        <div class="flex">
+                <button
+                    @click="page_index = 'settings'"
+                    :class="
+                        page_index == 'settings'
+                            ? 'border-b-2 border-vert text-vert font-medium'
+                            : 'text-vN hover:text-black'
+                    "
+                    class="inline-block py-2 focus:outline-none text-lg"
+                >
+                    Paramètres du jeu
+                </button>
+            </nav>
+        </div>
+
+        <div v-if="page_index == 'indicators'" class="flex">
             <div class="bg-90 bg-white p-6 w-1/2 mr-2">
 
                 <div class="mb-6">
@@ -83,7 +109,7 @@
                     <div class="flex flex-col gap-2">
                         <p>Confirmer l'action ?</p>
                         <div class="flex gap-5">
-                            <button @click="update" v-if="!update_sent" class="bg-green-600 rounded-md px-3 border-2 border-green-600 py-1 text-white">
+                            <button @click="update_indicator" v-if="!update_indicators_sent" class="bg-green-600 rounded-md px-3 border-2 border-green-600 py-1 text-white">
                                 Confirmer
                             </button>
                             <button @click="show_confirmation_modal = false" class="bg-white border-vert border-2 rounded-md px-3 py-1 text-black">
@@ -144,20 +170,29 @@
                 </table>
             </div>
         </div>
+
+        <div v-if="page_index == 'settings'" class="flex justify-center">
+            <GameSettings>
+
+            </GameSettings>
+        </div>
     </div>
 </template>
 
 <script>
 import Modal from "./Modal";
+import GameSettings from "./GameSettings";
 export default {
     metaInfo() {
         return {
             title: "IndicatorUpdater"
         };
     },
-    components: { Modal },
+    components: { Modal, GameSettings },
     data() {
         return {
+            page_index: 'indicators',
+
             indicators: [],
             selected_indicator: null,
 
@@ -175,11 +210,13 @@ export default {
 
             indicator_2_loaded: false,
             selected_indicator_2: null,
-            indicators_2: [],
             data: [],
 
             show_confirmation_modal: false,
-            update_sent: false,
+            update_indicators_sent: false,
+
+            settings: [],
+            selected_setting: null,
         };
     },
     methods: {
@@ -191,7 +228,7 @@ export default {
             this.entreprises = data["entreprises"];
         },
 
-        update() {
+        update_indicator() {
             let req = {
                 entreprise_ids: this.selected_entreprises,
                 selected_indicator: this.selected_indicator,
@@ -205,7 +242,7 @@ export default {
             this.operation_value = 0;
 
             this.show_confirmation_modal = false;
-            this.update_sent = true;
+            this.update_indicators_sent = true;
 
             Nova.request()
                 .post(
@@ -213,15 +250,8 @@ export default {
                     req
                 )
                 .then(({ resp }) => {
-                    this.update_sent = true;
+                    this.update_indicators_sent = true;
                 });
-        },
-
-        async getIndicators_2() {
-            const { data } = await Nova.request().get(
-                "/nova-vendor/indicator-updater/get-indicators"
-            );
-            this.indicators_2 = data;
         },
 
         getEntrepriseIndicators() {
@@ -251,7 +281,6 @@ export default {
 
     async mounted() {
         await this.getIndicators();
-        await this.getIndicators_2();
     }
 };
 </script>

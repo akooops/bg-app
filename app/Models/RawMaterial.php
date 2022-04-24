@@ -19,7 +19,8 @@ class RawMaterial extends Model
         'name',
         'price',
         'unit',
-        'volume'
+        'volume',
+        'icon'
     ];
 
     public function products()

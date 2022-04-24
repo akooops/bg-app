@@ -70,7 +70,7 @@ class SellProductionsScheduler implements ShouldQueue
 
             // $production_quantity_sold = $production->sold;
 
-            // $production_percentage_to_sell = nova_get_setting("production_percentage_to_sell");
+            // $production_percentage_to_sell = $this->get_game_setting("production_percentage_to_sell");
             // $quantity_to_sell = round(
             //     min(
             //         $this->productDemandReal($product_id, $entreprise_id, $price, round($production_quantity * $production_percentage_to_sell)),

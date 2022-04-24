@@ -36,7 +36,7 @@ class ProcessWorkers implements ShouldQueue
      */
     public function handle()
     {
-        $current_date = (int) nova_get_setting("current_date");
+        $current_date = (int) $this->get_game_setting("current_date");
         $entreprises = Entreprise::get();
 
         foreach ($entreprises as $entreprise) {
@@ -57,11 +57,11 @@ class ProcessWorkers implements ShouldQueue
             $nb_workers_lv2_busy = $this->getIndicator("nb_workers_lv2_busy", $entreprise->id)["value"];
 
             $workers_mood = $this->getIndicator("workers_mood", $entreprise->id)["value"];
-            $workers_mood_th = nova_get_setting("mood_quitting_threshold");
+            $workers_mood_th = $this->get_game_setting("mood_quitting_threshold");
 
             // Workers mood decreases every month
             if ($current_date % 4 == 0 && $nb_workers > 0) {
-                $workers_mood_decay_rate = nova_get_setting('workers_mood_decay_rate');
+                $workers_mood_decay_rate = $this->get_game_setting('workers_mood_decay_rate');
                 if ($workers_mood - $workers_mood_decay_rate >= 0) {
                     $this->updateIndicator("workers_mood", $entreprise->id, -1 * $workers_mood_decay_rate);
                 } else {
@@ -84,7 +84,7 @@ class ProcessWorkers implements ShouldQueue
             }
 
             // Warn that workers are going to quit
-            if ($workers_mood - nova_get_setting('workers_mood_decay_rate') < $workers_mood_th && $nb_workers > 0) {
+            if ($workers_mood - $this->get_game_setting('workers_mood_decay_rate') < $workers_mood_th && $nb_workers > 0) {
                 if ($current_date % 30 == 0) {
                     $notification = [
                         "entreprise_id" => $entreprise->id,
@@ -105,7 +105,7 @@ class ProcessWorkers implements ShouldQueue
             // Workers quitting
             if ($workers_mood <= $workers_mood_th && $nb_workers > 0) {
                 $pick = mt_rand() / mt_getrandmax();
-                $quitting_prob = nova_get_setting("quitting_prob");
+                $quitting_prob = $this->get_game_setting("quitting_prob");
 
                 if ($pick <= $quitting_prob) {
                     $quitting_prob_lv2 = $nb_workers_lv2 / $nb_workers;
@@ -164,7 +164,7 @@ class ProcessWorkers implements ShouldQueue
 
             if ($nb_workers_to_hire > 0) {
                 $pick = mt_rand() / mt_getrandmax();
-                $hiring_prob = nova_get_setting("hiring_prob");
+                $hiring_prob = $this->get_game_setting("hiring_prob");
 
                 if ($pick < $hiring_prob) {
                     $this->updateIndicator("nb_workers_lv1", $entreprise->id, 1);

@@ -49,13 +49,19 @@ class RawMaterial extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
+
             Text::make('Name')
                 ->sortable()
                 ->rules('required', 'max:255'),
+
             Text::make('Unit')
                 ->rules('required', 'max:255'),
+
             Currency::make('Price')->currency('EUR'),
+
             Number::make('Volume')->min(1)->step(0.1),
+
+            Text::make('Icon'),
 
             BelongsToMany::make('Suppliers')->fields(function () {
                 return [

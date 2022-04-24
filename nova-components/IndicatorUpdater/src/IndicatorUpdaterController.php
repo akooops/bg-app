@@ -2,14 +2,18 @@
 
 namespace Manou\IndicatorUpdater;
 
+use App\Models\Entreprise;
+use App\Traits\HelperTrait;
+use App\Events\NewNotification;
+use Illuminate\Support\Facades\DB;
+use App\Events\SimulationDateChanged;
 use Illuminate\Database\Query\Builder;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use Illuminate\Support\Facades\DB;
-use App\Events\NewNotification;
-use App\Models\Entreprise;
 
 class IndicatorUpdaterController
 {
+    use HelperTrait;
+
     public function getIndicators(NovaRequest $request)
     {
         $data = [
@@ -145,5 +149,39 @@ class IndicatorUpdaterController
             ->where('indicator_id', $request->indicator_id)
             ->join('users', 'users.id', '=', 'entreprise_indicator.entreprise_id')->get();
         return response()->json($data);
+    }
+
+    public function getSettings(NovaRequest $request)
+    {
+        $data = [
+            "settings" => DB::table('game_settings')->orderBy('code')->get(),
+        ];
+        return response()->json($data);
+    }
+
+    public function setSetting(NovaRequest $request) {
+        $code = $request->code;
+        $value = $request->value;
+
+        $this->set_game_setting($code, $value);
+
+        if($code == 'current_date') {
+            event(new SimulationDateChanged());
+        }
+
+        return response()->json(["message" => "Le paramètre a été mis à jour.", "success" => true], 200);
+    }
+
+    public function resetSetting(NovaRequest $request)
+    {
+        $code = $request->code;
+
+        $this->reset_game_setting($code);
+
+        if ($code == 'current_date') {
+            event(new SimulationDateChanged());
+        }
+
+        return response()->json(["message" => "Le paramètre a été réinitialisé.", "success" => true], 200);
     }
 }

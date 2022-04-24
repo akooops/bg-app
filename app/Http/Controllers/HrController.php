@@ -60,7 +60,7 @@ class HrController extends Controller
     public function launchWorkshop(Request $request)
     {
         $nb_workers_to_train = $request->nb_workers_to_train;
-        $price = nova_get_setting('workshop_price');
+        $price = $this->get_game_setting('workshop_price');
         $caisse = $this->getIndicator('caisse', $request->entreprise_id)['value'];
         if ($caisse < $price * $nb_workers_to_train) {
             return Response::json([
@@ -115,13 +115,13 @@ class HrController extends Controller
 
         $workers_mood = $this->getIndicator('workers_mood', $request->entreprise_id)['value'];
 
-        $salary_lv1 = (int) nova_get_setting('salary_lv1');
-        $salary_lv2 = (int) nova_get_setting('salary_lv2');
+        $salary_lv1 = (int) $this->get_game_setting('salary_lv1');
+        $salary_lv2 = (int) $this->get_game_setting('salary_lv2');
 
         $bonus = $request->bonus;
         $total_bonus = $bonus * ($nb_workers_lv1 + $nb_workers_lv2);
 
-        $bonus_coeff = (float) nova_get_setting('bonus_coeff');
+        $bonus_coeff = (float) $this->get_game_setting('bonus_coeff');
 
         $bonus_max = ((1 - $workers_mood) * ($nb_workers_lv1 * $salary_lv1 + $nb_workers_lv2 * $salary_lv2)) / ($bonus_coeff * ($nb_workers_lv1 + $nb_workers_lv2));
 
@@ -181,8 +181,8 @@ class HrController extends Controller
         $nb_workers_lv1_busy = $this->getIndicator('nb_workers_lv1_busy', $request->entreprise_id)['value'];
         $nb_workers_lv2_busy = $this->getIndicator('nb_workers_lv2_busy', $request->entreprise_id)['value'];
 
-        $salary_lv1 = nova_get_setting('salary_lv1');
-        $salary_lv2 = nova_get_setting('salary_lv2');
+        $salary_lv1 = $this->get_game_setting('salary_lv1');
+        $salary_lv2 = $this->get_game_setting('salary_lv2');
 
         $price = 3 * ($salary_lv1 * $nb_workers_lv1_to_fire + $salary_lv2 * $nb_workers_lv2_to_fire);
         $caisse = $this->getIndicator('caisse', $request->entreprise_id)['value'];
