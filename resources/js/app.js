@@ -2,13 +2,12 @@ require("./bootstrap");
 
 import Vue from "vue";
 import VCalendar from "v-calendar";
-
+import Toasted from "vue-toasted";
 
 axios.defaults.withCredentials = false;
 let local_url = "http://10.42.0.1:8000";
 let localhost = "http://127.0.0.1:8000";
 axios.defaults.baseURL = localhost;
-
 
 Vue.component(
     "statcard",
@@ -45,10 +44,7 @@ Vue.component(
     require("./components/entreprise/LoanListing.vue").default
 );
 
-Vue.component(
-    "notification",
-    require("./components/Notification.vue").default
-);
+Vue.component("notification", require("./components/Notification.vue").default);
 
 Vue.component(
     "marketing",
@@ -94,12 +90,13 @@ Vue.component(
     require("./components/Disponibility.vue").default
 );
 
-
 Vue.component("calendar", require("./components/Calendar.vue").default);
 
 Vue.use(VCalendar, {
     componentPrefix: "vc", // Use <vc-calendar /> instead of <v-calendar />
 });
+
+Vue.use(Toasted);
 
 Vue.component(
     "indicator",

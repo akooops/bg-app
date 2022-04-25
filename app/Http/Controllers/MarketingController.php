@@ -83,13 +83,13 @@ class MarketingController extends Controller
             "entreprise_id" => $request->entreprise_id,
             "type" => "AdsUpdate",
 
-            "store" => false,
+            "store" => true,
 
-            "text" => "",
-            "title" => "",
+            "text" => "Votre campagne publicitaire sur " . $this->parseAdType($request->type) . " a été créée avec succès.",
+            "title" => "Votre campagne publicitaire a été créée",
             "icon_path" => "aaaaaaaaaaa",
 
-            "style" => "info",
+            "style" => "success",
         ];
         event(new NewNotification($notification));
 

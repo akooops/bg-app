@@ -1,33 +1,48 @@
 <template>
     <div>
-      <div class="relative ">
-        <button @click="openNotifBox" class=" icon-wrapper">
-            <img
-                src="/assets/icons/notifications.svg"
-                alt="notification icon"
-                class="h-9 w-9 "
-                :class="nb_unread_notifs > 0 ? 'horloge': '' "
-            />
+        <div class="relative">
+            <button @click="toggleNotifBox" class="icon-wrapper">
+                <img
+                    src="/assets/icons/notifications.svg"
+                    alt="notification icon"
+                    class="h-9 w-9"
+                    :class="nb_unread_notifs > 0 ? 'horloge' : ''"
+                />
+
+                <div
+                    v-if="nb_unread_notifs > 0"
+                    class="bg-red-500 absolute -top-1 right-0 w-5 h-5 rounded-full"
+                >
+                    <p
+                        class="text-white text-center my-auto mx-auto"
+                        style="font-size: 12px"
+                    >
+                        {{ nb_unread_notifs }}
+                    </p>
+                </div>
+            </button>
 
             <div
-                v-if="nb_unread_notifs > 0"
-                class="bg-red-500 absolute -top-1 right-0 w-5 h-5 rounded-full"
+                v-if="show_notifications"
+                class="absolute notif z-20 flex flex-col gap-1 bottom-22 right-0 bg-white shadow-2xl h-96 rounded-lg overflow-x-hidden overflow-y-scroll"
+                style="
+                    width: 48vmin;
+                    border: 0.5px solid rgba(128, 128, 128, 0.5);
+                "
             >
-                <p
-                    class="text-white text-center my-auto mx-auto"
-                    style="font-size: 12px"
-                >
-                    {{ nb_unread_notifs }}
-                </p>
-            </div>
-             </button>
-
-            <div v-if="show_notifications" class="absolute notif z-20 flex flex-col gap-1 bottom-22  right-0 bg-white shadow-2xl  h-96 rounded-lg overflow-x-hidden overflow-y-scroll " style="width: 48vmin ; border : 0.5px solid rgba(128, 128, 128, 0.5);  ">
                 <div class="flex flex-row mx-5 my-3">
-                    <h1 class="text-vN font-semibold text-2xl mr-auto">Notifications</h1>
-                    <button class="ml-auto"><img src="/assets/icons/reload.svg" alt="" class="w-7 h-7"></button>
+                    <h1 class="text-vN font-semibold text-2xl mr-auto">
+                        Notifications
+                    </h1>
+                    <button class="ml-auto">
+                        <img
+                            src="/assets/icons/reload.svg"
+                            alt=""
+                            class="w-7 h-7"
+                        />
+                    </button>
                 </div>
-               
+
                 <NotificationItem
                     v-for="(notif, i) in notifications"
                     :key="i"
@@ -39,10 +54,7 @@
                     class="mx-3 border-b-2 py-3"
                 >
                 </NotificationItem>
-
-            
             </div>
-       
         </div>
     </div>
 </template>
@@ -54,7 +66,7 @@ export default {
     components: {
         NotificationItem,
     },
-    props: ["user","actual"],
+    props: ["user", "actual"],
     data() {
         return {
             notifications: [],
@@ -82,25 +94,50 @@ export default {
                     console.log("Couldn't fetch notifications");
                 });
         },
-        openNotifBox() {
+        toggleNotifBox() {
             this.show_notifications = !this.show_notifications;
 
             if (this.show_notifications && this.nb_unread_notifs > 0) {
-                let unread_notifs = this.notifications.filter((x) => x.read == false);
-                let unread_notifs_ids = unread_notifs.map(x => x.id);
+                let unread_notifs = this.notifications.filter(
+                    (x) => x.read == false
+                );
+                let unread_notifs_ids = unread_notifs.map((x) => x.id);
 
-                this.notifications.filter(x => unread_notifs_ids.includes(x.id)).forEach((notif) => {
-                    notif.read = true;
-                });
+                this.notifications
+                    .filter((x) => unread_notifs_ids.includes(x.id))
+                    .forEach((notif) => {
+                        notif.read = true;
+                    });
 
                 let data = {
-                    "read_notifications_ids": unread_notifs_ids,
+                    read_notifications_ids: unread_notifs_ids,
                 };
 
-                axios
-                    .post("/api/entreprise/read-notifications", data);
+                axios.post("/api/entreprise/read-notifications", data);
             }
-        }
+        },
+        openNotifBox() {
+            this.show_notifications = true;
+
+            if (this.show_notifications && this.nb_unread_notifs > 0) {
+                let unread_notifs = this.notifications.filter(
+                    (x) => x.read == false
+                );
+                let unread_notifs_ids = unread_notifs.map((x) => x.id);
+
+                this.notifications
+                    .filter((x) => unread_notifs_ids.includes(x.id))
+                    .forEach((notif) => {
+                        notif.read = true;
+                    });
+
+                let data = {
+                    read_notifications_ids: unread_notifs_ids,
+                };
+
+                axios.post("/api/entreprise/read-notifications", data);
+            }
+        },
     },
     created() {
         this.getNotifications();
@@ -112,6 +149,89 @@ export default {
                 (e) => {
                     this.getNotifications();
                     this.$forceUpdate();
+                    if (
+                        e.notification.style == "info" ||
+                        e.notification.style == null
+                    ) {
+                        this.$toasted.show(e.notification.title, {
+                            keepOnHover: true,
+                            icon: {
+                                name: "❕",
+                            },
+                            position: "bottom-right",
+                            duration: 3000,
+                            className: "toast-info",
+
+                            action: [
+                                {
+                                    text: "Voir",
+                                    onClick: (e, toastObject) => {
+                                        window.scrollTo(0, 0);
+                                        this.openNotifBox();
+                                        toastObject.goAway(0);
+                                    },
+                                },
+                                {
+                                    text: "Fermer",
+                                    onClick: (e, toastObject) => {
+                                        toastObject.goAway(0);
+                                    },
+                                },
+                            ],
+                        });
+                    } else if (e.notification.style == "success") {
+                        this.$toasted.show(e.notification.title, {
+                            keepOnHover: true,
+                            icon: {
+                                name: "✔",
+                            },
+                            position: "bottom-right",
+                            className: "toast-success",
+                            duration: 3000,
+                            action: [
+                                {
+                                    text: "Voir",
+                                    onClick: (e, toastObject) => {
+                                        window.scrollTo(0, 0);
+                                        this.openNotifBox();
+                                        toastObject.goAway(0);
+                                    },
+                                },
+                                {
+                                    text: "Fermer",
+                                    onClick: (e, toastObject) => {
+                                        toastObject.goAway(0);
+                                    },
+                                },
+                            ],
+                        });
+                    } else {
+                        this.$toasted.show(e.notification.title, {
+                            keepOnHover: true,
+                            icon: {
+                                name: "❌",
+                            },
+                            position: "bottom-right",
+                            className: "toast-error",
+                            duration: 3000,
+                            action: [
+                                {
+                                    text: "Voir",
+                                    onClick: (e, toastObject) => {
+                                        window.scrollTo(0, 0);
+                                        this.openNotifBox();
+                                        toastObject.goAway(0);
+                                    },
+                                },
+                                {
+                                    text: "Fermer",
+                                    onClick: (e, toastObject) => {
+                                        toastObject.goAway(0);
+                                    },
+                                },
+                            ],
+                        });
+                    }
                 }
             );
         }
@@ -120,4 +240,22 @@ export default {
 </script>
 
 <style>
+.toast-info {
+    background-color: #c9e3ff !important;
+    color: #7abef8 !important;
+}
+
+.toast-success {
+    background-color: #def7ec !important;
+    color: #3c6e4e !important;
+}
+
+.toast-error {
+    background-color: #fde8e8 !important;
+    color: #ca1e1e !important;
+}
+
+.toasted-container .toasted .action {
+    color: black !important;
+}
 </style>

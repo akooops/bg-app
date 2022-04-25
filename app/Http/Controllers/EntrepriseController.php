@@ -733,7 +733,7 @@ class EntrepriseController extends Controller
 
             "icon_path" => "aaaaaaaaaaa",
 
-            "style" => "info",
+            "style" => "success",
         ];
         event(new NewNotification($notification));
         return Response::json(["message" => $message, "success" => true], 200);

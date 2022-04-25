@@ -1,168 +1,141 @@
-
- @font-face{
+@font-face {
     font-family: "ubuntu";
-    src: url("/css/webfonts/Ubuntu-Medium.ttf")
-  }
+    src: url("/css/webfonts/Ubuntu-Medium.ttf");
+}
 
-  @font-face{
+@font-face {
     font-family: "ubuntu-thin";
-    src: url("/css/webfonts/Ubuntu-Th.ttf")
-  }
+    src: url("/css/webfonts/Ubuntu-Th.ttf");
+}
 
-.load{
-  animation: rotation 1s infinite linear; 
-  
+.load {
+    animation: rotation 1s infinite linear;
 }
 @keyframes rotation {
-  100%{ transform:rotatey(360deg); }
+    100% {
+        transform: rotatey(360deg);
+    }
 }
 
+* {
+    scroll-behavior: smooth;
+}
 
-
-
-
-
-.horloge{
-  animation : shake infinite 7s forwards ;
+.horloge {
+    animation: shake infinite 7s forwards;
 }
 
 @keyframes shake {
-
-  0.1%{
-    transform: rotate(20deg); 
-  }
-  1.5%{
-    transform: rotate(-20deg); 
-  }
-  2.9%{
-    transform: rotate(20deg); 
-  }
-  4.1%{
-    transform: rotate(0deg); 
-  }
-
-
+    0.1% {
+        transform: rotate(20deg);
+    }
+    1.5% {
+        transform: rotate(-20deg);
+    }
+    2.9% {
+        transform: rotate(20deg);
+    }
+    4.1% {
+        transform: rotate(0deg);
+    }
 }
 
+.ubuntu {
+    font-family: "ubuntu";
+}
 
-
-
-
-
-
-
-
-
-
-  .ubuntu{
-      font-family: "ubuntu";
-  }
-
-
-  .icon-material span{
+.icon-material span {
     display: none;
-  }
+}
 
-  .icon-material:hover{
+.icon-material:hover {
     position: relative;
-  }
-  .icon-material:hover span{
-        padding: 5px 5px 5px 5px;
-        display: block ;
-        background: #B2D06B;
-        color: white;
-        z-index: 100;
-        left: 4em;
-        top: 2.5em;
-        position: absolute;
-        width: max-content;
-        border-radius: 4px;
-        font-size: medium;
-        
-        
-  }
+}
+.icon-material:hover span {
+    padding: 5px 5px 5px 5px;
+    display: block;
+    background: #b2d06b;
+    color: white;
+    z-index: 100;
+    left: 4em;
+    top: 2.5em;
+    position: absolute;
+    width: max-content;
+    border-radius: 4px;
+    font-size: medium;
+}
 
- /* customised scrol bar */
+/* customised scrol bar */
 
- ::-webkit-scrollbar {
-  width: 5px;
+::-webkit-scrollbar {
+    width: 5px;
 }
 
 ::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 5px rgba(128, 128, 128, 0.76); 
-  border-radius: 10px;
+    box-shadow: inset 0 0 5px rgba(128, 128, 128, 0.76);
+    border-radius: 10px;
 }
- 
 
 ::-webkit-scrollbar-thumb {
-  background: rgb(121, 119, 119); 
-  border-radius: 10px;
+    background: rgb(121, 119, 119);
+    border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(121, 119, 119, 0.594); 
+    background: rgba(121, 119, 119, 0.594);
 }
 
-
-  .rotate {
+.rotate {
     transform: rotate(180deg);
-  }
-  
+}
 
-  [title]:hover::after{
-    
-      content: attr(title);
-      color: #0B3434;
-      background-color: #B2D06B;
-      position: absolute;
-      top: -100%;
-      left: 0;
+[title]:hover::after {
+    content: attr(title);
+    color: #0b3434;
+    background-color: #b2d06b;
+    position: absolute;
+    top: -100%;
+    left: 0;
+}
 
-  }
-
-  .bg-pistache{
+.bg-pistache {
     background-color: rgba(178, 208, 107, 1);
-  }
+}
 
-  .pistache{
+.pistache {
     color: rgba(178, 208, 107, 1);
-  }
+}
 
-  .bg-vert-dark{
-    background-color: #0B3434;
-  }
+.bg-vert-dark {
+    background-color: #0b3434;
+}
 
-  .vert-dark{
-    color: #0B3434;
-  }
+.vert-dark {
+    color: #0b3434;
+}
 
-  .btn-pistache{
-    background-color: #B2D06B;
-  }
-  
-  .btn-pistache:hover{
+.btn-pistache {
+    background-color: #b2d06b;
+}
+
+.btn-pistache:hover {
     background-color: #eeffc7;
-  }
+}
 
-
-  .vert-sombre{
+.vert-sombre {
     color: rgba(11, 52, 52, 0.6);
+}
 
-  }
+.border-pistache {
+    border-left: 10px solid;
+    border-color: rgba(178, 208, 107, 1);
+}
 
-
-  .border-pistache{
-    border-left: 10px solid ;
-    border-color: rgba(178, 208, 107, 1) ;
-    
-  }
-
-  .margin-left-transparent{
+.margin-left-transparent {
     border-left: 10px solid;
     border-color: rgba(255, 255, 255, 0);
-  }
+}
 
-  .vert-titre{
-    color :rgba(11, 52, 52, 1);
-
-  }
+.vert-titre {
+    color: rgba(11, 52, 52, 1);
+}

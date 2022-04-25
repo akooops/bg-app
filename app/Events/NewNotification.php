@@ -27,6 +27,9 @@ class NewNotification implements ShouldBroadcast
         $this->notification["entreprise_id"] = $notification["entreprise_id"];
         $this->notification["type"] = $notification["type"];
         $this->notification["store"] = $notification["store"];
+        $this->notification["title"] = $notification["title"];
+        $this->notification["text"] = $notification["text"];
+        $this->notification["style"] = $notification["style"];
         
         if ($notification["store"] == true)
         {
