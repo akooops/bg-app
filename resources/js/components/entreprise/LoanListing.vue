@@ -52,40 +52,48 @@
 
         <Modal v-if="loan_modal" class="align-center">
             <template v-slot:content>
-                <div class="flex flex-col text-vN p-4">
-                    <h1 class="font-semibold text-3xl text-center">
+                <div class="flex flex-col text-vN p-4 gap-3">
+                    <h1 class="font-bold text-2xl font-heading">
                         Demande d'endettement
                     </h1>
+                    <div>
+                        <h2
+                            for="amount"
+                            class="text-vN text-lg font-heading font-medium"
+                        >
+                            Motant à endetter
+                        </h2>
+                        <input
+                            type="number"
+                            id="amount"
+                            name="amount"
+                            v-model="amount"
+                            class="ring-1 ring-tableBorder border-0 focus-within:ring-vert w-1/3"
+                            min="0"
+                            step="1000"
+                        />
+                    </div>
+                    <div>
+                        <h2
+                            for="deadline"
+                            class="text-vN text-lg font-heading font-medium"
+                        >
+                            Durée du prêt (Semaines)
+                        </h2>
+                        <input
+                            type="number"
+                            id="deadline"
+                            name="deadline"
+                            v-model="deadline"
+                            class="ring-1 ring-tableBorder border-0 focus-within:ring-vert w-1/3"
+                            min="0"
+                        />
 
-                    <h2 for="amount" class="font-semibold mt-5 text-xl my-1">
-                        Motant à endetter
-                    </h2>
-                    <input
-                        type="number"
-                        id="amount"
-                        name="amount"
-                        v-model="amount"
-                        class="w-1/2"
-                        min="0"
-                        step="1000"
-                    />
-
-                    <h2 for="deadline" class="font-semibold mt-5 text-xl my-1">
-                        Durée du prêt (Semaines)
-                    </h2>
-                    <input
-                        type="number"
-                        id="deadline"
-                        name="deadline"
-                        v-model="deadline"
-                        class="w-1/2"
-                        min="0"
-                    />
-
-                    <p v-if="ratio != null">
-                        Le ratio d'endettement sera de:
-                        {{ ratio }}%
-                    </p>
+                        <p v-if="ratio != null">
+                            Le ratio d'endettement sera de:
+                            {{ ratio }}%
+                        </p>
+                    </div>
 
                     <div class="mt-6 flex items-center">
                         <input
@@ -94,7 +102,7 @@
                             :checked="accept"
                             class="focus:ring-gray-500 h-4 w-4 text-gray-600 border-gray-150 rounded"
                         />
-                        <label class="text-yellow-500 ml-2"
+                        <label class="text-jaune ml-2"
                             >Je veillerai, moi le representant de l'entreprise
                             <span class="font-bold">{{ entreprise.name }}</span>
                             à honorer les termes du contrat.</label
@@ -107,7 +115,7 @@
                         </p>
                         <p
                             v-if="create_error_message != ''"
-                            class="text-red-600"
+                            class="text-red-500"
                         >
                             {{ create_error_message }}
                         </p>
@@ -141,76 +149,86 @@
             </template>
         </Modal>
 
-        <Modal v-if="pay_loan_modal" class="align-center">
+        <Modal v-if="pay_loan_modal">
             <template v-slot:content>
-                <div class="flex flex-col text-vN py-4 px-6">
-                    <h1 class="font-semibold text-2xl text-vert">
+                <div class="flex flex-col text-vN py-4 px-6 gap-6">
+                    <h1
+                        class="font-bold text-2xl text-vN font-heading text-center"
+                    >
                         Remboursement de detttes
                     </h1>
-                    <h2 class="mt-3 font-semibold text-xl py-2">
-                        Montant restant
-                    </h2>
-                    <p
-                        class="text-yellow-600 border-2 border-gray-200 py-2 pl-2 w-max pr-6"
-                    >
-                        {{ parseInt(selected_loan.remaining_amount) }} DA
-                    </p>
+                    <div>
+                        <h2 class="text-vN text-lg font-heading font-medium">
+                            Montant restant
+                        </h2>
+                        <p
+                            class="border w-full h-10 flex items-center pl-4 text-jaune border-tableBorder text-jaune"
+                        >
+                            {{ parseInt(selected_loan.remaining_amount) }} DA
+                        </p>
+                    </div>
+                    <div>
+                        <h2
+                            for="refund_amount"
+                            class="text-vN text-lg font-heading font-medium"
+                        >
+                            Montant à rembourser
+                        </h2>
+                        <input
+                            id="refund_amount"
+                            type="number"
+                            name="refund_amount"
+                            v-model="refund_amount"
+                            class="ring-1 ring-tableBorder border-0 focus-within:ring-vert"
+                            :max="selected_loan.remaining_amount"
+                            :min="0"
+                            :step="
+                                selected_loan.remaining_amount -
+                                    refund_amount >=
+                                10000
+                                    ? 10000
+                                    : selected_loan.remaining_amount -
+                                          refund_amount >=
+                                      1000
+                                    ? 1000
+                                    : selected_loan.remaining_amount -
+                                          refund_amount >=
+                                      100
+                                    ? 100
+                                    : selected_loan.remaining_amount -
+                                          refund_amount >=
+                                      10
+                                    ? 10
+                                    : 1
+                            "
+                        />
+                    </div>
+                    <div>
+                        <h2 class="text-vN text-lg font-heading font-medium">
+                            Motant restant après payment
+                        </h2>
+                        <p
+                            class="border w-full h-10 flex items-center pl-4 text-vert border-tableBorder"
+                        >
+                            {{ selected_loan.remaining_amount - refund_amount }}
+                            UM
+                        </p>
 
-                    <label
-                        for="refund_amount"
-                        class="mt-3 text-xl py-2 font-semibold"
-                    >
-                        Montant à rembourser
-                    </label>
-                    <input
-                        id="refund_amount"
-                        type="number"
-                        name="refund_amount"
-                        v-model="refund_amount"
-                        class="w-full rounded-sm text-vert border-gray-200"
-                        :max="selected_loan.remaining_amount"
-                        :min="0"
-                        :step="
-                            selected_loan.remaining_amount - refund_amount >=
-                            10000
-                                ? 10000
-                                : selected_loan.remaining_amount -
-                                      refund_amount >=
-                                  1000
-                                ? 1000
-                                : selected_loan.remaining_amount -
-                                      refund_amount >=
-                                  100
-                                ? 100
-                                : selected_loan.remaining_amount -
-                                      refund_amount >=
-                                  10
-                                ? 10
-                                : 1
-                        "
-                    />
-
-                    <h2 class="font-semibold mt-3 text-xl py-2">
-                        Motant restant après payment
-                    </h2>
-                    <p class="border-2 border-gray-200 py-2 pl-2">
-                        {{ selected_loan.remaining_amount - refund_amount }} UM
-                    </p>
-
-                    <p v-if="pay_message != ''" class="text-green-500">
-                        {{ pay_message }}
-                    </p>
-                    <p v-if="pay_error_message != ''" class="text-red-600">
-                        {{ pay_error_message }}
-                    </p>
+                        <p v-if="pay_message != ''" class="text-green-500">
+                            {{ pay_message }}
+                        </p>
+                        <p v-if="pay_error_message != ''" class="text-red-500">
+                            {{ pay_error_message }}
+                        </p>
+                    </div>
 
                     <div class="flex flex-row mt-9 gap-2 ml-auto">
                         <button
-                            class="text-lg font-semibold px-4 py-2 rounded-xl"
+                            class="text-vN font-normal px-3 py-2 rounded"
                             :class="
                                 can_pay
-                                    ? 'hover:bg-gray-200'
-                                    : 'hover:bg-white opacity-50'
+                                    ? 'hover:text-vert'
+                                    : 'bg-gray-100 text-opacity-50'
                             "
                             :disabled="!can_pay"
                             @click="
@@ -221,7 +239,7 @@
                             Payer
                         </button>
                         <button
-                            class="text-lg font-semibold opacity-80 hover:bg-gray-200 px-4 py-2 rounded-xl"
+                            class="hover:text-black text-vN text-opacity-80 px-3 py-2 rounded"
                             @click="closePayModal"
                         >
                             Annuler
@@ -233,20 +251,13 @@
 
         <div class="w-full" v-if="loans_loaded">
             <div class="flex flex-row justify-between mt-5">
-                <h1 class="text-vN font-semibold text-2xl my-auto">
+                <h1 class="text-vN font-semibold text-2xl my-auto font-heading">
                     Liste des demandes d'endettement :
                 </h1>
                 <button
                     v-if="loans.length > 0"
-                    class="text-vN rounded-3xl px-5 py-2 font-semibold"
+                    class="bg-gradient-to-t from-lightVert to-lighterVert hover:opacity-80 text-vN px-4 py-2 shadow-lg rounded-full text-center font-semibold"
                     @click="openModal"
-                    style="
-                        background: linear-gradient(
-                            180deg,
-                            rgba(178, 208, 107, 0.09) 0%,
-                            rgba(178, 208, 107, 0.33) 100%
-                        );
-                    "
                 >
                     Créer une demande d'endettement
                 </button>
@@ -274,52 +285,54 @@
 
             <div v-else class="mt-4">
                 <div
-                    class="w-full bg-transparent shadow-md rounded mt-5 overflow-y-scroll"
-                    style="height: 50vh"
+                    class="w-full bg-white shadow-md rounded mt-5 overflow-y-scroll"
+                    style="max-height: 60vh"
                 >
-                    <table class="w-full table-auto bg-white">
+                    <table class="border-collapse w-full table-auto">
                         <thead
                             class="sticky top-0 border-b bg-white font-semibold text-vN"
                         >
                             <tr>
-                                <th
-                                    class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
-                                >
+                                <th class="p-3 text-sm table-cell select-none">
                                     Banque
                                 </th>
                                 <th
                                     class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                                    @click="sort('amount')"
                                 >
                                     Montant prêté
                                 </th>
                                 <th
                                     class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                                    @click="sort('loan_creation')"
                                 >
                                     Semaine du prêt
                                 </th>
                                 <th
                                     class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                                    @click="sort('days')"
                                 >
                                     Semaine de remise (prévue)
                                 </th>
                                 <th
                                     class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                                    @click="sort('ratio')"
                                 >
                                     Taux d'interets
                                 </th>
                                 <th
                                     class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                                    @click="sort('remaining_amount')"
                                 >
                                     Montant à rendre restant
                                 </th>
                                 <th
                                     class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                                    @click="sort('payment_status')"
                                 >
                                     Payé ?
                                 </th>
-                                <th
-                                    class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
-                                >
+                                <th class="p-3 text-sm table-cell select-none">
                                     Action
                                 </th>
                             </tr>
@@ -328,32 +341,32 @@
                             <tr
                                 v-for="loan in loans"
                                 v-bind:key="loan.loan_id"
-                                class="flex lg:table-row flex-row lg:flex-row flex-wrap lg:flex-no-wrap lg:mb-0 border-b border-gray text-vN font-light text-sm h-14"
+                                class="bg-white flex lg:table-row flex-row lg:flex-row flex-wrap lg:flex-no-wrap lg:mb-0 border-b border-gray text-vN font-light text-sm h-14"
                             >
                                 <td
-                                    class="p-1 text-center block lg:table-cell relative lg:static"
+                                    class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
                                 >
                                     B locale
                                 </td>
                                 <td
-                                    class="w-full lg:w-auto p-1 text-center lg:table-cell relative lg:static"
+                                    class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
                                 >
                                     {{ loan.amount }}
                                 </td>
                                 <td
-                                    class="w-full lg:w-auto p-1 text-center lg:table-cell relative lg:static"
+                                    class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
                                 >
                                     {{ loan.loan_creation }}
                                 </td>
 
                                 <td
-                                    class="w-full lg:w-auto p-1 text-center lg:table-cell relative lg:static"
+                                    class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
                                 >
                                     {{ loan.days }}
                                 </td>
 
                                 <td
-                                    class="w-full lg:w-auto p-1 text-center lg:table-cell relative lg:static"
+                                    class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
                                 >
                                     {{ loan.ratio ? loan.ratio : "0" }} %
                                 </td>
@@ -367,8 +380,8 @@
                                     class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
                                     :class="
                                         loan.payment_status == 1
-                                            ? 'text-green-500'
-                                            : ''
+                                            ? 'text-vert'
+                                            : 'text-vN'
                                     "
                                 >
                                     {{
@@ -378,7 +391,7 @@
                                     }}
                                 </td>
                                 <td
-                                    class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static pl-4"
+                                    class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
                                 >
                                     <button
                                         v-if="
@@ -386,12 +399,12 @@
                                             'Acceptée/Partiellement acceptée'
                                         "
                                         @click="openPayModal(loan)"
-                                        class="rounded-3xl font-semibold px-3 py-2 bg-vert text-white"
+                                        class="rounded-3xl font-semibold px-3 py-2 text-white"
                                         :disabled="loan.payment_status == 1"
                                         :class="
                                             loan.payment_status != 1
-                                                ? 'hover:bg-opacity-50'
-                                                : ''
+                                                ? 'bg-vert hover:bg-opacity-50'
+                                                : 'bg-vN bg-opacity-70'
                                         "
                                     >
                                         {{
@@ -623,6 +636,19 @@ export default {
                         this.message = resp.data.message;
                     });
             }
+        },
+        sort(key) {
+            this.reverse = !this.reverse;
+            this.loans.sort((a, b) => {
+                if (a[key] < b[key]) {
+                    return this.reverse ? -1 : 1;
+                }
+                if (a[key] > b[key]) {
+                    return this.reverse ? 1 : -1;
+                }
+                console.log(this.commands);
+                return 0;
+            });
         },
     },
     created() {
