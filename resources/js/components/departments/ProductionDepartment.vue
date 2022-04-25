@@ -69,51 +69,96 @@
                 <h1 class="text-vN text-lg font-medium font-heading">
                     Machines
                 </h1>
-                <button @click="showMachines = !showMachines">
+                <div
+                    v-if="showMachines && indicators_loaded"
+                    class="flex flex-col gap-4 items-center bg-white absolute w-full px-4 py-2 shadow-sm rounded-xl text-vN"
+                    style="bottom: -350px; height: 350px"
+                >
+                    <div class="flex justify-between w-full">
+                        <div class="flex flex-col items-center gap-3">
+                            <button
+                                @click="select_lvl('machines_lv1_health')"
+                                class="px-2 py-1 rounded-md"
+                                :class="
+                                    selected_lvl == 'machines_lv1_health'
+                                        ? 'bg-vN text-white'
+                                        : 'bg-white text-vN'
+                                "
+                            >
+                                Niveau 1
+                            </button>
+                            <p class="text-vert">
+                                {{ indicators["nb_machines_lv1"].value }}
+                            </p>
+                            <p class="text-[#0B3434A6]">Occupés</p>
+                            <p class="text-jaune">
+                                {{ indicators["nb_machines_lv1_busy"].value }}
+                            </p>
+                        </div>
+                        <div class="flex flex-col items-center gap-3">
+                            <button
+                                @click="select_lvl('machines_lv2_health')"
+                                class="px-2 py-1 rounded-md"
+                                :class="
+                                    selected_lvl == 'machines_lv2_health'
+                                        ? 'bg-vN text-white'
+                                        : 'bg-white text-vN'
+                                "
+                            >
+                                Niveau 2
+                            </button>
+                            <p class="text-vert">
+                                {{ indicators["nb_machines_lv2"].value }}
+                            </p>
+                            <p class="text-[#0B3434A6]">Occupés</p>
+                            <p class="text-jaune">
+                                {{ indicators["nb_machines_lv2_busy"].value }}
+                            </p>
+                        </div>
+                        <div class="flex flex-col items-center gap-3">
+                            <button
+                                @click="select_lvl('machines_lv3_health')"
+                                class="px-2 py-1 rounded-md"
+                                :class="
+                                    selected_lvl == 'machines_lv3_health'
+                                        ? 'bg-vN text-white'
+                                        : 'bg-white text-vN'
+                                "
+                            >
+                                Niveau 3
+                            </button>
+                            <p class="text-vert">
+                                {{ indicators["nb_machines_lv3"].value }}
+                            </p>
+                            <p class="text-[#0B3434A6]">Occupés</p>
+                            <p class="text-jaune">
+                                {{ indicators["nb_machines_lv3_busy"].value }}
+                            </p>
+                        </div>
+                    </div>
+                    <IndicatorGauge
+                        :data="[
+                            {
+                                value: Math.round(
+                                    indicators[selected_lvl].value * 100
+                                ),
+                                name: lvl,
+                            },
+                        ]"
+                    />
+                </div>
+                <button
+                    v-if="indicators_loaded"
+                    @click="showMachines = !showMachines"
+                >
                     <img
-                        class="h-5 w-5"
                         src="/assets/icons/chevron-down.svg"
-                        alt="arrow down icon"
+                        alt="chev"
+                        class="h-4 w-4"
+                        style="transition: 0.2s"
+                        :class="showMachines == true ? 'rotate' : ''"
                     />
                 </button>
-                <div
-                    v-if="showMachines"
-                    class="flex items-center gap-2 absolute z-999 -bottom-11 right-0 bg-white border-opacity-5 border-vN shadow-md p-2 rounded-lg"
-                >
-                    Niveau 1: {{ indicators["nb_machines_lv1"].value }} |
-                    Occupés: {{ indicators["nb_machines_lv1_busy"].value }} |
-                    Santé:
-                    {{
-                        (Math.round(
-                            indicators["machines_lv1_health"].value *
-                                Math.pow(10, 2)
-                        ) *
-                            100) /
-                        Math.pow(10, 2)
-                    }}%<br />
-                    Niveau 2: {{ indicators["nb_machines_lv2"].value }} |
-                    Occupés: {{ indicators["nb_machines_lv2_busy"].value }} |
-                    Santé:
-                    {{
-                        (Math.round(
-                            indicators["machines_lv2_health"].value *
-                                Math.pow(10, 2)
-                        ) *
-                            100) /
-                        Math.pow(10, 2)
-                    }}%<br />
-                    Niveau 3: {{ indicators["nb_machines_lv3"].value }} |
-                    Occupés: {{ indicators["nb_machines_lv3_busy"].value }} |
-                    Santé:
-                    {{
-                        (Math.round(
-                            indicators["machines_lv3_health"].value *
-                                Math.pow(10, 2)
-                        ) *
-                            100) /
-                        Math.pow(10, 2)
-                    }}%<br />
-                </div>
             </div>
 
             <div
@@ -127,21 +172,58 @@
                 <h1 class="text-vN text-lg font-medium font-heading">
                     Employés
                 </h1>
-                <button @click="showEmployees = !showEmployees">
+                <button
+                    v-if="indicators_loaded"
+                    @click="showEmployees = !showEmployees"
+                >
                     <img
-                        class="h-5 w-5"
                         src="/assets/icons/chevron-down.svg"
-                        alt="arrow down icon"
+                        alt="chev"
+                        class="h-4 w-4"
+                        style="transition: 0.2s"
+                        :class="showEmployees == true ? 'rotate' : ''"
                     />
                 </button>
                 <div
-                    v-if="showEmployees"
-                    class="flex items-center gap-2 absolute z-999 -bottom-11 right-0 bg-white border-opacity-5 border-vN shadow-md p-2 rounded-lg"
+                    v-if="showEmployees && indicators_loaded"
+                    class="flex flex-col gap-4 items-center bg-white absolute w-full px-4 py-2 shadow-sm rounded-xl text-vN bottom-[-390px]"
                 >
-                    Simples: {{ indicators["nb_workers_lv1"].value }} <br />
-                    Experts: {{ indicators["nb_workers_lv2"].value }} <br />
-                    Humeur:
-                    {{ Math.round(indicators["workers_mood"].value * 100) }} %
+                    <h1 class="font-heading font-medium">
+                        Humeur des Employés
+                    </h1>
+                    <IndicatorGauge
+                        :data="[
+                            {
+                                value: Math.round(
+                                    indicators['workers_mood'].value * 100
+                                ),
+                                name: 'Humeur',
+                            },
+                        ]"
+                    />
+                    <div class="mt-[-100px] flex justify-around w-full">
+                        <div class="flex flex-col items-center gap-3">
+                            <p class="bg-white text-vN font-medium">Simples</p>
+                            <p class="text-vert">
+                                {{ indicators["nb_workers_lv1"].value }}
+                            </p>
+                            <p class="text-[#0B3434A6]">Occupés</p>
+                            <p class="text-jaune">
+                                {{ indicators["nb_workers_lv1_busy"].value }}
+                            </p>
+                        </div>
+                        <div class="border-r h-[130px]"></div>
+                        <div class="flex flex-col items-center gap-3">
+                            <p class="bg-white text-vN font-medium">Experts</p>
+                            <p class="text-vert">
+                                {{ indicators["nb_workers_lv2"].value }}
+                            </p>
+                            <p class="text-[#0B3434A6]">Occupés</p>
+                            <p class="text-jaune">
+                                {{ indicators["nb_workers_lv2_busy"].value }}
+                            </p>
+                        </div>
+                    </div>
                     <br />
                 </div>
             </div>
@@ -423,6 +505,7 @@ import Modal from "../Modal";
 import Indicator from "./ui/Indicator";
 import "echarts";
 import VChart from "vue-echarts";
+import IndicatorGauge from "./ui/IndicatorGauge";
 export default {
     name: "ProductionDepartment",
     components: {
@@ -430,6 +513,7 @@ export default {
         StatCard,
         ProdCenter,
         StockProd,
+        IndicatorGauge,
         Modal,
         Indicator,
         VChart,
@@ -438,7 +522,8 @@ export default {
     data() {
         return {
             reverse: false,
-
+            selected_lvl: "machines_lv1_health",
+            lvl_value: 0,
             products: [],
 
             market_demand: [],
@@ -487,8 +572,39 @@ export default {
                 this.indicators["dist_unit_cost"].value
             );
         },
+        lvl() {
+            if (this.selected_lvl == "machines_lv1_health") {
+                return "Niveau 1";
+            }
+            if (this.selected_lvl == "machines_lv2_health") {
+                return "Niveau 2";
+            }
+            if (this.selected_lvl == "machines_lv3_health") {
+                return "Niveau 3";
+            }
+        },
     },
     methods: {
+        select_lvl(lvl) {
+            this.selected_lvl = lvl;
+            switch (lvl) {
+                case "Niveau 1":
+                    this.lvl_value =
+                        this.indicators["machines_lv1_health"].value;
+                    break;
+                case "Niveau 2":
+                    this.lvl_value =
+                        this.indicators["machines_lv2_health"].value;
+                    break;
+                case "Niveau 3":
+                    this.lvl_value =
+                        this.indicators["machines_lv3_health"].value;
+                    break;
+                default:
+                    this.lvl_value =
+                        this.indicators["machines_lv1_health"].value;
+            }
+        },
         showProductDescription(i) {
             let product = this.products[i];
             this.product_info = product;
@@ -606,6 +722,11 @@ export default {
 
         this.getProductsStock();
     },
+    watch: {
+        indicators_loaded() {
+            this.lvl_value = this.indicators["machines_lv1_health"].value;
+        },
+    },
     mounted() {
         window.Echo.channel("entreprise_" + this.user.id).listen(
             "NewNotification",
@@ -629,6 +750,7 @@ export default {
 
                 if (e.notification.type == "MachinesUpdate") {
                     this.getProdNumbers();
+
                     this.$forceUpdate();
                 }
 
