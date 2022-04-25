@@ -82,7 +82,7 @@
                         id="workers"
                         type="number"
                         name="workers"
-                        v-model="workers"
+                        v-model="nb_workers_to_hire"
                         class="h-full w-full rounded-sm"
                         min="1"
                     />
@@ -98,7 +98,7 @@
                 <p>
                     Le salaire pour le nombre d'employés choisis est fixé a :
                     <span class="text-green-700 font-bold">
-                        {{ salary_lv1 * workers }}
+                        {{ salary_lv1 * nb_workers_to_hire }}
                     </span>
                 </p>
 
@@ -414,10 +414,10 @@
 
             </div>
             <div class="flex flex-col justify-center gap-6">
-                <button @click="workers_modal=true" :disabled="!indicators_loaded" class="rounded-3xl font-semibold bg-vN text-white py-2 " >Recuruter des employés</button>
-                <button @click="workshop_modal=true" :disabled="!indicators_loaded" class="rounded-3xl font-semibold bg-vN text-white py-2 " >Former des employées</button>
-                <button @click="prime_modal = true" :disabled="!indicators_loaded" class="rounded-3xl  font-semibold bg-vN text-white py-2 px-3">Ajouter une prime au employées</button>
-                <button  @click="fire_modal = true"  :disabled="!indicators_loaded" class="rounded-3xl font-semibold bg-vN text-white py-2 ">Virer des employées</button>
+                <button @click="workers_modal=true" :disabled="!indicators_loaded || !data_loaded" class="rounded-3xl font-semibold text-white py-2 " :class="!indicators_loaded || !data_loaded ? 'bg-gray-200' : 'bg-vN'" >Recuruter des employés</button>
+                <button @click="workshop_modal=true" :disabled="!indicators_loaded || !data_loaded" class="rounded-3xl font-semibold text-white py-2 " :class="!indicators_loaded || !data_loaded ? 'bg-gray-200' : 'bg-vN'" >Former des employées</button>
+                <button @click="prime_modal = true" :disabled="!indicators_loaded || !data_loaded" class="rounded-3xl  font-semibold text-white py-2 px-3" :class="!indicators_loaded || !data_loaded ? 'bg-gray-200' : 'bg-vN'">Ajouter une prime au employées</button>
+                <button  @click="fire_modal = true"  :disabled="!indicators_loaded || !data_loaded" class="rounded-3xl font-semibold text-white py-2 " :class="!indicators_loaded || !data_loaded ? 'bg-gray-200' : 'bg-vN'">Virer des employées</button>
 
             </div>
         </div>
@@ -432,10 +432,6 @@ import Modal from "../Modal";
 export default {
     props: [
         "user",
-        "salary_lv1",
-        "salary_lv2",
-        "workshop_price",
-        "bonus_coeff",
     ],
     components: {
         SpeedoMeter,
@@ -446,25 +442,38 @@ export default {
     data() {
         return {
             indicators: [],
-            workers_modal: false,
-            workers: 1,
+
+            nb_workers_to_hire: 1,
+            nb_workers_to_train: 1,
+            nb_workers_lv1_to_fire: 0,
+            nb_workers_lv2_to_fire: 0,
+
             message: "",
             error_message: "",
-            nb_workers_to_train: 1,
+
+            workers_modal: false,
             workshop_modal: false,
             prime_modal: false,
             fire_modal: false,
+
             bonus: 0,
-            nb_workers_lv1_to_fire: 0,
-            nb_workers_lv2_to_fire: 0,
+
             prime_sent: false,
             workshop_sent: false,
             hire_sent: false,
             fire_sent: false,
+
             show_success: false,
             show_error: false,
+
             indicators_loaded: false,
+            data_loaded: false,
+
             caisse: 0,
+            salary_lv1: 0,
+            salary_lv2: 0,
+            workshop_price: 0,
+            bonus_coeff: 0,
         };
     },
     computed: {
@@ -551,7 +560,7 @@ export default {
             this.workers_modal = false;
             axios
                 .post("/api/entreprise/hr/hire", {
-                    workers: this.workers,
+                    workers: this.nb_workers_to_hire,
                     entreprise_id: this.user.id,
                 })
                 .then((resp) => {
@@ -566,7 +575,7 @@ export default {
                     this.message = resp.data.message;
 
                     this.hire_sent = false;
-                    this.workers = 0;
+                    this.nb_workers_to_hire = 1;
                 });
         },
         fireWorkers() {
@@ -604,9 +613,22 @@ export default {
                     this.indicators_loaded = true;
                 });
         },
+        getHrData() {
+            axios
+                .get("/api/entreprise/hr/get-data", {})
+                .then((resp) => {
+                    this.workshop_price = resp.data.workshop_price;
+                    this.salary_lv1 = resp.data.salary_lv1;
+                    this.salary_lv2 = resp.data.salary_lv2;
+                    this.bonus_coeff = resp.data.bonus_coeff;
+
+                    this.data_loaded = true;
+                });
+        }
     },
     created() {
         this.getIndiators();
+        this.getHrData();
 
         axios
             .get("/api/navbar", {
@@ -631,6 +653,7 @@ export default {
 
                 if (e.notification.type == "AdminNotif") {
                     this.getIndiators();
+                    this.getHrData();
                     this.$forceUpdate();
                 }
             }

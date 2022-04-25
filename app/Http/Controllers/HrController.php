@@ -19,13 +19,27 @@ class HrController extends Controller
             "nb_workers_to_hire",
             "workers_mood", "productivity_coeff"
         ];
+
         $entreprise_id = $request->entreprise_id;
         $resp = [];
+
         foreach ($keys as $ind) {
             $value = $this->getIndicator($ind, $entreprise_id);
             $resp[$ind] = $value;
         }
         return $resp;
+    }
+
+    public function getHrData(Request $request)
+    {
+        $data = [
+            "workshop_price" => (int) $this->get_game_setting('workshop_price'),
+            "salary_lv1" => (int) $this->get_game_setting("salary_lv1"),
+            "salary_lv2" => (int) $this->get_game_setting("salary_lv2"),
+            "bonus_coeff" => $this->get_game_setting("bonus_coeff"),
+        ];
+
+        return $data;
     }
 
     public function hireWorkers(Request $request)

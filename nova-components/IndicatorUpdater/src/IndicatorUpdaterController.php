@@ -165,6 +165,23 @@ class IndicatorUpdaterController
 
         $this->set_game_setting($code, $value);
 
+        $entreprises = Entreprise::all();
+        foreach ($entreprises as $entrep) {
+            $notification = [
+                "entreprise_id" => $entrep->id,
+                "type" => "AdminNotif",
+
+                "store" => false,
+
+                "text" => "",
+                "title" => "",
+                "icon_path" => "",
+
+                "style" => "",
+            ];
+            event(new NewNotification($notification));
+        }
+
         if($code == 'current_date') {
             event(new SimulationDateChanged());
         }
@@ -177,6 +194,23 @@ class IndicatorUpdaterController
         $code = $request->code;
 
         $this->reset_game_setting($code);
+
+        $entreprises = Entreprise::all();
+        foreach ($entreprises as $entrep) {
+            $notification = [
+                "entreprise_id" => $entrep->id,
+                "type" => "AdminNotif",
+
+                "store" => false,
+
+                "text" => "",
+                "title" => "",
+                "icon_path" => "",
+
+                "style" => "",
+            ];
+            event(new NewNotification($notification));
+        }
 
         if ($code == 'current_date') {
             event(new SimulationDateChanged());

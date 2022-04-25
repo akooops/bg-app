@@ -37,7 +37,6 @@ Route::prefix("entreprise")->group(function () {
 
 	Route::get("/production/indicators", [EntrepriseController::class, "getProdIndicators"]);
     Route::get("/marketing/indicators", [MarketingController::class, "getMarketingIndicators"]);
-    Route::get("/hr/indicators", [HrController::class, "getHrIndicators"]);
 
     Route::post("/machine/buy", [EntrepriseController::class, "buyMachine"]);
     Route::post("/machine/sell", [EntrepriseController::class, "sellMachine"]);
@@ -45,9 +44,10 @@ Route::prefix("entreprise")->group(function () {
 
     Route::post("/action/apply", [EntrepriseController::class, "applyProdAction"]);
 
+    Route::get("/hr/indicators", [HrController::class, "getHrIndicators"]);
+    Route::get("/hr/get-data", [HrController::class, "getHrData"]);
     Route::post("/hr/hire", [HrController::class, "hireWorkers"]);
     Route::post("/hr/fire", [HrController::class, "fireWorkers"]);
-
     Route::post("/hr/launch-workshop", [HrController::class, "launchWorkshop"]);
     Route::post("/hr/prime-workers", [HrController::class, "primeWorkers"]);
 

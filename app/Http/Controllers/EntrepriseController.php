@@ -546,7 +546,7 @@ class EntrepriseController extends Controller
 
     function getAllProductions(Request $request)
     {
-        $productions = DB::table("productions")->where("entreprise_id", "=", $request->entreprise_id)->get();
+        $productions = DB::table("productions")->where("entreprise_id", "=", $request->entreprise_id)->orderBy('creation_date')->get();
         $productions = $productions->map(function ($p) {
             $product = Product::find($p->product_id);
             return [
