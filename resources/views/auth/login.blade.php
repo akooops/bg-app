@@ -23,14 +23,14 @@
             <div>
                 <x-label for="email" :value="__('Email')" />
 
-                <x-input id="email" class="block mt-1 w-full" placeholder="username@bg.iec" type="email" name="email" :value="old('email')" required autofocus />
+                <x-input id="email" class="block mt-1 w-full px-3 py-1" placeholder="username@bg.iec" type="email" name="email" :value="old('email')" required autofocus />
             </div>
 
             <!-- Password -->
             <div class="mt-4 relative">
                 <x-label for="password" :value="__('Password')" />
 
-                <x-input id="password" class="block mt-1 w-full" type="password" placeholder='..........' name="password" required autocomplete="current-password" />
+                <x-input id="password" class="block mt-1 w-full px-3 py-1" type="password" placeholder='..........' name="password" required autocomplete="current-password" />
 
                 <img id='closed' src='/assets/icons/closedeye.svg' alt='eye' class="absolute right-5 bottom-3" onclick="toggleShow()" />
                 <img id='open' src='/assets/icons/openeye.svg' alt='eye' class="hidden absolute right-5 bottom-3" onclick="toggleShow()" />
