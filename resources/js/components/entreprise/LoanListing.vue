@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div
+        <!-- <div
             v-if="show_success"
             class="my-2 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative"
             role="alert"
@@ -48,7 +48,7 @@
                     />
                 </svg>
             </span>
-        </div>
+        </div> -->
 
         <Modal v-if="loan_modal" class="align-center">
             <template v-slot:content>

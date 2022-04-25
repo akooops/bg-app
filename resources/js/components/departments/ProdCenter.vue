@@ -1,6 +1,6 @@
 <template>
     <div class="w-full">
-        <div
+        <!-- <div
             v-if="show_success"
             class="my-2 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative"
             role="alert"
@@ -48,7 +48,7 @@
                     />
                 </svg>
             </span>
-        </div>
+        </div> -->
 
         <div class="flex gap-6 mt-10">
             <div
@@ -984,6 +984,15 @@ export default {
 
                     this.$emit("prodLaunched");
                     this.prod_launched = false;
+                    this.$toasted.success("Production lancée", {
+                        keepOnHover: true,
+                        icon: {
+                            name: "✔",
+                        },
+                        position: "bottom-right",
+                        className: "toast-success",
+                        duration: 3000,
+                    });
                 })
                 .catch((e) => {
                     this.show_error = true;
@@ -1233,6 +1242,15 @@ export default {
                         }
 
                         this.message = resp.data.message;
+                        this.$toasted.success("Machine(s) Achetée(s)", {
+                            keepOnHover: true,
+                            icon: {
+                                name: "✔",
+                            },
+                            position: "bottom-right",
+                            className: "toast-success",
+                            duration: 2000,
+                        });
                     });
             } else if (this.machine.transaction == "sell") {
                 // let nb_machines = 0;
@@ -1288,6 +1306,15 @@ export default {
                         }
 
                         this.message = resp.data.message;
+                        this.$toasted.success("Machine(s) Vendue(s)", {
+                            keepOnHover: true,
+                            icon: {
+                                name: "✔",
+                            },
+                            position: "bottom-right",
+                            className: "toast-success",
+                            duration: 2000,
+                        });
                     });
             }
         },
@@ -1363,7 +1390,27 @@ export default {
                     if (resp.data.success) {
                         this.show_success = true;
                         this.show_error = false;
+                        this.$toasted.show(resp.data.message, {
+                            keepOnHover: true,
+                            singleton: true,
+                            icon: {
+                                name: "✔",
+                            },
+                            position: "bottom-right",
+                            className: "toast-success",
+                            duration: 1000,
+                        });
                     } else {
+                        this.$toasted.show(resp.data.message, {
+                            keepOnHover: true,
+                            singleton: true,
+                            icon: {
+                                name: "❌",
+                            },
+                            position: "bottom-right",
+                            className: "toast-error",
+                            duration: 1000,
+                        });
                         this.show_success = false;
                         this.show_error = true;
                     }
@@ -1397,3 +1444,14 @@ export default {
     },
 };
 </script>
+
+<style>
+.toast-success {
+    background-color: #def7ec !important;
+    color: #3c6e4e !important;
+}
+.toast-error {
+    background-color: #fde8e8 !important;
+    color: #ca1e1e !important;
+}
+</style>

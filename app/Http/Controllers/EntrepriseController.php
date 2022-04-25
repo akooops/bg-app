@@ -277,7 +277,7 @@ class EntrepriseController extends Controller
             "text" => $message,
             "icon_path" => "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",      // ADD ICON HERE LATER
 
-            "style" => "info",
+            "style" => "success",
         ];
         event(new NewNotification($notification));
 

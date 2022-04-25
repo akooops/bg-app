@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div
+        <!-- <div
             v-if="show_success"
             class="my-2 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative"
             role="alert"
@@ -48,7 +48,7 @@
                     />
                 </svg>
             </span>
-        </div>
+        </div> -->
 
         <Modal v-if="ad_modal">
             <template v-slot:content>
@@ -211,105 +211,109 @@
                         >
                             Créer une campagne publicitaire
                         </button>
-
-                        <table class="w-full border-collapse">
-                            <thead
-                                class="sticky top-0 border-b border-t border-tableBorder bg-white font-medium text-vN"
-                            >
-                                <tr>
-                                    <th
-                                        class="p-5 text-sm select-none cursor-pointer hover:text-vert"
-                                        @click="sort('ad_type')"
-                                    >
-                                        Type de campagne
-                                    </th>
-                                    <th
-                                        class="p-5 text-sm table-cell cursor-pointer hover:text-vert select-none"
-                                        @click="sort('amount')"
-                                    >
-                                        Montant
-                                    </th>
-                                    <th
-                                        class="p-5 text-sm table-cell cursor-pointer hover:text-vert select-none"
-                                        @click="sort('creation_date')"
-                                    >
-                                        Semaine de création
-                                    </th>
-                                    <th
-                                        class="p-5 text-sm table-cell cursor-pointer hover:text-vert select-none"
-                                        @click="sort('days')"
-                                    >
-                                        Semaine de fin
-                                    </th>
-                                    <th
-                                        class="p-5 text-sm table-cell select-none cursor-pointer hover:text-vert"
-                                        @click="sort('status')"
-                                    >
-                                        Status
-                                    </th>
-                                    <th
-                                        class="p-5 text-sm table-cell cursor-pointer hover:text-vert select-none"
-                                        @click="sort('predicted_result')"
-                                    >
-                                        Résultat Prévu
-                                    </th>
-                                    <th
-                                        class="p-5 text-sm table-cell cursor-pointer hover:text-vert select-none"
-                                        @click="sort('result')"
-                                    >
-                                        Résultat Actuel
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr
-                                    v-for="ad in ads"
-                                    v-bind:key="ad.ad_id"
-                                    class="bg-white flex lg:table-row flex-row lg:flex-row flex-wrap lg:flex-no-wrap lg:mb-0 border-b border-tableBorder text-vN font-light text-sm h-14"
+                        <div
+                            class="w-full bg-white shadow-md rounded mt-5 overflow-y-scroll"
+                            style="max-height: 60vh"
+                        >
+                            <table class="border-collapse w-full table-auto">
+                                <thead
+                                    class="sticky top-0 border-b bg-white font-semibold text-vN"
                                 >
-                                    <td
-                                        class="p-1 text-center block lg:table-cell relative lg:static"
+                                    <tr>
+                                        <th
+                                            class="p-5 text-sm select-none cursor-pointer hover:text-vert"
+                                            @click="sort('ad_type')"
+                                        >
+                                            Type de campagne
+                                        </th>
+                                        <th
+                                            class="p-5 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                                            @click="sort('amount')"
+                                        >
+                                            Montant
+                                        </th>
+                                        <th
+                                            class="p-5 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                                            @click="sort('creation_date')"
+                                        >
+                                            Semaine de création
+                                        </th>
+                                        <th
+                                            class="p-5 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                                            @click="sort('days')"
+                                        >
+                                            Semaine de fin
+                                        </th>
+                                        <th
+                                            class="p-5 text-sm table-cell select-none cursor-pointer hover:text-vert"
+                                            @click="sort('status')"
+                                        >
+                                            Status
+                                        </th>
+                                        <th
+                                            class="p-5 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                                            @click="sort('predicted_result')"
+                                        >
+                                            Résultat Prévu
+                                        </th>
+                                        <th
+                                            class="p-5 text-sm table-cell cursor-pointer hover:text-vert select-none"
+                                            @click="sort('result')"
+                                        >
+                                            Résultat Actuel
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr
+                                        v-for="ad in ads"
+                                        v-bind:key="ad.ad_id"
+                                        class="bg-white flex lg:table-row flex-row lg:flex-row flex-wrap lg:flex-no-wrap lg:mb-0 border-b border-tableBorder text-vN font-light text-sm h-14"
                                     >
-                                        {{ ad.ad_type }}
-                                    </td>
-                                    <td
-                                        class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
-                                    >
-                                        {{ ad.amount }}
-                                    </td>
-                                    <td
-                                        class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
-                                    >
-                                        {{ ad.creation_date }}
-                                    </td>
-                                    <td
-                                        class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
-                                    >
-                                        {{ ad.creation_date + ad.days }}
-                                    </td>
-                                    <td
-                                        class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
-                                        :class="
-                                            ad.status == 'Terminé'
-                                                ? 'text-vert'
-                                                : 'text-jaune'
-                                        "
-                                    >
-                                        {{ ad.status }}
-                                    </td>
-                                    <td
-                                        class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
-                                    >
-                                        {{ ad.predicted_result }}
-                                    </td>
-                                    <td
-                                        class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
-                                    >
-                                        {{ ad.result }}
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                                        <td
+                                            class="p-1 text-center block lg:table-cell relative lg:static"
+                                        >
+                                            {{ ad.ad_type }}
+                                        </td>
+                                        <td
+                                            class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                                        >
+                                            {{ ad.amount }}
+                                        </td>
+                                        <td
+                                            class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                                        >
+                                            {{ ad.creation_date }}
+                                        </td>
+                                        <td
+                                            class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                                        >
+                                            {{ ad.creation_date + ad.days }}
+                                        </td>
+                                        <td
+                                            class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                                            :class="
+                                                ad.status == 'Terminé'
+                                                    ? 'text-vert'
+                                                    : 'text-jaune'
+                                            "
+                                        >
+                                            {{ ad.status }}
+                                        </td>
+                                        <td
+                                            class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                                        >
+                                            {{ ad.predicted_result }}
+                                        </td>
+                                        <td
+                                            class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                                        >
+                                            {{ ad.result }}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
