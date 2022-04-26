@@ -58,20 +58,25 @@ export default {
     },
 
     methods: {
-        getStock() {
-            axios
-                .get("/api/entreprise/products-stock", {
-                    params: {
-                        entreprise_id: this.user.id,
-                    },
-                })
-                .then((response) => {
-                    this.stock = response.data;
-                })
-                .catch(function (error) {});
-        },
+        // getStock() {
+        //     axios
+        //         .get("/api/entreprise/products-stock", {
+        //             params: {
+        //                 entreprise_id: this.user.id,
+        //             },
+        //         })
+        //         .then((response) => {
+        //             this.stock = response.data;
+        //             this.stock_loaded = true;
+        //         })
+        //         .catch(function (error) {});
+        // },
     },
-    mounted() {},
-    created() {},
+    mounted() {
+
+    },
+    created() {
+
+    }
 };
 </script>

@@ -265,7 +265,7 @@
                     </div>
                     <div>
                         <h1 class="text-vN text-lg font-heading font-medium">
-                            Quantité( en lot de 100 pièces)
+                            Quantité( en lot de 1000 pièces)
                         </h1>
                         <input
                             type="number"
@@ -543,7 +543,7 @@
                             </tbody>
                         </table>
                     </div>
-                  
+
                     <div class="flex flex-row items-center mt-6 px-4 py-2 gap-3 border rounded-md border-yellow-500">
                          <img src="/assets/icons/warning.png" class="h-10 w-10" alt="fgghgf">
                     <h1 class="w-80 text-vN">Votre taux de rebut est de
@@ -553,9 +553,9 @@
                                     Math.pow(10, 2)
                             )
                         }}%, pour le réduire, lancez une étude AMDEC.</h1>
- 
+
                      </div>
-                    
+
                 </div>
             </template>
         </Modal>
@@ -702,8 +702,8 @@
             <template v-slot:content>
                 <div class="flex flex-col gap-5">
                     <h1 class="text-xl text-center text-jaune font-headgin">
-                        {{ action.name }} 
-                        
+                        {{ action.name }}
+
                     </h1>
                     <p class="text-vN">
                         {{ action.phrase }}
@@ -742,7 +742,7 @@ export default {
             quantity: 1,
             launch_prod_modal: false,
             launch_data: {
-                prod_id: 1,
+                prod_id: 5,
                 // price: 0,
                 quantity: 1,
                 machine_lvl: 1,
@@ -908,7 +908,7 @@ export default {
             return (
                 this.launch_data.quantity *
                 this.selectedProd.unit_prod_price *
-                100
+                1000
             );
         },
 
@@ -936,7 +936,7 @@ export default {
             let data = {
                 product_id: this.selectedProd.id, // slected product id
                 entreprise_id: this.user.id, // this users's id
-                quantity: this.launch_data.quantity, // number of lots (100 units) to be produced
+                quantity: this.launch_data.quantity, // number of lots (1000 units) to be produced
                 cost: this.totalCost, // cost of production
                 delay: this.prodDelay * 60, // time it takes to produce
                 machines: this.prod_factors.machines, // number of necessary free machines to produce
@@ -1198,6 +1198,8 @@ export default {
                     this.machine.pollution_lv3 = resp.data.pollution_lv3;
 
                     this.machine_info_updated = true;
+
+                    this.verifyProd();
                 });
         },
         confirmMachineTransaction() {

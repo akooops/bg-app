@@ -6,28 +6,23 @@ use Laravel\Nova\Fields\ID;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Number;
-use Laravel\Nova\Fields\Boolean;
-use Laravel\Nova\Fields\Currency;
-use Laravel\Nova\Fields\BelongsToMany;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use Benjacho\BelongsToManyField\BelongsToManyField;
 
-
-class RawMaterial extends Resource
+class GameSetting extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
      * @var string
      */
-    public static $model = \App\Models\RawMaterial::class;
+    public static $model = \App\Models\GameSetting::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
      *
      * @var string
      */
-    public static $title = 'name';
+    public static $title = 'id';
 
     /**
      * The columns that should be searched.
@@ -36,7 +31,7 @@ class RawMaterial extends Resource
      */
     public static $search = [
         'id',
-        'name'
+        'name',
     ];
 
     /**
@@ -54,28 +49,17 @@ class RawMaterial extends Resource
                 ->sortable()
                 ->rules('required', 'max:255'),
 
-            Text::make('Unit')
+            Text::make('Code')
+                ->sortable()
                 ->rules('required', 'max:255'),
 
-            Currency::make('Price')->currency('EUR'),
+            Number::make('Value')
+                ->rules('required')
+                ->step(0.01),
 
-            Number::make('Volume')->min(1)->step(0.1),
-
-            Text::make('Icon'),
-
-            BelongsToMany::make('Suppliers')->fields(function () {
-                return [
-                    Number::make('Price Factor')->min(0)->max(1)->step(0.01),
-                    Boolean::make('Is Available')->default(true),
-                    Number::make('Time To Deliver')->min(0),
-                ];
-            }),
-
-            BelongsToMany::make('Products')->fields(function () {
-                return [
-                    Number::make('Quantité', 'quantity')->min(0)->step(0.01)->sortable(),
-                ];
-            })
+            Number::make('Default Value')
+                ->rules('required')
+                ->step(0.01),
         ];
     }
 
@@ -121,9 +105,5 @@ class RawMaterial extends Resource
     public function actions(Request $request)
     {
         return [];
-    }
-
-    public static function label() {
-        return 'Matières Premières';
     }
 }

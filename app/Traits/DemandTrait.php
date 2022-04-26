@@ -19,29 +19,36 @@ trait DemandTrait
         $demand = collect([]);
         $prices = collect($prices);
         switch ($prod_id) {
-            case 1:
+            case 5:
                 $demand = $prices->map(function ($p) {
-                    return round(3000 - 20 * $p);
+                    return max(round(3000 - 20 * $p), 0);
                 });
                 break;
-            case 2:
+            case 6:
                 $demand = $prices->map(function ($p) {
-                    return round(10000 * exp(-1 * $p / 150));
+                    return max(round(10000 * exp(-1 * $p / 150)), 0);
                 });
                 break;
-            case 3:
+            case 7:
                 $demand = $prices->map(function ($p) {
 
-                    return round(3000 - 1.75 * $p ** 2);
+                    return max(round(3000 - 1.75 * $p ** 2), 0);
                 });
                 break;
-            case 4:
+            case 8:
                 $demand = $prices->map(function ($p) {
 
-                    return round(2000 - 0.12 * $p ** 1.75);
+                    return max(round(2000 - 0.12 * $p ** 1.75), 0);
+                });
+                break;
+
+            default:
+                $demand = $prices->map(function ($p) {
+                    return max(round(3000 - 20 * $p), 0);
                 });
                 break;
         }
+
         return $demand;
     }
 
@@ -70,31 +77,41 @@ trait DemandTrait
     {
         $demand = 0;
         switch ($prod_id) {
-            case 1:
+            case 5:
                 $ss = $this->socialInfluence($entreprise_id, [1, 1, 1, 1]);
                 $social_importance_coeff = 4;
                 $demand = 3000 - 20 * $price;
                 $demand = $demand + $ss * $demand / $social_importance_coeff;
-            case 2:
+            case 6:
                 $ss = $this->socialInfluence($entreprise_id, [2, 2, 3, 4]);
                 $social_importance_coeff = 1;
                 $demand = round(10000 * exp(-1 * $price / 150));
                 $demand = $demand + $ss * $demand / $social_importance_coeff;
                 break;
-            case 3:
+            case 7:
                 $ss = $this->socialInfluence($entreprise_id, [1, 1, 1, 1]);
 
                 $social_importance_coeff = 2; // Bigger is less important
                 $demand = 3000 - 1.75 * $price ** 2;
                 $demand = $demand + $ss * $demand / $social_importance_coeff;
                 break;
-            case 4:
+            case 8:
                 $ss = $this->socialInfluence($entreprise_id, [1, 1, 1, 1]);
                 $social_importance_coeff = 2;
                 $demand = 2000 - 0.12 * $price ** 1.75;
                 $demand = $demand + $ss * $demand / $social_importance_coeff;
                 break;
+
+            default:
+                $ss = $this->socialInfluence($entreprise_id, [1, 1, 1, 1]);
+                $social_importance_coeff = 4;
+                $demand = 3000 - 20 * $price;
+                $demand = $demand + $ss * $demand / $social_importance_coeff;
+                break;
         }
+
+        $demand = max($demand, 0);
+
         //$epsilon = mt_rand(-50,20);
         $sup = 1.05 * $demand;
         $inf = 0.95 * $demand;

@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Models\GameSetting;
 use Illuminate\Http\Request;
 
 trait HelperTrait
@@ -58,11 +59,29 @@ trait HelperTrait
 
     public function getSimulationTime()
     {
-        return nova_get_setting('current_date');
+        return $this->get_game_setting('current_date');
     }
 
     public function in_array_all($value, $array)
     {
         return (reset($array) == $value && count(array_unique($array)) == 1);
+    }
+
+    public function get_game_setting($setting_code, $with_name_and_code=false) {
+        if($with_name_and_code){
+            return GameSetting::where('code', '=', $setting_code)->first();
+        }
+
+        return GameSetting::where('code', '=', $setting_code)->first()->value;
+    }
+
+    public function set_game_setting($setting_code, $value) {
+        GameSetting::where('code', '=', $setting_code)->update(["value" => $value]);
+    }
+
+    public function reset_game_setting($setting_code)
+    {
+        $setting = GameSetting::where('code', '=', $setting_code);
+        $setting->update(["value" => $setting->first()->default_value]);
     }
 }

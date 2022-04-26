@@ -591,6 +591,7 @@ export default {
             if (this.amount == 0 || this.deadline == 0) {
                 return null;
             }
+
             let x = this.amount / this.ca;
             let t = this.deadline;
 

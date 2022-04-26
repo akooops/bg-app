@@ -3,6 +3,7 @@
 namespace App\Events;
 
 use App\Models\Notification;
+use App\Traits\HelperTrait;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -13,7 +14,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
 class NewNotification implements ShouldBroadcast
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable, InteractsWithSockets, SerializesModels, HelperTrait;
 
     public $notification;
     /**
@@ -30,7 +31,8 @@ class NewNotification implements ShouldBroadcast
         $this->notification["title"] = $notification["title"];
         $this->notification["text"] = $notification["text"];
         $this->notification["style"] = $notification["style"];
-        
+
+
         if ($notification["store"] == true)
         {
             $notif = Notification::create([
@@ -39,7 +41,7 @@ class NewNotification implements ShouldBroadcast
                 'title' => $notification['title'],
                 'icon_path' => $notification['icon_path'],
                 'type' => $notification['style'],
-                'time' => nova_get_setting('current_date'),
+                'time' => (int) $this->get_game_setting('current_date'),
             ]);
         }
     }

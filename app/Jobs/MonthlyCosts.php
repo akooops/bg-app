@@ -15,10 +15,11 @@ use Illuminate\Support\Facades\DB;
 use App\Events\NewNotification;
 use App\Models\Banker;
 use App\Models\RawMaterial;
+use App\Traits\HelperTrait;
 
 class MonthlyCosts implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, IndicatorTrait;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, IndicatorTrait, HelperTrait;
 
     /**
      * Create a new job instance.
@@ -38,19 +39,19 @@ class MonthlyCosts implements ShouldQueue
     public function handle()
     {
         // Only do this job if the current week is a multiple of 4 (a month has passed)
-        $current_date = (int) nova_get_setting("current_date");
+        $current_date = (int) $this->get_game_setting("current_date");
         if ($current_date % 4 == 0) {
             // Get necessary settings
-            $salary_lv1 = (int) nova_get_setting('salary_lv1');
-            $salary_lv2 = (int) nova_get_setting('salary_lv2');
+            $salary_lv1 = (int) $this->get_game_setting('salary_lv1');
+            $salary_lv2 = (int) $this->get_game_setting('salary_lv2');
 
-            $pollution_machines_lv1_factor = nova_get_setting('machines_lv1_pollution');
-            $pollution_machines_lv2_factor = nova_get_setting('machines_lv2_pollution');
-            $pollution_machines_lv3_factor = nova_get_setting('machines_lv3_pollution');
+            $pollution_machines_lv1_factor = $this->get_game_setting('machines_lv1_pollution');
+            $pollution_machines_lv2_factor = $this->get_game_setting('machines_lv2_pollution');
+            $pollution_machines_lv3_factor = $this->get_game_setting('machines_lv3_pollution');
 
-            $pollution_unit_cost = nova_get_setting('pollution_unit_cost');
+            $pollution_unit_cost = $this->get_game_setting('pollution_unit_cost');
 
-            $mp_stock_price = (int) nova_get_setting('mp_stock_price');
+            $mp_stock_price = (int) $this->get_game_setting('mp_stock_price');
 
             // For every entreprise
             $entreprises = Entreprise::get();
@@ -142,7 +143,7 @@ class MonthlyCosts implements ShouldQueue
 
                 $nb_machines_lv1 = $this->getIndicator('nb_machines_lv1', $entreprise->id)['value'];
                 $machines_lv1_health = $this->getIndicator('machines_lv1_health', $entreprise->id)['value'];
-                $machines_lv1_durability = nova_get_setting('machines_lv1_durability');
+                $machines_lv1_durability = $this->get_game_setting('machines_lv1_durability');
                 if ($nb_machines_lv1 > 0) {
                     if ($machines_lv1_health - $machines_lv1_durability > 0) {
                         $this->updateIndicator("machines_lv1_health", $entreprise->id, -1 * $machines_lv1_durability);
@@ -153,7 +154,7 @@ class MonthlyCosts implements ShouldQueue
 
                 $nb_machines_lv2 = $this->getIndicator('nb_machines_lv2', $entreprise->id)['value'];
                 $machines_lv2_health = $this->getIndicator('machines_lv2_health', $entreprise->id)['value'];
-                $machines_lv2_durability = nova_get_setting('machines_lv2_durability');
+                $machines_lv2_durability = $this->get_game_setting('machines_lv2_durability');
                 if ($nb_machines_lv2 > 0) {
                     if ($machines_lv2_health - $machines_lv2_durability > 0 && $nb_machines_lv2 > 0) {
                         $this->updateIndicator("machines_lv2_health", $entreprise->id, -1 * $machines_lv2_durability);
@@ -164,7 +165,7 @@ class MonthlyCosts implements ShouldQueue
 
                 $nb_machines_lv3 = $this->getIndicator('nb_machines_lv3', $entreprise->id)['value'];
                 $machines_lv3_health = $this->getIndicator('machines_lv3_health', $entreprise->id)['value'];
-                $machines_lv3_durability = nova_get_setting('machines_lv3_durability');
+                $machines_lv3_durability = $this->get_game_setting('machines_lv3_durability');
 
                 if ($nb_machines_lv3) {
                     if ($machines_lv3_health - $machines_lv3_durability > 0 && $nb_machines_lv3 > 0) {

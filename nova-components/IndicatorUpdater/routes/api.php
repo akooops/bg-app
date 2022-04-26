@@ -21,4 +21,7 @@ Route::get('/indicators', [IndicatorUpdaterController::class,"getIndicators"]);
 Route::post('/update-indicator', [IndicatorUpdaterController::class,"updateIndicators"]);
 
 Route::post('/entreprise-indicators', [IndicatorUpdaterController::class, "getEntrepriseIndicators"]);
-Route::get('/get-indicators', [IndicatorUpdaterController::class, "getIndicators_2"]);
+
+Route::get('/get-settings', [IndicatorUpdaterController::class, "getSettings"]);
+Route::post('/set-setting', [IndicatorUpdaterController::class, "setSetting"]);
+Route::post('/reset-setting', [IndicatorUpdaterController::class, "resetSetting"]);

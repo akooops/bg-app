@@ -71,7 +71,7 @@
                 </h1>
                 <div
                     v-if="showMachines && indicators_loaded"
-                
+
                     class="flex flex-col dropDown gap-4 items-center bg-white absolute w-full px-4 py-2 shadow-2xl z-100 rounded-xl text-vN"
                     style="bottom: -350px; height: 350px"
                 >
@@ -289,8 +289,8 @@
                                 {{ product_info.description }}
                             </p>
                             <div>
-                                <p class="font-medium font-heading mb-3">
-                                    Pour produire un lot de 100 unités de ce
+                                <p class="font-medium mb-3">
+                                    Pour produire un lot de 1000 unités de ce
                                     produit vous avez besoin de :
                                 </p>
                                 <table class="w-2/3 border-colapse">
@@ -530,7 +530,7 @@ export default {
 
             market_demand: [],
 
-            id_list: [1, 2, 3, 4],
+            id_list: [5, 6, 7, 8, 9],
 
             prod_data: [],
 
@@ -630,7 +630,7 @@ export default {
         },
 
         async getMarketDemands() {
-            for (var i = 1; i < 5; i++) {
+            for (var i = 5; i < 10; i++) {
                 let resp = await axios.get("/api/demand/prev", {
                     params: {
                         product_id: i,

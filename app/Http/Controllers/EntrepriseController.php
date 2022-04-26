@@ -104,10 +104,10 @@ class EntrepriseController extends Controller
     {
         $caisse = $this->getIndicator('caisse', auth()->user()->id)["value"];
         return view("departments.hr", [
-            "workshop_price" => nova_get_setting('workshop_price', ''),
-            "salary_lv1" => nova_get_setting("salary_lv1"),
-            "salary_lv2" => nova_get_setting("salary_lv2"),
-            "bonus_coeff" => nova_get_setting("bonus_coeff"),
+            "workshop_price" => (int) $this->get_game_setting('workshop_price'),
+            "salary_lv1" => (int) $this->get_game_setting("salary_lv1"),
+            "salary_lv2" => (int) $this->get_game_setting("salary_lv2"),
+            "bonus_coeff" => $this->get_game_setting("bonus_coeff"),
             "caisse" => $caisse
         ]);
     }
@@ -378,7 +378,7 @@ class EntrepriseController extends Controller
             return Response::json(["message" => $message, "success" => false], 200);
         }
 
-        $quantity = $request->quantity * 100; // should be divided by 100 for nb lots
+        $quantity = $request->quantity * 1000; // should be divided by 1000 for nb lots
 
         for ($i = 0; $i < count($product); $i++) {
             if ($product[$i]->raw_material_id != $stock[$i]->raw_material_id) {
@@ -546,7 +546,7 @@ class EntrepriseController extends Controller
 
     function getAllProductions(Request $request)
     {
-        $productions = DB::table("productions")->where("entreprise_id", "=", $request->entreprise_id)->get();
+        $productions = DB::table("productions")->where("entreprise_id", "=", $request->entreprise_id)->orderBy('creation_date')->get();
         $productions = $productions->map(function ($p) {
             $product = Product::find($p->product_id);
             return [
@@ -634,11 +634,11 @@ class EntrepriseController extends Controller
         $buy_price = null;
 
         if ($level == 1) {
-            $buy_price = nova_get_setting("machines_lv1_price");
+            $buy_price = $this->get_game_setting("machines_lv1_price");
         } else if ($level == 2) {
-            $buy_price = nova_get_setting("machines_lv2_price");
+            $buy_price = $this->get_game_setting("machines_lv2_price");
         } else if ($level == 3) {
-            $buy_price = nova_get_setting("machines_lv3_price");
+            $buy_price = $this->get_game_setting("machines_lv3_price");
         }
 
         $caisse = $this->getIndicator("caisse", $entreprise_id)["value"];
@@ -844,13 +844,13 @@ class EntrepriseController extends Controller
         $sell_price = null;
 
         if ($level == 1) {
-            $buy_price = nova_get_setting("machines_lv1_price");
+            $buy_price = $this->get_game_setting("machines_lv1_price");
             $sell_price = $buy_price * $this->getIndicator("machines_lv1_health", $entreprise_id)['value'];
         } else if ($level == 2) {
-            $buy_price = nova_get_setting("machines_lv2_price");
+            $buy_price = $this->get_game_setting("machines_lv2_price");
             $sell_price = $buy_price * $this->getIndicator("machines_lv2_health", $entreprise_id)['value'];
         } else if ($level == 3) {
-            $buy_price = nova_get_setting("machines_lv3_price");
+            $buy_price = $this->get_game_setting("machines_lv3_price");
             $sell_price = $buy_price * $this->getIndicator("machines_lv3_health", $entreprise_id)['value'];
         }
 
@@ -1226,7 +1226,7 @@ class EntrepriseController extends Controller
             $rankings->push($data);
         }
         $sorted = $rankings->sortByDesc("profit")->values();
-        return ["list" => $sorted, "meta" => nova_get_setting("show_final_score", "")];
+        return ["list" => $sorted, "meta" => $this->get_game_setting("show_final_score")];
     }
 
     public function getNavbarData(Request $request)
@@ -1260,21 +1260,21 @@ class EntrepriseController extends Controller
     {
         $entreprise_id = $request->entreprise_id;
 
-        $buy_price_lv1 = nova_get_setting("machines_lv1_price");
-        $buy_price_lv2 = nova_get_setting("machines_lv2_price");
-        $buy_price_lv3 = nova_get_setting("machines_lv3_price");
+        $buy_price_lv1 = $this->get_game_setting("machines_lv1_price");
+        $buy_price_lv2 = $this->get_game_setting("machines_lv2_price");
+        $buy_price_lv3 = $this->get_game_setting("machines_lv3_price");
 
-        $speed_lv1 = nova_get_setting("machines_lv1_speed");
-        $speed_lv2 = nova_get_setting("machines_lv2_speed");
-        $speed_lv3 = nova_get_setting("machines_lv3_speed");
+        $speed_lv1 = $this->get_game_setting("machines_lv1_speed");
+        $speed_lv2 = $this->get_game_setting("machines_lv2_speed");
+        $speed_lv3 = $this->get_game_setting("machines_lv3_speed");
 
-        $pollution_lv1 = nova_get_setting("machines_lv1_pollution");
-        $pollution_lv2 = nova_get_setting("machines_lv2_pollution");
-        $pollution_lv3 = nova_get_setting("machines_lv3_pollution");
+        $pollution_lv1 = $this->get_game_setting("machines_lv1_pollution");
+        $pollution_lv2 = $this->get_game_setting("machines_lv2_pollution");
+        $pollution_lv3 = $this->get_game_setting("machines_lv3_pollution");
 
-        $durability_lv1 = nova_get_setting("machines_lv1_durability");
-        $durability_lv2 = nova_get_setting("machines_lv2_durability");
-        $durability_lv3 = nova_get_setting("machines_lv3_durability");
+        $durability_lv1 = $this->get_game_setting("machines_lv1_durability");
+        $durability_lv2 = $this->get_game_setting("machines_lv2_durability");
+        $durability_lv3 = $this->get_game_setting("machines_lv3_durability");
 
         $health_lv1 = $this->getIndicator("machines_lv1_health", $entreprise_id)['value'];
         $health_lv2 = $this->getIndicator("machines_lv2_health", $entreprise_id)['value'];

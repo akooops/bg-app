@@ -21,6 +21,7 @@ class Product extends Model
         'left_demand',
         'ad_coef',
         'description',
+        'icon',
         'prod_speed_factor',
         'unit_prod_price'
     ];

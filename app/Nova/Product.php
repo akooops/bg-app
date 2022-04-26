@@ -68,6 +68,8 @@ class Product extends Resource
             Number::make("Demande Mensuelle", "avg_demand"),
             Number::make("Demande Restante", "left_demand"),
 
+            Text::make('Icon'),
+
             Text::make("Description", "description"),
 
             // AttachMany::make("Raw Materials", "RawMaterials", "App\Nova\RawMaterial")

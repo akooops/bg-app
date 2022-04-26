@@ -41,19 +41,19 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $game_status = nova_get_setting("game_started");
+        $game_status = $this->get_game_setting("game_started");
 
         if ($game_status == "1") {
             $schedule->call(function () {
-                $current_date = (int) nova_get_setting("current_date");
+                $current_date = (int) $this->get_game_setting("current_date");
                 if ($current_date != null) {
                     $current_date += 1;
                 } else {
-                    $current_date = (int) nova_get_setting("start_date");
+                    $current_date = (int) $this->get_game_setting("start_date");
                 }
 
-                nova_set_setting_value("current_date", $current_date);
-                event(new SimulationDateChanged($current_date));
+                $this->set_game_setting("current_date", $current_date);
+                event(new SimulationDateChanged());
             })->everyMinute();
 
             // Sell parts of productions that are on sale

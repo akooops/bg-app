@@ -19,13 +19,27 @@ class HrController extends Controller
             "nb_workers_to_hire",
             "workers_mood", "productivity_coeff"
         ];
+
         $entreprise_id = $request->entreprise_id;
         $resp = [];
+
         foreach ($keys as $ind) {
             $value = $this->getIndicator($ind, $entreprise_id);
             $resp[$ind] = $value;
         }
         return $resp;
+    }
+
+    public function getHrData(Request $request)
+    {
+        $data = [
+            "workshop_price" => (int) $this->get_game_setting('workshop_price'),
+            "salary_lv1" => (int) $this->get_game_setting("salary_lv1"),
+            "salary_lv2" => (int) $this->get_game_setting("salary_lv2"),
+            "bonus_coeff" => $this->get_game_setting("bonus_coeff"),
+        ];
+
+        return $data;
     }
 
     public function hireWorkers(Request $request)
@@ -43,9 +57,9 @@ class HrController extends Controller
         $notification = [
             "type" => "WorkersUpdate",
             "entreprise_id" => $entreprise_id,
-            
+
             "store" => true,
-            
+
             "text" => $message,
             "title" => "Employés recrutés",
             "icon_path" => "aaaaaaaaaaa",
@@ -60,7 +74,7 @@ class HrController extends Controller
     public function launchWorkshop(Request $request)
     {
         $nb_workers_to_train = $request->nb_workers_to_train;
-        $price = nova_get_setting('workshop_price');
+        $price = $this->get_game_setting('workshop_price');
         $caisse = $this->getIndicator('caisse', $request->entreprise_id)['value'];
         if ($caisse < $price * $nb_workers_to_train) {
             return Response::json([
@@ -95,9 +109,9 @@ class HrController extends Controller
         $notification = [
             "type" => "WorkersUpdate",
             "entreprise_id" => $request->entreprise_id,
-            
+
             "store" => true,
-            
+
             "text" => $message,
             "title" => "Employés formés",
             "icon_path" => "aaaaaaaaaaa",
@@ -115,13 +129,13 @@ class HrController extends Controller
 
         $workers_mood = $this->getIndicator('workers_mood', $request->entreprise_id)['value'];
 
-        $salary_lv1 = nova_get_setting('salary_lv1');
-        $salary_lv2 = nova_get_setting('salary_lv2');
+        $salary_lv1 = (int) $this->get_game_setting('salary_lv1');
+        $salary_lv2 = (int) $this->get_game_setting('salary_lv2');
 
         $bonus = $request->bonus;
         $total_bonus = $bonus * ($nb_workers_lv1 + $nb_workers_lv2);
 
-        $bonus_coeff = nova_get_setting('bonus_coeff');
+        $bonus_coeff = (float) $this->get_game_setting('bonus_coeff');
 
         $bonus_max = ((1 - $workers_mood) * ($nb_workers_lv1 * $salary_lv1 + $nb_workers_lv2 * $salary_lv2)) / ($bonus_coeff * ($nb_workers_lv1 + $nb_workers_lv2));
 
@@ -156,9 +170,9 @@ class HrController extends Controller
         $notification = [
             "type" => "WorkersUpdate",
             "entreprise_id" => $request->entreprise_id,
-            
+
             "store" => true,
-            
+
             "text" => $message,
             "title" => "Primes attribuées",
             "icon_path" => "aaaaaaaaaaa",
@@ -181,8 +195,8 @@ class HrController extends Controller
         $nb_workers_lv1_busy = $this->getIndicator('nb_workers_lv1_busy', $request->entreprise_id)['value'];
         $nb_workers_lv2_busy = $this->getIndicator('nb_workers_lv2_busy', $request->entreprise_id)['value'];
 
-        $salary_lv1 = nova_get_setting('salary_lv1');
-        $salary_lv2 = nova_get_setting('salary_lv2');
+        $salary_lv1 = $this->get_game_setting('salary_lv1');
+        $salary_lv2 = $this->get_game_setting('salary_lv2');
 
         $price = 3 * ($salary_lv1 * $nb_workers_lv1_to_fire + $salary_lv2 * $nb_workers_lv2_to_fire);
         $caisse = $this->getIndicator('caisse', $request->entreprise_id)['value'];
@@ -220,9 +234,9 @@ class HrController extends Controller
         $notification = [
             "type" => "WorkersUpdate",
             "entreprise_id" => $entreprise_id,
-            
+
             "store" => true,
-            
+
             "text" => $message,
             "title" => "Employés licenciés",
             "icon_path" => "aaaaaaaaaaa",

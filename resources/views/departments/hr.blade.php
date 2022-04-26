@@ -6,15 +6,10 @@
                 <Disponibility :user="{{ Auth::user() }}" :dette="true"></Disponibility>
             </div>
             <div class="w-full px-2 h-full">
-                <Humanressource 
-                        v-bind:user="{{ auth()->user() }}" 
-                        v-bind:salary_lv1="{{ $salary_lv1 }}"
-                        v-bind:salary_lv2="{{ $salary_lv2 }}"
-                        v-bind:workshop_price="{{ $workshop_price }}" 
-                        v-bind:bonus_coeff="{{ $bonus_coeff }}" 
-                        v-bind:caisse="{{ $caisse }}"
-                    >
-                    </Humanressource>
+                <Humanressource
+                    v-bind:user="{{ auth()->user() }}"
+                >
+                </Humanressource>
             </div>
         </div>
     </div>
