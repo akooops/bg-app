@@ -80,15 +80,15 @@
                         min="1"
                     />
 
-                    <h1 class="pt-3 opacity-80">le salaire mensuel d'un seul employé est fixé à : <span class="text-yellow-600 ">{{salary_lv1}} UM</span></h1>
-                    <h1 class="opacity-80">le salaire mensule pour le nombre d'employés choisis est fixé à : <span class="text-vert ">  {{ salary_lv1 * workers }} UM</span></h1>
+                    <h1 class="pt-3 opacity-80">Le salaire mensuel d'un seul employé est fixé à : <span class="text-yellow-600 ">{{salary_lv1}} UM</span></h1>
+                    <h1 class="opacity-80">Le salaire mensuel pour le nombre d'employés choisis est fixé à : <span class="text-vert ">  {{ salary_lv1 * nb_workers_to_hire }} UM</span></h1>
 
                      <div class="flex flex-row gap-4 justify-end mr-5 mt-7">
                            <button class="font-semibold hover:opacity-80" :class="hire_sent ? 'opacity-50': '' "  :disabled="hire_sent" @click="hireWorker">
-                               Valider
+                                Valider
                            </button>
                            <button class="font-semibold hover:opacity-80" @click="workers_modal = false">
-                                   Annuler
+                                Annuler
                            </button>
 
                 </div>
@@ -112,8 +112,8 @@
                     />
 
 
-                    <h1 class="pt-3 opacity-80">le prix de formation d'un seul employé est fixé à : <span class="text-yellow-600 ">{{ workshop_price }} UM / personne</span></h1>
-                    <h1 class="opacity-80">le prix total est fixé à : <span class="text-vert ">  {{ workshop_price * nb_workers_to_train }} UM</span></h1>
+                    <h1 class="pt-3 opacity-80">Le prix de formation d'un seul employé est fixé à : <span class="text-yellow-600 ">{{ workshop_price }} UM / personne</span></h1>
+                    <h1 class="opacity-80">Le prix total est fixé à : <span class="text-vert ">  {{ workshop_price * nb_workers_to_train }} UM</span></h1>
 
                      <div class="flex flex-row gap-4 justify-end mr-5 mt-7">
                            <button class="font-semibold hover:opacity-80" :class="workshop_sent ? 'opacity-50': '' "  :disabled="workshop_sent" @click="launchWorkshop">
@@ -261,10 +261,10 @@
 
             </div>
             <div class="flex flex-col justify-center gap-6 w-1/5">
-                <button @click="workers_modal=true" :disabled="!indicators_loaded || !data_loaded" class="rounded-3xl font-semibold text-white py-2 " :class="!indicators_loaded || !data_loaded ? 'bg-gray-200' : 'bg-vN'" >Recuruter des employés</button>
-                <button @click="workshop_modal=true" :disabled="!indicators_loaded || !data_loaded" class="rounded-3xl font-semibold text-white py-2 " :class="!indicators_loaded || !data_loaded ? 'bg-gray-200' : 'bg-vN'" >Former des employées</button>
-                <button @click="prime_modal = true" :disabled="!indicators_loaded || !data_loaded" class="rounded-3xl  font-semibold text-white py-2 px-3" :class="!indicators_loaded || !data_loaded ? 'bg-gray-200' : 'bg-vN'">Ajouter une prime au employées</button>
-                <button  @click="fire_modal = true"  :disabled="!indicators_loaded || !data_loaded" class="rounded-3xl font-semibold text-white py-2 " :class="!indicators_loaded || !data_loaded ? 'bg-gray-200' : 'bg-vN'">Virer des employées</button>
+                <button @click="workers_modal=true" :disabled="!indicators_loaded || !data_loaded" class="rounded-3xl font-semibold text-white py-2 " :class="!indicators_loaded || !data_loaded ? 'bg-gray-200' : 'bg-vN'" >Recurter des employés</button>
+                <button @click="workshop_modal=true" :disabled="!indicators_loaded || !data_loaded" class="rounded-3xl font-semibold text-white py-2 " :class="!indicators_loaded || !data_loaded ? 'bg-gray-200' : 'bg-vN'" >Former des employés</button>
+                <button @click="prime_modal = true" :disabled="!indicators_loaded || !data_loaded" class="rounded-3xl  font-semibold text-white py-2 px-3" :class="!indicators_loaded || !data_loaded ? 'bg-gray-200' : 'bg-vN'">Ajouter une prime au employés</button>
+                <button  @click="fire_modal = true"  :disabled="!indicators_loaded || !data_loaded" class="rounded-3xl font-semibold text-white py-2 " :class="!indicators_loaded || !data_loaded ? 'bg-gray-200' : 'bg-vN'">Virer des employés</button>
 
             </div>
         </div>
