@@ -66,151 +66,74 @@
                 </svg>
             </span>
         </div>
-
-        <Modal v-if="workers_modal" class="align-center" custom_css="w-1/3">
+        <Modal v-if="workers_modal" class="align-center createmodel" custom_css="w-1/3">
             <template v-slot:content>
-                <h3 class="text-2xl font-bold mb-4">Recrutement employés</h3>
-
-                <div class="relative h-10 input-component mb-3">
-                    <label
-                        for="workers"
-                        class="left-2 transition-all bg-white px-1"
-                    >
-                        Entrez le nombre d'employés à recruter
-                    </label>
+                <div class="flex flex-col text-vN px-5 ">
+                     <h1 class="text-center text-vert text-2xl">Recrutement des employées</h1>
+                    <h1 class="pt-5 pb-3">Entrez le nombre des employées à recruter :</h1>
                     <input
                         id="workers"
                         type="number"
                         name="workers"
                         v-model="workers"
-                        class="h-full w-full rounded-sm"
+                        class="h-full rounded-sm py-3 w-1/2"
                         min="1"
                     />
+
+                    <h1 class="pt-3 opacity-80">le salaire mensule d'un seul employé est fixé à : <span class="text-yellow-600 ">{{salary_lv1}} UM</span></h1>
+                    <h1 class="opacity-80">le salaire mensule pour le nombre d'employéschoisis est fixé à : <span class="text-vert ">  {{ salary_lv1 * workers }} UM</span></h1>
+
+                     <div class="flex flex-row gap-4 justify-end mr-5 mt-7">
+                           <button class="font-semibold hover:opacity-80" :class="hire_sent ? 'opacity-50': '' "  :disabled="hire_sent" @click="hireWorker">
+                               Valider
+                           </button>
+                           <button class="font-semibold hover:opacity-80" @click="workers_modal = false">
+                                   Annuler
+                           </button>
+
                 </div>
-
-                <p class="mt-10">
-                    Le salaire mensuel d'un seul employé est fixé a :
-                    <span class="text-yellow-600 font-bold">{{
-                        salary_lv1
-                    }}</span>
-                </p>
-
-                <p>
-                    Le salaire pour le nombre d'employés choisis est fixé a :
-                    <span class="text-green-700 font-bold">
-                        {{ salary_lv1 * workers }}
-                    </span>
-                </p>
-
-                <div class="flex">
-                    <button
-                        class="text-white px-3 py-2 rounded w-1/2 mt-4 mr-2"
-                        :class="
-                            hire_sent
-                                ? 'bg-gray-800 '
-                                : 'bg-green-400 hover:bg-green-800'
-                        "
-                        :disabled="hire_sent"
-                        @click="hireWorker"
-                    >
-                        Recruter
-                    </button>
-
-                    <button
-                        class="
-                            bg-gray-200
-                            active:bg-gray-600
-                            hover:bg-gray-400
-                            text-back
-                            px-3
-                            py-2
-                            rounded
-                            w-1/2
-                            mt-4
-                        "
-                        @click="workers_modal = false"
-                    >
-                        Annuler
-                    </button>
-                </div>
+            </div>
             </template>
         </Modal>
-        <Modal v-if="workshop_modal" class="align-center" custom_css="w-1/3">
+        <Modal v-if="workshop_modal" class="align-center createmodel" custom_css="w-1/3">
             <template v-slot:content>
-                <h3 class="text-2xl font-bold mb-4">Formation employés</h3>
-
-                <p>Sélectionnez le nombre d'employés à former:</p>
-
-                <input
+                 <div class="flex flex-col text-vN px-5 ">
+                     <h1 class="text-center text-vert text-2xl">Formation des employées</h1>
+                    <h1 class="pt-5 pb-3">Entrez le nombre des employées à former :</h1>
+                    <input
                     v-model="nb_workers_to_train"
-                    class="mx-4 w-2/3"
+                    class=" w-2/3"
                     type="number"
                     min="1"
                     :max="
                         indicators['nb_workers_lv1']['value'] -
                         indicators['nb_workers_lv1_busy']['value']
                     "
-                />
+                    />
+                
 
-                <p class="mt-6">
-                    Le prix de la formation est fixé a :
-                    <span class="text-green-700 font-bold"
-                        >{{ workshop_price }} / personne</span
-                    >
-                </p>
+                    <h1 class="pt-3 opacity-80">le prix de formation d'un seul employé est fixé à : <span class="text-yellow-600 ">{{ workshop_price }} UM / personne</span></h1>
+                    <h1 class="opacity-80">le prix total est fixé à : <span class="text-vert ">  {{ workshop_price * nb_workers_to_train }} UM</span></h1>
 
-                <p class="mt-4">
-                    Le prix total est fixé à:
-                    <span class="text-green-700 font-bold"
-                        >{{ workshop_price * nb_workers_to_train }}
-                    </span>
-                </p>
+                     <div class="flex flex-row gap-4 justify-end mr-5 mt-7">
+                           <button class="font-semibold hover:opacity-80" :class="workshop_sent ? 'opacity-50': '' "  :disabled="workshop_sent" @click="launchWorkshop">
+                               Lancer la formation
+                           </button>
+                           <button class="font-semibold hover:opacity-80" @click=" nb_workers_to_train = 1; workshop_modal = false;">
+                                   Annuler
+                           </button>
 
-                <div class="flex">
-                    <button
-                        class="text-white px-3 py-2 rounded w-1/2 mt-4 mr-2"
-                        :class="
-                            workshop_sent
-                                ? 'bg-gray-800 '
-                                : 'bg-green-400 hover:bg-green-800'
-                        "
-                        :disabled="workshop_sent"
-                        @click="launchWorkshop"
-                    >
-                        Lancer la formation
-                    </button>
-                    <button
-                        class="
-                            bg-gray-200
-                            active:bg-gray-600
-                            hover:bg-gray-400
-                            text-back
-                            px-3
-                            py-2
-                            rounded
-                            w-1/2
-                            mt-4
-                        "
-                        @click="
-                            nb_workers_to_train = 1;
-                            workshop_modal = false;
-                        "
-                    >
-                        Annuler
-                    </button>
                 </div>
+            </div>
+
             </template>
         </Modal>
-        <Modal v-if="prime_modal" class="align-center" custom_css="w-1/3">
+
+        <Modal v-if="prime_modal" class="align-center createmodel" custom_css="w-1/3">
             <template v-slot:content>
-                <h3 class="text-2xl font-bold mb-4">Prime pour les employés</h3>
-                <div class="relative h-10 input-component mb-3">
-                    <label
-                        for="bonus"
-                        class="left-2 transition-all bg-white px-1"
-                    >
-                        Entrez le montant de la prime
-                    </label>
+                 <div class="flex flex-col text-vN px-5 ">
+                     <h1 class="text-center text-vert text-2xl">Prime pour les employées</h1>
+                    <h1 class="pt-5 pb-3">Entrez le montant de la prime :</h1>
                     <input
                         id="bonus"
                         type="number"
@@ -221,161 +144,85 @@
                         :step="bonus_max - bonus > 100 ? 100 : (bonus_max - bonus > 10 ? 10 : 1)"
                         class="h-full w-full rounded-sm"
                     />
+                
+
+                    <h1 class="pt-3 opacity-80">Le montant total est : <span class="text-yellow-600 ">{{ bonus * (indicators["nb_workers_lv1"]["value"] +indicators["nb_workers_lv2"]["value"])}} UM</span></h1>
+                    <h1 class="opacity-80">L'humeur de vos employés augmentera de : <span class="text-vert "> {{ mood_increase }}</span></h1>
+
+                     <div class="flex flex-row gap-4 justify-end mr-5 mt-7">
+                           <button class="font-semibold hover:opacity-80" :class="prime_sent ? 'opacity-50': '' "  :disabled="prime_sent" @click="primeWorkers">
+                               Valider
+                           </button>
+                           <button class="font-semibold hover:opacity-80" @click=" prime_modal = false">
+                                   Annuler
+                           </button>
+
                 </div>
-                <p class="mt-10">
-                    Le montant total est :
-                    <span class="text-yellow-600 font-bold">{{
-                        bonus *
-                        (indicators["nb_workers_lv1"]["value"] +
-                            indicators["nb_workers_lv2"]["value"])
-                    }}</span>
-                </p>
-                <p class="mt-10">
-                    L'humeur des employés augmentera de:
-                    <span class="text-green-600 font-bold">
-                        {{ mood_increase }}
-                    </span>
-                </p>
-                <div class="flex">
-                    <button
-                        class="
-                            bg-green-400
-                            hover:bg-green-800
-                            text-white
-                            px-3
-                            py-2
-                            rounded
-                            w-1/2
-                            mt-4
-                            mr-2
-                        "
-                        :class="
-                            prime_sent
-                                ? 'bg-gray-800 '
-                                : 'bg-green-400 hover:bg-green-800'
-                        "
-                        :disabled="prime_sent"
-                        @click="primeWorkers"
-                    >
-                        Valider
-                    </button>
-                    <button
-                        class="
-                            bg-gray-200
-                            active:bg-gray-600
-                            hover:bg-gray-400
-                            text-back
-                            px-3
-                            py-2
-                            rounded
-                            w-1/2
-                            mt-4
-                        "
-                        @click="prime_modal = false"
-                    >
-                        Annuler
-                    </button>
-                </div>
+            </div>
+
+
+
             </template>
         </Modal>
-
-        <Modal v-if="fire_modal" class="align-center" custom_css="w-1/3">
+<!-- v-if="fire_modal" -->
+        <Modal v-if="fire_modal" class="align-center createmodel" custom_css="w-1/3">
             <template v-slot:content>
-                <h3 class="text-2xl font-bold mb-4">Virer des employés</h3>
-                <div class="relative h-10 input-component mb-3">
-                    <label
-                        class="left-2 transition-all bg-white px-1"
-                    >
-                        Nombre d'employés simples à virer:
-                    </label>
+                 <div class="flex flex-col text-vN px-5 ">
+                     <h1 class="text-center text-vert text-2xl">Virer des employés</h1>
+                    <h1 class="pt-5 pb-3">Nombre d'employé simple à virer :</h1>
                     <input
                         type="number"
                         v-model="nb_workers_lv1_to_fire"
                         :min="0"
                         :max="indicators['nb_workers_lv1'].value - indicators['nb_workers_lv1_busy'].value"
-                        class="h-full w-full rounded-sm"
+                        class="h-full  rounded-sm w-3/4"
                     />
-                </div>
-                <div class="relative h-10 input-component mb-3 mt-10">
-                    <label
-                        class="left-2 transition-all bg-white px-1"
-                    >
-                        Nombre d'employés experts à virer:
-                    </label>
+                    <h1 class="pt-5 pb-3">Nombre d'employé experts à virer :</h1>
                     <input
                         type="number"
                         v-model="nb_workers_lv2_to_fire"
                         :min="0"
                         :max="indicators['nb_workers_lv2'].value - indicators['nb_workers_lv2_busy'].value"
-                        class="h-full w-full rounded-sm"
+                        class="h-full w-3/4 rounded-sm"
                     />
+                
+                     <div class="flex flex-row  items-center mt-6 px-4 py-2 gap-3 border rounded-md border-yellow-500">
+                         <img src="/assets/icons/warning.png" class="h-10 w-10" alt="fgghgf">
+                    <h1 class="opacity-80 w-80">Les employés licenciés doivent être payés une avance de 3 mois valant : <span class="text-yellow-600 ">{{3 * (salary_lv1 * nb_workers_lv1_to_fire + salary_lv2 * nb_workers_lv2_to_fire)}} UM</span></h1>
+ 
+                     </div>
+
+                     <div class="flex flex-row gap-4 justify-end mr-5 mt-7">
+                           <button class="font-semibold hover:opacity-80" :class="fire_sent ? 'opacity-50': '' "  :disabled="fire_sent" @click="fireWorkers">
+                               Valider
+                           </button>
+                           <button class="font-semibold hover:opacity-80" @click=" fire_modal = false">
+                                   Annuler
+                           </button>
+
                 </div>
-                <p class="mt-10">
-                    Les employés licenciés doivent être payés une avance de 3 mois valant:
-                    <span class="text-yellow-600 font-bold">{{
-                        3 * (salary_lv1 * nb_workers_lv1_to_fire + salary_lv2 * nb_workers_lv2_to_fire)
-                    }} DA</span>
-                </p>
-                <div class="flex">
-                    <button
-                        class="
-                            bg-green-400
-                            hover:bg-green-800
-                            text-white
-                            px-3
-                            py-2
-                            rounded
-                            w-1/2
-                            mt-4
-                            mr-2
-                        "
-                        :class="
-                            fire_sent
-                                ? 'bg-gray-800 '
-                                : 'bg-green-400 hover:bg-green-800'
-                        "
-                        :disabled="fire_sent"
-                        @click="fireWorkers"
-                    >
-                        Valider
-                    </button>
-                    <button
-                        class="
-                            bg-gray-200
-                            active:bg-gray-600
-                            hover:bg-gray-400
-                            text-back
-                            px-3
-                            py-2
-                            rounded
-                            w-1/2
-                            mt-4
-                        "
-                        @click="fire_modal = false;
-                                nb_workers_lv1_to_fire = 0;
-                                nb_workers_lv2_to_fire = 0;"
-                    >
-                        Annuler
-                    </button>
-                </div>
+            </div>
+
             </template>
         </Modal>
 
 
         <!-- Adding some details -->
-        <div v-if="indicators_loaded" class="flex flex-row ">
-            <div class="flex flex-col gap-5 justify-center">
-                <div class="flex flex-row items-center border-2 shadow-lg rounded-2xl px-2">
-                    <img src="/assets/icons/employees.svg" alt="" class="w-16 h-16 ">
-                    <div class="flex flex-col">
+        <div v-if="indicators_loaded" class="flex justify-center">
+
+        <!-- les 4 cards  -->
+            <div class="flex flex-col gap-5 justify-center  w-max">
+                <div class="flex flex-row items-center border-2 shadow-lg rounded-2xl  justify-left">
+                    <img src="/assets/icons/employees.svg" alt="" class="w-20 h-20 ">
+                    <div class="flex flex-col ">
                         <p>
                     Simple:  {{indicators['nb_workers_lv1'].value}}</p>
                     <p> Occupé :   {{indicators['nb_workers_lv1_busy'].value}} </p>
                 </div>
                     </div>
 
-                <div class="flex flex-row items-center border-2 shadow-lg rounded-2xl px-2">
-                    <img src="/assets/icons/employees.svg" alt="" class="w-16 h-16">
+                <div class="flex flex-row items-center border-2 shadow-lg rounded-2xl   justify-left">
+                    <img src="/assets/icons/employees.svg" alt="" class="w-20 h-20">
                     <div class="flex flex-col">
                           <p>
                     Expert: {{indicators['nb_workers_lv2'].value}}</p>
@@ -384,15 +231,15 @@
                     </div>
 
                 </div>
-                <div class="flex flex-row items-center border-2 shadow-lg rounded-2xl px-2">
-                    <img src="/assets/icons/employees.svg" alt="" class="w-16 h-16">
+                <div class="flex flex-row items-center border-2 shadow-lg rounded-2xl  justify-left pr-3">
+                    <img src="/assets/icons/employees.svg" alt="" class="w-20 h-20">
                     <p>
                     Recherche: {{indicators['nb_workers_to_hire'].value}}
 
                      </p>
                 </div>
-                <div class="flex flex-row items-center border-2 shadow-lg rounded-2xl px-2">
-                    <img src="/assets/icons/humeur.png" alt="" class="w-16 h-16 p-3">
+                <div class="flex flex-row items-center border-2 shadow-lg rounded-2xl  justify-left">
+                    <img src="/assets/icons/humeur.png" alt="" class="w-20 h-20 p-3">
                     <p>
                         Humeur: {{ Math.round(indicators['workers_mood'].value * 100) }}%
                     </p>
@@ -400,8 +247,8 @@
 
             </div>
 
-
-            <div class="rounded-lg text-center ">
+   <!-- la gauge  -->
+            <div class="rounded-lg text-center content-center flex justify-center w-6/12">
 
                 <speedo-meter
                     :data="[
@@ -413,7 +260,9 @@
                 ></speedo-meter>
 
             </div>
-            <div class="flex flex-col justify-center gap-6">
+
+<!-- les bouttons  -->
+            <div class="flex flex-col justify-center gap-6 w-1/5 ">
                 <button @click="workers_modal=true" :disabled="!indicators_loaded" class="rounded-3xl font-semibold bg-vN text-white py-2 " >Recuruter des employés</button>
                 <button @click="workshop_modal=true" :disabled="!indicators_loaded" class="rounded-3xl font-semibold bg-vN text-white py-2 " >Former des employées</button>
                 <button @click="prime_modal = true" :disabled="!indicators_loaded" class="rounded-3xl  font-semibold bg-vN text-white py-2 px-3">Ajouter une prime au employées</button>

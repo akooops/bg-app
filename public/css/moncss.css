@@ -1,3 +1,48 @@
+
+.createmodel{
+    animation: createBox .25s;
+    background-color:#0b343448;
+    
+}
+@keyframes createBox {
+    0% {
+        transform: scale(0)
+    }
+    
+    100% {
+        transform: scale(1);
+        
+        
+    }
+}
+
+
+
+
+.dropDown{
+    animation: growDown 200ms ease-in-out forwards;
+    transform-origin: top center;
+}
+@keyframes growDown {
+    0% {
+        transform: scale(0)
+    }
+    
+    100% {
+        transform: scale(1)
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
 @font-face {
     font-family: "ubuntu";
     src: url("/css/webfonts/Ubuntu-Medium.ttf");

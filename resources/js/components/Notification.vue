@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="relative">
-            <button @click="toggleNotifBox" class="icon-wrapper">
+            <button @click="toggleNotifBox" class="icon-wrapper ">
                 <img
                     src="/assets/icons/notifications.svg"
                     alt="notification icon"
@@ -24,9 +24,8 @@
 
             <div
                 v-if="show_notifications"
-                class="absolute notif z-20 flex flex-col gap-1 bottom-22 right-0 bg-white shadow-2xl h-96 rounded-lg overflow-x-hidden overflow-y-scroll"
+                class="absolute dropDown w-max notif z-20 flex flex-col gap-1 bottom-22 right-0 bg-white shadow-2xl h-96 rounded-lg overflow-x-hidden overflow-y-scroll"
                 style="
-                    width: 48vmin;
                     border: 0.5px solid rgba(128, 128, 128, 0.5);
                 "
             >

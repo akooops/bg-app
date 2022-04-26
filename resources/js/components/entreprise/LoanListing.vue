@@ -49,13 +49,123 @@
                 </svg>
             </span>
         </div> -->
-
-        <Modal v-if="loan_modal" class="align-center">
+        <Modal v-if="loan_modal" class="align-center createmodel">
             <template v-slot:content>
-                <div class="flex flex-col text-vN p-4 gap-3">
-                    <h1 class="font-bold text-2xl font-heading">
+
+                <div class="flex flex-col mx-4">
+
+                    <h1 class="font-bold text-2xl  text-vert ">
                         Demande d'endettement
                     </h1>
+
+                <div class="flex flex-row mt-4">
+                    <div class="flex flex-col w-1/2">
+                        <h2
+                            for="amount"
+                            class="text-vN text-lg font-heading font-medium"
+                        >
+                            Motant à endetter
+                        </h2>
+                        <input
+                            type="number"
+                            id="amount"
+                            name="amount"
+                            v-model="amount"
+                            class="ring-1 w-full ring-tableBorder border-0 focus-within:ring-vert"
+                            min="0"
+                            step="1000"
+                        />
+                        <h2
+                            for="deadline"
+                            class="text-vN text-lg font-heading font-medium mt-2"
+                        >
+                            Durée du prêt (Semaines)
+                        </h2>
+                        <input
+                            type="number"
+                            id="deadline"
+                            name="deadline"
+                            v-model="deadline"
+                            class="ring-1 w-full ring-tableBorder border-0 focus-within:ring-vert "
+                            min="0"
+                        />
+
+                        <p v-if="ratio != null">
+                            Le ratio d'endettement sera de:
+                            {{ ratio }}%
+                        </p>
+
+                    </div>
+                    <img src="/assets/icons/signing.png" class="w-36 h-36 mx-auto" alt="sdfsf">
+
+                </div>
+
+                 <div class="mt-8 flex items-center  rounded-md px-2 py-2  ">
+                        <input
+                            type="checkbox"
+                            @change="checkboxChanged"
+                            :checked="accept"
+                            class="focus:ring-gray-500 h-4 w-4 text-gray-600 border-gray-150 rounded"
+                        />
+                        <label class="text-vN ml-2 underline"
+                            >Je veillerai, moi le representant de l'entreprise
+                            <span class="font-bold">{{ entreprise.name }}</span>
+                            à honorer les termes du contrat.</label
+                        >
+                    </div>
+
+                    <!-- <div class="mt-6 flex items-center">
+                        <p v-if="create_message != ''" class="text-green-500">
+                            {{ create_message }}
+                        </p>
+                        <p
+                            v-if="create_error_message != ''"
+                            class="text-red-500"
+                        >
+                            {{ create_error_message }}
+                        </p>
+                    </div> -->
+
+                    <div class="flex flex-row mt-9 gap-5 ml-auto text-vN">
+                        <button
+                            class="text-lg font-semibold px-4 py-2 rounded-xl"
+                            :class="
+                                can_create == true
+                                    ? 'hover:bg-gray-200'
+                                    : 'hover:bg-white opacity-50'
+                            "
+                            :disabled="!can_create"
+                            @click="
+                                createLoan();
+                                closeModal();
+                            "
+                        >
+                            S'endetter
+                        </button>
+
+                        <button
+                            class="text-lg font-semibold opacity-80 hover:bg-gray-200 px-4 py-2 rounded-xl"
+                            @click="closeModal"
+                        >
+                            Annuler
+                        </button>
+                    </div>
+
+
+
+                </div>
+                
+
+
+
+                <!-- <div class="flex flex-col text-vN p-4 gap-3">
+                    <div class="flex flex-col">
+
+                    </div>
+                    <div>
+
+                    </div>
+                    
                     <div>
                         <h2
                             for="amount"
@@ -145,7 +255,7 @@
                             Annuler
                         </button>
                     </div>
-                </div>
+                </div> -->
             </template>
         </Modal>
 
@@ -162,7 +272,7 @@
                             Montant restant
                         </h2>
                         <p
-                            class="border w-full h-10 flex items-center pl-4 text-jaune border-tableBorder text-jaune"
+                            class="border w-full h-10 flex items-center pl-4 border-tableBorder text-jaune"
                         >
                             {{ parseInt(selected_loan.remaining_amount) }} DA
                         </p>

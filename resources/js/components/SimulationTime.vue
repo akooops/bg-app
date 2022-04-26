@@ -16,7 +16,7 @@
             </div>
             <button
                 @click="show_menu = !show_menu"
-                class="relative focus:bg-vert focus:bg-opacity-5 p-1 focus:border-2 rounded-sm focus:border-Vn border-opacity-50"
+                class="relative block focus:bg-vert focus:bg-opacity-5 p-1 focus:border rounded-sm focus:border-Vn border-opacity-50"
             >
                 <img
                     src="/assets/icons/chevron-down.svg"
@@ -26,7 +26,7 @@
                 <a
                     href="/logout"
                     v-if="show_menu"
-                    class="flex items-center gap-2 absolute z-999 -bottom-14 right-0 bg-white border-opacity-5 border-vN shadow-md w-44 p-2 rounded-lg"
+                    class="flex flex-row  justify-between dropDown w-max gap-2 absolute z-999 -bottom-12  right-0 bg-white border-opacity-5 border-vN shadow-md  p-3 rounded-lg"
                     style="border-width: 1px"
                 >
                     <img

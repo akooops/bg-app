@@ -71,7 +71,8 @@
                 </h1>
                 <div
                     v-if="showMachines && indicators_loaded"
-                    class="flex flex-col gap-4 items-center bg-white absolute w-full px-4 py-2 shadow-sm rounded-xl text-vN"
+                
+                    class="flex flex-col dropDown gap-4 items-center bg-white absolute w-full px-4 py-2 shadow-2xl z-100 rounded-xl text-vN"
                     style="bottom: -350px; height: 350px"
                 >
                     <div class="flex justify-between w-full">
@@ -186,7 +187,8 @@
                 </button>
                 <div
                     v-if="showEmployees && indicators_loaded"
-                    class="flex flex-col gap-4 items-center bg-white absolute w-full px-4 py-2 shadow-sm rounded-xl text-vN bottom-[-390px]"
+                    class="flex flex-col dropDown gap-4 items-center bg-white absolute w-full px-4 py-2 shadow-2xl z-100 rounded-xl text-vN "
+                    style="bottom: -350px; height: 350px"
                 >
                     <h1 class="font-heading font-medium">
                         Humeur des Employés

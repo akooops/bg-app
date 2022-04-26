@@ -219,10 +219,10 @@
             </div>
         </div>
 
-        <Modal v-if="show_add_modal">
+        <Modal v-if="show_add_modal" class="createmodel">
             <template v-slot:content>
                 <div class="flex flex-col">
-                    <h1 class="text-vert text-2xl font-bold">
+                    <h1 class="text-vert text-xl text-center font-bold">
                         Ajouter une nouvelle commande
                     </h1>
                     <div class="flex flex-row my-4 px-6 py-4 text-vN">

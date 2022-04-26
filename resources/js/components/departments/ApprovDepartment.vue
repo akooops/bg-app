@@ -282,7 +282,7 @@
             <Modal
                 v-if="show_details_modal"
                 id="modal"
-                class="align-content-center"
+                class="align-content-center createmodel"
             >
                 <template v-slot:content>
                     <div class="flex flex-col p-4 items-start">

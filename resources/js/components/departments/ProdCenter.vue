@@ -167,7 +167,7 @@
                 </button>
             </div>
         </div>
-        <Modal v-if="launch_prod_modal">
+        <Modal v-if="launch_prod_modal" class="createmodel">
             <template v-slot:content>
                 <div class="flex flex-col w-2/5 px-6 mx-auto gap-3">
                     <h1 class="text-vert font-semibold text-2xl font-heading">
@@ -543,40 +543,35 @@
                             </tbody>
                         </table>
                     </div>
-                    <h1
-                        class="text-jaune text-md font-heading font-semibold pl-3"
-                    >
-                        Remarque:
-                    </h1>
-                    <!-- <p class="text-vN text-sm pl-3">
-                        - Les prévisions sont calculés dans le cas ou toutes la
-                        quantité produite est vendue
-                    </p> -->
-                    <p class="text-vN text-sm pl-3 font-semibold">
-                        Votre taux de rebut est de
+                  
+                    <div class="flex flex-row items-center mt-6 px-4 py-2 gap-3 border rounded-md border-yellow-500">
+                         <img src="/assets/icons/warning.png" class="h-10 w-10" alt="fgghgf">
+                    <h1 class="w-80 text-vN">Votre taux de rebut est de
                         {{
                             Math.round(
                                 indicators["reject_rate"].value *
                                     Math.pow(10, 2)
                             )
-                        }}%, pour le réduire, lancez une étude AMDEC.
-                    </p>
+                        }}%, pour le réduire, lancez une étude AMDEC.</h1>
+ 
+                     </div>
+                    
                 </div>
             </template>
         </Modal>
 
-        <Modal v-if="machine.show_transaction_modal">
+        <Modal v-if="machine.show_transaction_modal" class="createmodel">
             <template v-slot:content>
                 <div class="flex flex-col items-center gap-5 p-5">
                     <h2
                         v-if="machine.transaction == 'buy'"
-                        class="font-bold text-lg"
+                        class="text-vert font-bold text-xl"
                     >
                         Acheter une Machine
                     </h2>
                     <h2
                         v-if="machine.transaction == 'sell'"
-                        class="font-semibold text-lg"
+                        class="text-vert font-bold text-xl"
                     >
                         Vendre une Machine
                     </h2>
@@ -645,7 +640,7 @@
                                             ? machine.buy_price_lv2
                                             : machine.buy_price_lv3) *
                                         machine.transaction_nb
-                                    ).toPrecision(6)
+                                    )
                                 }}
                             </p>
                             <p
@@ -703,19 +698,17 @@
                 </div>
             </template>
         </Modal>
-        <Modal v-if="action.show_info" class="pt-44">
+        <Modal v-if="action.show_info" class="my-auto createmodel" >
             <template v-slot:content>
                 <div class="flex flex-col gap-5">
-                    <h1 class="text-lg text-jaune font-headgin">
-                        {{ action.name }} -
-                        <span class="text-vN font-sans font-bold">
-                            {{ action.price[action.value].toPrecision(6) }} UM
-                        </span>
+                    <h1 class="text-xl text-center text-jaune font-headgin">
+                        {{ action.name }} 
+                        
                     </h1>
-                    <p class="">
+                    <p class="text-vN">
                         {{ action.phrase }}
                     </p>
-                    <p class="">
+                    <p class="text-vN">
                         {{ action.result_phrase }}
                     </p>
                     <div class="w-full flex items-center gap-4 justify-end">

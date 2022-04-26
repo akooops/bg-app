@@ -1,6 +1,6 @@
 <template>
     <div
-        class="fixed z-50 inset-0 h-full bg-gray-50 bg-opacity-50 overflow-auto rounded-sm m-auto w-screen"
+        class="fixed z-50 inset-0 h-full bg-opacity-50 overflow-auto rounded-sm m-auto w-screen"
     >
         <div class="flex h-full">
             <!-- <div class="z-10" aria-hidden="true">
