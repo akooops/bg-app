@@ -896,6 +896,10 @@ export default {
                 }
             }
         },
+
+        'indicators': function() {
+            this.verifyProd();
+        }
     },
     computed: {
         selectedProd() {
