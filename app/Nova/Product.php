@@ -65,8 +65,10 @@ class Product extends Resource
 
             Number::make("Coef publicité", "ad_coef"),
 
-            Number::make("Demande Mensuelle", "avg_demand"),
+            Number::make("Demande Hebdomadaire", "avg_demand"),
             Number::make("Demande Restante", "left_demand"),
+
+            Number::make("% de la population", "percent_population")->step(0.01),
 
             Text::make('Icon'),
 

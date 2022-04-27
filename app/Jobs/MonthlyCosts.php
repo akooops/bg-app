@@ -58,12 +58,18 @@ class MonthlyCosts implements ShouldQueue
             foreach ($entreprises as $entreprise) {
                 // Retrieve entreprise's funds
                 $caisse = $this->getIndicator('caisse', $entreprise->id)['value'];
+
+                $machines_lv1 = $this->getIndicator('nb_machines_lv1', $entreprise->id)['value'];
+                $machines_lv2 = $this->getIndicator('nb_machines_lv2', $entreprise->id)['value'];
+                $machines_lv3 = $this->getIndicator('nb_machines_lv3', $entreprise->id)['value'];
+
+                $workers_lv1 = $this->getIndicator('nb_workers_lv1', $entreprise->id)['value'];
+                $workers_lv2 = $this->getIndicator('nb_workers_lv2', $entreprise->id)['value'];
+
                 $cost = 0;
 
                 // Compute salaries cost
                 $salary_cost = 0;
-                $workers_lv1 = $this->getIndicator('nb_workers_lv1', $entreprise->id)['value'];
-                $workers_lv2 = $this->getIndicator('nb_workers_lv2', $entreprise->id)['value'];
                 $salary_cost += $workers_lv1 * $salary_lv1 + $workers_lv2 * $salary_lv2;
 
                 // Compute raw materials stock cost
@@ -76,13 +82,13 @@ class MonthlyCosts implements ShouldQueue
 
                 // Compute pollution cost based on machines
                 $pollution_cost = 0;
-                $machines_lv1 = $this->getIndicator('nb_machines_lv1', $entreprise->id)['value'];
-                $machines_lv2 = $this->getIndicator('nb_machines_lv2', $entreprise->id)['value'];
-                $machines_lv3 = $this->getIndicator('nb_machines_lv3', $entreprise->id)['value'];
                 $pollution_cost += $pollution_unit_cost *
                     ($machines_lv1 * $pollution_machines_lv1_factor +
                     $machines_lv2 * $pollution_machines_lv2_factor +
                     $machines_lv3 * $pollution_machines_lv3_factor);
+
+                // Compute taxes
+
 
                 // Compute total cost
                 $cost = (int) ($salary_cost + $stock_cost + $pollution_cost);
@@ -104,6 +110,7 @@ class MonthlyCosts implements ShouldQueue
                         "days" =>  $this->getSimulationTime() + 15
                     ]);
                     $this->updateIndicator("dettes", $entreprise->id, $difference);
+
                     $notification = [
                         "entreprise_id" => $entreprise->id,
                         "type" => "NewLoan",
@@ -140,7 +147,6 @@ class MonthlyCosts implements ShouldQueue
                 }
 
                 // This is to decrease the health of the machines
-
                 $nb_machines_lv1 = $this->getIndicator('nb_machines_lv1', $entreprise->id)['value'];
                 $machines_lv1_health = $this->getIndicator('machines_lv1_health', $entreprise->id)['value'];
                 $machines_lv1_durability = $this->get_game_setting('machines_lv1_durability');
@@ -181,8 +187,8 @@ class MonthlyCosts implements ShouldQueue
 
                     "store" => true,
 
-                    "title" => "Santé des machines",
-                    "text" => "La santé des machines décroit",
+                    "title" => "Machines",
+                    "text" => "La santé de vos machines décroit",
                     "icon_path" => "aaaaaaaaaaa",
 
                     "style" => "info",
