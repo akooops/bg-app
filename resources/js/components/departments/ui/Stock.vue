@@ -41,7 +41,7 @@
                         class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
                     >
                         <img
-                            src="/assets/icons/khobz.png"
+                            :src="item.icon"
                             alt="khobz"
                             class="mx-auto w-10 h-10"
                         />
@@ -81,7 +81,6 @@ export default {
                 if (a[key] > b[key]) {
                     return this.reverse ? 1 : -1;
                 }
-                console.log(this.commands);
                 return 0;
             });
         },

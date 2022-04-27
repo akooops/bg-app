@@ -55,37 +55,46 @@
             custom_css="w-1/3"
         >
             <template v-slot:content>
-                <div class="flex flex-col text-vN px-5">
+                <div class="flex flex-col text-vN px-5 gap-4">
                     <h1 class="text-center text-vert text-2xl">
                         Recrutement des employées
                     </h1>
-                    <h1 class="pt-5 pb-3">
-                        Entrez le nombre des employées à recruter :
-                    </h1>
-                    <input
-                        id="workers"
-                        type="number"
-                        name="workers"
-                        v-model="nb_workers_to_hire"
-                        class="h-full rounded-sm py-3 w-1/2"
-                        min="1"
-                    />
-
-                    <h1 class="pt-3 opacity-80">
-                        le salaire mensuel d'un seul employé est fixé à :
-                        <span class="text-yellow-600">{{ salary_lv1 }} UM</span>
-                    </h1>
-                    <h1 class="opacity-80">
-                        le salaire mensule pour le nombre d'employés choisis est
-                        fixé à :
-                        <span class="text-vert">
-                            {{ salary_lv1 * nb_workers_to_hire }} UM</span
+                    <div>
+                        <h1
+                            class="text-md font-heading font-medium text-lg text-nav mb-2"
                         >
-                    </h1>
+                            Entrez le nombre des employées à recruter :
+                        </h1>
+                        <input
+                            id="workers"
+                            type="number"
+                            name="workers"
+                            v-model="nb_workers_to_hire"
+                            class="rounded-sm py-3 w-1/2"
+                            min="1"
+                        />
+                    </div>
+                    <div>
+                        <h1 class="pt-3 opacity-80">
+                            le salaire mensuel d'un seul employé est fixé à :
+                            <span class="text-yellow-600"
+                                >{{ salary_lv1 }} UM</span
+                            >
+                        </h1>
+                        <h1 class="opacity-80">
+                            le salaire mensule pour le nombre d'employés choisis
+                            est fixé à :
+                            <span class="text-vert">
+                                {{ salary_lv1 * nb_workers_to_hire }} UM</span
+                            >
+                        </h1>
+                    </div>
 
-                    <div class="flex flex-row gap-4 justify-end mr-5 mt-7">
+                    <div
+                        class="w-full flex items-center gap-4 justify-end mt-5"
+                    >
                         <button
-                            class="font-semibold hover:opacity-80"
+                            class="font-medium font-heading border-0 px-3 py-1 text-vN hover:text-vert bg-opacity-30"
                             :class="hire_sent ? 'opacity-50' : ''"
                             :disabled="hire_sent"
                             @click="hireWorker"
@@ -93,7 +102,7 @@
                             Valider
                         </button>
                         <button
-                            class="font-semibold hover:opacity-80"
+                            class="font-medium font-heading px-3 py-1 text-vN opacity-80 hover:opacity-100"
                             @click="workers_modal = false"
                         >
                             Annuler
@@ -108,40 +117,48 @@
             custom_css="w-1/3"
         >
             <template v-slot:content>
-                <div class="flex flex-col text-vN px-5">
+                <div class="flex flex-col text-vN px-5 gap-4">
                     <h1 class="text-center text-vert text-2xl">
                         Formation des employées
                     </h1>
-                    <h1 class="pt-5 pb-3">
-                        Entrez le nombre des employées à former :
-                    </h1>
-                    <input
-                        v-model="nb_workers_to_train"
-                        class="w-2/3"
-                        type="number"
-                        min="1"
-                        :max="
-                            indicators['nb_workers_lv1']['value'] -
-                            indicators['nb_workers_lv1_busy']['value']
-                        "
-                    />
-
-                    <h1 class="pt-3 opacity-80">
-                        le prix de formation d'un seul employé est fixé à :
-                        <span class="text-yellow-600"
-                            >{{ workshop_price }} UM / personne</span
+                    <div>
+                        <h1
+                            class="text-md font-heading font-medium text-lg text-nav mb-2"
                         >
-                    </h1>
-                    <h1 class="opacity-80">
-                        le prix total est fixé à :
-                        <span class="text-vert">
-                            {{ workshop_price * nb_workers_to_train }} UM</span
-                        >
-                    </h1>
+                            Entrez le nombre des employées à former :
+                        </h1>
+                        <input
+                            v-model="nb_workers_to_train"
+                            class="w-2/3"
+                            type="number"
+                            min="1"
+                            :max="
+                                indicators['nb_workers_lv1']['value'] -
+                                indicators['nb_workers_lv1_busy']['value']
+                            "
+                        />
+                    </div>
+                    <div>
+                        <h1 class="pt-3 opacity-80">
+                            le prix de formation d'un seul employé est fixé à :
+                            <span class="text-yellow-600"
+                                >{{ workshop_price }} UM / personne</span
+                            >
+                        </h1>
+                        <h1 class="opacity-80">
+                            le prix total est fixé à :
+                            <span class="text-vert">
+                                {{ workshop_price * nb_workers_to_train }}
+                                UM</span
+                            >
+                        </h1>
+                    </div>
 
-                    <div class="flex flex-row gap-4 justify-end mr-5 mt-7">
+                    <div
+                        class="w-full flex items-center gap-4 justify-end mt-5"
+                    >
                         <button
-                            class="font-semibold hover:opacity-80"
+                            class="font-medium font-heading border-0 px-3 py-1 text-vN hover:text-vert bg-opacity-30"
                             :class="workshop_sent ? 'opacity-50' : ''"
                             :disabled="workshop_sent"
                             @click="launchWorkshop"
@@ -149,7 +166,7 @@
                             Lancer la formation
                         </button>
                         <button
-                            class="font-semibold hover:opacity-80"
+                            class="font-medium font-heading px-3 py-1 text-vN opacity-80 hover:opacity-100"
                             @click="
                                 nb_workers_to_train = 1;
                                 workshop_modal = false;
@@ -168,47 +185,56 @@
             custom_css="w-1/3"
         >
             <template v-slot:content>
-                <div class="flex flex-col text-vN px-5">
+                <div class="flex flex-col text-vN px-5 gap-4">
                     <h1 class="text-center text-vert text-2xl">
                         Prime pour les employées
                     </h1>
-                    <h1 class="pt-5 pb-3">Entrez le montant de la prime :</h1>
-                    <input
-                        id="bonus"
-                        type="number"
-                        name="bonus"
-                        v-model="bonus"
-                        :min="0"
-                        :max="bonus_max"
-                        :step="
-                            bonus_max - bonus > 100
-                                ? 100
-                                : bonus_max - bonus > 10
-                                ? 10
-                                : 1
-                        "
-                        class="h-full w-full rounded-sm"
-                    />
-
-                    <h1 class="pt-3 opacity-80">
-                        Le montant total est :
-                        <span class="text-yellow-600"
-                            >{{
-                                bonus *
-                                (indicators["nb_workers_lv1"]["value"] +
-                                    indicators["nb_workers_lv2"]["value"])
-                            }}
-                            UM</span
+                    <div>
+                        <h1
+                            class="text-md font-heading font-medium text-lg text-nav mb-2"
                         >
-                    </h1>
-                    <h1 class="opacity-80">
-                        L'humeur de vos employés augmentera de :
-                        <span class="text-vert"> {{ mood_increase }}</span>
-                    </h1>
+                            Entrez le montant de la prime :
+                        </h1>
+                        <input
+                            id="bonus"
+                            type="number"
+                            name="bonus"
+                            v-model="bonus"
+                            :min="0"
+                            :max="bonus_max"
+                            :step="
+                                bonus_max - bonus > 100
+                                    ? 100
+                                    : bonus_max - bonus > 10
+                                    ? 10
+                                    : 1
+                            "
+                            class="w-full rounded-sm"
+                        />
+                    </div>
+                    <div>
+                        <h1 class="pt-3 opacity-80">
+                            Le montant total est :
+                            <span class="text-yellow-600"
+                                >{{
+                                    bonus *
+                                    (indicators["nb_workers_lv1"]["value"] +
+                                        indicators["nb_workers_lv2"]["value"])
+                                }}
+                                UM</span
+                            >
+                        </h1>
+                        <h1 class="opacity-80">
+                            L'humeur de vos employés augmentera de :
+                            <span class="text-vert"> {{ mood_increase }}</span>
+                        </h1>
+                    </div>
 
-                    <div class="flex flex-row gap-4 justify-end mr-5 mt-7">
+                    <div
+                        class="w-full flex items-center gap-4 justify-end mt-5"
+                    >
                         <button
-                            class="font-semibold hover:opacity-80"
+                            class="font-medium font-heading border-0 px-3 py-1 text-vN hover:text-vert bg-opacity-30"
                             :class="prime_sent ? 'opacity-50' : ''"
                             :disabled="prime_sent"
                             @click="primeWorkers"
@@ -216,7 +242,7 @@
                             Valider
                         </button>
                         <button
-                            class="font-semibold hover:opacity-80"
+                            class="font-medium font-heading px-3 py-1 text-vN opacity-80 hover:opacity-100"
                             @click="prime_modal = false"
                         >
                             Annuler
@@ -232,34 +258,40 @@
             custom_css="w-1/3"
         >
             <template v-slot:content>
-                <div class="flex flex-col text-vN px-5">
+                <div class="flex flex-col text-vN px-5 gap-4">
                     <h1 class="text-center text-vert text-2xl">
                         Virer des employés
                     </h1>
-                    <h1 class="pt-5 pb-3">Nombre d'employé simple à virer :</h1>
-                    <input
-                        type="number"
-                        v-model="nb_workers_lv1_to_fire"
-                        :min="0"
-                        :max="
-                            indicators['nb_workers_lv1'].value -
-                            indicators['nb_workers_lv1_busy'].value
-                        "
-                        class="h-full rounded-sm w-3/4"
-                    />
-                    <h1 class="pt-5 pb-3">
-                        Nombre d'employé experts à virer :
-                    </h1>
-                    <input
-                        type="number"
-                        v-model="nb_workers_lv2_to_fire"
-                        :min="0"
-                        :max="
-                            indicators['nb_workers_lv2'].value -
-                            indicators['nb_workers_lv2_busy'].value
-                        "
-                        class="h-full w-3/4 rounded-sm"
-                    />
+                    <div>
+                        <h1 class="pt-5 pb-3">
+                            Nombre d'employé simple à virer :
+                        </h1>
+                        <input
+                            type="number"
+                            v-model="nb_workers_lv1_to_fire"
+                            :min="0"
+                            :max="
+                                indicators['nb_workers_lv1'].value -
+                                indicators['nb_workers_lv1_busy'].value
+                            "
+                            class="rounded-sm w-3/4"
+                        />
+                    </div>
+                    <div>
+                        <h1 class="pt-5 pb-3">
+                            Nombre d'employé experts à virer :
+                        </h1>
+                        <input
+                            type="number"
+                            v-model="nb_workers_lv2_to_fire"
+                            :min="0"
+                            :max="
+                                indicators['nb_workers_lv2'].value -
+                                indicators['nb_workers_lv2_busy'].value
+                            "
+                            class="w-3/4 rounded-sm"
+                        />
+                    </div>
 
                     <div
                         class="flex flex-row items-center mt-6 px-4 py-2 gap-3 border rounded-md border-yellow-500"
@@ -283,9 +315,11 @@
                         </h1>
                     </div>
 
-                    <div class="flex flex-row gap-4 justify-end mr-5 mt-7">
+                    <div
+                        class="w-full flex items-center gap-4 justify-end mt-5"
+                    >
                         <button
-                            class="font-semibold hover:opacity-80"
+                            class="font-medium font-heading border-0 px-3 py-1 text-vN hover:text-vert bg-opacity-30"
                             :class="fire_sent ? 'opacity-50' : ''"
                             :disabled="fire_sent"
                             @click="fireWorkers"
@@ -293,7 +327,7 @@
                             Valider
                         </button>
                         <button
-                            class="font-semibold hover:opacity-80"
+                            class="font-medium font-heading px-3 py-1 text-vN opacity-80 hover:opacity-100"
                             @click="fire_modal = false"
                         >
                             Annuler

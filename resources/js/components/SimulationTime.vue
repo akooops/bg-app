@@ -20,19 +20,21 @@
                     alt="arrow down icon"
                     class="h-5 w-5"
                 />
-                <a
-                    href="/logout"
-                    v-if="show_menu"
-                    class="flex flex-row justify-between dropDown w-max gap-2 absolute z-999 -bottom-16 right-0 bg-white border-opacity-5 border-vN shadow-md p-3 rounded-lg"
-                    style="border-width: 1px"
-                >
-                    <img
-                        src="/assets/icons/logout.svg"
-                        alt="logout icon"
-                        class="w-5 h-5"
-                    />
-                    <p>Se déconnecter</p>
-                </a>
+                <transition name="logout">
+                    <a
+                        href="/logout"
+                        v-if="show_menu"
+                        class="flex flex-row justify-between dropDown w-max gap-2 absolute z-999 -bottom-16 right-0 bg-white border-opacity-5 border-vN shadow-md p-3 rounded-lg"
+                        style="border-width: 1px"
+                    >
+                        <img
+                            src="/assets/icons/logout.svg"
+                            alt="logout icon"
+                            class="w-5 h-5"
+                        />
+                        <p>Se déconnecter</p>
+                    </a>
+                </transition>
             </button>
         </div>
     </div>
@@ -103,4 +105,19 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.logout-leave-to {
+    animation: closeLogout 200ms ease-in-out forwards;
+    transform-origin: top right;
+}
+
+@keyframes closeLogout {
+    0% {
+        transform: scale(1);
+    }
+
+    100% {
+        transform: scale(0);
+    }
+}
+</style>

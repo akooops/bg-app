@@ -682,7 +682,7 @@
                                 machine.transaction == 'buy'
                             "
                             @click="confirmMachineTransaction"
-                            class="border-0 px-3 py-1 text-vN hover:text-vert bg-opacity-30"
+                            class="font-heading font-medium border-0 px-3 py-1 text-vN hover:text-vert bg-opacity-30"
                         >
                             Confirmer
                         </button>
@@ -695,7 +695,7 @@
                                 machine.transaction_lv = 1;
                                 machine.show_transaction_modal = false;
                             "
-                            class="px-3 py-1 text-vN opacity-80 hover:opacity-100"
+                            class="font-heading font-medium px-3 py-1 text-vN opacity-80 hover:opacity-100"
                         >
                             Annuler
                         </button>
@@ -718,13 +718,13 @@
                     <div class="w-full flex items-center gap-4 justify-end">
                         <button
                             @click="confirmAction"
-                            class="px-3 py-1 text-vN hover:text-vert"
+                            class="font-heading font-medium px-3 py-1 text-vN hover:text-vert"
                         >
                             Confirmer
                         </button>
                         <button
                             @click="action.show_info = false"
-                            class="px-3 py-1 text-vN text-opacity-80 hover:text-opacity-100"
+                            class="font-heading font-medium px-3 py-1 text-vN text-opacity-80 hover:text-opacity-100"
                         >
                             Annuler
                         </button>

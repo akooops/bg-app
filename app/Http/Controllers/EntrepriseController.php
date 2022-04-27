@@ -296,7 +296,8 @@ class EntrepriseController extends Controller
                 $item_data = [
                     "id" => $material->id,
                     "material" => $material->name,
-                    "quantity" => $item->quantity
+                    "quantity" => $item->quantity,
+                    "icon" => $material->icon
                 ];
                 return $item_data;
             });
@@ -1219,10 +1220,14 @@ class EntrepriseController extends Controller
             ];
             $caisse = $this->getIndicator("caisse", $entreprise_id)["value"];
             $dettes = $this->getIndicator("dettes", $entreprise_id)["value"];
+            $ca = $this->getIndicator("ca", $entreprise_id)["value"];
             $sf = $this->getIndicator("score_final", $entreprise_id)["value"];
             $profit = $caisse - $dettes;
             $data["profit"] = $profit;
             $data["score"] = $sf;
+            $data["caisse"] = $caisse;
+            $data["dettes"] = $dettes;
+            $data["ca"] = $ca;
             $rankings->push($data);
         }
         $sorted = $rankings->sortByDesc("profit")->values();

@@ -1,5 +1,28 @@
 <template>
-    <div class="flex w-full">
+    <div class="flex flex-col items-center gap-5">
+        <h1
+            class="font-heading font-bold text-4xl welcome-text mt-4"
+            style="text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25)"
+        >
+            Classement
+        </h1>
+        <!-- <button @click="shuffle">click</button> -->
+        <div class="w-4/5 flex flex-col gap-10">
+            <transition-group name="flip-list" tag="ul">
+                <Listing
+                    v-for="(item, i) in listing.slice(0, 3)"
+                    :key="item.entreprise_name"
+                    :name="item.entreprise_name"
+                    :caisse="item.caisse"
+                    :ca="item.ca"
+                    :dettes="item.dettes"
+                    :score="item.score"
+                    :position="i + 1"
+                />
+            </transition-group>
+        </div>
+    </div>
+    <!-- <div class="flex w-full">
         <div
             class="flex flex-col items-center justify-center py-auto w-1/2 h-screen rounded-md bg-green-600"
         >
@@ -40,6 +63,7 @@
             <div
                 class="w-full h-20 px-3 flex flex-nowrap items-center justify-between bg-gray-200 my-2 rounded-md mx-4 hover:bg-green-500 hover:text-white"
                 v-for="item in listing"
+                :key="item.score"
             >
                 <h2 class="font-bold">{{ item.entreprise_name }}</h2>
                 <h2 class="text-lg font-extrabold">{{ item.profit }} DA</h2>
@@ -48,12 +72,16 @@
                 </h2>
             </div>
         </div>
-    </div>
+    </div> -->
 </template>
 
 <script type="text/javascript">
+import Listing from "./Listing";
 export default {
     name: "LeaderBoard",
+    components: {
+        Listing,
+    },
     props: ["showFs"],
     data() {
         return {
@@ -62,6 +90,9 @@ export default {
         };
     },
     methods: {
+        // shuffle: function () {
+        //     this.listing = _.shuffle(this.listing.slice(0, 3));
+        // },
         getListing() {
             axios.get("/api/ranking").then((resp) => {
                 this.listing = resp.data.list;
@@ -84,3 +115,9 @@ export default {
     },
 };
 </script>
+
+<style>
+.flip-list-move {
+    transition: transform 1s;
+}
+</style>

@@ -221,11 +221,11 @@
 
         <Modal v-if="show_add_modal" class="openmodal">
             <template v-slot:content>
-                <div class="flex flex-col">
+                <div class="flex flex-col px-5">
                     <h1 class="text-vert text-xl text-center font-bold">
                         Ajouter une nouvelle commande
                     </h1>
-                    <div class="flex flex-row my-4 px-6 py-4 text-vN">
+                    <div class="flex flex-row my-4 py-4 text-vN">
                         <div class="w-2/5 flex flex-col">
                             <h1 class="font-semibold">Matière</h1>
                             <select
@@ -306,7 +306,7 @@
                         </p>
                     </div>
 
-                    <div class="flex gap-4 justify-end mr-5">
+                    <div class="flex gap-4 justify-end">
                         <button
                             @click="
                                 editing_command_id == null
@@ -314,7 +314,7 @@
                                     : editRow(editing_command_id, true)
                             "
                             :disabled="commandDisabled && supp_raw_mat_updated"
-                            class="py-3 px-3 text-vN rounded-md font-semibold"
+                            class="font-heading py-3 px-3 text-vN rounded-md font-medium"
                             v-bind:class="{
                                 'text-vN text-opacity-20': commandDisabled,
                                 'text-vN  hover:text-vert': !commandDisabled,
@@ -327,7 +327,7 @@
                                 editing_command_id = null;
                                 show_add_modal = false;
                             "
-                            class="py-3 px-3 text-vN font-semibold text-opacity-80 hover:text-opacity-100 rounded-md"
+                            class="py-3 px-3 text-vN font-medium font-heading text-opacity-80 hover:text-opacity-100 rounded-md"
                         >
                             Fermer
                         </button>

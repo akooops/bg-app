@@ -148,6 +148,7 @@ export default {
                 (e) => {
                     this.getNotifications();
                     this.$forceUpdate();
+                    console.log(e);
                     if (
                         e.notification.style == "info" ||
                         e.notification.style == null
@@ -252,6 +253,11 @@ export default {
 .toast-error {
     background-color: #fde8e8 !important;
     color: #ca1e1e !important;
+}
+
+.toasted-container {
+    width: 300px !important;
+    padding: 0px 8px !important;
 }
 
 .toasted-container .toasted .action {

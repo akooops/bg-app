@@ -128,11 +128,11 @@
 
                     <div class="flex flex-row mt-9 gap-5 ml-auto text-vN">
                         <button
-                            class="text-lg font-semibold px-4 py-2 rounded-xl"
+                            class="text-vN font-normal px-3 py-2 rounded"
                             :class="
                                 can_create == true
-                                    ? 'hover:bg-gray-200'
-                                    : 'hover:bg-white opacity-50'
+                                    ? 'hover:text-vert'
+                                    : 'bg-gray-100 text-opacity-50'
                             "
                             :disabled="!can_create"
                             @click="
@@ -144,7 +144,7 @@
                         </button>
 
                         <button
-                            class="text-lg font-semibold opacity-80 hover:bg-gray-200 px-4 py-2 rounded-xl"
+                            class="hover:text-black text-vN text-opacity-80 px-3 py-2 rounded"
                             @click="closeModal"
                         >
                             Annuler
