@@ -148,6 +148,11 @@ export default {
                 (e) => {
                     this.getNotifications();
                     this.$forceUpdate();
+
+                    if (!e.notification.store) {
+                        return;
+                    }
+
                     if (
                         e.notification.style == "info" ||
                         e.notification.style == null

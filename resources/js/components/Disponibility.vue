@@ -16,7 +16,9 @@
             <p class="font-bold text-vN pl-4">
                 {{ Math.round(dettes).toLocaleString() }}
             </p>
-            <p class="text-vert font-bold">5555</p>
+            <p class="text-vert font-bold">
+                {{ debtDiff }}
+            </p>
         </div>
         <v-chart ref="chart" class="chart" :option="option2" autoresize />
     </div>
@@ -36,7 +38,9 @@
             <p class="font-bold text-vN pl-4">
                 {{ Math.round(caisse).toLocaleString() }}
             </p>
-            <p class="text-jaune font-bold">+2749</p>
+            <p class="text-jaune font-bold">
+                {{ dispDiff }}
+            </p>
         </div>
         <v-chart ref="chart" class="chart" :option="option" autoresize />
     </div>
@@ -60,7 +64,7 @@ export default {
             option: {
                 xAxis: {
                     boundaryGap: false,
-                    data: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8],
+                    data: [],
                     show: false,
                 },
                 yAxis: {
@@ -72,7 +76,7 @@ export default {
                 },
                 series: [
                     {
-                        data: [0.1, 0.2, 0.3, 0.2, 0.4, 0.6, 0.5, 0.7],
+                        data: [],
                         type: "line",
                         areaStyle: {},
                     },
@@ -88,7 +92,7 @@ export default {
             option2: {
                 xAxis: {
                     boundaryGap: false,
-                    data: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8],
+                    data: [],
                     show: false,
                 },
                 yAxis: {
@@ -100,7 +104,7 @@ export default {
                 },
                 series: [
                     {
-                        data: [0.7, 0.5, 0.6, 0.4, 0.2, 0.3, 0.2, 0.1],
+                        data: [],
                         type: "line",
                         areaStyle: {},
                     },
@@ -130,15 +134,68 @@ export default {
                    
                 });
         },
+
+        getStats() {
+            axios
+                .get("/api/entreprise/stats", {
+                    params: {
+                        entreprise_id: this.user.id,
+                    },
+                })
+                .then((resp) => {
+                    
+                    this.option.xAxis.data = resp.data.dates;
+                    this.option2.xAxis.data = resp.data.dates;
+                   
+                   this.option.series[0].data = resp.data.caisse;
+                   this.option2.series[0].data = resp.data.dettes;
+
+                });
+        },
     },
+    computed: {
+        dispDiff() {
+            let disps = this.option.series[0].data;
+            if (disps.length >= 2) {
+                let diff = disps[disps.length - 1] - disps[disps.length - 2];
+                let sign = disps[disps.length - 1] - disps[disps.length - 2] >= 0 ? '+' : '-';
+
+                return sign + Math.abs(diff);
+            }
+            else {
+                return 0;
+            }
+        },
+
+        debtDiff() {
+            let debts = this.option2.series[0].data;
+            if (debts.length >= 2) {
+                let diff = debts[debts.length - 1] - debts[debts.length - 2];
+                let sign = debts[debts.length - 1] - debts[debts.length - 2] >= 0 ? '+' : '-';
+
+                return sign + Math.abs(diff);
+            }
+            else {
+                return 0;
+            }
+        }
+    },
+
     mounted() {
         this.getSimulationData();
+        this.getStats();
+
         if (this.user.type == "entreprise") {
             window.Echo.channel("entreprise_" + this.user.id).listen(
                 "NewNotification",
                 (e) => {
                     if (e.notification.type == "AdminNotif") {
                         this.getSimulationData();
+                        this.$forceUpdate();
+                    }
+
+                    if (e.notification.type == "StatsUpdate") {
+                        this.getStats();
                         this.$forceUpdate();
                     }
                 }
