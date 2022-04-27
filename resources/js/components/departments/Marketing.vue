@@ -50,7 +50,7 @@
             </span>
         </div> -->
 
-        <Modal v-if="ad_modal" class="createmodel">
+        <Modal v-if="ad_modal" class="openmodal">
             <template v-slot:content>
                 <div class="flex flex-col gap-4 px-6">
                     <p class="text-xl text-vert font-semibold">

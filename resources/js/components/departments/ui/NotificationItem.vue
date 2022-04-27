@@ -9,7 +9,9 @@
             <div class="text-base text-vN font-semibold mr-auto">
                 {{ title }}
             </div>
-            <div v-if="show" class="text-sm text-vN  overflow-y-auto w-60 ">{{ text }}</div>
+            <div v-if="show" class="text-sm text-vN overflow-y-auto w-60">
+                {{ text }}
+            </div>
             <div v-if="!show" class="text-gray-400 text-sm text-left">
                 Semaine {{ time }} • production department
             </div>

@@ -1,17 +1,8 @@
 <template>
-    <div >
-        <div
+    <div>
+        <!-- <div
             v-if="show_success"
-            class="
-                my-2
-                bg-green-100
-                border border-green-400
-                text-green-700
-                px-4
-                py-3
-                rounded
-                relative
-            "
+            class="my-2 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative"
             role="alert"
         >
             <strong class="font-bold">{{ message }}</strong>
@@ -36,15 +27,7 @@
 
         <div
             v-if="show_error"
-            class="
-                bg-red-100
-                border border-red-400
-                text-red-700
-                px-4
-                py-3
-                rounded
-                relative
-            "
+            class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
             role="alert"
         >
             <strong class="font-bold">{{ message }}</strong>
@@ -65,12 +48,20 @@
                     />
                 </svg>
             </span>
-        </div>
-        <Modal v-if="workers_modal" class="align-center createmodel" custom_css="w-1/3">
+        </div> -->
+        <Modal
+            v-if="workers_modal"
+            class="align-center openmodal"
+            custom_css="w-1/3"
+        >
             <template v-slot:content>
-                <div class="flex flex-col text-vN px-5 ">
-                     <h1 class="text-center text-vert text-2xl">Recrutement des employées</h1>
-                    <h1 class="pt-5 pb-3">Entrez le nombre des employées à recruter :</h1>
+                <div class="flex flex-col text-vN px-5">
+                    <h1 class="text-center text-vert text-2xl">
+                        Recrutement des employées
+                    </h1>
+                    <h1 class="pt-5 pb-3">
+                        Entrez le nombre des employées à recruter :
+                    </h1>
                     <input
                         id="workers"
                         type="number"
@@ -80,59 +71,107 @@
                         min="1"
                     />
 
-                    <h1 class="pt-3 opacity-80">le salaire mensuel d'un seul employé est fixé à : <span class="text-yellow-600 ">{{salary_lv1}} UM</span></h1>
-                    <h1 class="opacity-80">le salaire mensule pour le nombre d'employés choisis est fixé à : <span class="text-vert ">  {{ salary_lv1 * workers }} UM</span></h1>
+                    <h1 class="pt-3 opacity-80">
+                        le salaire mensuel d'un seul employé est fixé à :
+                        <span class="text-yellow-600">{{ salary_lv1 }} UM</span>
+                    </h1>
+                    <h1 class="opacity-80">
+                        le salaire mensule pour le nombre d'employés choisis est
+                        fixé à :
+                        <span class="text-vert">
+                            {{ salary_lv1 * nb_workers_to_hire }} UM</span
+                        >
+                    </h1>
 
-                     <div class="flex flex-row gap-4 justify-end mr-5 mt-7">
-                           <button class="font-semibold hover:opacity-80" :class="hire_sent ? 'opacity-50': '' "  :disabled="hire_sent" @click="hireWorker">
-                               Valider
-                           </button>
-                           <button class="font-semibold hover:opacity-80" @click="workers_modal = false">
-                                   Annuler
-                           </button>
-
+                    <div class="flex flex-row gap-4 justify-end mr-5 mt-7">
+                        <button
+                            class="font-semibold hover:opacity-80"
+                            :class="hire_sent ? 'opacity-50' : ''"
+                            :disabled="hire_sent"
+                            @click="hireWorker"
+                        >
+                            Valider
+                        </button>
+                        <button
+                            class="font-semibold hover:opacity-80"
+                            @click="workers_modal = false"
+                        >
+                            Annuler
+                        </button>
+                    </div>
                 </div>
-            </div>
             </template>
         </Modal>
-        <Modal v-if="workshop_modal" class="align-center createmodel" custom_css="w-1/3">
+        <Modal
+            v-if="workshop_modal"
+            class="align-center openmodal"
+            custom_css="w-1/3"
+        >
             <template v-slot:content>
-                 <div class="flex flex-col text-vN px-5 ">
-                     <h1 class="text-center text-vert text-2xl">Formation des employées</h1>
-                    <h1 class="pt-5 pb-3">Entrez le nombre des employées à former :</h1>
+                <div class="flex flex-col text-vN px-5">
+                    <h1 class="text-center text-vert text-2xl">
+                        Formation des employées
+                    </h1>
+                    <h1 class="pt-5 pb-3">
+                        Entrez le nombre des employées à former :
+                    </h1>
                     <input
-                    v-model="nb_workers_to_train"
-                    class=" w-2/3"
-                    type="number"
-                    min="1"
-                    :max="
-                        indicators['nb_workers_lv1']['value'] -
-                        indicators['nb_workers_lv1_busy']['value']
-                    "
+                        v-model="nb_workers_to_train"
+                        class="w-2/3"
+                        type="number"
+                        min="1"
+                        :max="
+                            indicators['nb_workers_lv1']['value'] -
+                            indicators['nb_workers_lv1_busy']['value']
+                        "
                     />
 
+                    <h1 class="pt-3 opacity-80">
+                        le prix de formation d'un seul employé est fixé à :
+                        <span class="text-yellow-600"
+                            >{{ workshop_price }} UM / personne</span
+                        >
+                    </h1>
+                    <h1 class="opacity-80">
+                        le prix total est fixé à :
+                        <span class="text-vert">
+                            {{ workshop_price * nb_workers_to_train }} UM</span
+                        >
+                    </h1>
 
-                    <h1 class="pt-3 opacity-80">le prix de formation d'un seul employé est fixé à : <span class="text-yellow-600 ">{{ workshop_price }} UM / personne</span></h1>
-                    <h1 class="opacity-80">le prix total est fixé à : <span class="text-vert ">  {{ workshop_price * nb_workers_to_train }} UM</span></h1>
-
-                     <div class="flex flex-row gap-4 justify-end mr-5 mt-7">
-                           <button class="font-semibold hover:opacity-80" :class="workshop_sent ? 'opacity-50': '' "  :disabled="workshop_sent" @click="launchWorkshop">
-                               Lancer la formation
-                           </button>
-                           <button class="font-semibold hover:opacity-80" @click=" nb_workers_to_train = 1; workshop_modal = false;">
-                                   Annuler
-                           </button>
-
+                    <div class="flex flex-row gap-4 justify-end mr-5 mt-7">
+                        <button
+                            class="font-semibold hover:opacity-80"
+                            :class="workshop_sent ? 'opacity-50' : ''"
+                            :disabled="workshop_sent"
+                            @click="launchWorkshop"
+                        >
+                            Lancer la formation
+                        </button>
+                        <button
+                            class="font-semibold hover:opacity-80"
+                            @click="
+                                nb_workers_to_train = 1;
+                                workshop_modal = false;
+                            "
+                        >
+                            Annuler
+                        </button>
+                    </div>
                 </div>
-            </div>
-
             </template>
         </Modal>
 
-        <Modal v-if="prime_modal" class="align-center createmodel" custom_css="w-1/3">
+        <Modal
+            v-if="prime_modal"
+            class="align-center openmodal"
+            custom_css="w-1/3"
+        >
             <template v-slot:content>
-                 <div class="flex flex-col text-vN px-5 ">
-                     <h1 class="text-center text-vert text-2xl">Prime pour les employées</h1>
+                <div class="flex flex-col text-vN px-5">
+                    <h1 class="text-center text-vert text-2xl">
+                        Prime pour les employées
+                    </h1>
                     <h1 class="pt-5 pb-3">Entrez le montant de la prime :</h1>
                     <input
                         id="bonus"
@@ -141,134 +180,278 @@
                         v-model="bonus"
                         :min="0"
                         :max="bonus_max"
-                        :step="bonus_max - bonus > 100 ? 100 : (bonus_max - bonus > 10 ? 10 : 1)"
+                        :step="
+                            bonus_max - bonus > 100
+                                ? 100
+                                : bonus_max - bonus > 10
+                                ? 10
+                                : 1
+                        "
                         class="h-full w-full rounded-sm"
                     />
 
+                    <h1 class="pt-3 opacity-80">
+                        Le montant total est :
+                        <span class="text-yellow-600"
+                            >{{
+                                bonus *
+                                (indicators["nb_workers_lv1"]["value"] +
+                                    indicators["nb_workers_lv2"]["value"])
+                            }}
+                            UM</span
+                        >
+                    </h1>
+                    <h1 class="opacity-80">
+                        L'humeur de vos employés augmentera de :
+                        <span class="text-vert"> {{ mood_increase }}</span>
+                    </h1>
 
-                    <h1 class="pt-3 opacity-80">Le montant total est : <span class="text-yellow-600 ">{{ bonus * (indicators["nb_workers_lv1"]["value"] +indicators["nb_workers_lv2"]["value"])}} UM</span></h1>
-                    <h1 class="opacity-80">L'humeur de vos employés augmentera de : <span class="text-vert "> {{ mood_increase }}</span></h1>
-
-                     <div class="flex flex-row gap-4 justify-end mr-5 mt-7">
-                           <button class="font-semibold hover:opacity-80" :class="prime_sent ? 'opacity-50': '' "  :disabled="prime_sent" @click="primeWorkers">
-                               Valider
-                           </button>
-                           <button class="font-semibold hover:opacity-80" @click=" prime_modal = false">
-                                   Annuler
-                           </button>
-
+                    <div class="flex flex-row gap-4 justify-end mr-5 mt-7">
+                        <button
+                            class="font-semibold hover:opacity-80"
+                            :class="prime_sent ? 'opacity-50' : ''"
+                            :disabled="prime_sent"
+                            @click="primeWorkers"
+                        >
+                            Valider
+                        </button>
+                        <button
+                            class="font-semibold hover:opacity-80"
+                            @click="prime_modal = false"
+                        >
+                            Annuler
+                        </button>
+                    </div>
                 </div>
-            </div>
-
-
-
             </template>
         </Modal>
-<!-- v-if="fire_modal" -->
-        <Modal v-if="fire_modal" class="align-center createmodel" custom_css="w-1/3">
+        <!-- v-if="fire_modal" -->
+        <Modal
+            v-if="fire_modal"
+            class="align-center openmodal"
+            custom_css="w-1/3"
+        >
             <template v-slot:content>
-                 <div class="flex flex-col text-vN px-5 ">
-                     <h1 class="text-center text-vert text-2xl">Virer des employés</h1>
+                <div class="flex flex-col text-vN px-5">
+                    <h1 class="text-center text-vert text-2xl">
+                        Virer des employés
+                    </h1>
                     <h1 class="pt-5 pb-3">Nombre d'employé simple à virer :</h1>
                     <input
                         type="number"
                         v-model="nb_workers_lv1_to_fire"
                         :min="0"
-                        :max="indicators['nb_workers_lv1'].value - indicators['nb_workers_lv1_busy'].value"
-                        class="h-full  rounded-sm w-3/4"
+                        :max="
+                            indicators['nb_workers_lv1'].value -
+                            indicators['nb_workers_lv1_busy'].value
+                        "
+                        class="h-full rounded-sm w-3/4"
                     />
-                    <h1 class="pt-5 pb-3">Nombre d'employé experts à virer :</h1>
+                    <h1 class="pt-5 pb-3">
+                        Nombre d'employé experts à virer :
+                    </h1>
                     <input
                         type="number"
                         v-model="nb_workers_lv2_to_fire"
                         :min="0"
-                        :max="indicators['nb_workers_lv2'].value - indicators['nb_workers_lv2_busy'].value"
+                        :max="
+                            indicators['nb_workers_lv2'].value -
+                            indicators['nb_workers_lv2_busy'].value
+                        "
                         class="h-full w-3/4 rounded-sm"
                     />
 
-                     <div class="flex flex-row  items-center mt-6 px-4 py-2 gap-3 border rounded-md border-yellow-500">
-                         <img src="/assets/icons/warning.png" class="h-10 w-10" alt="fgghgf">
-                    <h1 class="opacity-80 w-80">Les employés licenciés doivent être payés une avance de 3 mois valant : <span class="text-yellow-600 ">{{3 * (salary_lv1 * nb_workers_lv1_to_fire + salary_lv2 * nb_workers_lv2_to_fire)}} UM</span></h1>
+                    <div
+                        class="flex flex-row items-center mt-6 px-4 py-2 gap-3 border rounded-md border-yellow-500"
+                    >
+                        <img
+                            src="/assets/icons/warning.png"
+                            class="h-10 w-10"
+                            alt="fgghgf"
+                        />
+                        <h1 class="opacity-80 w-80">
+                            Les employés licenciés doivent être payés une avance
+                            de 3 mois valant :
+                            <span class="text-yellow-600"
+                                >{{
+                                    3 *
+                                    (salary_lv1 * nb_workers_lv1_to_fire +
+                                        salary_lv2 * nb_workers_lv2_to_fire)
+                                }}
+                                UM</span
+                            >
+                        </h1>
+                    </div>
 
-                     </div>
-
-                     <div class="flex flex-row gap-4 justify-end mr-5 mt-7">
-                           <button class="font-semibold hover:opacity-80" :class="fire_sent ? 'opacity-50': '' "  :disabled="fire_sent" @click="fireWorkers">
-                               Valider
-                           </button>
-                           <button class="font-semibold hover:opacity-80" @click=" fire_modal = false">
-                                   Annuler
-                           </button>
-
+                    <div class="flex flex-row gap-4 justify-end mr-5 mt-7">
+                        <button
+                            class="font-semibold hover:opacity-80"
+                            :class="fire_sent ? 'opacity-50' : ''"
+                            :disabled="fire_sent"
+                            @click="fireWorkers"
+                        >
+                            Valider
+                        </button>
+                        <button
+                            class="font-semibold hover:opacity-80"
+                            @click="fire_modal = false"
+                        >
+                            Annuler
+                        </button>
+                    </div>
                 </div>
-            </div>
-
             </template>
         </Modal>
 
-
         <!-- Adding some details -->
         <div v-if="indicators_loaded" class="flex justify-center">
-
-        <!-- les 4 cards  -->
-            <div class="flex flex-col gap-5 justify-center  w-max">
-                <div class="flex flex-row items-center border-2 shadow-lg rounded-2xl  justify-left">
-                    <img src="/assets/icons/employees.svg" alt="" class="w-20 h-20 ">
-                    <div class="flex flex-col ">
-                        <p>
-                    Simple:  {{indicators['nb_workers_lv1'].value}}</p>
-                    <p> Occupé :   {{indicators['nb_workers_lv1_busy'].value}} </p>
-                </div>
-                    </div>
-
-                <div class="flex flex-row items-center border-2 shadow-lg rounded-2xl   justify-left">
-                    <img src="/assets/icons/employees.svg" alt="" class="w-20 h-20">
+            <!-- les 4 cards  -->
+            <div class="flex flex-col gap-5 justify-center w-max">
+                <div
+                    class="flex flex-row items-center border-2 shadow-lg rounded-2xl justify-left"
+                >
+                    <img
+                        src="/assets/icons/employees.svg"
+                        alt=""
+                        class="w-20 h-20"
+                    />
                     <div class="flex flex-col">
-                          <p>
-                    Expert: {{indicators['nb_workers_lv2'].value}}</p>
-                   <p> Occupé : {{indicators['nb_workers_lv1_busy'].value}}
-                     </p>
+                        <p>Simple: {{ indicators["nb_workers_lv1"].value }}</p>
+                        <p>
+                            Occupé :
+                            {{ indicators["nb_workers_lv1_busy"].value }}
+                        </p>
                     </div>
-
                 </div>
-                <div class="flex flex-row items-center border-2 shadow-lg rounded-2xl  justify-left pr-3">
-                    <img src="/assets/icons/employees.svg" alt="" class="w-20 h-20">
-                    <p>
-                    Recherche: {{indicators['nb_workers_to_hire'].value}}
 
-                     </p>
+                <div
+                    class="flex flex-row items-center border-2 shadow-lg rounded-2xl justify-left"
+                >
+                    <img
+                        src="/assets/icons/employees.svg"
+                        alt=""
+                        class="w-20 h-20"
+                    />
+                    <div class="flex flex-col">
+                        <p>Expert: {{ indicators["nb_workers_lv2"].value }}</p>
+                        <p>
+                            Occupé :
+                            {{ indicators["nb_workers_lv1_busy"].value }}
+                        </p>
+                    </div>
                 </div>
-                <div class="flex flex-row items-center border-2 shadow-lg rounded-2xl  justify-left">
-                    <img src="/assets/icons/humeur.png" alt="" class="w-20 h-20 p-3">
+                <div
+                    class="flex flex-row items-center border-2 shadow-lg rounded-2xl justify-left pr-3"
+                >
+                    <img
+                        src="/assets/icons/employees.svg"
+                        alt=""
+                        class="w-20 h-20"
+                    />
                     <p>
-                        Humeur: {{ Math.round(indicators['workers_mood'].value * 100) }}%
+                        Recherche: {{ indicators["nb_workers_to_hire"].value }}
                     </p>
                 </div>
-
+                <div
+                    class="flex flex-row items-center border-2 shadow-lg rounded-2xl justify-left"
+                >
+                    <img
+                        src="/assets/icons/humeur.png"
+                        alt=""
+                        class="w-20 h-20 p-3"
+                    />
+                    <p>
+                        Humeur:
+                        {{
+                            Math.round(indicators["workers_mood"].value * 100)
+                        }}%
+                    </p>
+                </div>
             </div>
 
-   <!-- la gauge  -->
-            <div class="rounded-lg text-center content-center flex justify-center w-6/12">
-
+            <!-- la gauge  -->
+            <div
+                class="rounded-lg text-center content-center flex justify-center w-6/12"
+            >
                 <speedo-meter
                     :data="[
                         {
-                            value: Math.round(indicators['workers_mood'].value * 100),
+                            value: Math.round(
+                                indicators['workers_mood'].value * 100
+                            ),
                         },
                     ]"
-
                 ></speedo-meter>
-
             </div>
             <div class="flex flex-col justify-center gap-6 w-1/5">
-                <button @click="workers_modal=true" :disabled="!indicators_loaded || !data_loaded" class="rounded-3xl font-semibold text-white py-2 " :class="!indicators_loaded || !data_loaded ? 'bg-gray-200' : 'bg-vN'" >Recuruter des employés</button>
-                <button @click="workshop_modal=true" :disabled="!indicators_loaded || !data_loaded" class="rounded-3xl font-semibold text-white py-2 " :class="!indicators_loaded || !data_loaded ? 'bg-gray-200' : 'bg-vN'" >Former des employées</button>
-                <button @click="prime_modal = true" :disabled="!indicators_loaded || !data_loaded" class="rounded-3xl  font-semibold text-white py-2 px-3" :class="!indicators_loaded || !data_loaded ? 'bg-gray-200' : 'bg-vN'">Ajouter une prime au employées</button>
-                <button  @click="fire_modal = true"  :disabled="!indicators_loaded || !data_loaded" class="rounded-3xl font-semibold text-white py-2 " :class="!indicators_loaded || !data_loaded ? 'bg-gray-200' : 'bg-vN'">Virer des employées</button>
-
+                <button
+                    @click="workers_modal = true"
+                    :disabled="!indicators_loaded || !data_loaded"
+                    class="rounded-3xl font-semibold text-white py-2"
+                    :class="
+                        !indicators_loaded || !data_loaded
+                            ? 'bg-gray-200'
+                            : 'bg-vN'
+                    "
+                >
+                    Recuruter des employés
+                </button>
+                <button
+                    @click="workshop_modal = true"
+                    :disabled="
+                        !indicators_loaded ||
+                        !data_loaded ||
+                        total_nb_employees == 0
+                    "
+                    class="rounded-3xl font-semibold text-white py-2"
+                    :class="
+                        !indicators_loaded ||
+                        !data_loaded ||
+                        total_nb_employees == 0
+                            ? 'bg-gray-200'
+                            : 'bg-vN'
+                    "
+                >
+                    Former des employées
+                </button>
+                <button
+                    @click="prime_modal = true"
+                    :disabled="
+                        !indicators_loaded ||
+                        !data_loaded ||
+                        total_nb_employees == 0
+                    "
+                    class="rounded-3xl font-semibold text-white py-2 px-3"
+                    :class="
+                        !indicators_loaded ||
+                        !data_loaded ||
+                        total_nb_employees == 0
+                            ? 'bg-gray-200'
+                            : 'bg-vN'
+                    "
+                >
+                    Ajouter une prime au employées
+                </button>
+                <button
+                    @click="fire_modal = true"
+                    :disabled="
+                        !indicators_loaded ||
+                        !data_loaded ||
+                        total_nb_employees == 0
+                    "
+                    class="rounded-3xl font-semibold text-white py-2"
+                    :class="
+                        !indicators_loaded ||
+                        !data_loaded ||
+                        total_nb_employees == 0
+                            ? 'bg-gray-200'
+                            : 'bg-vN'
+                    "
+                >
+                    Virer des employées
+                </button>
             </div>
         </div>
-
     </div>
 </template>
 
@@ -277,9 +460,7 @@ import SpeedoMeter from "./ui/SpeedoMeter.vue";
 import StatCard from "./ui/StatCard.vue";
 import Modal from "../Modal";
 export default {
-    props: [
-        "user",
-    ],
+    props: ["user"],
     components: {
         SpeedoMeter,
         StatCard,
@@ -324,6 +505,12 @@ export default {
         };
     },
     computed: {
+        total_nb_employees() {
+            return (
+                this.indicators["nb_workers_lv1"].value +
+                this.indicators["nb_workers_lv2"].value
+            );
+        },
         mood_increase() {
             if (this.indicators["workers_mood"]["value"] >= 1) {
                 return 0;
@@ -366,7 +553,25 @@ export default {
                     if (resp.data.success) {
                         this.show_success = true;
                         this.show_error = false;
+                        this.$toasted.success("Formation lancée", {
+                            keepOnHover: true,
+                            icon: {
+                                name: "✔",
+                            },
+                            position: "bottom-right",
+                            className: "toast-success",
+                            duration: 1000,
+                        });
                     } else {
+                        this.$toasted.error("Pas autant d'employés", {
+                            keepOnHover: true,
+                            icon: {
+                                name: "❌",
+                            },
+                            position: "bottom-right",
+                            className: "toast-error",
+                            duration: 1000,
+                        });
                         this.show_success = false;
                         this.show_error = true;
                     }
@@ -389,9 +594,27 @@ export default {
                 })
                 .then((resp) => {
                     if (resp.data.success) {
+                        this.$toasted.success("Primes attribuées", {
+                            keepOnHover: true,
+                            icon: {
+                                name: "✔",
+                            },
+                            position: "bottom-right",
+                            className: "toast-success",
+                            duration: 1000,
+                        });
                         this.show_success = true;
                         this.show_error = false;
                     } else {
+                        this.$toasted.error("Primes non attribuées", {
+                            keepOnHover: true,
+                            icon: {
+                                name: "❌",
+                            },
+                            position: "bottom-right",
+                            className: "toast-error",
+                            duration: 1000,
+                        });
                         this.show_success = false;
                         this.show_error = true;
                     }
@@ -412,9 +635,27 @@ export default {
                 })
                 .then((resp) => {
                     if (resp.data.success) {
+                        this.$toasted.success("Debut des recrutements", {
+                            keepOnHover: true,
+                            icon: {
+                                name: "✔",
+                            },
+                            position: "bottom-right",
+                            className: "toast-success",
+                            duration: 1000,
+                        });
                         this.show_success = true;
                         this.show_error = false;
                     } else {
+                        this.$toasted.error("Employés non recrutés", {
+                            keepOnHover: true,
+                            icon: {
+                                name: "❌",
+                            },
+                            position: "bottom-right",
+                            className: "toast-error",
+                            duration: 1000,
+                        });
                         this.show_success = false;
                         this.show_error = true;
                     }
@@ -461,17 +702,15 @@ export default {
                 });
         },
         getHrData() {
-            axios
-                .get("/api/entreprise/hr/get-data", {})
-                .then((resp) => {
-                    this.workshop_price = resp.data.workshop_price;
-                    this.salary_lv1 = resp.data.salary_lv1;
-                    this.salary_lv2 = resp.data.salary_lv2;
-                    this.bonus_coeff = resp.data.bonus_coeff;
+            axios.get("/api/entreprise/hr/get-data", {}).then((resp) => {
+                this.workshop_price = resp.data.workshop_price;
+                this.salary_lv1 = resp.data.salary_lv1;
+                this.salary_lv2 = resp.data.salary_lv2;
+                this.bonus_coeff = resp.data.bonus_coeff;
 
-                    this.data_loaded = true;
-                });
-        }
+                this.data_loaded = true;
+            });
+        },
     },
     created() {
         this.getIndiators();
@@ -492,7 +731,6 @@ export default {
         window.Echo.channel("entreprise_" + this.user.id).listen(
             "NewNotification",
             (e) => {
-
                 if (e.notification.type == "WorkersUpdate") {
                     this.getIndiators();
                     this.$forceUpdate();
@@ -516,5 +754,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

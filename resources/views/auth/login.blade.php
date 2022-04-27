@@ -13,7 +13,7 @@
         <form method="POST" action="{{ route('login') }}">
             @csrf
 
-            <h1 class='font-serif text-4xl welcome-text'>
+            <h1 class='font-heading font-bold text-4xl welcome-text'>
                 Welcome
             </h1>
             <p class='mb-10'>
@@ -23,14 +23,14 @@
             <div>
                 <x-label for="email" :value="__('Email')" />
 
-                <x-input id="email" class="block mt-1 w-full px-3 py-1" placeholder="username@bg.iec" type="email" name="email" :value="old('email')" required autofocus />
+                <x-input id="email" class="block mt-1 w-full px-3 py-2" placeholder="username@bg.iec" type="email" name="email" :value="old('email')" required autofocus />
             </div>
 
             <!-- Password -->
             <div class="mt-4 relative">
                 <x-label for="password" :value="__('Password')" />
 
-                <x-input id="password" class="block mt-1 w-full px-3 py-1" type="password" placeholder='..........' name="password" required autocomplete="current-password" />
+                <x-input id="password" class="block mt-1 w-full px-3 py-2" type="password" placeholder='..........' name="password" required autocomplete="current-password" />
 
                 <img id='closed' src='/assets/icons/closedeye.svg' alt='eye' class="absolute right-5 bottom-3" onclick="toggleShow()" />
                 <img id='open' src='/assets/icons/openeye.svg' alt='eye' class="hidden absolute right-5 bottom-3" onclick="toggleShow()" />
@@ -39,7 +39,7 @@
             <!-- Remember Me -->
             <div class="block mt-4">
                 <label for="remember_me" class="inline-flex items-center">
-                    <input id="remember_me" type="checkbox" class="rounded shadow-sm focus:border-indigo-300 focus:ring focus:ring-green-700 focus:ring-opacity-50" name="remember">
+                    <input id="remember_me" type="checkbox" class="focus:ring-gray-500 h-4 w-4 text-gray-600 border-gray-150 rounded-sm color-vert" name="remember">
                     <span class="ml-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
                 </label>
             </div>

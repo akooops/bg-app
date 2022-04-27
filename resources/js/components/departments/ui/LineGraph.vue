@@ -84,25 +84,12 @@ export default {
                     {
                         //remove tooltip for line chart
                         type: "line",
+                        smooth: true,
+                        showSymbol: false,
                         // symbold size
 
                         lineStyle: {
-                            color: new echarts.graphic.LinearGradient(
-                                3,
-                                1,
-                                1,
-                                19,
-                                [
-                                    {
-                                        offset: 0,
-                                        color: "#B2D06B",
-                                    },
-                                    {
-                                        offset: 1,
-                                        color: "#0B3434",
-                                    },
-                                ]
-                            ),
+                            color: "#0B3434",
                             width: 3,
                         },
                         areaStyle: {

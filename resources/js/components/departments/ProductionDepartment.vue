@@ -69,85 +69,93 @@
                 <h1 class="text-vN text-lg font-medium font-heading">
                     Machines
                 </h1>
-                <div
-                    v-if="showMachines && indicators_loaded"
-
-                    class="flex flex-col dropDown gap-4 items-center bg-white absolute w-full px-4 py-2 shadow-2xl z-100 rounded-xl text-vN"
-                    style="bottom: -350px; height: 350px"
-                >
-                    <div class="flex justify-between w-full">
-                        <div class="flex flex-col items-center gap-3">
-                            <button
-                                @click="select_lvl('machines_lv1_health')"
-                                class="px-2 py-1 rounded-md"
-                                :class="
-                                    selected_lvl == 'machines_lv1_health'
-                                        ? 'bg-vN text-white'
-                                        : 'bg-white text-vN'
-                                "
-                            >
-                                Niveau 1
-                            </button>
-                            <p class="text-vert">
-                                {{ indicators["nb_machines_lv1"].value }}
-                            </p>
-                            <p class="text-[#0B3434A6]">Occupés</p>
-                            <p class="text-jaune">
-                                {{ indicators["nb_machines_lv1_busy"].value }}
-                            </p>
+                <transition name="indicator">
+                    <div
+                        v-if="showMachines && indicators_loaded"
+                        class="z-10 flex flex-col dropDown gap-4 items-center bg-white absolute w-full px-4 py-2 shadow-2xl rounded-xl text-vN"
+                        style="bottom: -350px; height: 350px"
+                    >
+                        <div class="flex justify-between w-full">
+                            <div class="flex flex-col items-center gap-3">
+                                <button
+                                    @click="select_lvl('machines_lv1_health')"
+                                    class="px-2 py-1 rounded-md"
+                                    :class="
+                                        selected_lvl == 'machines_lv1_health'
+                                            ? 'bg-vN text-white'
+                                            : 'bg-white text-vN'
+                                    "
+                                >
+                                    Niveau 1
+                                </button>
+                                <p class="text-vert">
+                                    {{ indicators["nb_machines_lv1"].value }}
+                                </p>
+                                <p class="text-[#0B3434A6]">Occupés</p>
+                                <p class="text-jaune">
+                                    {{
+                                        indicators["nb_machines_lv1_busy"].value
+                                    }}
+                                </p>
+                            </div>
+                            <div class="flex flex-col items-center gap-3">
+                                <button
+                                    @click="select_lvl('machines_lv2_health')"
+                                    class="px-2 py-1 rounded-md"
+                                    :class="
+                                        selected_lvl == 'machines_lv2_health'
+                                            ? 'bg-vN text-white'
+                                            : 'bg-white text-vN'
+                                    "
+                                >
+                                    Niveau 2
+                                </button>
+                                <p class="text-vert">
+                                    {{ indicators["nb_machines_lv2"].value }}
+                                </p>
+                                <p class="text-[#0B3434A6]">Occupés</p>
+                                <p class="text-jaune">
+                                    {{
+                                        indicators["nb_machines_lv2_busy"].value
+                                    }}
+                                </p>
+                            </div>
+                            <div class="flex flex-col items-center gap-3">
+                                <button
+                                    @click="select_lvl('machines_lv3_health')"
+                                    class="px-2 py-1 rounded-md"
+                                    :class="
+                                        selected_lvl == 'machines_lv3_health'
+                                            ? 'bg-vN text-white'
+                                            : 'bg-white text-vN'
+                                    "
+                                >
+                                    Niveau 3
+                                </button>
+                                <p class="text-vert">
+                                    {{ indicators["nb_machines_lv3"].value }}
+                                </p>
+                                <p class="text-[#0B3434A6]">Occupés</p>
+                                <p class="text-jaune">
+                                    {{
+                                        indicators["nb_machines_lv3_busy"].value
+                                    }}
+                                </p>
+                            </div>
                         </div>
-                        <div class="flex flex-col items-center gap-3">
-                            <button
-                                @click="select_lvl('machines_lv2_health')"
-                                class="px-2 py-1 rounded-md"
-                                :class="
-                                    selected_lvl == 'machines_lv2_health'
-                                        ? 'bg-vN text-white'
-                                        : 'bg-white text-vN'
-                                "
-                            >
-                                Niveau 2
-                            </button>
-                            <p class="text-vert">
-                                {{ indicators["nb_machines_lv2"].value }}
-                            </p>
-                            <p class="text-[#0B3434A6]">Occupés</p>
-                            <p class="text-jaune">
-                                {{ indicators["nb_machines_lv2_busy"].value }}
-                            </p>
-                        </div>
-                        <div class="flex flex-col items-center gap-3">
-                            <button
-                                @click="select_lvl('machines_lv3_health')"
-                                class="px-2 py-1 rounded-md"
-                                :class="
-                                    selected_lvl == 'machines_lv3_health'
-                                        ? 'bg-vN text-white'
-                                        : 'bg-white text-vN'
-                                "
-                            >
-                                Niveau 3
-                            </button>
-                            <p class="text-vert">
-                                {{ indicators["nb_machines_lv3"].value }}
-                            </p>
-                            <p class="text-[#0B3434A6]">Occupés</p>
-                            <p class="text-jaune">
-                                {{ indicators["nb_machines_lv3_busy"].value }}
-                            </p>
-                        </div>
+                        <IndicatorGauge
+                            :data="[
+                                {
+                                    value: Math.round(
+                                        indicators[selected_lvl].value * 100
+                                    ),
+                                    name: lvl,
+                                },
+                            ]"
+                        />
                     </div>
-                    <IndicatorGauge
-                        :data="[
-                            {
-                                value: Math.round(
-                                    indicators[selected_lvl].value * 100
-                                ),
-                                name: lvl,
-                            },
-                        ]"
-                    />
-                </div>
+                </transition>
+
                 <button
                     v-if="indicators_loaded"
                     @click="showMachines = !showMachines"
@@ -185,49 +193,59 @@
                         :class="showEmployees == true ? 'rotate' : ''"
                     />
                 </button>
-                <div
-                    v-if="showEmployees && indicators_loaded"
-                    class="flex flex-col dropDown gap-4 items-center bg-white absolute w-full px-4 py-2 shadow-2xl z-100 rounded-xl text-vN "
-                    style="bottom: -350px; height: 350px"
-                >
-                    <h1 class="font-heading font-medium">
-                        Humeur des Employés
-                    </h1>
-                    <IndicatorGauge
-                        :data="[
-                            {
-                                value: Math.round(
-                                    indicators['workers_mood'].value * 100
-                                ),
-                                name: 'Humeur',
-                            },
-                        ]"
-                    />
-                    <div class="mt-[-100px] flex justify-around w-full">
-                        <div class="flex flex-col items-center gap-3">
-                            <p class="bg-white text-vN font-medium">Simples</p>
-                            <p class="text-vert">
-                                {{ indicators["nb_workers_lv1"].value }}
-                            </p>
-                            <p class="text-[#0B3434A6]">Occupés</p>
-                            <p class="text-jaune">
-                                {{ indicators["nb_workers_lv1_busy"].value }}
-                            </p>
+                <transition name="indicator">
+                    <div
+                        v-if="showEmployees && indicators_loaded"
+                        class="z-10 flex flex-col dropDown gap-4 items-center bg-white absolute w-full px-4 py-2 shadow-2xl rounded-xl text-vN"
+                        style="bottom: -350px; height: 350px"
+                    >
+                        <h1 class="font-heading font-medium">
+                            Humeur des Employés
+                        </h1>
+                        <IndicatorGauge
+                            :data="[
+                                {
+                                    value: Math.round(
+                                        indicators['workers_mood'].value * 100
+                                    ),
+                                    name: 'Humeur',
+                                },
+                            ]"
+                        />
+                        <div class="mt-[-100px] flex justify-around w-full">
+                            <div class="flex flex-col items-center gap-3">
+                                <p class="bg-white text-vN font-medium">
+                                    Simples
+                                </p>
+                                <p class="text-vert">
+                                    {{ indicators["nb_workers_lv1"].value }}
+                                </p>
+                                <p class="text-[#0B3434A6]">Occupés</p>
+                                <p class="text-jaune">
+                                    {{
+                                        indicators["nb_workers_lv1_busy"].value
+                                    }}
+                                </p>
+                            </div>
+                            <div class="border-r h-[130px]"></div>
+                            <div class="flex flex-col items-center gap-3">
+                                <p class="bg-white text-vN font-medium">
+                                    Experts
+                                </p>
+                                <p class="text-vert">
+                                    {{ indicators["nb_workers_lv2"].value }}
+                                </p>
+                                <p class="text-[#0B3434A6]">Occupés</p>
+                                <p class="text-jaune">
+                                    {{
+                                        indicators["nb_workers_lv2_busy"].value
+                                    }}
+                                </p>
+                            </div>
                         </div>
-                        <div class="border-r h-[130px]"></div>
-                        <div class="flex flex-col items-center gap-3">
-                            <p class="bg-white text-vN font-medium">Experts</p>
-                            <p class="text-vert">
-                                {{ indicators["nb_workers_lv2"].value }}
-                            </p>
-                            <p class="text-[#0B3434A6]">Occupés</p>
-                            <p class="text-jaune">
-                                {{ indicators["nb_workers_lv2_busy"].value }}
-                            </p>
-                        </div>
+                        <br />
                     </div>
-                    <br />
-                </div>
+                </transition>
             </div>
         </div>
 
@@ -269,7 +287,11 @@
                         ></LineGraph>
                     </div>
                 </div>
-                <Modal v-if="show_product_info" :description="true">
+                <Modal
+                    v-if="show_product_info"
+                    :description="true"
+                    class="openmodal"
+                >
                     <template v-slot:content>
                         <div class="w-full flex flex-col gap-8 p-3">
                             <div class="flex justify-between item-center">
@@ -278,12 +300,13 @@
                                 >
                                     Description - {{ product_info.name }}
                                 </h1>
-                                <img
-                                    src="/assets/icons/close.svg"
-                                    class="w-6 h-6 cursor-pointer"
-                                    alt="close icon"
-                                    @click="show_product_info = false"
-                                />
+                                <div class="w-6 h-6 cursor-pointer">
+                                    <img
+                                        src="/assets/icons/close.svg"
+                                        alt="close icon"
+                                        @click="show_product_info = false"
+                                    />
+                                </div>
                             </div>
                             <p class="text-vN font-normal">
                                 {{ product_info.description }}
@@ -566,6 +589,7 @@ export default {
             indicators_loaded: false,
         };
     },
+
     computed: {
         distCost() {
             // Distribution cost
@@ -728,6 +752,10 @@ export default {
         indicators_loaded() {
             this.lvl_value = this.indicators["machines_lv1_health"].value;
         },
+        page_index: function (newVal, oldVal) {
+            this.showMachines = false;
+            this.showEmployees = false;
+        },
     },
     mounted() {
         window.Echo.channel("entreprise_" + this.user.id).listen(
@@ -777,3 +805,20 @@ export default {
     },
 };
 </script>
+
+<style>
+.indicator-leave-to {
+    animation: closeIndicator 200ms ease-in-out forwards;
+    transform-origin: top right;
+}
+
+@keyframes closeIndicator {
+    0% {
+        transform: scale(1);
+    }
+
+    100% {
+        transform: scale(0);
+    }
+}
+</style>

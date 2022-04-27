@@ -3,7 +3,9 @@
         v-if="dette"
         class="bg-white flex flex-col p-4 gap-2 shadow-md rounded-lg w-56"
     >
-        <div class="flex items-center text-nav text-opacity-60 font-semibold">
+        <div
+            class="flex items-center text-[#0B343499] text-opacity-60 font-semibold"
+        >
             <img
                 src="/assets/icons/dettes.png"
                 alt="dispo icon"
@@ -24,7 +26,9 @@
         v-else
         class="bg-white flex flex-col gap-2 p-4 shadow-md rounded-lg w-56"
     >
-        <div class="flex items-center text-nav text-opacity-60 font-semibold">
+        <div
+            class="flex items-center text-[#0B343499] text-opacity-60 font-semibold"
+        >
             <img
                 src="/assets/icons/disponibility.png"
                 alt="dispo icon"
@@ -127,7 +131,6 @@ export default {
                 .then((resp) => {
                     this.caisse = resp.data["caisse"];
                     this.dettes = resp.data["dettes"];
-                   
                 });
         },
     },
@@ -149,7 +152,6 @@ export default {
                 (e) => {
                     this.caisse = e.caisse;
                     this.dettes = e.dettes;
-                    
                 }
             );
         }

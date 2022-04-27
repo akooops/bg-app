@@ -3,7 +3,7 @@
 @php
 $classes = ($active ?? false)
 ? 'pl-6 flex gap-3 items-center px-1 pt-1 border-l-8 h-12 border-vert text-md font-medium leading-5 text-vert focus:outline-none focus:border-indigo-700 transition duration-150 ease-in-out'
-: 'pl-6 flex gap-3 items-center px-1 pt-1 border-l-8 h-12 border-transparent text-md font-medium leading-5 text-nav hover:text-vert hover:border-vert focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out';
+: 'pl-6 flex gap-3 items-center px-1 pt-1 border-l-8 h-12 border-transparent text-md font-medium leading-5 text-[#0B343499] hover:text-vert hover:border-vert focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out';
 @endphp
 
 <div class= "{{$classes}}">

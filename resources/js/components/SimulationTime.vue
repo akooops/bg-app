@@ -7,12 +7,9 @@
                 Team
             </p>
             <div
-                v-bind:class="
-                    bg +
-                    ' w-9 h-9 relative flex justify-center items-center rounded-full {{ bg }} text-sm text-white uppercase'
-                "
+                class="w-12 p-1 h-12 relative flex justify-center items-center rounded-full text-sm text-white uppercase bg-vN"
             >
-                {{ user.name.substr(0, 2) }}
+                <img src="/assets/logo/IEC_WHITE.png" alt="IEC logo" />
             </div>
             <button
                 @click="show_menu = !show_menu"
@@ -21,12 +18,12 @@
                 <img
                     src="/assets/icons/chevron-down.svg"
                     alt="arrow down icon"
-                    class="h-4 w-4"
+                    class="h-5 w-5"
                 />
                 <a
                     href="/logout"
                     v-if="show_menu"
-                    class="flex flex-row  justify-between dropDown w-max gap-2 absolute z-999 -bottom-12  right-0 bg-white border-opacity-5 border-vN shadow-md  p-3 rounded-lg"
+                    class="flex flex-row justify-between dropDown w-max gap-2 absolute z-999 -bottom-16 right-0 bg-white border-opacity-5 border-vN shadow-md p-3 rounded-lg"
                     style="border-width: 1px"
                 >
                     <img
@@ -78,14 +75,14 @@ export default {
         this.getSimulationData();
 
         window.Echo.channel("entreprise_" + this.user.id).listen(
-                "NewNotification",
-                (e) => {
-                    if (e.notification.type == "AdminNotif") {
-                        this.getSimulationData();
-                        this.$forceUpdate();
-                    }
+            "NewNotification",
+            (e) => {
+                if (e.notification.type == "AdminNotif") {
+                    this.getSimulationData();
+                    this.$forceUpdate();
                 }
-            );
+            }
+        );
         window.Echo.channel("simulation_date").listen(
             "SimulationDateChanged",
             (e) => {
@@ -102,16 +99,6 @@ export default {
                 }
             );
         }
-        let backgrounds = [
-            "bg-red-500",
-            "bg-orange-500",
-            "bg-yellow-500",
-            "bg-green-500",
-            "bg-blue-500",
-            "bg-indigo-500",
-            "bg-purple-500",
-        ];
-        this.bg = backgrounds[Math.floor(Math.random() * backgrounds.length)];
     },
 };
 </script>

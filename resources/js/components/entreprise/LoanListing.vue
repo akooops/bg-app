@@ -49,58 +49,58 @@
                 </svg>
             </span>
         </div> -->
-        <Modal v-if="loan_modal" class="align-center createmodel">
+        <Modal v-if="loan_modal" class="align-center openmodal">
             <template v-slot:content>
-
                 <div class="flex flex-col mx-4">
-
-                    <h1 class="font-bold text-2xl  text-vert ">
+                    <h1 class="font-bold text-2xl text-vert">
                         Demande d'endettement
                     </h1>
 
-                <div class="flex flex-row mt-4">
-                    <div class="flex flex-col w-1/2">
-                        <h2
-                            for="amount"
-                            class="text-vN text-lg font-heading font-medium"
-                        >
-                            Motant à endetter
-                        </h2>
-                        <input
-                            type="number"
-                            id="amount"
-                            name="amount"
-                            v-model="amount"
-                            class="ring-1 w-full ring-tableBorder border-0 focus-within:ring-vert"
-                            min="0"
-                            step="1000"
-                        />
-                        <h2
-                            for="deadline"
-                            class="text-vN text-lg font-heading font-medium mt-2"
-                        >
-                            Durée du prêt (Semaines)
-                        </h2>
-                        <input
-                            type="number"
-                            id="deadline"
-                            name="deadline"
-                            v-model="deadline"
-                            class="ring-1 w-full ring-tableBorder border-0 focus-within:ring-vert "
-                            min="0"
-                        />
+                    <div class="flex flex-row mt-4">
+                        <div class="flex flex-col w-1/2">
+                            <h2
+                                for="amount"
+                                class="text-vN text-lg font-heading font-medium"
+                            >
+                                Motant à endetter
+                            </h2>
+                            <input
+                                type="number"
+                                id="amount"
+                                name="amount"
+                                v-model="amount"
+                                class="ring-1 w-full ring-tableBorder border-0 focus-within:ring-vert"
+                                min="0"
+                                step="1000"
+                            />
+                            <h2
+                                for="deadline"
+                                class="text-vN text-lg font-heading font-medium mt-2"
+                            >
+                                Durée du prêt (Semaines)
+                            </h2>
+                            <input
+                                type="number"
+                                id="deadline"
+                                name="deadline"
+                                v-model="deadline"
+                                class="ring-1 w-full ring-tableBorder border-0 focus-within:ring-vert"
+                                min="0"
+                            />
 
-                        <p v-if="ratio != null">
-                            Le ratio d'endettement sera de:
-                            {{ ratio }}%
-                        </p>
-
+                            <p v-if="ratio != null">
+                                Le ratio d'endettement sera de:
+                                {{ ratio }}%
+                            </p>
+                        </div>
+                        <img
+                            src="/assets/icons/signing.png"
+                            class="w-36 h-36 mx-auto"
+                            alt="sdfsf"
+                        />
                     </div>
-                    <img src="/assets/icons/signing.png" class="w-36 h-36 mx-auto" alt="sdfsf">
 
-                </div>
-
-                 <div class="mt-8 flex items-center  rounded-md px-2 py-2  ">
+                    <div class="mt-8 flex items-center rounded-md px-2 py-2">
                         <input
                             type="checkbox"
                             @change="checkboxChanged"
@@ -150,13 +150,7 @@
                             Annuler
                         </button>
                     </div>
-
-
-
                 </div>
-                
-
-
 
                 <!-- <div class="flex flex-col text-vN p-4 gap-3">
                     <div class="flex flex-col">
@@ -259,7 +253,7 @@
             </template>
         </Modal>
 
-        <Modal v-if="pay_loan_modal">
+        <Modal v-if="pay_loan_modal" class="openmodal">
             <template v-slot:content>
                 <div class="flex flex-col text-vN py-4 px-6 gap-6">
                     <h1

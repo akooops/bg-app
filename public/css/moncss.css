@@ -1,47 +1,35 @@
+* {
+    scrollbar-color: rgb(121, 119, 119);
+    scrollbar-track-color: rgba(128, 128, 128, 0.76);
+    scrollbar-width: 5px;
+}
 
-.createmodel{
-    animation: createBox .25s;
-    background-color:#0b343448;
-    
+.openmodal {
+    animation: createBox 0.25s;
 }
 @keyframes createBox {
     0% {
-        transform: scale(0)
+        transform: scale(0);
     }
-    
+
     100% {
         transform: scale(1);
-        
-        
     }
 }
 
-
-
-
-.dropDown{
+.dropDown {
     animation: growDown 200ms ease-in-out forwards;
-    transform-origin: top center;
+    transform-origin: top right;
 }
 @keyframes growDown {
     0% {
-        transform: scale(0)
+        transform: scale(0);
     }
-    
+
     100% {
-        transform: scale(1)
+        transform: scale(1);
     }
 }
-
-
-
-
-
-
-
-
-
-
 
 @font-face {
     font-family: "ubuntu";

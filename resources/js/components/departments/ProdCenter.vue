@@ -167,7 +167,7 @@
                 </button>
             </div>
         </div>
-        <Modal v-if="launch_prod_modal" class="createmodel">
+        <Modal v-if="launch_prod_modal" class="openmodal">
             <template v-slot:content>
                 <div class="flex flex-col w-2/5 px-6 mx-auto gap-3">
                     <h1 class="text-vert font-semibold text-2xl font-heading">
@@ -544,23 +544,29 @@
                         </table>
                     </div>
 
-                    <div class="flex flex-row items-center mt-6 px-4 py-2 gap-3 border rounded-md border-yellow-500">
-                         <img src="/assets/icons/warning.png" class="h-10 w-10" alt="fgghgf">
-                    <h1 class="w-80 text-vN">Votre taux de rebut est de
-                        {{
-                            Math.round(
-                                indicators["reject_rate"].value *
-                                    Math.pow(10, 2)
-                            )
-                        }}%, pour le réduire, lancez une étude AMDEC.</h1>
-
-                     </div>
-
+                    <div
+                        class="flex flex-row items-center mt-6 px-4 py-2 gap-3 border rounded-md border-yellow-500"
+                    >
+                        <img
+                            src="/assets/icons/warning.png"
+                            class="h-10 w-10"
+                            alt="fgghgf"
+                        />
+                        <h1 class="w-80 text-vN">
+                            Votre taux de rebut est de
+                            {{
+                                Math.round(
+                                    indicators["reject_rate"].value *
+                                        Math.pow(10, 2)
+                                )
+                            }}%, pour le réduire, lancez une étude AMDEC.
+                        </h1>
+                    </div>
                 </div>
             </template>
         </Modal>
 
-        <Modal v-if="machine.show_transaction_modal" class="createmodel">
+        <Modal v-if="machine.show_transaction_modal" class="openmodal">
             <template v-slot:content>
                 <div class="flex flex-col items-center gap-5 p-5">
                     <h2
@@ -633,14 +639,12 @@
                                 style="border-width: 1px"
                             >
                                 {{
-                                    (
-                                        (machine.transaction_lv == 1
-                                            ? machine.buy_price_lv1
-                                            : machine.transaction_lv == 2
-                                            ? machine.buy_price_lv2
-                                            : machine.buy_price_lv3) *
-                                        machine.transaction_nb
-                                    )
+                                    (machine.transaction_lv == 1
+                                        ? machine.buy_price_lv1
+                                        : machine.transaction_lv == 2
+                                        ? machine.buy_price_lv2
+                                        : machine.buy_price_lv3) *
+                                    machine.transaction_nb
                                 }}
                             </p>
                             <p
@@ -698,12 +702,11 @@
                 </div>
             </template>
         </Modal>
-        <Modal v-if="action.show_info" class="my-auto createmodel" >
+        <Modal v-if="action.show_info" class="my-auto openmodal">
             <template v-slot:content>
                 <div class="flex flex-col gap-5">
                     <h1 class="text-xl text-center text-jaune font-headgin">
                         {{ action.name }}
-
                     </h1>
                     <p class="text-vN">
                         {{ action.phrase }}
@@ -897,9 +900,9 @@ export default {
             }
         },
 
-        'indicators': function() {
+        indicators: function () {
             this.verifyProd();
-        }
+        },
     },
     computed: {
         selectedProd() {
@@ -971,7 +974,7 @@ export default {
                     this.launch_prod_modal = false;
                     this.prod_launched = true;
 
-                    this.launch_data.prod_id = 1;
+                    this.launch_data.prod_id = 5;
 
                     this.launch_data.quantity = 1;
                     this.launch_data.machine_lvl = 1;
@@ -997,8 +1000,17 @@ export default {
                         "Oops ! Une erreur est survenue, veuillez infomrer un organisateur";
 
                     this.launch_prod_modal = false;
+                    this.$toasted.error("Production lancée", {
+                        keepOnHover: true,
+                        icon: {
+                            name: "-❌",
+                        },
+                        position: "bottom-right",
+                        className: "toast-error",
+                        duration: 3000,
+                    });
 
-                    this.launch_data.prod_id = 1;
+                    this.launch_data.prod_id = 5;
                     this.launch_data.quantity = 1;
                     this.launch_data.machine_lvl = 1;
 

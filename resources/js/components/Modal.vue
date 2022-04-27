@@ -1,22 +1,15 @@
 <template>
-    <div
-        class="fixed z-50 inset-0 h-full bg-opacity-50 overflow-auto rounded-sm m-auto w-screen"
-    >
-        <div class="flex h-full">
-            <!-- <div class="z-10" aria-hidden="true">
+    <transition name="modal">
+        <div
+            class="fixed z-50 inset-0 h-full bg-opacity-50 overflow-auto rounded-sm m-auto w-screen"
+        >
+            <div class="flex h-full">
+                <!-- <div class="z-10" aria-hidden="true">
                 <div class="absolute inset-0 bg-gray-100 opacity-75"></div>
             </div> -->
 
-            <!-- This element is to trick the browser into centering the modal contents. -->
+                <!-- This element is to trick the browser into centering the modal contents. -->
 
-            <transition
-                enter-active-class="transition ease-out duration-300 transform"
-                enter-class="opacity-0 translate-y-4 md:translate-y-0 md:scale-95"
-                enter-to-class="opacity-100 translate-y-0 md:scale-100"
-                leave-active-class="transition ease-in duration-200 transform"
-                leave-class="opacity-100 translate-y-0 md:scale-100"
-                leave-to-class="opacity-0 translate-y-4 md:translate-y-0 md:scale-95"
-            >
                 <div
                     class="flex px-4 py-6 mx-auto my-auto bg-white rounded-md"
                     v-bind:class="description ? 'w-1/2' : 'w-fit'"
@@ -27,9 +20,9 @@
                 >
                     <slot name="content"></slot>
                 </div>
-            </transition>
+            </div>
         </div>
-    </div>
+    </transition>
 </template>
 
 <script type="text/javascript">
@@ -53,5 +46,19 @@ export default {
 <style>
 .z-index-999 {
     z-index: 9999;
+}
+
+.modal-leave-active {
+    animation: closeBox 0.25s;
+}
+
+@keyframes closeBox {
+    0% {
+        transform: scale(1);
+    }
+
+    100% {
+        transform: scale(0);
+    }
 }
 </style>

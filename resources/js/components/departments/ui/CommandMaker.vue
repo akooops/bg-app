@@ -219,7 +219,7 @@
             </div>
         </div>
 
-        <Modal v-if="show_add_modal" class="createmodel">
+        <Modal v-if="show_add_modal" class="openmodal">
             <template v-slot:content>
                 <div class="flex flex-col">
                     <h1 class="text-vert text-xl text-center font-bold">
