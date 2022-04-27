@@ -373,15 +373,8 @@
                     demande d'endettement
                 </p>
                 <button
-                    class="text-vN rounded-3xl px-5 py-2 font-semibold mt-5"
+                    class="bg-gradient-to-t from-lightVert to-lighterVert hover:opacity-80 text-vN px-4 py-2 shadow-lg rounded-full text-center font-semibold mt-5"
                     @click="openModal"
-                    style="
-                        background: linear-gradient(
-                            180deg,
-                            rgba(178, 208, 107, 0.09) 0%,
-                            rgba(178, 208, 107, 0.33) 100%
-                        );
-                    "
                 >
                     Créer votre premier endettement
                 </button>

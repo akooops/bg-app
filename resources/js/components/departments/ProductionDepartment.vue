@@ -345,7 +345,12 @@
                                                 class="flex justify-center icon-material py-1 border border-l-0"
                                             >
                                                 <img
-                                                    src="/assets/icons/khobz.png"
+                                                    class="h-10 w-10"
+                                                    :src="
+                                                        mat.icon
+                                                            ? mat.icon
+                                                            : '/assets/icons/khobz.svg'
+                                                    "
                                                     alt="khobz"
                                                 />
                                                 <span>

@@ -352,7 +352,8 @@
                                         class="flex justify-center icon-material py-1"
                                     >
                                         <img
-                                            src="/assets/icons/khobz.png"
+                                            class="h-8 w-8"
+                                            :src="material.icon"
                                             alt="khobz"
                                         />
                                         <span>{{ material.name }}</span>
