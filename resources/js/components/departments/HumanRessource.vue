@@ -203,7 +203,11 @@
                             :min="0"
                             :max="bonus_max"
                             :step="
-                                bonus_max - bonus > 100
+                                bonus_max - bonus > 10000
+                                    ? 10000
+                                    : bonus_max - bonus > 1000
+                                    ? 1000
+                                    : bonus_max - bonus > 100
                                     ? 100
                                     : bonus_max - bonus > 10
                                     ? 10
