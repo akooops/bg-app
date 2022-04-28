@@ -250,7 +250,7 @@ export default {
                     req
                 )
                 .then(({ resp }) => {
-                    this.update_indicators_sent = true;
+                    this.update_indicators_sent = false;
                 });
         },
 

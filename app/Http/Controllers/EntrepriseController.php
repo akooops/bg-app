@@ -1383,4 +1383,48 @@ class EntrepriseController extends Controller
 
         return Response::json(["message" => "Changement des données de vente réussi.", "success" => true], 200);
     }
+
+    public function getStats(Request $request) {
+        $entreprise_id = $request->entreprise_id;
+
+        $number = 10;
+
+        $disps = array_reverse(
+            DB::table('stats')
+                ->where('entreprise_id', '=', $entreprise_id)
+                ->where('indicator', '=', 'caisse')
+                ->orderByDesc("date")
+                ->take($number)
+                ->pluck('value')
+                ->toArray()
+        );
+
+        $debts = array_reverse(
+            DB::table('stats')
+                ->where('entreprise_id', '=', $entreprise_id)
+                ->where('indicator', '=', 'dettes')
+                ->orderByDesc("date")
+                ->take($number)
+                ->pluck('value')
+                ->toArray()
+        );
+
+        $dates = array_reverse(
+            DB::table('stats')
+                ->where('entreprise_id', '=', $entreprise_id)
+                ->where('indicator', '=', 'dettes')
+                ->orderByDesc("date")
+                ->take($number)
+                ->pluck('date')
+                ->toArray()
+        );
+
+        $data = [
+            'dates' => $dates,
+            'caisse' => $disps,
+            'dettes' => $debts,
+        ];
+
+        return $data;
+    }
 }

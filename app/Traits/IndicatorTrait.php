@@ -117,8 +117,25 @@ trait IndicatorTrait
 
     public function getIndicator($indicator_code, $entreprise_id)
     {
+        $entreprise = Entreprise::where('id', '=', $entreprise_id)->first();
         $indicator = DB::table("indicators")->where("code", "=", $indicator_code)->first();
+
         $entrep_indicator = DB::table("entreprise_indicator")->where("entreprise_id", "=", $entreprise_id)->where("indicator_id", "=", $indicator->id)->first();
+
+        if ($entreprise != null && $indicator != null) {
+            if ($entrep_indicator == null) {
+                $row = [
+                    'entreprise_id' => $entreprise_id,
+                    'indicator_id' => $indicator->id,
+                    'value' => $indicator->starting_value,
+                    'phase' => 0,
+                ];
+
+                DB::table('entreprise_indicator')->insert($row);
+
+                $entrep_indicator = DB::table("entreprise_indicator")->where("entreprise_id", "=", $entreprise_id)->where("indicator_id", "=", $indicator->id)->first();
+            }
+        }
 
         $resp = [
             "name" => $indicator->name,
@@ -140,7 +157,9 @@ trait IndicatorTrait
         $prod_names = $products->map(function ($p) {
             return $p->name;
         })->toArray();
+
         $market_share_prod = 0;
+
         $values = [];
         foreach ($products as $prod) {
             $key = "ca_" . $prod->id;
@@ -152,9 +171,11 @@ trait IndicatorTrait
             $market_share_prod = round($value / $total, 3);
             array_push($values, $market_share_prod);
         }
+
         $resp = ["names" => $prod_names, "values" => $values];
         return $resp;
     }
+
     public function getProductMarketShare(Request $request)
     {
         $product_id = $request->product_id;

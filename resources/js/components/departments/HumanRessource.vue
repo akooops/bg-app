@@ -50,7 +50,7 @@
             </span>
         </div> -->
         <Modal
-            v-if="workers_modal"
+            v-if="hire_modal"
             class="align-center openmodal"
             custom_css="w-1/3"
         >
@@ -103,7 +103,7 @@
                         </button>
                         <button
                             class="font-medium font-heading px-3 py-1 text-vN opacity-80 hover:opacity-100"
-                            @click="workers_modal = false"
+                            @click="hire_modal = false"
                         >
                             Annuler
                         </button>
@@ -419,7 +419,7 @@
             </div>
             <div class="flex flex-col justify-center gap-6 w-1/5">
                 <button
-                    @click="workers_modal = true"
+                    @click="hire_modal = true"
                     :disabled="!indicators_loaded || !data_loaded"
                     class="rounded-3xl font-semibold text-white py-2"
                     :class="
@@ -482,7 +482,7 @@
                             : 'bg-vN'
                     "
                 >
-                    Virer des employées
+                    Virer des employés
                 </button>
             </div>
         </div>
@@ -513,7 +513,7 @@ export default {
             message: "",
             error_message: "",
 
-            workers_modal: false,
+            hire_modal: false,
             workshop_modal: false,
             prime_modal: false,
             fire_modal: false,
@@ -661,7 +661,7 @@ export default {
         },
         hireWorker() {
             this.hire_sent = true;
-            this.workers_modal = false;
+            this.hire_modal = false;
             axios
                 .post("/api/entreprise/hr/hire", {
                     workers: this.nb_workers_to_hire,

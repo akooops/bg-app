@@ -1029,7 +1029,7 @@ export default {
                 .then((resp) => {
                     this.stock = resp.data;
 
-                    // this.launch_data.prod_id = 1;
+                    // this.launch_data.prod_id = 5;
                     // this.launch_data.machine_lvl = 1;
                     // this.launch_data.quantity = 1;
 
