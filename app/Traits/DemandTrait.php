@@ -32,7 +32,7 @@ trait DemandTrait
 
                     $dem = round($percent * $pop);
 
-                    return max($dem, 0);
+                    return round(max($dem, 0));
                 });
                 break;
 
@@ -46,7 +46,7 @@ trait DemandTrait
 
                     $dem = round($percent * $pop);
 
-                    return max($dem, 0);
+                    return round(max($dem, 0));
                 });
                 break;
 
@@ -60,7 +60,7 @@ trait DemandTrait
 
                     $dem = round($percent * $pop);
 
-                    return max($dem, 0);
+                    return round(max($dem, 0));
                 });
                 break;
 
@@ -74,7 +74,7 @@ trait DemandTrait
 
                     $dem = round($percent * $pop);
 
-                    return max($dem, 0);
+                    return round(max($dem, 0));
                 });
                 break;
 
@@ -88,7 +88,7 @@ trait DemandTrait
 
                     $dem = round($percent * $pop);
 
-                    return max($dem, 0);
+                    return round(max($dem, 0));
                 });
                 break;
         }
@@ -105,6 +105,7 @@ trait DemandTrait
         for ($i = 0; $i < count($coeff_array); $i++) {
             $entreprise_ss += $coeff_array[$i] * $this->getIndicator($indicators[$i], $entreprise_id)["value"];
         }
+
         $entreprises = Entreprise::all();
         foreach ($entreprises as $entreprise) {
             $eid = $entreprise->id;
@@ -122,16 +123,22 @@ trait DemandTrait
         $demand = 0;
         $total_population = (int) $this->get_game_setting('population');
 
+        $product = Product::where('id', '=', $prod_id)->first();
+
         $tot_quant = DB::table('stock')->where('product_id', '=', $prod_id)->get()->sum('quantity_selling');
 
         $nb_entrep = count(Entreprise::all());
 
         switch ($prod_id) {
             case 5:
-                // $p = $price + (0.1 / (1 - (1 / $nb_entrep))) * (($quantity / $tot_quant) - (1 / $nb_entrep)) * ($x - $price) + (0.1 / (1 - (1 / $nb_entrep))) * (($quantity / $tot_quant) - (1 / $nb_entrep)) * ($x - $price);
+                $coeffs = [1, 1, 1, 1];
+                $ss = $this->socialInfluence($entreprise_id, $coeffs);
+                $x = (($quantity / $tot_quant) - (1 / $nb_entrep)) < 0 || ($ss - (1 / $nb_entrep)) < 0 ? $product->price_max : $product->price_min;
 
-                $p = $price;
-                
+                $p = $price + (0.1 / (1 - (1 / $nb_entrep))) * (($quantity / $tot_quant) - (1 / $nb_entrep)) * ($x - $price) + (0.1 / (1 - (1 / $nb_entrep))) * ($ss - (1 / $nb_entrep)) * ($x - $price);
+
+                // $p = $price;
+
                 $percent = sqrt(1 - ($p - 75) / 30);
 
                 $pop_percent = (float) Product::where('id', '=', 5)->first()["percent_population"];
@@ -143,7 +150,13 @@ trait DemandTrait
                 break;
 
             case 6:
-                $p = $price;
+                $coeffs = [1, 1, 1, 1];
+                $ss = $this->socialInfluence($entreprise_id, $coeffs);
+                $x = (($quantity / $tot_quant) - (1 / $nb_entrep)) < 0 || ($ss - (1 / $nb_entrep)) < 0 ? $product->price_max : $product->price_min;
+
+                $p = $price + (0.1 / (1 - (1 / $nb_entrep))) * (($quantity / $tot_quant) - (1 / $nb_entrep)) * ($x - $price) + (0.1 / (1 - (1 / $nb_entrep))) * ($ss - (1 / $nb_entrep)) * ($x - $price);
+
+                // $p = $price;
 
                 $percent = sqrt(1 - pow(($p - 110) / 30, 4));
 
@@ -156,7 +169,13 @@ trait DemandTrait
                 break;
 
             case 7:
-                $p = $price;
+                $coeffs = [1, 1, 1, 1];
+                $ss = $this->socialInfluence($entreprise_id, $coeffs);
+                $x = (($quantity / $tot_quant) - (1 / $nb_entrep)) < 0 || ($ss - (1 / $nb_entrep)) < 0 ? $product->price_max : $product->price_min;
+
+                $p = $price + (0.1 / (1 - (1 / $nb_entrep))) * (($quantity / $tot_quant) - (1 / $nb_entrep)) * ($x - $price) + (0.1 / (1 - (1 / $nb_entrep))) * ($ss - (1 / $nb_entrep)) * ($x - $price);
+
+                // $p = $price;
 
                 $percent = pow(1 - ($p - 260) / 70, 0.4);
 
@@ -169,7 +188,13 @@ trait DemandTrait
                 break;
 
             case 8:
-                $p = $price;
+                $coeffs = [1, 1, 1, 1];
+                $ss = $this->socialInfluence($entreprise_id, $coeffs);
+                $x = (($quantity / $tot_quant) - (1 / $nb_entrep)) < 0 || ($ss - (1 / $nb_entrep)) < 0 ? $product->price_max : $product->price_min;
+
+                $p = $price + (0.1 / (1 - (1 / $nb_entrep))) * (($quantity / $tot_quant) - (1 / $nb_entrep)) * ($x - $price) + (0.1 / (1 - (1 / $nb_entrep))) * ($ss - (1 / $nb_entrep)) * ($x - $price);
+
+                // $p = $price;
 
                 $percent = sqrt(1 - pow(($p - 250) / 75, 4));
 
@@ -182,7 +207,13 @@ trait DemandTrait
                 break;
 
             case 9:
-                $p = $price;
+                $coeffs = [1, 1, 1, 1];
+                $ss = $this->socialInfluence($entreprise_id, $coeffs);
+                $x = (($quantity / $tot_quant) - (1 / $nb_entrep)) < 0 || ($ss - (1 / $nb_entrep)) < 0 ? $product->price_max : $product->price_min;
+
+                $p = $price + (0.1 / (1 - (1 / $nb_entrep))) * (($quantity / $tot_quant) - (1 / $nb_entrep)) * ($x - $price) + (0.1 / (1 - (1 / $nb_entrep))) * ($ss - (1 / $nb_entrep)) * ($x - $price);
+
+                // $p = $price;
 
                 $percent = (exp(cos(pi() * ($p - 600) / 100)) - exp(-1)) / (exp(1) - exp(-1));
 
@@ -198,8 +229,8 @@ trait DemandTrait
         $demand = max($demand, 0);
 
         //$epsilon = mt_rand(-50,20);
-        $sup = 1.05 * $demand;
-        $inf = 0.95 * $demand;
+        $sup = 1.02 * $demand;
+        $inf = 0.98 * $demand;
         $real_demand = mt_rand($inf, $sup);
         $quant_sold = 0;
         if ($real_demand > $quantity) {

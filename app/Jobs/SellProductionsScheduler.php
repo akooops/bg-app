@@ -38,9 +38,10 @@ class SellProductionsScheduler implements ShouldQueue
     public function handle()
     {
         // $productions = DB::table("productions")->where("status", "=", "selling")->get();
-        $stock = DB::table("stock")->where("quantity_selling", ">", 0)->get();
+
+        $stock = DB::table("stock")->where("quantity_selling", ">", 0)->get()->shuffle();
         foreach ($stock as $s) {
-            // Get production properties
+            // Get stock's row properties
             $product_id = $s->product_id;
             $product = DB::table("products")->where("id", "=", $product_id)->first();
             $entreprise_id = $s->entreprise_id;
@@ -48,7 +49,7 @@ class SellProductionsScheduler implements ShouldQueue
 
             // Check if no demand left on the this product
             if ($product->left_demand <= 0) {
-                $message = "Il n'y a plus de demande sur le produit" . $product->name . " pour l'instant, impossible de continuer la vente.";
+                $message = "Il n'y a plus de demande sur le produit " . $product->name . " pour l'instant, impossible de continuer la vente.";
                 $notification = [
                     "entreprise_id" => $entreprise_id,
                     "type" => "ProductionUpdate",
@@ -66,9 +67,10 @@ class SellProductionsScheduler implements ShouldQueue
                 break;
             }
 
-            $production_quantity = $s->quantity;
+            // $production_quantity = $s->quantity;
+
             $quantity_to_sell = $this->productDemandReal($product_id, $entreprise_id, $price, $s->quantity_selling);
-            $quantity_to_sell = min($quantity_to_sell, DB::table("products")->where("id", "=", $product_id)['left_demand']);
+            $quantity_to_sell = min($quantity_to_sell, DB::table("products")->where("id", "=", $product_id)->first()->left_demand);
 
             // $production_quantity_sold = $production->sold;
 
@@ -109,13 +111,13 @@ class SellProductionsScheduler implements ShouldQueue
                 "entreprise_id" => $entreprise_id,
                 "type" => "ProdStockUpdate",
 
-                "store" => false,
+                "store" => true,
 
-                "text" => "",
-                "title" => "",
+                "title" => "Vente réussie",
+                "text" => "Vous avez vendu " . $quantity_to_sell . " unités de " . $product->name,
                 "icon_path" => "aaaaaaaaaaa",
 
-                "style" => "info",
+                "style" => "success",
             ];
             event(new NewNotification($notification));
 

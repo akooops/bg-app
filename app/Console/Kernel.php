@@ -18,6 +18,7 @@ use App\Events\SimulationDateChanged;
 use App\Jobs\AdScheduler;
 use App\Jobs\SellProductionsScheduler;
 use App\Jobs\StatsScheduler;
+use App\Jobs\WeeklyOperations;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -57,6 +58,10 @@ class Kernel extends ConsoleKernel
                 event(new SimulationDateChanged());
             })->everyMinute();
 
+
+            // Clean DB from unused data, also refresh demand on products
+            $schedule->job(new WeeklyOperations)->everyMinute();
+
             // Sell parts of productions that are on sale
             $schedule->job(new SellProductionsScheduler)->everyMinute();
 
@@ -74,8 +79,7 @@ class Kernel extends ConsoleKernel
 
             // Register weekly stats
             $schedule->job(new StatsScheduler)->everyMinute();
-            
-            //$schedule->job(new DailyStats)->everyMinute();
+
             // $schedule->command('inspire')->hourly();
         }
     }

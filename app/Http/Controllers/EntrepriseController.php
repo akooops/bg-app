@@ -1245,18 +1245,18 @@ class EntrepriseController extends Controller
             // $dettes_remains=0;
             // foreach ( $dettes_instances as $dette){
             //     $dettes_totale = $dettes_totale + round($dette->amount * (1 + $dette->ratio/100));
-            //     $dettes_remains = $dettes_remains + $dette->remaining_amount;   
+            //     $dettes_remains = $dettes_remains + $dette->remaining_amount;
             // }
 
             // $dettes_payed= $dettes_totale - $dettes_remains;
-            
 
-           
-            // $dettes_payed = $dettes - $dettes_remains ; 
+
+
+            // $dettes_payed = $dettes - $dettes_remains ;
         } else {
             $caisse = 0;
             $dettes = 0;
-            
+
         }
         return ["time" => $time, "caisse" => $caisse, "dettes" => $dettes];
     }
@@ -1357,8 +1357,9 @@ class EntrepriseController extends Controller
         }
 
         $stock = DB::table('stock')->where('entreprise_id', '=', $entreprise_id)->where('product_id', '=', $product_id);
-        if ($stock->first()->quantity < $new_selling_quantity) {
-            return Response::json(["message" => "Erreur: La quantité à vendre spécifiée dépasse votre stock", "success" => false], 200);
+
+        if ($new_selling_quantity > $stock->first()->quantity_selling + $stock->first()->quantity || $new_selling_quantity < $stock->first()->quantity_selling) {
+            return Response::json(["message" => "Erreur: La quantité à vendre spécifiée n'est pas dans le bon interval.", "success" => false], 200);
         }
 
         $stock->update([
@@ -1371,13 +1372,13 @@ class EntrepriseController extends Controller
             "entreprise_id" => $entreprise_id,
             "type" => "ProdStockUpdate",
 
-            "store" => false,
+            "store" => true,
 
-            "text" => "",
-            "title" => "",
+            "title" => "Données de vente mises à jour",
+            "text" => "Les données de vente pour le produit " . $product->name . " ont été mises à jour (Quantité: " . $new_selling_quantity . ", Prix: " . $new_price . " DA)",
             "icon_path" => "aaaaaaaaaaa",
 
-            "style" => "info",
+            "style" => "success",
         ];
         event(new NewNotification($notification));
 
@@ -1387,7 +1388,7 @@ class EntrepriseController extends Controller
     public function getStats(Request $request) {
         $entreprise_id = $request->entreprise_id;
 
-        $number = 10;
+        $number = $request->number != null ? $request->number : 10;
 
         $disps = array_reverse(
             DB::table('stats')
@@ -1419,10 +1420,65 @@ class EntrepriseController extends Controller
                 ->toArray()
         );
 
+        $ca_5 = array_reverse(
+            DB::table('stats')
+                ->where('entreprise_id', '=', $entreprise_id)
+                ->where('indicator', '=', 'ca_5')
+                ->orderByDesc("date")
+                ->take($number)
+                ->pluck('value')
+                ->toArray()
+        );
+
+        $ca_6 = array_reverse(
+            DB::table('stats')
+                ->where('entreprise_id', '=', $entreprise_id)
+                ->where('indicator', '=', 'ca_6')
+                ->orderByDesc("date")
+                ->take($number)
+                ->pluck('value')
+                ->toArray()
+        );
+
+        $ca_7 = array_reverse(
+            DB::table('stats')
+                ->where('entreprise_id', '=', $entreprise_id)
+                ->where('indicator', '=', 'ca_7')
+                ->orderByDesc("date")
+                ->take($number)
+                ->pluck('value')
+                ->toArray()
+        );
+
+        $ca_8 = array_reverse(
+            DB::table('stats')
+                ->where('entreprise_id', '=', $entreprise_id)
+                ->where('indicator', '=', 'ca_8')
+                ->orderByDesc("date")
+                ->take($number)
+                ->pluck('value')
+                ->toArray()
+        );
+
+        $ca_9 = array_reverse(
+            DB::table('stats')
+                ->where('entreprise_id', '=', $entreprise_id)
+                ->where('indicator', '=', 'ca_9')
+                ->orderByDesc("date")
+                ->take($number)
+                ->pluck('value')
+                ->toArray()
+        );
+
         $data = [
             'dates' => $dates,
             'caisse' => $disps,
             'dettes' => $debts,
+            'ca_5' => $ca_5,
+            'ca_6' => $ca_6,
+            'ca_7' => $ca_7,
+            'ca_8' => $ca_8,
+            'ca_9' => $ca_9,
         ];
 
         return $data;

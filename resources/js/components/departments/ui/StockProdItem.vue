@@ -74,13 +74,15 @@
                 @click="apply_changes(item)"
                 class="rounded-3xl font-semibold px-3 py-2 bg-vert text-white"
                 :class="
-                    new_changes
+                    new_changes && canSell
                         ? 'bg-vert'
                         : sending_changes
                         ? 'bg-blue-200'
+                        : !canSell
+                        ? 'bg-red-500'
                         : 'bg-gris text-black'
                 "
-                :disabled="!new_changes || sending_changes"
+                :disabled="!new_changes || sending_changes || !canSell"
             >
                 Vendre
             </button>
@@ -106,13 +108,8 @@ export default {
     methods: {
         apply_changes(product) {
             if (this.new_changes) {
-                this.item.price = this.price;
-                this.item.quantity -=
-                    this.quantity_selling - this.item.quantity_selling;
-                this.item.quantity_selling = this.quantity_selling;
-
-                this.new_changes = false;
                 this.sending_changes = true;
+                this.new_changes = false;
 
                 let data = {
                     entreprise_id: this.user.id,
@@ -126,41 +123,57 @@ export default {
                     .post("/api/entreprise/sell-product", data)
                     .then((resp) => {
                         this.sending_changes = false;
+
+                        if (resp.data.success) {
+                            this.item.price = this.price;
+                            this.item.quantity -= this.quantity_selling - this.item.quantity_selling;
+                            this.item.quantity_selling = this.quantity_selling;
+                        }
+
+                        else {
+                            this.new_changes = true;
+                        }
                     });
             }
         },
     },
 
     watch: {
-        quantity_selling: function () {
-            if (this.quantity_selling < this.item.quantity_selling) {
+        'quantity_selling': function () {
+            if (this.quantity_selling > this.item.quantity_selling + this.item.quantity) {
+                this.quantity_selling = this.item.quantity_selling + this.item.quantity;
+            }
+
+            else if (this.quantity_selling < this.item.quantity_selling) {
                 this.quantity_selling = this.item.quantity_selling;
-            } else if (
-                this.quantity_selling - this.item.quantity_selling >=
-                this.item.quantity
-            ) {
-                this.quantity_selling = this.item.quantity;
-            } else if (
-                this.quantity_selling == this.item.quantity_selling &&
-                this.price == this.item.price
-            ) {
+            }
+
+            if (this.quantity_selling == this.item.quantity_selling && this.price == this.item.price) {
                 this.new_changes = false;
-            } else {
+            }
+
+            else {
                 this.new_changes = true;
             }
         },
 
-        price: function () {
-            if (this.price <= this.item.price_min) {
+        'price': function () {
+            if (this.price < this.item.price_min) {
                 this.price = this.item.price_min;
-            } else if (this.price >= this.item.price_max) {
+            }
+
+            else if (this.item.price_max < this.price) {
                 this.price = this.item.price_max;
-            } else if (
+            }
+
+            if (
                 this.quantity_selling == this.item.quantity_selling &&
                 this.price == this.item.price
             ) {
                 this.new_changes = false;
-            } else {
+            }
+
+            else {
                 this.new_changes = true;
             }
         },
@@ -168,6 +181,22 @@ export default {
         "item.quantity_selling": function () {
             this.quantity_selling = this.item.quantity_selling;
         },
+    },
+
+
+    computed: {
+        canSell() {
+            if (this.quantity_selling > this.item.quantity_selling + this.item.quantity ||
+                this.quantity_selling < this.item.quantity_selling) {
+                return false;
+            }
+
+            if (this.price < this.item.price_min || this.item.price_max < this.price) {
+                return false;
+            }
+
+            return true;
+        }
     },
 
     mounted() {},
