@@ -659,14 +659,24 @@ export default {
         },
 
         async getMarketDemands() {
+            // let data = []
             for (var i = 5; i < 10; i++) {
-                let resp = await axios.get("/api/demand/prev", {
-                    params: {
-                        product_id: i,
-                    },
-                });
-                this.prod_data.push(resp.data);
+                let resp = await axios
+                    .get("/api/demand/prev", {
+                        params: {
+                            product_id: i,
+                        },
+                    });
+
+                if (!this.show_market_demand) {
+                    this.prod_data[i - 5] = resp.data;
+                }
+                else {
+                    this.prod_data[i - 5].demand = resp.data.demand;
+                    this.prod_data[i - 5].prices = resp.data.prices;
+                }
             }
+
             this.show_market_demand = true;
         },
 
@@ -796,8 +806,17 @@ export default {
 
                 if (e.notification.type == "AdminNotif") {
                     this.updateProdData();
+                    this.getMarketDemands();
                     this.$forceUpdate();
                 }
+            }
+        );
+
+        window.Echo.channel("simulation_date").listen(
+            "SimulationDateChanged",
+            (e) => {
+                this.getMarketDemands();
+                console.log("here");
             }
         );
 

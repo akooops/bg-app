@@ -18,6 +18,7 @@ use App\Events\SimulationDateChanged;
 use App\Jobs\AdScheduler;
 use App\Jobs\SellProductionsScheduler;
 use App\Jobs\StatsScheduler;
+use App\Jobs\WeeklyOperations;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -45,17 +46,8 @@ class Kernel extends ConsoleKernel
         $game_status = $this->get_game_setting("game_started");
 
         if ($game_status == "1") {
-            $schedule->call(function () {
-                $current_date = (int) $this->get_game_setting("current_date");
-                if ($current_date != null) {
-                    $current_date += 1;
-                } else {
-                    $current_date = (int) $this->get_game_setting("start_date");
-                }
-
-                $this->set_game_setting("current_date", $current_date);
-                event(new SimulationDateChanged());
-            })->everyMinute();
+            // Increment week, clean DB from unused data, also refresh demand on products
+            $schedule->job(new WeeklyOperations)->everyMinute();
 
             // Sell parts of productions that are on sale
             $schedule->job(new SellProductionsScheduler)->everyMinute();
@@ -74,8 +66,7 @@ class Kernel extends ConsoleKernel
 
             // Register weekly stats
             $schedule->job(new StatsScheduler)->everyMinute();
-            
-            //$schedule->job(new DailyStats)->everyMinute();
+
             // $schedule->command('inspire')->hourly();
         }
     }
