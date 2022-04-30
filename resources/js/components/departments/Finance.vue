@@ -8,6 +8,7 @@
         <div class="flex flex-wrap justify-between items-center w-full">
             <div class="flex flex-wrap w-1/3 justify-between py-3">
                 <h2 class="font-bold">Part du Marché par Produit</h2>
+               
                 <BarChart
                     v-if="market_share_entrep != null"
                     unit="%"
@@ -17,32 +18,40 @@
                 ></BarChart>
             </div>
             <div
-                class="flex flex-wrap items-center justify-center w-1/2 justify-between py-3"
+                class="flex flex-wrap items-center justify-center w-1/2  py-3"
             >
                 <h2 class="font-bold">Part du Marché Pour le produit</h2>
+                
                 <select v-model="selected_product">
-                    <option :value="product.id" v-for="product in products">
+                    <option :value="product.id" :key="product.id" v-for="product in products">
                         {{ product.name }}
                     </option>
                 </select>
-                <PieChart
+                   
+                 <line-chart :chartData="market_share_prod" :options="{responsive : true , maintainAspectRation : false}" ></line-chart>
+                <!-- <PieChart
                     v-if="market_share_prod != null"
                     :legend="entreprise_names"
                     :serie="market_share_prod"
-                ></PieChart>
+                ></PieChart> -->
+
             </div>
             <div
                 class="flex flex-wrap items-center justify-center w-1/2 justify-between py-3"
             >
                 <h2 class="font-bold">Chiffres d'Affaire</h2>
-                <PieChart
+              
+                   <PieChart
                     v-if="market_share_prod != null"
                     :legend="entreprise_names"
                     :serie="indicators['ca'].slice(0, 4)"
                 ></PieChart>
+
+                 
+               
             </div>
             <div
-                class="flex flex-wrap items-center justify-center w-1/2 justify-between py-3"
+                class="flex flex-wrap items-center justify-center w-1/2 py-3"
             >
                 <h2 class="font-bold">Coûts</h2>
                 <BarChart
@@ -54,7 +63,7 @@
                 ></BarChart>
             </div>
             <div
-                class="flex flex-wrap items-center justify-center w-1/2 justify-between py-3"
+                class="flex flex-wrap items-center justify-center w-1/2 py-3"
             >
                 <h2 class="font-bold">Dettes</h2>
                 <speedo-meter
@@ -72,6 +81,7 @@
 </template>
 
 <script>
+
 import LineGraph from "./ui/LineGraph";
 import BarChart from "./ui/BarChart";
 import PieChart from "./ui/PieChart";

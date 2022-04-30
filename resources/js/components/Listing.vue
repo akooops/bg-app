@@ -34,7 +34,7 @@
             </div>
         </div>
         <div
-            class="absolute flex flex-col items-center justify-center top-0 right-0 w-52 h-full bg-[#FFFFFFC9] text-vN rounded-bl-full text-2xl font-heading font-semibold"
+            class="absolute flex flex-col items-center justify-center top-0 right-0 w-52 h-full bg-[#FFFFFFC9] text-vN rounded-bl-full text-2xl font-heading font-semibold rounded"
         >
             <p class="text-center">{{ position }}</p>
             <p class="text-center">Rank</p>

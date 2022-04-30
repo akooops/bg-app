@@ -4,6 +4,7 @@ import Vue from "vue";
 import VCalendar from "v-calendar";
 import Toasted from "vue-toasted";
 
+
 axios.defaults.withCredentials = false;
 let local_url = "http://10.42.0.1:8000";
 let localhost = "http://127.0.0.1:8000";
@@ -13,6 +14,7 @@ Vue.component(
     "statcard",
     require("./components/departments/ui/StatCard.vue").default
 );
+
 
 Vue.component(
     "departmentcard",
