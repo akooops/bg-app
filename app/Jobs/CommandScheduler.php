@@ -86,6 +86,11 @@ class CommandScheduler implements ShouldQueue
             "entreprise_id" => $entreprise_id,
             "type" => "StockUpdate",
 
+            "title" => "",
+            "text" => "",
+
+            "icon_path" => "",
+
             "store" => false,
         ];
         event(new NewNotification($notification));

@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\DB;
 use App\Events\SimulationDateChanged;
 use App\Jobs\AdScheduler;
 use App\Jobs\SellProductionsScheduler;
+use App\Jobs\StatsScheduler;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -71,6 +72,9 @@ class Kernel extends ConsoleKernel
             // Process ads that are still on going
             $schedule->job(new AdScheduler)->everyMinute();
 
+            // Register weekly stats
+            $schedule->job(new StatsScheduler)->everyMinute();
+            
             //$schedule->job(new DailyStats)->everyMinute();
             // $schedule->command('inspire')->hourly();
         }

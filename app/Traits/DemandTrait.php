@@ -11,40 +11,84 @@ use App\Traits\IndicatorTrait;
 
 trait DemandTrait
 {
-    use IndicatorTrait;
+    use IndicatorTrait, HelperTrait;
 
     // DEMANDE FICTIVE
     public function productDemandPrev($prod_id, $prices)
     {
         $demand = collect([]);
         $prices = collect($prices);
+
+        $total_population = (int) $this->get_game_setting('population');
+
         switch ($prod_id) {
             case 5:
-                $demand = $prices->map(function ($p) {
-                    return max(round(3000 - 20 * $p), 0);
+                $demand = $prices->map(function ($p) use ($total_population) {
+                    $percent = sqrt(1 - ($p - 75) / 30);
+
+                    $pop_percent = (float) Product::where('id', '=', 5)->first()["percent_population"];
+
+                    $pop = $total_population * $pop_percent;
+
+                    $dem = round($percent * $pop);
+
+                    return max($dem, 0);
                 });
                 break;
+
             case 6:
-                $demand = $prices->map(function ($p) {
-                    return max(round(10000 * exp(-1 * $p / 150)), 0);
+                $demand = $prices->map(function ($p) use ($total_population) {
+                    $percent = sqrt(1 - pow(($p - 110) / 30, 4));
+
+                    $pop_percent = (float) Product::where('id', '=', 6)->first()["percent_population"];
+
+                    $pop = $total_population * $pop_percent;
+
+                    $dem = round($percent * $pop);
+
+                    return max($dem, 0);
                 });
                 break;
+
             case 7:
-                $demand = $prices->map(function ($p) {
+                $demand = $prices->map(function ($p) use ($total_population) {
+                    $percent = pow(1 - ($p - 260) / 70, 0.4);
 
-                    return max(round(3000 - 1.75 * $p ** 2), 0);
+                    $pop_percent = (float) Product::where('id', '=', 7)->first()["percent_population"];
+
+                    $pop = $total_population * $pop_percent;
+
+                    $dem = round($percent * $pop);
+
+                    return max($dem, 0);
                 });
                 break;
+
             case 8:
-                $demand = $prices->map(function ($p) {
+                $demand = $prices->map(function ($p) use ($total_population) {
+                    $percent = sqrt(1 - pow(($p - 250) / 75, 4));
 
-                    return max(round(2000 - 0.12 * $p ** 1.75), 0);
+                    $pop_percent = (float) Product::where('id', '=', 8)->first()["percent_population"];
+
+                    $pop = $total_population * $pop_percent;
+
+                    $dem = round($percent * $pop);
+
+                    return max($dem, 0);
                 });
                 break;
 
-            default:
-                $demand = $prices->map(function ($p) {
-                    return max(round(3000 - 20 * $p), 0);
+            case 9:
+                $demand = $prices->map(function ($p) use ($total_population) {
+                    $percent = (exp(cos( pi() * ($p - 600) / 100 )) - exp(-1)) / (exp(1) - exp(-1));
+
+                    $pop_percent = (float) Product::where('id', '=', 9)->first()["percent_population"];
+
+                    $pop = $total_population * $pop_percent;
+
+                    $dem = round($percent * $pop);
+
+                    return max($dem, 0);
                 });
                 break;
         }
@@ -76,37 +120,78 @@ trait DemandTrait
     public function productDemandReal($prod_id, $entreprise_id, $price, $quantity)
     {
         $demand = 0;
+        $total_population = (int) $this->get_game_setting('population');
+
+        $tot_quant = DB::table('stock')->where('product_id', '=', $prod_id)->get()->sum('quantity_selling');
+
+        $nb_entrep = count(Entreprise::all());
+
         switch ($prod_id) {
             case 5:
-                $ss = $this->socialInfluence($entreprise_id, [1, 1, 1, 1]);
-                $social_importance_coeff = 4;
-                $demand = 3000 - 20 * $price;
-                $demand = $demand + $ss * $demand / $social_importance_coeff;
+                // $p = $price + (0.1 / (1 - (1 / $nb_entrep))) * (($quantity / $tot_quant) - (1 / $nb_entrep)) * ($x - $price) + (0.1 / (1 - (1 / $nb_entrep))) * (($quantity / $tot_quant) - (1 / $nb_entrep)) * ($x - $price);
+
+                $p = $price;
+                
+                $percent = sqrt(1 - ($p - 75) / 30);
+
+                $pop_percent = (float) Product::where('id', '=', 5)->first()["percent_population"];
+
+                $pop = $total_population * $pop_percent;
+
+                $demand = round($percent * $pop);
+
+                break;
+
             case 6:
-                $ss = $this->socialInfluence($entreprise_id, [2, 2, 3, 4]);
-                $social_importance_coeff = 1;
-                $demand = round(10000 * exp(-1 * $price / 150));
-                $demand = $demand + $ss * $demand / $social_importance_coeff;
+                $p = $price;
+
+                $percent = sqrt(1 - pow(($p - 110) / 30, 4));
+
+                $pop_percent = (float) Product::where('id', '=', 6)->first()["percent_population"];
+
+                $pop = $total_population * $pop_percent;
+
+                $demand = round($percent * $pop);
+
                 break;
+
             case 7:
-                $ss = $this->socialInfluence($entreprise_id, [1, 1, 1, 1]);
+                $p = $price;
 
-                $social_importance_coeff = 2; // Bigger is less important
-                $demand = 3000 - 1.75 * $price ** 2;
-                $demand = $demand + $ss * $demand / $social_importance_coeff;
+                $percent = pow(1 - ($p - 260) / 70, 0.4);
+
+                $pop_percent = (float) Product::where('id', '=', 7)->first()["percent_population"];
+
+                $pop = $total_population * $pop_percent;
+
+                $demand = round($percent * $pop);
+
                 break;
+
             case 8:
-                $ss = $this->socialInfluence($entreprise_id, [1, 1, 1, 1]);
-                $social_importance_coeff = 2;
-                $demand = 2000 - 0.12 * $price ** 1.75;
-                $demand = $demand + $ss * $demand / $social_importance_coeff;
+                $p = $price;
+
+                $percent = sqrt(1 - pow(($p - 250) / 75, 4));
+
+                $pop_percent = (float) Product::where('id', '=', 8)->first()["percent_population"];
+
+                $pop = $total_population * $pop_percent;
+
+                $demand = round($percent * $pop);
+
                 break;
 
-            default:
-                $ss = $this->socialInfluence($entreprise_id, [1, 1, 1, 1]);
-                $social_importance_coeff = 4;
-                $demand = 3000 - 20 * $price;
-                $demand = $demand + $ss * $demand / $social_importance_coeff;
+            case 9:
+                $p = $price;
+
+                $percent = (exp(cos(pi() * ($p - 600) / 100)) - exp(-1)) / (exp(1) - exp(-1));
+
+                $pop_percent = (float) Product::where('id', '=', 9)->first()["percent_population"];
+
+                $pop = $total_population * $pop_percent;
+
+                $demand = round($percent * $pop);
+
                 break;
         }
 
@@ -130,16 +215,21 @@ trait DemandTrait
     {
         $prod_id = $request->product_id;
         $product = Product::whereId($prod_id)->first();
-        //dd($product);
+
         $price_max = $product->price_max;
         $price_min = $product->price_min;
-        $step = ($price_max - $price_min) / 10;
+
+        $nb_points = 20;
+        $step = ($price_max - $price_min) / ($nb_points - 1);
+
         $prices = [];
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < $nb_points; $i++) {
             $p = round($price_min + $i * $step);
             array_push($prices, $p);
         }
+
         $demand = $this->productDemandPrev($prod_id, $prices);
+
         $resp = [
             "prices" => $prices,
             "demand" => $demand->toArray()

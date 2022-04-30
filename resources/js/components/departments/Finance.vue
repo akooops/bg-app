@@ -23,7 +23,7 @@
                 <h2 class="font-bold">Part du Marché Pour le produit</h2>
                 
                 <select v-model="selected_product">
-                    <option :value="product.id" :key="product.id" v-for="product in products">
+                    <option :value="product.id" v-for="(product, key) in products" :key="key">
                         {{ product.name }}
                     </option>
                 </select>
@@ -40,9 +40,8 @@
                 class="flex flex-wrap items-center justify-center w-1/2 justify-between py-3"
             >
                 <h2 class="font-bold">Chiffres d'Affaire</h2>
-              
-                   <PieChart
-                    v-if="market_share_prod != null"
+                <PieChart
+                    v-if="market_share_prod != null && indicators['ca'] != null"
                     :legend="entreprise_names"
                     :serie="indicators['ca'].slice(0, 4)"
                 ></PieChart>
@@ -67,6 +66,7 @@
             >
                 <h2 class="font-bold">Dettes</h2>
                 <speedo-meter
+                    v-if="indicators['other'] != null"
                     :data="[
                         {
                             value: indicators['other'][2].value,
@@ -95,7 +95,7 @@ export default {
     data() {
         return {
             indicators: [],
-            selected_product: 1,
+            selected_product: 5,
             market_share_prod: null,
             market_share_entrep: null,
             entreprise_names: [],

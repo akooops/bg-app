@@ -7,6 +7,7 @@ use App\Traits\HelperTrait;
 use Illuminate\Bus\Queueable;
 use App\Traits\IndicatorTrait;
 use App\Events\NewNotification;
+use App\Models\Product;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -62,11 +63,12 @@ class SellProductionsScheduler implements ShouldQueue
                 ];
                 event(new NewNotification($notification));
 
-                continue;
+                break;
             }
 
             $production_quantity = $s->quantity;
             $quantity_to_sell = $this->productDemandReal($product_id, $entreprise_id, $price, $s->quantity_selling);
+            $quantity_to_sell = min($quantity_to_sell, DB::table("products")->where("id", "=", $product_id)['left_demand']);
 
             // $production_quantity_sold = $production->sold;
 
