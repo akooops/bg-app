@@ -1,5 +1,5 @@
 <template>
-  <v-chart ref = "chart" class="chart" :option="option" autoresize />
+    <v-chart ref="chart" class="chart" :option="option" autoresize />
 </template>
 
 <script>
@@ -20,62 +20,74 @@ use([
   LegendComponent
   ]);
 */
-import "echarts"
+import "echarts";
 import VChart, { THEME_KEY } from "vue-echarts";
 
-
-
 export default {
-  name: "BarChart",
-  components: {
-    VChart
-  },
-  props: ["xData","yData","unit","width"],
-  data() {
-    return {
-      option:{
-        xAxis: {
-          type: 'category',
-          boundaryGap: false,
-          data: []
-        },
-        yAxis: {
-          type: 'value'
-        },
-        tooltip: {
-          trigger: 'item',
-          formatter: '{b} : {c} ' + this.unit
-        },
-        series: [{
-          data: [],
-          type: 'bar',
-          showBackground: true,
-          barWidth: this.width,
-          backgroundStyle: {
-              color: 'rgba(180, 180, 180, 0.25)'
-          }
-        }]
-      }
-    }
-  },
-  mounted(){
-    
-    this.option.xAxis.data = this.xData
-    this.option.series[0].data = this.yData.map(e=>{
-      return Math.round(e)*1000/1000;
-    })
-    //this.$refs.chart.resize()
-    //this.$forceUpdate()
-    
-  }
+    name: "BarChart",
+    components: {
+        VChart,
+    },
+    props: ["xData", "yData", "unit", "width"],
+    data() {
+        return {
+            option: {
+                xAxis: {
+                    axisLine: {
+                        show: false, // Hide full Line
+                    },
+                    axisTick: {
+                        show: false, // Hide Ticks,
+                    },
+                    axisLabel: {
+                        interval: 0,
+                        rotate: 35, //If the label names are too long you can manage this by rotating the label.
+                    },
+                    type: "category",
+                    showGrid: false,
+                    data: [],
+                },
+                yAxis: {
+                    type: "value",
+                    splitLine: {
+                        show: false,
+                    },
+                },
 
+                tooltip: {
+                    trigger: "axis",
+                    formatter: "{b} : {c} " + this.unit,
+                },
+                series: [
+                    {
+                        data: [],
+                        type: "bar",
+                        barGap: "20%",
+                        barCategoryGap: "40%",
+                        showBackground: true,
+                        barWidth: this.width,
+                        color: "rgba(11, 52, 52, 1)",
+                        backgroundStyle: {
+                            color: "rgba(11, 52, 52, 0)",
+                        },
+                    },
+                ],
+            },
+        };
+    },
+    mounted() {
+        this.option.xAxis.data = this.xData;
+        this.option.series[0].data = this.yData.map((e) => {
+            return (Math.round(e) * 1000) / 1000;
+        });
+        //this.$refs.chart.resize()
+        //this.$forceUpdate()
+    },
 };
 </script>
 
 <style scoped>
 .chart {
-  height: 400px;
-  padding-left: 2.5rem;
-
+    height: 400px;
 }
 </style>

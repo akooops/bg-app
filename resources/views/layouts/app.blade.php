@@ -11,7 +11,7 @@
 
     <!-- Fonts -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap">
-    <link rel="stylesheet preload prefetch" href="/webfonts/Aclonica-Regular.ttf" as='style' >
+    <link rel="stylesheet preload prefetch" href="/webfonts/Aclonica-Regular.ttf" as='style'>
     <link rel="stylesheet preload prefetch" href="/webfonts/ibm-plex-sans-var.woff2" as='style'>
     <link rel="stylesheet preload prefetch" href="/webfonts/Inter-VariableFont_slnt,wght.ttf" as='style'>
 
@@ -33,6 +33,7 @@
         <!-- Page Content -->
         <main class='flex'>
             {{-- <notification v-bind:user="{{auth()->user()}}"></notification> --}}
+            @if(Route::currentRouteName() !== 'finance')
             <div class="flex flex-col w-1/5 z-10  py-10 pr-6 bg-white min-h-screen gap-10">
                 <div class=" flex gap-8 flex-col text-lg font-heading font-medium">
                     <x-nav-link :href="route('dashboard')" :path='["/assets/icons/dashboard.svg", "/assets/icons/dashboard_inactive.svg"]' :active="request()->routeIs('dashboard') || Request::is('entreprise/department/*')">
@@ -45,10 +46,11 @@
                         {{ __('Classement') }}
                     </x-nav-link>
                 </div>
-                
+
                 <Calendar v-bind:user="{{ Auth()->user() }}"></Calendar>
             </div>
-            <div class="flex-1 w-4/5">
+            @endif
+            <div class="flex-1 w-full">
                 {{ $slot }}
             </div>
 

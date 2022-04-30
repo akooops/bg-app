@@ -1,5 +1,5 @@
 <template>
-  <v-chart ref = "chart" class="chart" :option="option" autoresize />
+    <v-chart ref="chart" class="chart" :option="option" autoresize />
 </template>
 
 <script>
@@ -20,84 +20,74 @@ use([
   LegendComponent
   ]);
 */
-import "echarts"
+import "echarts";
 import VChart, { THEME_KEY } from "vue-echarts";
 
-
-
 export default {
-  name: "PieChart",
-  components: {
-    VChart
-  },
-  props: ["legend","serie"],
-  watch:{
-    serie:function(n,o){
-      this.$forceUpdate()
-    }
-  },
-  data() {
-    return {
-      option:{
-   
-    tooltip: {
-        trigger: 'item',
-        formatter: '{a} <br/>{b} : {c} ({d}%)'
+    name: "PieChart",
+    components: {
+        VChart,
     },
-    legend: {
-        left: 'center',
-        top: 'bottom',
-        data: this.legend
+    props: ["legend", "serie"],
+    watch: {
+        serie: function (n, o) {
+            this.$forceUpdate();
+        },
     },
-    center: ['20%', '50%'],
-    toolbox: {
-        show: true,
-        feature: {
-            mark: {show: true},
-            dataView: {show: true, readOnly: false},
-            restore: {show: true},
-            saveAsImage: {show: true}
-        }
-    },
-    series: [
-        {
-            name: 'Part du Marché',
-            type: 'pie',
-            radius: [50, 140],
-            center: ['50%', '50%'],
-            roseType: 'radius',
-            itemStyle: {
-                borderRadius: 5
-            },
-            label: {
-                show: false
-            },
-            emphasis: {
-                label: {
-                    show: true
-                }
-            },
-            data: []
-        }
-    ]
-  }
-  }
-  },
-  mounted(){
-    
-    this.option.legend.data = this.legend
-    this.option.series[0].data = this.serie
-    //this.$refs.chart.resize()
-    //this.$forceUpdate()
-    
-  }
+    data() {
+        return {
+            option: {
+                tooltip: {
+                    trigger: "item",
+                    formatter: "{a} <br/>{b} : {c} ({d}%)",
+                },
+                legend: {
+                    orient: "vertical",
+                    left: "left",
+                },
+                series: [
+                    {
+                        name: "Part du Marché",
+                        type: "pie",
+                        radius: "50%",
+                        roseType: "pie",
 
+                        emphasis: {
+                            itemStyle: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: "rgba(0, 0, 0, 0.5)",
+                            },
+                        },
+                        color: [
+                            "#576634",
+                            "#6b7d40",
+                            "#869c50",
+                            "#a0bb60",
+                            "#b2d06b",
+                            "#c9de97",
+                            "#e0ecc4",
+                            "#ecf3da",
+                            "#f7faf0",
+                            "#fbfdf8",
+                        ],
+                        data: [],
+                    },
+                ],
+            },
+        };
+    },
+    mounted() {
+        this.option.legend.data = this.legend;
+        this.option.series[0].data = this.serie;
+        //this.$refs.chart.resize()
+        //this.$forceUpdate()
+    },
 };
 </script>
 
 <style scoped>
 .chart {
-  height: 400px;
-  margin-left: 3rem;
+    height: 400px;
 }
 </style>

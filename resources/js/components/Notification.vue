@@ -32,13 +32,6 @@
                         <h1 class="text-vN font-semibold text-2xl mr-auto">
                             Notifications
                         </h1>
-                        <button class="ml-auto">
-                            <img
-                                src="/assets/icons/reload.svg"
-                                alt=""
-                                class="w-7 h-7"
-                            />
-                        </button>
                     </div>
 
                     <NotificationItem

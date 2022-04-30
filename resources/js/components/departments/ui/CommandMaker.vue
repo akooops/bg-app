@@ -132,6 +132,31 @@
                             </div>
                         </td>
                     </tr>
+                    <tr>
+                        <td
+                            class="lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                        ></td>
+                        <td
+                            class="lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                        ></td>
+                        <td
+                            class="lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                        ></td>
+                        <td
+                            class="lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                        ></td>
+                        <td
+                            class="lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                        ></td>
+                        <td
+                            class="bg-tableBorder lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                        >
+                            {{ overallPrice }} UM
+                        </td>
+                        <td
+                            class="lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                        ></td>
+                    </tr>
                 </tbody>
             </table>
             <!-- <table class="min-w-max w-full table-auto">
@@ -372,6 +397,7 @@ export default {
             suppliers: null,
 
             supp_raw_mat_updated: false,
+            overallPrice: 0,
         };
     },
     props: ["user", "caisse"],
@@ -477,6 +503,7 @@ export default {
             return false;
         },
     },
+
     methods: {
         commandModal() {
             this.commandItem.material =
@@ -516,6 +543,7 @@ export default {
 
             if (cmd_id == -1) {
                 this.commands.push(command);
+
                 this.num_commands += 1;
             } else {
                 this.commands[cmd_id].quantity =
@@ -525,7 +553,9 @@ export default {
                     parseInt(this.commands[cmd_id].total_price) +
                     parseInt(command.total_price);
             }
-
+            this.overallPrice = this.commands
+                .map((c) => c.total_price)
+                .reduce((a, b) => a + b, 0);
             this.show_add_modal = false;
         },
 
@@ -573,6 +603,9 @@ export default {
 
         deleteRow(index) {
             this.commands.splice(index, 1);
+            this.overallPrice = this.commands
+                .map((c) => c.total_price)
+                .reduce((a, b) => a + b, 0);
         },
 
         editRow(index, save = false) {
@@ -593,8 +626,11 @@ export default {
                     total_price: this.totalPrice,
                     item_id: this.commands[index].num_commands,
                 };
-                this.commands[index] = command;
 
+                this.commands[index] = command;
+                this.overallPrice = this.commands
+                    .map((c) => c.total_price)
+                    .reduce((a, b) => a + b, 0);
                 this.editing_command_id = null;
                 this.show_add_modal = false;
             }
