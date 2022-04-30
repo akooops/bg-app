@@ -102,14 +102,31 @@ export default {
             },
         };
     },
+    methods: {
+        updateGraph() {
+            // spread all xdata and ydata on the option data
+            this.option.series[0].data = this.yData.map((item, index) => {
+                return [this.xData[index], item];
+            });
+            this.option.series[1].data = this.yData.map((item, index) => {
+                return [this.xData[index], item];
+            });
+
+            this.$forceUpdate();
+
+            console.log('graph update');
+        }
+    },
+    watch: {
+        // 'xData': function() {
+        //     this.updateGraph();
+        // },
+        'yData': function() {
+            this.updateGraph();
+        }
+    },
     mounted() {
-        // spread all xdata and ydata on the option data
-        this.option.series[0].data = this.yData.map((item, index) => {
-            return [this.xData[index], item];
-        });
-        this.option.series[1].data = this.yData.map((item, index) => {
-            return [this.xData[index], item];
-        });
+        this.updateGraph();
 
         //     this.option.xAxis.data = this.xData;
         //     this.option.series[0].data = this.yData;

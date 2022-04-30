@@ -1039,6 +1039,10 @@ export default {
                 });
         },
         verifyProd() {
+            if (this.selectedProd == undefined) {
+                return false;
+            }
+            
             this.prod_factors = {
                 machines: this.launch_data.machine_nb,
                 // this.launch_data.quantity * this.selectedProd.machine_units,
