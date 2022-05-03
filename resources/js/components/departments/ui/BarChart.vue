@@ -1,5 +1,5 @@
 <template>
-    <v-chart ref="chart" class="chart" :option="option" autoresize />
+    <v-chart ref="chart" class=""  :option="option" autoresize />
 </template>
 
 <script>
@@ -34,7 +34,7 @@ export default {
             option: {
                 xAxis: {
                     axisLine: {
-                        show: false, // Hide full Line
+                        show: true, // Hide full Line
                     },
                     axisTick: {
                         show: false, // Hide Ticks,
@@ -77,17 +77,11 @@ export default {
     },
     mounted() {
         this.option.xAxis.data = this.xData;
-        this.option.series[0].data = this.yData.map((e) => {
-            return (Math.round(e) * 1000) / 1000;
-        });
+        this.option.series[0].data = this.yData;
         //this.$refs.chart.resize()
         //this.$forceUpdate()
     },
 };
 </script>
 
-<style scoped>
-.chart {
-    height: 400px;
-}
-</style>
+

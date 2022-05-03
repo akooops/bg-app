@@ -14,6 +14,10 @@ Vue.component(
     "statcard",
     require("./components/departments/ui/StatCard.vue").default
 );
+Vue.component(
+    "VenteGraph",
+    require("./components/departments/ui/VenteGraph.vue").default
+);
 
 
 Vue.component(
@@ -56,6 +60,11 @@ Vue.component(
 Vue.component(
     "finance",
     require("./components/departments/Finance.vue").default
+);
+
+Vue.component(
+    "Profil",
+    require("./components/departments/Profil.vue").default
 );
 
 Vue.component(

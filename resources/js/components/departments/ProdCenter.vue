@@ -282,7 +282,7 @@
                     </div>
 
                     <p
-                        class="text-red-500 w-[280px]"
+                        class="text-red-500 w-auto"
                         v-if="can_produce == false"
                     >
                         {{ can_produce_msg }}
@@ -535,7 +535,7 @@
                                         {{ salesRevenues }} UM
                                     </td> -->
                                     <td class="text-center text-vert py-1">
-                                        {{ totalCost }} UM
+                                        {{ Math.round(totalCost) }} UM
                                     </td>
                                     <!-- <td class="text-center text-yellow-500 py-1">
                                         {{ profit }} UM

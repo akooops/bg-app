@@ -184,9 +184,16 @@
                     v-if="indicators['ca'] != null"
                     :legend="product_names"
                     :serie="indicators['ca'].slice(0, 5)"
+                    :simple='true'
+                    class='vv1'
+                    orient='vertical'
+                    left ="2%"
+                    bottom= 'center'
                 ></CircleChart>
             </div>
         </div>
+
+  
     </div>
 </template>
 
@@ -197,7 +204,6 @@ import PieChart from "./ui/PieChart";
 import SpeedoMeter from "./ui/SpeedoMeter";
 import StatCard from "./ui/StatCard";
 import CircleChart from "./ui/CircleChart";
-
 export default {
     name: "Finance",
     props: ["user", "products", "entreprises"],
@@ -241,7 +247,6 @@ export default {
             this.product_selected.quantity = this.products_stock.filter(
                 (p) => p.id == n
             )[0].quantity;
-
             this.product_selected.left_demand = this.products.filter(
                 (p) => p.id == n
             )[0].left_demand;

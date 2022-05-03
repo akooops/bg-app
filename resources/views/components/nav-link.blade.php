@@ -6,7 +6,7 @@ $classes = ($active ?? false)
 : 'pl-6 flex gap-3 items-center px-1 pt-1 border-l-8 h-12 border-transparent text-md font-medium leading-5 text-[#0B343499] hover:text-vert hover:border-vert focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out';
 @endphp
 
-<div class= "{{$classes}}">
+<div class= "{{$classes }}"  >
     <!-- get path from props and add proper icons -->
     <img src="{{ $active ? $path[0] : $path[1] }}" alt="{{ $path[0] ?? '' }} icon" class='w-6 h-6'>
     <a href="{{ $href }}">

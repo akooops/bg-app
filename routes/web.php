@@ -37,6 +37,7 @@ Route::prefix("entreprise")->middleware(["auth", "entreprise"])->group(function 
 	Route::get('/stock', [EntrepriseController::class, "showStock"])->name("stock");
 
 	Route::get('/loans', [EntrepriseController::class, "showLoans"])->name("loans");
+	Route::get('/profil' , [EntrepriseController::class, 'showProfil'] )->name("profil");
 });
 
 Route::prefix("supplier")->middleware(["auth", "supplier"])->group(function () {

@@ -28,12 +28,14 @@
 
 <body class="font-sans antialiased">
     <div id="app" class="min-h-screen bg-vert bg-opacity-5">
-        @include('layouts.navigation')
+        
+            @include('layouts.navigation')
+       
 
         <!-- Page Content -->
         <main class='flex'>
-            {{-- <notification v-bind:user="{{auth()->user()}}"></notification> --}}
-            @if(Route::currentRouteName() !== 'finance')
+
+            @if(!in_array(Route::currentRouteName(), array('finance','profil')))
             <div class="flex flex-col w-1/5 z-10  py-10 pr-6 bg-white min-h-screen gap-10">
                 <div class=" flex gap-8 flex-col text-lg font-heading font-medium">
                     <x-nav-link :href="route('dashboard')" :path='["/assets/icons/dashboard.svg", "/assets/icons/dashboard_inactive.svg"]' :active="request()->routeIs('dashboard') || Request::is('entreprise/department/*')">
@@ -53,7 +55,6 @@
             <div class="flex-1 w-full">
                 {{ $slot }}
             </div>
-
         </main>
     </div>
 

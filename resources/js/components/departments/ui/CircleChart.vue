@@ -1,5 +1,5 @@
 <template>
-    <v-chart ref="chart" class="chart" :option="option" autoresize />
+    <v-chart ref="chart"  :option="option" autoresize />
 </template>
 
 <script>
@@ -28,7 +28,7 @@ export default {
     components: {
         VChart,
     },
-    props: ["legend", "serie"],
+    props: ["legend", "serie","simple",'vv','bottom','left','orient'],
     watch: {
         serie: function (n, o) {
             this.$forceUpdate();
@@ -41,7 +41,7 @@ export default {
                     trigger: "item",
                 },
                 legend: {
-                    top: "bottom",
+                           
                 },
                 series: [
                     {
@@ -51,12 +51,11 @@ export default {
                         label: {
                             show: false,
                             position: "center",
+                            
                         },
 
                         itemStyle: {
-                            borderRadius: 10,
-                            borderColor: "#fff",
-                            borderWidth: 1,
+                            
                         },
                         avoidLabelOverlap: false,
                         // labelLine: {
@@ -89,15 +88,20 @@ export default {
     },
     mounted() {
         this.option.legend.data = this.legend;
+        this.option.legend.bottom = this.bottom;
+         this.option.legend.left = this.left;
+           this.option.legend.orient = this.orient;
         this.option.series[0].data = this.serie;
+        if (this.simple == true){
+                this.option.series[0].itemStyle  = {borderRadius: 10,
+                                                    borderColor: "#fff",
+                                                     borderWidth: 1,
+                                                    }
+        }
         //this.$refs.chart.resize()
         //this.$forceUpdate()
     },
 };
 </script>
 
-<style scoped>
-.chart {
-    height: 400px;
-}
-</style>
+

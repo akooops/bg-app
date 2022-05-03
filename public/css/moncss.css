@@ -4,6 +4,32 @@
     scrollbar-width: 5px;
 }
 
+
+.navbar {
+    background-color: white;
+    border-radius: 0 8px 8px 0;
+    transform: translateX(calc(-100% + 10px));
+    transition: transform .4s cubic-bezier(.4, 0, .2, 1) .2s;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+.nav-container:hover .navbar {
+    transform: translateX(0);
+    transition-delay: 0s;
+    
+  }
+
+.vv{
+    height: 200px;
+}
+
+.vv1{
+    height: 400px;
+}
+
 .openmodal {
     animation: createBox 0.25s;
 }

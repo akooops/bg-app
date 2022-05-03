@@ -82,6 +82,8 @@ export default {
                     {
                         data: [],
                         type: "line",
+                         smooth: true,
+                         
                         areaStyle: {},
                     },
                 ],

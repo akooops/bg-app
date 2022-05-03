@@ -93,6 +93,12 @@ class EntrepriseController extends Controller
         $entreprises = Entreprise::all();
         return view("departments.finance", ["products" => $products, "entreprises" => $entreprises]);
     }
+    function showProfil(Request $request)
+    {
+        $caisse = $this->getIndicator('caisse', auth()->user()->id)["value"];
+        return view("departments.profil", ["caisse" => $caisse]);
+    }
+
 
     function getProducts(Request $request)
     {
