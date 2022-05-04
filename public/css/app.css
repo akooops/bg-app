@@ -509,6 +509,21 @@ Ensure the default browser behavior of the `hidden` attribute.
 .left-10 {
   left: 2.5rem;
 }
+.-top-12 {
+  top: -3rem;
+}
+.-right-4 {
+  right: -1rem;
+}
+.top-4 {
+  top: 1rem;
+}
+.-right-6 {
+  right: -1.5rem;
+}
+.top-6 {
+  top: 1.5rem;
+}
 .z-0 {
   z-index: 0;
 }
@@ -520,6 +535,9 @@ Ensure the default browser behavior of the `hidden` attribute.
 }
 .z-20 {
   z-index: 20;
+}
+.z-100 {
+  z-index: 100;
 }
 .order-2 {
   order: 2;

@@ -20,16 +20,28 @@
                 />
             </div>
             <div
-                class="absolute z-10 -top-10 -right-10 bg-vN p-3 h-16 w-16 rounded-full"
+                class="absolute z-10 -top-10 -right-10 bg-vN p-3 h-20 w-20 rounded-full"
             >
                 <img src="/assets/logo/IEC_WHITE.png" />
             </div>
 
             <div
                 v-if="position == 1"
-                class="z-0 absolute h-8 w-8 -top-14 -right-12 rotate-45"
+                class="z-0 absolute h-12 w-12 -top-16 -right-16 rotate-45"
             >
-                <img src="/assets/icons/crown.svg" alt="" />
+                <img src="/assets/icons/crown.svg" alt="crow icon" />
+            </div>
+            <div
+                v-if="position == 2"
+                class="z-100 absolute h-12 w-12 top-6 -right-6"
+            >
+                <img src="/assets/icons/second.svg" alt="crow icon" />
+            </div>
+            <div
+                v-if="position == 3"
+                class="z-100 absolute h-12 w-12 top-6 -right-6"
+            >
+                <img src="/assets/icons/second.svg" alt="crow icon" />
             </div>
         </div>
     </div>

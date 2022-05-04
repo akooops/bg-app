@@ -137,13 +137,13 @@ export default {
         // },
         refresh() {
             this.getListing();
-            this.$toasted.show("Leaderboard Up to date", {
+            this.$toasted.success("Leaderboard Up to date", {
                 keepOnHover: true,
                 icon: {
                     name: "✔",
                 },
                 position: "bottom-right",
-                className: "toast-success",
+                // className: "toast-success",
                 duration: 3000,
             });
         },

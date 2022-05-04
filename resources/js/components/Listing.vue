@@ -1,6 +1,6 @@
 <template>
     <div
-        class="relative flex items-center bg-gradient-to-t rounded-[41px] py-7 w-full px-4 text-vN mb-10 bg-[#0B343414]"
+        class="relative flex items-center bg-gradient-to-t rounded-[41px ] py-7 w-full px-4 text-vN mb-10 bg-[#0B343414]"
     >
         <div class="flex items-center font-heading font-semibold w-full">
             <div class="flex items-center gap-4">
