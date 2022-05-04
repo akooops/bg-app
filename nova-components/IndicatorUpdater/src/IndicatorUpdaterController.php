@@ -7,7 +7,11 @@ use App\Traits\HelperTrait;
 use App\Events\NewNotification;
 use Illuminate\Support\Facades\DB;
 use App\Events\SimulationDateChanged;
+use App\Models\Indicator;
+use App\Models\Product;
+use App\Models\RawMaterial;
 use Illuminate\Database\Query\Builder;
+use Illuminate\Support\Facades\Artisan;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 class IndicatorUpdaterController
@@ -85,57 +89,6 @@ class IndicatorUpdaterController
         }
 
         return response()->json(["message" => "L'indicateur a été mis à jour.", "success" => true], 200);
-
-        // $indicator = DB::table('entreprise_indicator')->where('indicator_id', $request->selected_indicator);
-        // if ($request->all_entreprises == false) {
-        //     $indicator = $indicator->where('entreprise_id', $request->selected_entreprise);
-        // }
-
-        // if ($request->replace == true) {
-        //     $indicator->update(["value" => (int)$request->value]);
-        // }
-
-        // if ($request->has_rate == true) {
-        //     $indicator = $indicator->get();
-        //     foreach ($indicator as $ind) {
-        //         $temp = DB::table('entreprise_indicator')->where("id", $ind->id);
-        //         $temp->update(['value' => (100 - (int)$request->rate) * 0.01 * $ind->value]);
-        //     }
-        // } else {
-        //     $indicator->increment('value', (int)$request->increment);
-        // }
-        // if ($request->has_notification == true && $request->all_entreprises == true) {
-        //     $entreprises = Entreprise::get();
-        //     foreach ($entreprises as $entreprise) {
-        //         $notification = [
-        //             "type" => "NewNotif",
-        //             "entreprise_id" => $entreprise->id,
-
-        //             "store" => true,
-
-        //             "text" => $request->description,
-        //             "title" => $request->title,
-        //             "icon_path" => "aaaaaaaaaaa",
-
-        //             "style" => $request->notification_type,
-        //         ];
-        //         event(new NewNotification($notification));
-        //     }
-        // } else {
-        //     $notification = [
-        //         "entreprise_id" => $request->selected_entreprise,
-        //         "type" => "NewNotif",
-
-        //         "store" => true,
-
-        //         "text" => $request->description,
-        //         "title" => $request->title,
-        //         "icon_path" => "aaaaaaaaaaa",
-
-        //         "style" => $request->notification_type,
-        //     ];
-        //     event(new NewNotification($notification));
-        // }
     }
 
     public function getIndicators_2(NovaRequest $request)
@@ -217,5 +170,205 @@ class IndicatorUpdaterController
         }
 
         return response()->json(["message" => "Le paramètre a été réinitialisé.", "success" => true], 200);
+    }
+
+    public function resetGame(NovaRequest $request) {
+        // Reset indicators
+        $indicators = Indicator::all();
+
+        foreach ($indicators as $ind) {
+            DB::table('entreprise_indicator')->where('indicator_id', '=', $ind->id)->update(['value' => $ind->starting_value]);
+        }
+
+        // Reset game settings
+        DB::table('game_settings')->update(['value' => DB::raw('default_value')]);
+
+        // Reset raw materials prices
+        DB::table('raw_materials')->where('id', '=', 1)->update(['price' => 150]);
+        DB::table('raw_materials')->where('id', '=', 2)->update(['price' => 30]);
+        DB::table('raw_materials')->where('id', '=', 3)->update(['price' => 600]);
+        DB::table('raw_materials')->where('id', '=', 4)->update(['price' => 120]);
+        DB::table('raw_materials')->where('id', '=', 5)->update(['price' => 900]);
+        DB::table('raw_materials')->where('id', '=', 6)->update(['price' => 900]);
+        DB::table('raw_materials')->where('id', '=', 7)->update(['price' => 1300]);
+        DB::table('raw_materials')->where('id', '=', 8)->update(['price' => 400]);
+        DB::table('raw_materials')->where('id', '=', 9)->update(['price' => 900]);
+
+        // Reset products' left demand
+        DB::table('products')->update(['left_demand' => DB::raw('avg_demand')]);
+
+        // Reset products' stocks
+        $entreprises = Entreprise::all();
+        $products = Product::all();
+
+        foreach($entreprises as $entrep) {
+            foreach($products as $prod) {
+                $stock = DB::table('stock')->where('entreprise_id', '=', $entrep->id)->where('product_id', '=', $prod->id);
+                if ($stock->count() > 0) {
+                    $stock->update([
+                        'quantity' => 0,
+                        'quantity_selling' => 0,
+                        'price' => ($prod->price_min + $prod->price_max) / 2,
+                    ]);
+                }
+                else {
+                    DB::table('stock')->insert([
+                        [
+                            'entreprise_id' => $entrep->id,
+                            'product_id' => $prod->id,
+                            'quantity' => 0,
+                            'quantity_selling' => 0,
+                            'phase' => 0,
+                            'price' => ($prod->price_min + $prod->price_max) / 2,
+                        ],
+                    ]);
+                }
+            }
+        }
+
+        // Reset raw materials' stocks
+        $raw_materials = RawMaterial::all();
+
+        foreach ($entreprises as $entrep) {
+            foreach ($raw_materials as $raw_mat) {
+                $stock = DB::table('raw_materials_stock')->where('entreprise_id', '=', $entrep->id)->where('raw_material_id', '=', $raw_mat->id);
+                if ($stock->count() > 0) {
+                    $stock->update([
+                        'quantity' => 0,
+                    ]);
+                }
+                else {
+                    DB::table('raw_materials_stock')->insert([
+                        [
+                            'entreprise_id' => $entrep->id,
+                            'raw_material_id' => $raw_mat->id,
+                            'quantity' => 0,
+                            'phase' => 0,
+                        ],
+                    ]);
+                }
+            }
+        }
+
+        // Make all raw materials available
+        DB::table('raw_materials_supplier')->update(['is_available' => true]);
+
+        // Clear notifications
+        DB::table('notifications')->delete();
+
+        // Clear productions
+        DB::table('productions')->delete();
+
+        // Clear commands
+        DB::table('commands')->delete();
+
+        // Clear loans
+        DB::table('loans')->delete();
+
+        // Clear ads
+        DB::table('ads')->delete();
+
+        // Clear stats
+        DB::table('stats')->delete();
+
+        // Clear queue
+        Artisan::call('queue:clear');
+
+        return response()->json(["message" => "Le jeu a été réinitialisé", "success" => true], 200);
+    }
+
+    public function changeScenario(NovaRequest $request) {
+        $scenario = $request->scenario;
+
+        if ($scenario == 'incendies') {
+            // Update raw materials prices
+            DB::table('raw_materials')->where('id', '=', 1)->update(['price' => '']);   // Sucre
+            DB::table('raw_materials')->where('id', '=', 4)->update(['price' => '']);   // Blé
+            DB::table('raw_materials')->where('id', '=', 5)->update(['price' => '']);   // Lait
+            DB::table('raw_materials')->where('id', '=', 8)->update(['price' => '']);   // Avoine
+
+            // Update % population
+
+            // Update nb workers available
+        }
+
+        else if ($scenario == 'loi des finances') {
+            // Update CA taxes %
+            $this->set_game_setting('ca_tax_percent', '');
+
+            // Update pollution taxes %
+            $this->set_game_setting('pollution_unit_cost', '');
+
+            // Update raw materials prices
+            DB::table('raw_materials')->where('id', '=', 1)->update(['price' => '']);   // Sucre
+            DB::table('raw_materials')->where('id', '=', 4)->update(['price' => '']);   // Blé
+            DB::table('raw_materials')->where('id', '=', 5)->update(['price' => '']);   // Lait
+            DB::table('raw_materials')->where('id', '=', 6)->update(['price' => '']);   // Beurre
+        }
+
+        else if ($scenario == 'crise cacao') {
+            // Update cocoa availability
+            DB::table('raw_materials_supplier')
+                ->where('raw_material_id', '=', 9)
+                ->update(['is_available' => false]);   // Chocolat
+
+            // Update % population
+        }
+
+        else if ($scenario == 'war start') {
+            // Update raw materials prices
+            DB::table('raw_materials')->where('id', '=', 1)->update(['price' => '']);   // Sucre
+            DB::table('raw_materials')->where('id', '=', 4)->update(['price' => '']);   // Blé
+            DB::table('raw_materials')->where('id', '=', 8)->update(['price' => '']);   // Avoine
+
+            // Update CA taxes %
+            $this->set_game_setting('ca_tax_percent', '');
+
+            // Update % population
+
+            // Update RH decrease factor
+            $this->set_game_setting('workers_mood_decay_rate', '');
+        }
+
+        else if ($scenario == 'war middle') {
+            // Update delivery times
+            DB::table('raw_materials_supplier')->update(['time_to_deliver' => DB::raw('time_to_deliver' * 1)]);
+
+            // Update loans interests
+
+            // Update % population
+
+            // Update machines prices
+            $this->set_game_setting('machines_lv1_price', '');
+            $this->set_game_setting('machines_lv2_price', '');
+            $this->set_game_setting('machines_lv3_price', '');
+
+            // Update RH decrease factor
+            $this->set_game_setting('workers_mood_decay_rate', '');
+        }
+
+        else if ($scenario == 'war end') {
+            // Update % population
+
+            // Update raw materials prices
+            DB::table('raw_materials')->where('id', '=', 1)->update(['price' => '']);   // Sucre
+            DB::table('raw_materials')->where('id', '=', 4)->update(['price' => '']);   // Blé
+            DB::table('raw_materials')->where('id', '=', 8)->update(['price' => '']);   // Avoine
+
+            // Update CA taxes %
+            $this->set_game_setting('ca_tax_percent', '');
+
+            // Update machines prices
+            $this->set_game_setting('machines_lv1_price', '');
+            $this->set_game_setting('machines_lv2_price', '');
+            $this->set_game_setting('machines_lv3_price', '');
+
+            // Update RH decrease factor
+            $this->set_game_setting('workers_mood_decay_rate', '');
+
+            // Update marketing price
+        }
+
+        return response()->json(["message" => "Scénario " . $scenario . " lancé.", "success" => true], 200);
     }
 }

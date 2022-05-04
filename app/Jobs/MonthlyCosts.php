@@ -87,11 +87,16 @@ class MonthlyCosts implements ShouldQueue
                     $machines_lv2 * $pollution_machines_lv2_factor +
                     $machines_lv3 * $pollution_machines_lv3_factor);
 
-                // Compute taxes
+                // Compute CA taxes
+                $prev_ca = DB::table('stats')->where('entreprise_id', '=', $entreprise->id)->where('date', '=', $current_date - 4)->where('indicator', '=', 'ca')->first();
+                $monthly_ca = $this->getIndicator('ca', $entreprise->id)['value'] - $prev_ca;
 
+                $ca_tax_percent = $this->get_game_setting('ca_tax_percent');
+
+                $ca_tax_cost = $monthly_ca * $ca_tax_percent;
 
                 // Compute total cost
-                $cost = (int) ($salary_cost + $stock_cost + $pollution_cost);
+                $cost = (int) ($salary_cost + $stock_cost + $pollution_cost + $ca_tax_cost);
 
                 // Get a loan if funds not enough to pay costs
                 if ($cost > $caisse) {
@@ -135,6 +140,7 @@ class MonthlyCosts implements ShouldQueue
                         "store" => true,
 
                         "text" => "Un mois est passé, vous payez:
+                                    - Taxes ( " . $ca_tax_cost . " DA )
                                     - Salaires ( " . $salary_cost . " DA )
                                     - Stockage ( " . $stock_cost . " DA )
                                     - Pollution ( " . $pollution_cost . " DA ). Total: " . $cost . " DA.",

@@ -799,15 +799,19 @@ export default {
                 name: "Maintenance Niveau 1",
                 price: {
                     "5s": 40000,
+
                     audit: 60000,
+
                     maintenance_lv1:
                         10000 *
                         (1 - this.indicators["machines_lv1_health"]["value"]) *
                         this.indicators["nb_machines_lv1"]["value"],
+
                     maintenance_lv2:
                         15000 *
                         (1 - this.indicators["machines_lv2_health"]["value"]) *
                         this.indicators["nb_machines_lv2"]["value"],
+                        
                     maintenance_lv3:
                         20000 *
                         (1 - this.indicators["machines_lv3_health"]["value"]) *
@@ -1042,7 +1046,7 @@ export default {
             if (this.selectedProd == undefined) {
                 return false;
             }
-            
+
             this.prod_factors = {
                 machines: this.launch_data.machine_nb,
                 // this.launch_data.quantity * this.selectedProd.machine_units,
