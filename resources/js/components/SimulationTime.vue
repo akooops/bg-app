@@ -24,7 +24,7 @@
                     <a
                         href="/logout"
                         v-if="show_menu"
-                        class="flex flex-row justify-between dropDown w-max gap-2 absolute z-999 -bottom-16 right-0 bg-white border-opacity-5 border-vN shadow-md p-3 rounded-lg"
+                        class="z-10 flex flex-row justify-between dropDown w-max gap-2 absolute z-999 -bottom-16 right-0 bg-white border-opacity-5 border-vN shadow-md p-3 rounded-lg"
                         style="border-width: 1px"
                     >
                         <img
