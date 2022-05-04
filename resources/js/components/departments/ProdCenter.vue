@@ -1011,10 +1011,10 @@ export default {
                         "Oops ! Une erreur est survenue, veuillez infomrer un organisateur";
 
                     this.launch_prod_modal = false;
-                    this.$toasted.error("Production lancée", {
+                    this.$toasted.error("Production non lancée", {
                         keepOnHover: true,
                         icon: {
-                            name: "-❌",
+                            name: "❌",
                         },
                         position: "bottom-right",
                         className: "toast-error",
@@ -1263,21 +1263,30 @@ export default {
                         if (resp.data.success) {
                             this.show_success = true;
                             this.show_error = false;
+                            this.$toasted.success("Machine(s) Achetée(s)", {
+                                keepOnHover: true,
+                                icon: {
+                                    name: "✔",
+                                },
+                                position: "bottom-right",
+                                className: "toast-success",
+                                duration: 3000,
+                            });
                         } else {
+                            this.$toasted.error("Machine(s) Achetée(s)", {
+                                keepOnHover: true,
+                                icon: {
+                                    name: "❌",
+                                },
+                                position: "bottom-right",
+                                className: "toast-error",
+                                duration: 3000,
+                            });
                             this.show_success = false;
                             this.show_error = true;
                         }
 
                         this.message = resp.data.message;
-                        this.$toasted.success("Machine(s) Achetée(s)", {
-                            keepOnHover: true,
-                            icon: {
-                                name: "✔",
-                            },
-                            position: "bottom-right",
-                            className: "toast-success",
-                            duration: 2000,
-                        });
                     });
             } else if (this.machine.transaction == "sell") {
                 // let nb_machines = 0;
@@ -1325,23 +1334,32 @@ export default {
                         this.machine.transaction_lv = 1;
 
                         if (resp.data.success) {
+                            this.$toasted.success("Machine(s) Vendue(s)", {
+                                keepOnHover: true,
+                                icon: {
+                                    name: "✔",
+                                },
+                                position: "bottom-right",
+                                className: "toast-success",
+                                duration: 2000,
+                            });
                             this.show_success = true;
                             this.show_error = false;
                         } else {
+                            this.$toasted.error("Machine(s) Vendue(s)", {
+                                keepOnHover: true,
+                                icon: {
+                                    name: "❌",
+                                },
+                                position: "bottom-right",
+                                className: "toast-error",
+                                duration: 2000,
+                            });
                             this.show_success = false;
                             this.show_error = true;
                         }
 
                         this.message = resp.data.message;
-                        this.$toasted.success("Machine(s) Vendue(s)", {
-                            keepOnHover: true,
-                            icon: {
-                                name: "✔",
-                            },
-                            position: "bottom-right",
-                            className: "toast-success",
-                            duration: 2000,
-                        });
                     });
             }
         },
@@ -1425,7 +1443,7 @@ export default {
                             },
                             position: "bottom-right",
                             className: "toast-success",
-                            duration: 1000,
+                            duration: 3000,
                         });
                     } else {
                         this.$toasted.show(resp.data.message, {
@@ -1436,7 +1454,7 @@ export default {
                             },
                             position: "bottom-right",
                             className: "toast-error",
-                            duration: 1000,
+                            duration: 3000,
                         });
                         this.show_success = false;
                         this.show_error = true;

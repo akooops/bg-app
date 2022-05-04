@@ -31,7 +31,7 @@ class IndicatorUpdaterController
         $operation = $request->selected_operation;
         $value = $request->value;
 
-        if($indicator_id === null) {
+        if ($indicator_id === null) {
             return response()->json(["message" => "Opération impossible: Vous n'avez pas spécifié un indicateur valide.", "success" => false], 200);
         }
         if ($entreprise_ids === null) {
@@ -46,25 +46,19 @@ class IndicatorUpdaterController
 
         foreach ($entreprise_ids as $entreprise_id) {
             $indicator = DB::table('entreprise_indicator')
-                            ->where('entreprise_id', $entreprise_id)
-                            ->where('indicator_id', $indicator_id);
+                ->where('entreprise_id', $entreprise_id)
+                ->where('indicator_id', $indicator_id);
 
             if ($operation == 'replace') {
                 $indicator->update(["value" => $value]);
-            }
-
-            else if ($operation == 'add') {
+            } else if ($operation == 'add') {
                 $indicator->update(["value" => $indicator->first()->value + $value]);
-            }
-
-            else if ($operation == 'mult') {
-                if($value < 0) {
+            } else if ($operation == 'mult') {
+                if ($value < 0) {
                     return response()->json(["message" => "Impossible de mettre l'indicateur à jour: multiplication par nombre négatif.", "success" => false], 200);
                 }
                 $indicator->update(["value" => $indicator->first()->value * $value]);
-            }
-
-            else if ($operation == 'reset') {
+            } else if ($operation == 'reset') {
                 $default_value = DB::table('indicators')->where('indicator_id', '=', $indicator_id)->first()->starting_value;
                 $indicator->update(["value" => $default_value]);
             }
@@ -77,7 +71,7 @@ class IndicatorUpdaterController
 
                 "text" => "",
                 "title" => "Admin: Changement de données",
-                "icon_path" => "aaaaaaaaaaa",
+                "icon_path" => "/assets/icons/info.svg",
 
                 "style" => "info",
             ];
@@ -159,7 +153,8 @@ class IndicatorUpdaterController
         return response()->json($data);
     }
 
-    public function setSetting(NovaRequest $request) {
+    public function setSetting(NovaRequest $request)
+    {
         $code = $request->code;
         $value = $request->value;
 
@@ -182,7 +177,7 @@ class IndicatorUpdaterController
             event(new NewNotification($notification));
         }
 
-        if($code == 'current_date') {
+        if ($code == 'current_date') {
             event(new SimulationDateChanged());
         }
 

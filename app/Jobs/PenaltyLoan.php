@@ -42,7 +42,7 @@ class PenaltyLoan
                 // $loan->days += $loan->deadline;
 
                 $t = $time - $loan->days;
-                $loan->ratio = round($loan->ratio * pow(1.1, $t/4), 2);
+                $loan->ratio = round($loan->ratio * pow(1.1, $t / 4), 2);
 
                 $debt = round($loan->ratio * 0.01 * $loan->remaining_amount);
                 $loan->remaining_amount = round($loan->remaining_amount + $debt);
@@ -58,7 +58,7 @@ class PenaltyLoan
 
                     "text" => "Le taux d'intérêt de votre dette a augmenté, il est désormais de " . $loan->ratio . " %",
                     "title" => "Retard d'endettement",
-                    "icon_path" => "aaaaaaaaaaa",
+                    "icon_path" => "/assets/icons/alerte.svg",
 
                     "style" => "failure",
                 ];

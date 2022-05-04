@@ -62,7 +62,7 @@ class HrController extends Controller
 
             "text" => $message,
             "title" => "Employés recrutés",
-            "icon_path" => "aaaaaaaaaaa",
+            "icon_path" => "/assets/icons/info.svg",
 
             "style" => "info",
         ];
@@ -114,7 +114,7 @@ class HrController extends Controller
 
             "text" => $message,
             "title" => "Employés formés",
-            "icon_path" => "aaaaaaaaaaa",
+            "icon_path" => "/assets/icons/check.svg",
 
             "style" => "success",
         ];
@@ -161,8 +161,7 @@ class HrController extends Controller
 
         if ($mood_increase + $workers_mood > 1) {
             $this->setIndicator('workers_mood', $request->entreprise_id, 1);
-        }
-        else {
+        } else {
             $this->updateIndicator('workers_mood', $request->entreprise_id, $mood_increase);
         }
 
@@ -175,7 +174,7 @@ class HrController extends Controller
 
             "text" => $message,
             "title" => "Primes attribuées",
-            "icon_path" => "aaaaaaaaaaa",
+            "icon_path" => "/assets/icons/check.svg",
 
             "style" => "success",
         ];
@@ -239,7 +238,7 @@ class HrController extends Controller
 
             "text" => $message,
             "title" => "Employés licenciés",
-            "icon_path" => "aaaaaaaaaaa",
+            "icon_path" => "/assets/icons/check.svg",
 
             "style" => "success",
         ];

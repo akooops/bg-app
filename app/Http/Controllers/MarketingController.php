@@ -62,7 +62,7 @@ class MarketingController extends Controller
             return response()->json(["message" => "Le résultat doit être positif.", "success" => false], 404);
         }
 
-        if (! in_array($request->type, ['social', 'media', 'events'])) {
+        if (!in_array($request->type, ['social', 'media', 'events'])) {
             return response()->json(["message" => "Le type spécifié est erroné.", "success" => false], 404);
         }
 
@@ -87,7 +87,7 @@ class MarketingController extends Controller
 
             "text" => "Votre campagne publicitaire sur " . $this->parseAdType($request->type) . " a été créée avec succès.",
             "title" => "Votre campagne publicitaire a été créée",
-            "icon_path" => "aaaaaaaaaaa",
+            "icon_path" => "/assets/icons/check.svg",
 
             "style" => "success",
         ];

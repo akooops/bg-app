@@ -1,7 +1,7 @@
 <template>
     <v-chart
         ref="chart"
-        class="chart px-5 py-3 bg-white shadow-md rounded-xl w-1/3"
+        class="chart px-1 py-3 bg-white shadow-md rounded-xl w-1/3"
         :option="option"
         autoresize
     />
@@ -46,11 +46,23 @@ export default {
                 yAxis: {
                     type: "value",
                     splitLine: {
-                        show: false,
+                        show: true,
                     },
                     boundaryGap: [0, "30%"],
                     showGrid: false,
                     name: "Unités",
+                },
+                tooltip: {
+                    show: true,
+                    showContent: true,
+                    // alwaysShowContent: true,
+                    triggerOn: "mousemove",
+                    trigger: "axis",
+                    axisPointer: {
+                        label: {
+                            show: true,
+                        },
+                    },
                 },
                 series: [
                     {
@@ -63,6 +75,9 @@ export default {
                         lineStyle: {
                             color: "#0B3434",
                             width: 3,
+                        },
+                        itemStyle: {
+                            color: "#B2D06B",
                         },
                         areaStyle: {
                             color: "#0B3434",

@@ -107,7 +107,7 @@ class BankerController extends Controller
 
             "title" => "Demande d'endettement",
             "text" => "Prêt de " . $request->amount . "DA effectué, veillez à le rembourser avant les délais pour éviter une augmentation d'intérêts",
-            "icon_path" => "aaaaaaaaaaa",
+            "icon_path" => "/assets/icons/check.svg",
 
             "style" => "success",
         ];
@@ -153,7 +153,11 @@ class BankerController extends Controller
             "entreprise_id" => $loan->entreprise_id,
             "data" => $loan,
             "message" => "Le statut de votre demande d'endettement a changé, veuillez consulter votre banque",
-            "title" => "Demande d'endettement"
+            "title" => "Demande d'endettement",
+            "icon_path" => "/assets/icons/check.svg",
+            "store" => true,
+            "style" => "info"
+
         ];
         event(new NewNotification($notification));
 
@@ -203,7 +207,7 @@ class BankerController extends Controller
 
             "title" => "Payement de dette",
             "text" => "Vous avez fini de rembourser la dette",
-            "icon_path" => "aaaaaaaaaaa",
+            "icon_path" => "/assets/icons/check.svg",
 
             "style" => "success",
         ];

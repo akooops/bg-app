@@ -55,7 +55,7 @@ class UpdateAdStatus implements ShouldQueue
 
             "text" => "Votre campagne publicitaire sur " . $this->parseAdType($this->ad->type) . " est terminée.",
             "title" => "Campagne publicitaire",
-            "icon_path" => "aaaaaaaaaaa",
+            "icon_path" => "/assets/icons/info.svg",
 
             "style" => "info",
         ];

@@ -62,7 +62,7 @@
                 class="relative flex w-1/4 gap-3 justify-evenly items-center rounded-xl px-3 bg-white shadow-sm"
             >
                 <img
-                    class="h-16 w-16"
+                    class="h-12 w-12 p-1"
                     src="/assets/icons/machine.svg"
                     alt="machine icon"
                 />
@@ -174,7 +174,7 @@
                 class="relative flex w-1/4 gap-3 justify-evenly items-center rounded-xl px-3 bg-white shadow-sm"
             >
                 <img
-                    class="h-16 w-16"
+                    class="h-12 w-12 p-1"
                     src="/assets/icons/employees.svg"
                     alt="employees icon"
                 />

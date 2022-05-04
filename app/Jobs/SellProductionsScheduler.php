@@ -58,7 +58,7 @@ class SellProductionsScheduler implements ShouldQueue
 
                     "text" => $message,
                     "title" => "Plus de demande",
-                    "icon_path" => "aaaaaaaaaaa",
+                    "icon_path" => "/assets/icons/alerte.svg",
 
                     "style" => "failure",
                 ];
@@ -93,7 +93,7 @@ class SellProductionsScheduler implements ShouldQueue
             //     ->decrement("quantity", $quantity_to_sell);
 
             DB::table("stock")->where("entreprise_id", "=", $entreprise_id)->where("product_id", "=", $product_id)
-            ->decrement("quantity_selling", $quantity_to_sell);
+                ->decrement("quantity_selling", $quantity_to_sell);
 
             // DB::table("productions")->where("id", "=", $production->id)->increment("sold", $quantity_to_sell);
 
@@ -115,7 +115,7 @@ class SellProductionsScheduler implements ShouldQueue
 
                 "title" => "Vente réussie",
                 "text" => "Vous avez vendu " . $quantity_to_sell . " unités de " . $product->name,
-                "icon_path" => "aaaaaaaaaaa",
+                "icon_path" => "/assets/icons/check.svg",
 
                 "style" => "success",
             ];

@@ -126,11 +126,23 @@ export default {
 
                         if (resp.data.success) {
                             this.item.price = this.price;
-                            this.item.quantity -= this.quantity_selling - this.item.quantity_selling;
+                            this.item.quantity -=
+                                this.quantity_selling -
+                                this.item.quantity_selling;
                             this.item.quantity_selling = this.quantity_selling;
-                        }
-
-                        else {
+                            this.$toasted.success(
+                                "Données de vente mises à jour",
+                                {
+                                    keepOnHover: true,
+                                    icon: {
+                                        name: "✔",
+                                    },
+                                    position: "bottom-right",
+                                    className: "toast-success",
+                                    duration: 2000,
+                                }
+                            );
+                        } else {
                             this.new_changes = true;
                         }
                     });
@@ -139,30 +151,31 @@ export default {
     },
 
     watch: {
-        'quantity_selling': function () {
-            if (this.quantity_selling > this.item.quantity_selling + this.item.quantity) {
-                this.quantity_selling = this.item.quantity_selling + this.item.quantity;
-            }
-
-            else if (this.quantity_selling < this.item.quantity_selling) {
+        quantity_selling: function () {
+            if (
+                this.quantity_selling >
+                this.item.quantity_selling + this.item.quantity
+            ) {
+                this.quantity_selling =
+                    this.item.quantity_selling + this.item.quantity;
+            } else if (this.quantity_selling < this.item.quantity_selling) {
                 this.quantity_selling = this.item.quantity_selling;
             }
 
-            if (this.quantity_selling == this.item.quantity_selling && this.price == this.item.price) {
+            if (
+                this.quantity_selling == this.item.quantity_selling &&
+                this.price == this.item.price
+            ) {
                 this.new_changes = false;
-            }
-
-            else {
+            } else {
                 this.new_changes = true;
             }
         },
 
-        'price': function () {
+        price: function () {
             if (this.price < this.item.price_min) {
                 this.price = this.item.price_min;
-            }
-
-            else if (this.item.price_max < this.price) {
+            } else if (this.item.price_max < this.price) {
                 this.price = this.item.price_max;
             }
 
@@ -171,9 +184,7 @@ export default {
                 this.price == this.item.price
             ) {
                 this.new_changes = false;
-            }
-
-            else {
+            } else {
                 this.new_changes = true;
             }
         },
@@ -183,22 +194,38 @@ export default {
         },
     },
 
-
     computed: {
         canSell() {
-            if (this.quantity_selling > this.item.quantity_selling + this.item.quantity ||
-                this.quantity_selling < this.item.quantity_selling) {
+            if (
+                this.quantity_selling >
+                    this.item.quantity_selling + this.item.quantity ||
+                this.quantity_selling < this.item.quantity_selling
+            ) {
                 return false;
             }
 
-            if (this.price < this.item.price_min || this.item.price_max < this.price) {
+            if (
+                this.price < this.item.price_min ||
+                this.item.price_max < this.price
+            ) {
                 return false;
             }
 
             return true;
-        }
+        },
     },
 
     mounted() {},
 };
 </script>
+
+<style>
+.toast-success {
+    background-color: #def7ec !important;
+    color: #3c6e4e !important;
+}
+.toast-error {
+    background-color: #fde8e8 !important;
+    color: #ca1e1e !important;
+}
+</style>

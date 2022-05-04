@@ -1,9 +1,9 @@
 <template>
     <div class="bg-white flex">
         <img
-            src="/assets/icons/warn.png"
+            :src="icon"
             alt=""
-            class="bg-vN rounded-xl w-11 h-11 p-2 content-start"
+            class="bg-vN rounded-xl w-12 h-12 p-2 content-start"
         />
         <div class="flex flex-col flex-wrap px-3 w-5/6">
             <div class="text-base text-vN font-semibold mr-auto">
@@ -31,7 +31,7 @@
 <script type="text/javascript">
 export default {
     name: "NotificationItem",
-    props: ["title", "text", "time", "actual_time", "type"],
+    props: ["title", "text", "time", "actual_time", "type", "icon"],
     data() {
         return {
             show: false,

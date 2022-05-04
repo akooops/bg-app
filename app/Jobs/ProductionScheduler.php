@@ -85,7 +85,7 @@ class ProductionScheduler implements ShouldQueue
 
             "text" => $message,
             "title" => "Production Finie",
-            "icon_path" => "aaaaaaaaaaa",
+            "icon_path" => "/assets/icons/check.svg",
 
             "style" => "success",
         ];

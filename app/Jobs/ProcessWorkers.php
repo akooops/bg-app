@@ -76,7 +76,7 @@ class ProcessWorkers implements ShouldQueue
 
                     "text" => "L'humeur au sein de votre entreprise décroit",
                     "title" => "L'humeur décroit",
-                    "icon_path" => "aaaaaaaaaaa",
+                    "icon_path" => "/assets/icons/info.svg",
 
                     "style" => "info",
                 ];
@@ -94,7 +94,7 @@ class ProcessWorkers implements ShouldQueue
 
                         "text" => "Attention, l'humeur de vos employés est mauvaise, Il y a des riques de démissions.",
                         "title" => "Risques de démissions",
-                        "icon_path" => "aaaaaaaaaaa",
+                        "icon_path" => "/assets/icons/alerte.svg",
 
                         "style" => "failure",
                     ];
@@ -128,14 +128,12 @@ class ProcessWorkers implements ShouldQueue
 
                             "text" => $message,
                             "title" => "Les employés démissionnent",
-                            "icon_path" => "aaaaaaaaaaa",
+                            "icon_path" => "/assets/icons/alerte.svg",
 
                             "style" => "failure",
                         ];
                         event(new NewNotification($notification));
-                    }
-
-                    else {
+                    } else {
                         if ($nb_workers_lv1 == $nb_workers_lv1_busy) {
                             $this->updateIndicator("nb_workers_lv1_busy", $entreprise->id, -1);
                         }
@@ -150,7 +148,7 @@ class ProcessWorkers implements ShouldQueue
 
                             "text" => $message,
                             "title" => "Les employés démissionnent",
-                            "icon_path" => "aaaaaaaaaaa",
+                            "icon_path" => "/assets/icons/alerte.svg",
 
                             "style" => "failure",
                         ];
@@ -179,7 +177,7 @@ class ProcessWorkers implements ShouldQueue
 
                         "text" => $message,
                         "title" => "Employé recruté",
-                        "icon_path" => "aaaaaaaaaaa",
+                        "icon_path" => "/assets/icons/info.svg",
 
                         "style" => "info",
                     ];

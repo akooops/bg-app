@@ -239,8 +239,14 @@
                     >
                         <button
                             class="font-medium font-heading border-0 px-3 py-1 text-vN hover:text-vert bg-opacity-30"
-                            :class="prime_sent ? 'opacity-50' : ''"
-                            :disabled="prime_sent"
+                            :class="
+                                prime_sent
+                                    ? 'opacity-50'
+                                    : '' + bonus == 0
+                                    ? 'text-gray-200 hover:text-gray-200'
+                                    : ''
+                            "
+                            :disabled="prime_sent || bonus == 0"
                             @click="primeWorkers"
                         >
                             Valider
@@ -324,8 +330,20 @@
                     >
                         <button
                             class="font-medium font-heading border-0 px-3 py-1 text-vN hover:text-vert bg-opacity-30"
-                            :class="fire_sent ? 'opacity-50' : ''"
-                            :disabled="fire_sent"
+                            :class="
+                                fire_sent
+                                    ? 'opacity-50'
+                                    : '' +
+                                      (nb_workers_lv2_to_fire == 0 &&
+                                          nb_workers_lv1_to_fire == 0)
+                                    ? 'text-gray-200 hover:text-gray-200'
+                                    : ''
+                            "
+                            :disabled="
+                                fire_sent ||
+                                (nb_workers_lv2_to_fire == 0 &&
+                                    nb_workers_lv1_to_fire == 0)
+                            "
                             @click="fireWorkers"
                         >
                             Valider
@@ -351,7 +369,7 @@
                     <img
                         src="/assets/icons/employees.svg"
                         alt=""
-                        class="w-20 h-20"
+                        class="w-14 p-2 h-14"
                     />
                     <div class="flex flex-col">
                         <p>Simple: {{ indicators["nb_workers_lv1"].value }}</p>
@@ -368,7 +386,7 @@
                     <img
                         src="/assets/icons/employees.svg"
                         alt=""
-                        class="w-20 h-20"
+                        class="w-14 p-2 h-14"
                     />
                     <div class="flex flex-col">
                         <p>Expert: {{ indicators["nb_workers_lv2"].value }}</p>
@@ -384,7 +402,7 @@
                     <img
                         src="/assets/icons/employees.svg"
                         alt=""
-                        class="w-20 h-20"
+                        class="w-14 p-2 h-14"
                     />
                     <p>
                         Recherche: {{ indicators["nb_workers_to_hire"].value }}
@@ -394,9 +412,9 @@
                     class="flex flex-row items-center border-2 shadow-lg rounded-2xl justify-left"
                 >
                     <img
-                        src="/assets/icons/humeur.png"
+                        src="/assets/icons/humeur.svg"
                         alt=""
-                        class="w-20 h-20 p-3"
+                        class="w-16 h-16 p-1"
                     />
                     <p>
                         Humeur:

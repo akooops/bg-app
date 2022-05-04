@@ -84,8 +84,8 @@ class MonthlyCosts implements ShouldQueue
                 $pollution_cost = 0;
                 $pollution_cost += $pollution_unit_cost *
                     ($machines_lv1 * $pollution_machines_lv1_factor +
-                    $machines_lv2 * $pollution_machines_lv2_factor +
-                    $machines_lv3 * $pollution_machines_lv3_factor);
+                        $machines_lv2 * $pollution_machines_lv2_factor +
+                        $machines_lv3 * $pollution_machines_lv3_factor);
 
                 // Compute taxes
 
@@ -119,7 +119,7 @@ class MonthlyCosts implements ShouldQueue
 
                         "title" => "Manque de disponibilités",
                         "text" => "Vos disponibilités ne suffisent pas pour payer les charges de ce mois, une nouvelle dette s'est ajoutée automatiquement",
-                        "icon_path" => "aaaaaaaaaaa",
+                        "icon_path" => "/assets/icons/alerte.svg",
 
                         "style" => "failure",
                     ];
@@ -139,7 +139,7 @@ class MonthlyCosts implements ShouldQueue
                                     - Stockage ( " . $stock_cost . " DA )
                                     - Pollution ( " . $pollution_cost . " DA ). Total: " . $cost . " DA.",
                         "title" => "Frais mensuels",
-                        "icon_path" => "aaaaaaaaaaa",
+                        "icon_path" => "/assets/icons/info.svg",
 
                         "style" => "info",
                     ];
@@ -189,7 +189,7 @@ class MonthlyCosts implements ShouldQueue
 
                     "title" => "Machines",
                     "text" => "La santé de vos machines décroit",
-                    "icon_path" => "aaaaaaaaaaa",
+                    "icon_path" => "/assets/icons/info.svg",
 
                     "style" => "info",
                 ];

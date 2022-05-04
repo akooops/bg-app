@@ -283,7 +283,7 @@ class EntrepriseController extends Controller
 
             "title" => "Commande effctuée",
             "text" => $message,
-            "icon_path" => "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",      // ADD ICON HERE LATER
+            "icon_path" => "/assets/icons/check.svg",      // ADD ICON HERE LATER
 
             "style" => "success",
         ];
@@ -588,7 +588,7 @@ class EntrepriseController extends Controller
 
                 "text" => $message,
                 "title" => "Production déjà vendue",
-                "icon_path" => "aaaaaaaaaaa",
+                "icon_path" => "/assets/icons/alerte.svg",
 
                 "style" => "failure",
             ];
@@ -606,7 +606,7 @@ class EntrepriseController extends Controller
 
                 "text" => $message,
                 "title" => "Production déjà en vente",
-                "icon_path" => "aaaaaaaaaaa",
+                "icon_path" => "/assets/icons/alerte.svg",
 
                 "style" => "failure",
             ];
@@ -625,7 +625,7 @@ class EntrepriseController extends Controller
 
             "text" => $message,
             "title" => "Production mise en vente",
-            "icon_path" => "aaaaaaaaaaa",
+            "icon_path" => "/assets/icons/check.svg",
 
             "style" => "success",
         ];
@@ -662,7 +662,7 @@ class EntrepriseController extends Controller
 
                 "text" => $message,
                 "title" => "Production déjà vendue",
-                "icon_path" => "aaaaaaaaaaa",
+                "icon_path" => "/assets/icons/alerte.svg",
 
                 "style" => "failure",
             ];
@@ -681,7 +681,7 @@ class EntrepriseController extends Controller
                 "text" => $message,
                 "title" => "Echec de l'achat de machine",
 
-                "icon_path" => "aaaaaaaaaaa",
+                "icon_path" => "/assets/icons/alerte.svg",
 
                 "style" => "failure",
             ];
@@ -740,7 +740,7 @@ class EntrepriseController extends Controller
             "text" => $message,
             "title" => "Machine achetée",
 
-            "icon_path" => "aaaaaaaaaaa",
+            "icon_path" => "/assets/icons/check.svg",
 
             "style" => "success",
         ];
@@ -783,9 +783,9 @@ class EntrepriseController extends Controller
                 "text" => $message,
                 "title" => "Échec de la vente de machine",
 
-                "icon_path" => "aaaaaaaaaaa",
+                "icon_path" => "/assets/icons/alerte.svg",
 
-                "style" => "info",
+                "style" => "failure",
             ];
             event(new NewNotification($notification));
             return Response::json(["message" => $message, "success" => false], 200);
@@ -804,9 +804,9 @@ class EntrepriseController extends Controller
 
                 "entreprise_id" => $entreprise_id,
 
-                "icon_path" => "aaaaaaaaaaa",
+                "icon_path" => "/assets/icons/alerte.svg",
 
-                "style" => "info",
+                "style" => "failure",
             ];
             event(new NewNotification($notification));
             return Response::json(["message" => $message, "success" => false], 200);
@@ -823,9 +823,9 @@ class EntrepriseController extends Controller
                 "text" => $message,
                 "title" => "Échec de la vente de machine",
 
-                "icon_path" => "aaaaaaaaaaa",
+                "icon_path" => "/assets/icons/alerte.svg",
 
-                "style" => "info",
+                "style" => "failure",
             ];
             event(new NewNotification($notification));
             return Response::json(["message" => $message, "success" => false], 200);
@@ -841,9 +841,9 @@ class EntrepriseController extends Controller
 
                 "text" => $message,
                 "title" => "Échec de la vente de machine",
-                "icon_path" => "aaaaaaaaaaa",
+                "icon_path" => "/assets/icons/alerte.svg",
 
-                "style" => "info",
+                "style" => "failure",
             ];
             event(new NewNotification($notification));
             return Response::json(["message" => $message, "success" => false], 200);
@@ -894,7 +894,7 @@ class EntrepriseController extends Controller
 
             "text" => $message,
             "title" => "Machine Vendue",
-            "icon_path" => "aaaaaaaaaaa",
+            "icon_path" => "/assets/icons/check.svg",
 
             "style" => "success",
         ];
@@ -919,7 +919,7 @@ class EntrepriseController extends Controller
 
                 "text" => $message,
                 "title" => "Échec de l'action",
-                "icon_path" => "aaaaaaaaaaa",
+                "icon_path" => "/assets/icons/alerte.svg",
 
                 "style" => "failure",
             ];
@@ -941,7 +941,7 @@ class EntrepriseController extends Controller
 
                         "text" => $message,
                         "title" => "5S",
-                        "icon_path" => "aaaaaaaaaaa",
+                        "icon_path" => "/assets/icons/alerte.svg",
 
                         "style" => "failure",
                     ];
@@ -961,7 +961,7 @@ class EntrepriseController extends Controller
 
                         "text" => $message,
                         "title" => "5S",
-                        "icon_path" => "aaaaaaaaaaa",
+                        "icon_path" => "/assets/icons/alerte.svg",
 
                         "style" => "failure",
                     ];
@@ -980,7 +980,7 @@ class EntrepriseController extends Controller
 
                         "text" => $message,
                         "title" => "5S",
-                        "icon_path" => "aaaaaaaaaaa",
+                        "icon_path" => "/assets/icons/check.svg",
 
                         "style" => "success",
                     ];
@@ -1001,7 +1001,7 @@ class EntrepriseController extends Controller
 
                         "text" => $message,
                         "title" => "Audit",
-                        "icon_path" => "aaaaaaaaaaa",
+                        "icon_path" => "/assets/icons/alerte.svg",
 
                         "style" => "failure",
                     ];
@@ -1020,7 +1020,7 @@ class EntrepriseController extends Controller
 
                         "text" => $message,
                         "title" => "Audit",
-                        "icon_path" => "aaaaaaaaaaa",
+                        "icon_path" => "/assets/icons/check.svg",
 
                         "style" => "success",
                     ];
@@ -1040,7 +1040,7 @@ class EntrepriseController extends Controller
 
                         "text" => $message,
                         "title" => "Réparation machines niveau 1",
-                        "icon_path" => "aaaaaaaaaaa",
+                        "icon_path" => "/assets/icons/alerte.svg",
 
                         "style" => "failure",
                     ];
@@ -1059,7 +1059,7 @@ class EntrepriseController extends Controller
 
                         "text" => $message,
                         "title" => "Réparation machines niveau 1",
-                        "icon_path" => "aaaaaaaaaaa",
+                        "icon_path" => "/assets/icons/alerte.svg",
 
                         "style" => "failure",
                     ];
@@ -1078,7 +1078,7 @@ class EntrepriseController extends Controller
 
                         "text" => $message,
                         "title" => "Réparation machines niveau 1",
-                        "icon_path" => "aaaaaaaaaaa",
+                        "icon_path" => "/assets/icons/check.svg",
 
                         "style" => "success",
                     ];
@@ -1098,7 +1098,7 @@ class EntrepriseController extends Controller
 
                         "text" => $message,
                         "title" => "Réparation machines niveau 2",
-                        "icon_path" => "aaaaaaaaaaa",
+                        "icon_path" => "/assets/icons/alerte.svg",
 
                         "style" => "failure",
                     ];
@@ -1117,7 +1117,7 @@ class EntrepriseController extends Controller
 
                         "text" => $message,
                         "title" => "Réparation machines niveau 2",
-                        "icon_path" => "aaaaaaaaaaa",
+                        "icon_path" => "/assets/icons/alerte.svg",
 
                         "style" => "failure",
                     ];
@@ -1136,7 +1136,7 @@ class EntrepriseController extends Controller
 
                         "text" => $message,
                         "title" => "Réparation machines niveau 2",
-                        "icon_path" => "aaaaaaaaaaa",
+                        "icon_path" => "/assets/icons/check.svg",
 
                         "style" => "success",
                     ];
@@ -1156,7 +1156,7 @@ class EntrepriseController extends Controller
 
                         "text" => $message,
                         "title" => "Réparation machines niveau 3",
-                        "icon_path" => "aaaaaaaaaaa",
+                        "icon_path" => "/assets/icons/alerte.svg",
 
                         "style" => "failure",
                     ];
@@ -1175,7 +1175,7 @@ class EntrepriseController extends Controller
 
                         "text" => $message,
                         "title" => "Réparation machines niveau 3",
-                        "icon_path" => "aaaaaaaaaaa",
+                        "icon_path" => "/assets/icons/alerte.svg",
 
                         "style" => "failure",
                     ];
@@ -1194,7 +1194,7 @@ class EntrepriseController extends Controller
 
                         "text" => $message,
                         "title" => "Réparation machines niveau 3",
-                        "icon_path" => "aaaaaaaaaaa",
+                        "icon_path" => "/assets/icons/check.svg",
 
                         "style" => "success",
                     ];
@@ -1383,7 +1383,7 @@ class EntrepriseController extends Controller
 
             "title" => "Données de vente mises à jour",
             "text" => "Les données de vente pour le produit " . $product->name . " ont été mises à jour (Quantité: " . $new_selling_quantity . ", Prix: " . $new_price . " DA)",
-            "icon_path" => "aaaaaaaaaaa",
+            "icon_path" => "/assets/icons/check.svg",
 
             "style" => "success",
         ];

@@ -74,7 +74,7 @@ class AdScheduler implements ShouldQueue
 
                 "text" => "Votre campagne publicitaire sur " . $this->parseAdType($ad->type) . " est terminée, résultat final: " . $ad->result . " nouveaux abonnés.",
                 "title" => "Campagne publicitaire",
-                "icon_path" => "aaaaaaaaaaa",
+                "icon_path" => "/assets/icons/info.svg",
 
                 "style" => "info",
             ];
@@ -89,7 +89,7 @@ class AdScheduler implements ShouldQueue
             // Sum total amount spent on active ads for this entreprise
             $entrep_id = $entrep_ads[0]->entreprise_id;
             $total_active_amount = 0;
-            foreach($entrep_ads as $ad) {
+            foreach ($entrep_ads as $ad) {
                 $total_active_amount += $ad->amount;
             }
 
@@ -111,7 +111,7 @@ class AdScheduler implements ShouldQueue
 
                     "text" => "Vous dépensez plus de 10% de votre chiffre d'affaires en publicités, attention aux scandales médiatiques!",
                     "title" => "Risques de scandales",
-                    "icon_path" => "aaaaaaaaaaa",
+                    "icon_path" => "/assets/icons/warning.svg",
 
                     "style" => "warning",
                 ];
@@ -120,8 +120,7 @@ class AdScheduler implements ShouldQueue
 
             // Now pick a random number and see if the media scandal happens
             $pick = mt_rand() / mt_getrandmax();
-            if ($pick < $prob)
-            {
+            if ($pick < $prob) {
                 $this->setIndicator("nb_subscribers", $entrep_id, round(0.9 * $this->getIndicator("nb_subscribers", $entrep_id)["value"]));
 
                 $indicators = ["social_presence", "media_presence", "events_presence"];
@@ -138,7 +137,7 @@ class AdScheduler implements ShouldQueue
 
                     "text" => "Vous êtes tombé dans un scandale médiatique! Vous perdez 10% de vos chiffres média.",
                     "title" => "Scandale médiatique",
-                    "icon_path" => "aaaaaaaaaaa",
+                    "icon_path" => "/assets/icons/alerte.svg",
 
                     "style" => "failure",
                 ];

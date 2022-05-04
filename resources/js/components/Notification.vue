@@ -42,6 +42,7 @@
                         :time="notif.time"
                         :actual_time="actual"
                         :type="notif.type"
+                        :icon="notif.icon_path"
                         class="mx-3 border-b-2 py-3"
                     >
                     </NotificationItem>
@@ -141,11 +142,6 @@ export default {
                 (e) => {
                     this.getNotifications();
                     this.$forceUpdate();
-
-                    if (!e.notification.store) {
-                        return;
-                    }
-
                     if (
                         e.notification.style == "info" ||
                         e.notification.style == null
@@ -202,7 +198,7 @@ export default {
                                 },
                             ],
                         });
-                    } else {
+                    } else if (e.notification.style == "failure") {
                         this.$toasted.show(e.notification.title, {
                             keepOnHover: true,
                             icon: {
@@ -210,6 +206,32 @@ export default {
                             },
                             position: "bottom-right",
                             className: "toast-error",
+                            duration: 3000,
+                            action: [
+                                {
+                                    text: "Voir",
+                                    onClick: (e, toastObject) => {
+                                        window.scrollTo(0, 0);
+                                        this.openNotifBox();
+                                        toastObject.goAway(0);
+                                    },
+                                },
+                                {
+                                    text: "Fermer",
+                                    onClick: (e, toastObject) => {
+                                        toastObject.goAway(0);
+                                    },
+                                },
+                            ],
+                        });
+                    } else {
+                        this.$toasted.show(e.notification.title, {
+                            keepOnHover: true,
+                            icon: {
+                                name: "⚠️",
+                            },
+                            position: "bottom-right",
+                            className: "toast-warning",
                             duration: 3000,
                             action: [
                                 {
@@ -252,9 +274,9 @@ export default {
     color: #ca1e1e !important;
 }
 
-.toasted-container {
-    width: 300px !important;
-    padding: 0px 8px !important;
+.toast-warning {
+    background-color: #ffbc3e !important;
+    color: white !important;
 }
 
 .toasted-container .toasted .action {
