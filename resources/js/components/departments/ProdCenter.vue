@@ -281,10 +281,7 @@
                         /> -->
                     </div>
 
-                    <p
-                        class="text-red-500 w-auto"
-                        v-if="can_produce == false"
-                    >
+                    <p class="text-red-500 w-auto" v-if="can_produce == false">
                         {{ can_produce_msg }}
                     </p>
 
@@ -532,13 +529,13 @@
                             <tbody>
                                 <tr class="border-b">
                                     <!-- <td class="flex justify-center icon-material text-yellow-500 py-1">
-                                        {{ salesRevenues }} UM
+                                        {{ salesRevenues }} DA
                                     </td> -->
                                     <td class="text-center text-vert py-1">
-                                        {{ Math.round(totalCost) }} UM
+                                        {{ Math.round(totalCost) }} DA
                                     </td>
                                     <!-- <td class="text-center text-yellow-500 py-1">
-                                        {{ profit }} UM
+                                        {{ profit }} DA
                                     </td> -->
                                 </tr>
                             </tbody>
@@ -901,7 +898,20 @@ export default {
             }
         },
 
-        indicators: function () {
+        indicators: function (n) {
+            this.action.price["maintenance_lv1"] =
+                10000 *
+                (1 - n["machines_lv1_health"]["value"]) *
+                n["nb_machines_lv1"]["value"];
+            this.action.price["maintenance_lv2"] =
+                10000 *
+                (1 - n["machines_lv2_health"]["value"]) *
+                n["nb_machines_lv2"]["value"];
+            this.action.price["maintenance_lv3"] =
+                10000 *
+                (1 - n["machines_lv3_health"]["value"]) *
+                n["nb_machines_lv3"]["value"];
+            this.$forceUpdate();
             this.verifyProd();
         },
     },
@@ -1038,11 +1048,12 @@ export default {
                     this.stock_updated = true;
                 });
         },
+
         verifyProd() {
             if (this.selectedProd == undefined) {
                 return false;
             }
-            
+
             this.prod_factors = {
                 machines: this.launch_data.machine_nb,
                 // this.launch_data.quantity * this.selectedProd.machine_units,

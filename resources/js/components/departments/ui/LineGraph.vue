@@ -45,17 +45,31 @@ export default {
                 },
                 yAxis: {
                     type: "value",
-                    boundaryGap: [0, "30%"],
-                    showGrid: false,
-                    name: "Unités",
                     splitLine: {
                         show: false,
                     },
-                },
-                tooltip: {
-                    show: true,
+                    boundaryGap: [0, "30%"],
+                    showGrid: false,
+                    name: "Unités",
                 },
                 series: [
+                    {
+                        //remove tooltip for line chart
+                        type: "line",
+                        smooth: true,
+                        showSymbol: false,
+                        // symbold size
+
+                        lineStyle: {
+                            color: "#0B3434",
+                            width: 3,
+                        },
+                        areaStyle: {
+                            color: "#0B3434",
+                            opacity: 0,
+                        },
+                        data: [],
+                    },
                     {
                         type: "bar",
                         data: [],
@@ -81,23 +95,6 @@ export default {
                         },
                         //remove grid
                     },
-                    {
-                        //remove tooltip for line chart
-                        type: "line",
-                        smooth: true,
-                        showSymbol: false,
-                        // symbold size
-
-                        lineStyle: {
-                            color: "#0B3434",
-                            width: 3,
-                        },
-                        areaStyle: {
-                            color: "#0B3434",
-                            opacity: 0,
-                        },
-                        data: [],
-                    },
                 ],
             },
         };
@@ -114,16 +111,16 @@ export default {
 
             this.$forceUpdate();
 
-            console.log('graph update');
-        }
+            console.log("graph update");
+        },
     },
     watch: {
         // 'xData': function() {
         //     this.updateGraph();
         // },
-        'yData': function() {
+        yData: function () {
             this.updateGraph();
-        }
+        },
     },
     mounted() {
         this.updateGraph();

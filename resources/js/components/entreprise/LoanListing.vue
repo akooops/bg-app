@@ -315,7 +315,7 @@
                             class="border w-full h-10 flex items-center pl-4 text-vert border-tableBorder"
                         >
                             {{ selected_loan.remaining_amount - refund_amount }}
-                            UM
+                            DA
                         </p>
 
                         <p v-if="pay_message != ''" class="text-green-500">

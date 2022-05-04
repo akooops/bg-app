@@ -137,7 +137,7 @@ export default {
         // },
         refresh() {
             this.getListing();
-            this.$toasted.success("Leaderboard Up to date", {
+            this.$toasted.success("Classement mis à jour", {
                 keepOnHover: true,
                 icon: {
                     name: "✔",

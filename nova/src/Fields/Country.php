@@ -254,7 +254,7 @@ class Country extends Select
             'AE' => __('United Arab Emirates'),
             'GB' => __('United Kingdom'),
             'US' => __('United States'),
-            'UM' => __('United States Outlying Islands'),
+            'DA' => __('United States Outlying Islands'),
             'UY' => __('Uruguay'),
             'UZ' => __('Uzbekistan'),
             'VU' => __('Vanuatu'),

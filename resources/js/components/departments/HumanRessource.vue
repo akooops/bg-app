@@ -78,14 +78,14 @@
                         <h1 class="pt-3 opacity-80">
                             le salaire mensuel d'un seul employé est fixé à :
                             <span class="text-yellow-600"
-                                >{{ salary_lv1 }} UM</span
+                                >{{ salary_lv1 }} DA</span
                             >
                         </h1>
                         <h1 class="opacity-80">
                             le salaire mensule pour le nombre d'employés choisis
                             est fixé à :
                             <span class="text-vert">
-                                {{ salary_lv1 * nb_workers_to_hire }} UM</span
+                                {{ salary_lv1 * nb_workers_to_hire }} DA</span
                             >
                         </h1>
                     </div>
@@ -142,14 +142,14 @@
                         <h1 class="pt-3 opacity-80">
                             le prix de formation d'un seul employé est fixé à :
                             <span class="text-yellow-600"
-                                >{{ workshop_price }} UM / personne</span
+                                >{{ workshop_price }} DA / personne</span
                             >
                         </h1>
                         <h1 class="opacity-80">
                             le prix total est fixé à :
                             <span class="text-vert">
                                 {{ workshop_price * nb_workers_to_train }}
-                                UM</span
+                                DA</span
                             >
                         </h1>
                     </div>
@@ -225,7 +225,7 @@
                                     (indicators["nb_workers_lv1"]["value"] +
                                         indicators["nb_workers_lv2"]["value"])
                                 }}
-                                UM</span
+                                DA</span
                             >
                         </h1>
                         <h1 class="opacity-80">
@@ -314,7 +314,7 @@
                                     (salary_lv1 * nb_workers_lv1_to_fire +
                                         salary_lv2 * nb_workers_lv2_to_fire)
                                 }}
-                                UM</span
+                                DA</span
                             >
                         </h1>
                     </div>

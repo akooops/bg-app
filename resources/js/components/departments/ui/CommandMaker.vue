@@ -151,7 +151,7 @@
                         <td
                             class="bg-tableBorder lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
                         >
-                            {{ overallPrice }} UM
+                            {{ overallPrice }} DA
                         </td>
                         <td
                             class="lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
@@ -585,6 +585,7 @@ export default {
                     if (resp.data.success) {
                         this.show_success = true;
                         this.show_error = false;
+                        this.overallPrice = 0;
                     } else {
                         this.show_success = false;
                         this.show_error = true;

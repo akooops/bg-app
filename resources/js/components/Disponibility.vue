@@ -14,12 +14,12 @@
             <p>Dettes</p>
         </div>
 
-        <div class="flex items-center gap-4 justify-between">
+        <div class="flex flex-col items-start justify-between">
             <p class="font-bold text-vN pl-4">
                 {{ Math.round(dettes).toLocaleString() }}
             </p>
             <p class="text-vert font-bold">
-                {{ debtDiff }}
+                {{ Math.round(dettes_diff).toLocaleString() }}
             </p>
         </div>
         <v-chart ref="chart" class="chart" :option="option2" autoresize />
@@ -38,12 +38,12 @@
             />
             <p>Disponibilités</p>
         </div>
-        <div class="flex items-center gap-4 justify-between">
+        <div class="flex flex-col items-start justify-between">
             <p class="font-bold text-vN pl-4">
                 {{ Math.round(caisse).toLocaleString() }}
             </p>
             <p class="text-jaune font-bold">
-                {{ dispDiff }}
+                {{ Math.round(caisse_diff).toLocaleString() }}
             </p>
         </div>
         <v-chart ref="chart" class="chart" :option="option" autoresize />
@@ -61,6 +61,8 @@ export default {
     props: ["user", "dette"],
     data() {
         return {
+            caisse_diff: 0,
+            dettes_diff: 0,
             show_menu: false,
             caisse: 0,
             dettes: 0,
@@ -68,7 +70,7 @@ export default {
             option: {
                 xAxis: {
                     boundaryGap: false,
-                    data: [],
+                    data: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8],
                     show: false,
                 },
                 yAxis: {
@@ -80,10 +82,10 @@ export default {
                 },
                 series: [
                     {
-                        data: [],
+                        data: [0, 0, 0, 0, 0, 0, 0, 0],
                         type: "line",
-                         smooth: true,
-                         
+                        smooth: true,
+
                         areaStyle: {},
                     },
                 ],
@@ -98,7 +100,7 @@ export default {
             option2: {
                 xAxis: {
                     boundaryGap: false,
-                    data: [],
+                    data: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8],
                     show: false,
                 },
                 yAxis: {
@@ -110,8 +112,9 @@ export default {
                 },
                 series: [
                     {
-                        data: [],
+                        data: [0, 0, 0, 0, 0, 0, 0, 0],
                         type: "line",
+                        smooth: true,
                         areaStyle: {},
                     },
                 ],
@@ -139,56 +142,66 @@ export default {
                     this.dettes = resp.data["dettes"];
                 });
         },
-
-        getStats() {
-            axios
-                .get("/api/entreprise/stats", {
-                    params: {
-                        entreprise_id: this.user.id,
-                    },
-                })
-                .then((resp) => {
-                    
-                    this.option.xAxis.data = resp.data.dates;
-                    this.option2.xAxis.data = resp.data.dates;
-                   
-                   this.option.series[0].data = resp.data.caisse;
-                   this.option2.series[0].data = resp.data.dettes;
-
-                });
-        },
     },
-    computed: {
-        dispDiff() {
-            let disps = this.option.series[0].data;
-            if (disps.length >= 2) {
-                let diff = disps[disps.length - 1] - disps[disps.length - 2];
-                let sign = disps[disps.length - 1] - disps[disps.length - 2] >= 0 ? '+' : '-';
-
-                return sign + Math.abs(diff);
-            }
-            else {
-                return 0;
+    computed: {},
+    watch: {
+        caisse_diff: function (n, o) {
+            if (n > 0) {
+                this.option.series[0].data = [
+                    0.1, 0.2, 0.3, 0.2, 0.4, 0.6, 0.5, 0.7,
+                ];
+            } else {
+                this.option.series[0].data = [
+                    0.7, 0.5, 0.6, 0.4, 0.2, 0.3, 0.2, 0.1,
+                ];
             }
         },
-
-        debtDiff() {
-            let debts = this.option2.series[0].data;
-            if (debts.length >= 2) {
-                let diff = debts[debts.length - 1] - debts[debts.length - 2];
-                let sign = debts[debts.length - 1] - debts[debts.length - 2] >= 0 ? '+' : '-';
-
-                return sign + Math.abs(diff);
+        dettes_diff: function (n, o) {
+            if (n > 0) {
+                this.option2.series[0].data = [
+                    0.1, 0.2, 0.3, 0.2, 0.4, 0.6, 0.5, 0.7,
+                ];
+            } else {
+                this.option2.series[0].data = [
+                    0.7, 0.5, 0.6, 0.4, 0.2, 0.3, 0.2, 0.1,
+                ];
             }
-            else {
-                return 0;
-            }
-        }
+        },
     },
-
     mounted() {
         this.getSimulationData();
-        this.getStats();
+        // this.getStats();
+        if (
+            window.localStorage.getItem("caisse_diff") != null &&
+            window.localStorage.getItem("caisse_diff") != 0
+        ) {
+            this.caisse_diff = JSON.parse(
+                window.localStorage.getItem("caisse_diff")
+            );
+            if (this.caisse_diff < 0) {
+                this.option.series[0].data = [
+                    0.7, 0.5, 0.6, 0.4, 0.2, 0.3, 0.2, 0.1,
+                ];
+            } else {
+                this.option.series[0].data = [
+                    0.1, 0.2, 0.3, 0.2, 0.4, 0.6, 0.5, 0.7,
+                ];
+            }
+        } else {
+            window.localStorage.setItem("caisse_diff", 0);
+            this.caisse_diff = 0;
+        }
+        if (
+            window.localStorage.getItem("dettes_diff") != null &&
+            window.localStorage.getItem("dettes_diff") != 0
+        ) {
+            this.dettes_diff = JSON.parse(
+                window.localStorage.getItem("dettes_diff")
+            );
+        } else {
+            window.localStorage.setItem("dettes_diff", 0);
+            this.dettes_diff = 0;
+        }
 
         if (this.user.type == "entreprise") {
             window.Echo.channel("entreprise_" + this.user.id).listen(
@@ -199,16 +212,36 @@ export default {
                         this.$forceUpdate();
                     }
 
-                    if (e.notification.type == "StatsUpdate") {
-                        this.getStats();
-                        this.$forceUpdate();
-                    }
+                    // if (e.notification.type == "StatsUpdate") {
+                    //     this.getStats();
+                    //     this.$forceUpdate();
+                    // }
                 }
             );
 
             window.Echo.channel("entreprise_" + this.user.id).listen(
                 "NavbarDataChanged",
                 (e) => {
+                    if (window.localStorage.getItem("caisse_diff") != null) {
+                        window.localStorage.setItem(
+                            "caisse_diff",
+                            parseFloat(e.caisse) -
+                                parseFloat(this.caisse) +
+                                parseFloat(this.caisse_diff)
+                        );
+                        this.caisse_diff +=
+                            parseFloat(e.caisse) - parseFloat(this.caisse);
+                    }
+                    if (window.localStorage.getItem("dettes_diff") != null) {
+                        window.localStorage.setItem(
+                            "dettes_diff",
+                            parseFloat(e.dettes) -
+                                parseFloat(this.dettes) +
+                                parseFloat(this.dettes_diff)
+                        );
+                        this.dettes_diff +=
+                            parseFloat(e.dettes) - parseFloat(this.dettes);
+                    }
                     this.caisse = e.caisse;
                     this.dettes = e.dettes;
                 }

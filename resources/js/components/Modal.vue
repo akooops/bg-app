@@ -32,14 +32,14 @@ export default {
     data() {
         return {};
     },
-    mounted() {
-        //remove scroll bar
-        document.body.style.overflow = "hidden";
-    },
-    beforeDestroy() {
-        //remove scroll bar
-        document.body.style.overflow = "auto";
-    },
+    // mounted() {
+    //     //remove scroll bar
+    //     document.body.style.overflow = "hidden";
+    // },
+    // beforeDestroy() {
+    //     //remove scroll bar
+    //     document.body.style.overflow = "auto";
+    // },
 };
 </script>
 

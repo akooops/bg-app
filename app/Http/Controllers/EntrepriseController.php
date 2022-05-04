@@ -272,6 +272,8 @@ class EntrepriseController extends Controller
             });
         });
 
+        $this->updateIndicator('caisse', $entreprise_id, -1 * $final_price);
+
         $message = "Votre commande a été effectuée. Livraison en cours...";
         $notification = [
             "entreprise_id" => $entreprise_id,
@@ -1262,7 +1264,6 @@ class EntrepriseController extends Controller
         } else {
             $caisse = 0;
             $dettes = 0;
-
         }
         return ["time" => $time, "caisse" => $caisse, "dettes" => $dettes];
     }
@@ -1391,7 +1392,8 @@ class EntrepriseController extends Controller
         return Response::json(["message" => "Changement des données de vente réussi.", "success" => true], 200);
     }
 
-    public function getStats(Request $request) {
+    public function getStats(Request $request)
+    {
         $entreprise_id = $request->entreprise_id;
 
         $number = $request->number != null ? $request->number : 10;

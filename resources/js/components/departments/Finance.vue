@@ -34,7 +34,7 @@
                     </h1>
                 </div>
                 <img
-                    src="/assets/cookies.png"
+                    :src="product_selected.icon"
                     class="w-48"
                     :alt="product_selected.name"
                 />
@@ -168,7 +168,7 @@
                 <h2 class="self-start text-xl font-bold text-vN">Coûts</h2>
                 <BarChart
                     v-if="indicators['costs'] != null"
-                    unit="UM"
+                    unit="DA"
                     :x-data="indicators['costs'].map((i) => i.name)"
                     :y-data="indicators['costs'].map((i) => i.value)"
                     :width="50"
@@ -184,16 +184,14 @@
                     v-if="indicators['ca'] != null"
                     :legend="product_names"
                     :serie="indicators['ca'].slice(0, 5)"
-                    :simple='true'
-                    class='vv1'
-                    orient='vertical'
-                    left ="2%"
-                    bottom= 'center'
+                    :simple="true"
+                    class="vv1"
+                    orient="vertical"
+                    left="2%"
+                    bottom="center"
                 ></CircleChart>
             </div>
         </div>
-
-  
     </div>
 </template>
 
@@ -215,11 +213,12 @@ export default {
             product_selected: {
                 name: "Galletes",
                 description:
-                    "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley",
+                    "Galettes à la base du blé qui conviennent tous les jours, un produit simple mais un goût unique.",
                 left_demand: 0,
                 quantity: 0,
                 price_min: 0,
                 price_min: 0,
+                icon: "/assets/galettes.jpg",
             },
             market_share_prod: null,
             market_share_entrep: null,
@@ -256,6 +255,9 @@ export default {
             this.product_selected.price_min = this.products.filter(
                 (p) => p.id == n
             )[0].price_min;
+            this.product_selected.icon = this.products.filter(
+                (p) => p.id == n
+            )[0].icon;
             this.$refs["product"].scrollIntoView();
             this.getMarketShareProd();
         },
@@ -316,6 +318,7 @@ export default {
         this.product_selected.left_demand = this.products[0].left_demand;
         this.product_selected.price_min = this.products[0].price_min;
         this.product_selected.price_max = this.products[0].price_max;
+        this.product_selected.icon = this.products[0].icon;
         this.getProductsStock();
         this.getMarketShares();
         this.getMarketShareProd();

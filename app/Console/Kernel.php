@@ -65,7 +65,7 @@ class Kernel extends ConsoleKernel
             $schedule->job(new AdScheduler)->everyMinute();
 
             // Register weekly stats
-            $schedule->job(new StatsScheduler)->everyMinute();
+            // $schedule->job(new StatsScheduler)->everyMinute();
 
             // $schedule->command('inspire')->hourly();
         }

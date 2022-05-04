@@ -661,17 +661,15 @@ export default {
         async getMarketDemands() {
             // let data = []
             for (var i = 5; i < 10; i++) {
-                let resp = await axios
-                    .get("/api/demand/prev", {
-                        params: {
-                            product_id: i,
-                        },
-                    });
+                let resp = await axios.get("/api/demand/prev", {
+                    params: {
+                        product_id: i,
+                    },
+                });
 
                 if (!this.show_market_demand) {
                     this.prod_data[i - 5] = resp.data;
-                }
-                else {
+                } else {
                     this.prod_data[i - 5].demand = resp.data.demand;
                     this.prod_data[i - 5].prices = resp.data.prices;
                 }

@@ -35,13 +35,13 @@
                 v-if="position == 2"
                 class="z-100 absolute h-12 w-12 top-6 -right-6"
             >
-                <img src="/assets/icons/second.svg" alt="crow icon" />
+                <img src="/assets/icons/second.svg" alt="second place icon" />
             </div>
             <div
                 v-if="position == 3"
-                class="z-100 absolute h-12 w-12 top-6 -right-6"
+                class="z-100 absolute h-14 w-14 top-2 -right-6"
             >
-                <img src="/assets/icons/second.svg" alt="crow icon" />
+                <img src="/assets/icons/3rd.svg" alt="third place icon" />
             </div>
         </div>
     </div>
