@@ -142,8 +142,6 @@ export default {
                     this.getNotifications();
                     this.$forceUpdate();
 
-                    console.log(e);
-
                     if (!e.notification.store) {
                         return;
                     }
