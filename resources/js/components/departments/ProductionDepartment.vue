@@ -814,7 +814,7 @@ export default {
             "SimulationDateChanged",
             (e) => {
                 this.getMarketDemands();
-                console.log("here");
+                // console.log("here");
             }
         );
 
