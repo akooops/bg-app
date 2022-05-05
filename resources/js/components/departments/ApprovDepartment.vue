@@ -166,7 +166,7 @@
                             <td
                                 class="lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
                             >
-                                Jour N° {{ cmd.creation_date }}
+                                Semaine N° {{ cmd.creation_date }}
                             </td>
                             <td
                                 class="lg:w-auto p-1 text-center block lg:table-cell relative lg:static"

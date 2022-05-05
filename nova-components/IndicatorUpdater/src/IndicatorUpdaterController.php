@@ -246,7 +246,7 @@ class IndicatorUpdaterController
         }
 
         // Make all raw materials available
-        DB::table('raw_materials_supplier')->update(['is_available' => true]);
+        DB::table('raw_material_supplier')->update(['is_available' => true]);
 
         // Clear notifications
         DB::table('notifications')->delete();
@@ -256,6 +256,7 @@ class IndicatorUpdaterController
 
         // Clear commands
         DB::table('commands')->delete();
+
 
         // Clear loans
         DB::table('loans')->delete();
@@ -269,7 +270,22 @@ class IndicatorUpdaterController
         // Clear queue
         Artisan::call('queue:clear');
 
+        $notification = [
+            "entreprise_id" => $entrep->id,
+            "type" => "GameReset",
+
+            "store" => false,
+
+            "text" => "",
+            "title" => "",
+            "icon_path" => "",
+
+            "style" => "",
+        ];
+        event(new NewNotification($notification));
+
         return response()->json(["message" => "Le jeu a été réinitialisé", "success" => true], 200);
+
     }
 
     public function changeScenario(NovaRequest $request) {

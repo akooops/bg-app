@@ -808,7 +808,7 @@ export default {
                         15000 *
                         (1 - this.indicators["machines_lv2_health"]["value"]) *
                         this.indicators["nb_machines_lv2"]["value"],
-                        
+
                     maintenance_lv3:
                         20000 *
                         (1 - this.indicators["machines_lv3_health"]["value"]) *
@@ -1063,7 +1063,7 @@ export default {
                 // this.launch_data.quantity * this.selectedProd.machine_units,
 
                 labor_lv1:
-                    (this.launch_data.machine_lvl == 2 ? 2 : 1) *
+                    (this.launch_data.machine_lvl == 1 ? 1 : this.launch_data.machine_lvl == 2 ? 2 : 3) *
                     this.launch_data.machine_nb,
 
                 labor_lv2:

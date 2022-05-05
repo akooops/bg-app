@@ -230,7 +230,7 @@
                         </h1>
                         <h1 class="opacity-80">
                             L'humeur de vos employés augmentera de :
-                            <span class="text-vert"> {{ mood_increase }}</span>
+                            <span class="text-vert"> {{ mood_increase * 100 }}% </span>
                         </h1>
                     </div>
 
@@ -313,7 +313,7 @@
                         />
                         <h1 class="opacity-80 w-80">
                             Les employés licenciés doivent être payés une avance
-                            de 3 mois valant :
+                            de 3 mois valant:
                             <span class="text-yellow-600"
                                 >{{
                                     3 *
@@ -450,7 +450,7 @@
                             : 'bg-vN'
                     "
                 >
-                    Recuruter des employés
+                    Recruter des employés
                 </button>
                 <button
                     @click="workshop_modal = true"
@@ -468,7 +468,7 @@
                             : 'bg-vN'
                     "
                 >
-                    Former des employées
+                    Former des employés
                 </button>
                 <button
                     @click="prime_modal = true"
@@ -486,7 +486,7 @@
                             : 'bg-vN'
                     "
                 >
-                    Ajouter une prime au employées
+                    Ajouter une prime aux employés
                 </button>
                 <button
                     @click="fire_modal = true"

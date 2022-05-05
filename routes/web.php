@@ -22,7 +22,7 @@ Route::get('/', function () {
 });
 
 
-Route::prefix("entreprise")->middleware(["auth", "entreprise"])->group(function () {
+Route::prefix("entreprise")->middleware(["auth", "entreprise", "game_started"])->group(function () {
 
 	Route::get('/dashboard', [EntrepriseController::class, "showDashboard"])->name("dashboard");
 
