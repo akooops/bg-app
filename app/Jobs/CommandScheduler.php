@@ -92,6 +92,8 @@ class CommandScheduler implements ShouldQueue
 
             "icon_path" => "",
 
+            "style" => "",
+
             "store" => false,
         ];
         event(new NewNotification($notification));
