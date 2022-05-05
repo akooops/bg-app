@@ -701,7 +701,7 @@ exports = module.exports = __webpack_require__(2)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\r\n/* Scoped Styles */\r\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n/* Scoped Styles */\n", ""]);
 
 // exports
 
@@ -936,6 +936,78 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -969,7 +1041,19 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
             update_indicators_sent: false,
 
             settings: [],
-            selected_setting: null
+            selected_setting: null,
+
+            scenarios: ['incendies', 'loi des finances', 'crise cacao', 'war start', 'war middle', 'war end'],
+            selected_scenario: 'incendies',
+
+            show_reset_game_modal: false,
+            reset_game_sent: false,
+
+            show_change_scenario_modal: false,
+            change_scenario_scent: false,
+
+            password: '',
+            correct_password: 'moncef_somnef_iec'
         };
     },
 
@@ -1049,13 +1133,39 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
         },
         uncheckAllEntrep: function uncheckAllEntrep() {
             this.selected_entreprises = [];
+        },
+        resetGame: function resetGame() {
+            var _this3 = this;
+
+            this.reset_game_sent = true;
+            this.password = '';
+            Nova.request().post('/nova-vendor/indicator-updater/reset-game', {}).then(function (_ref5) {
+                var data = _ref5.data;
+
+                _this3.show_reset_game_modal = false;
+                _this3.reset_game_sent = false;
+            });
+        },
+        changeScenario: function changeScenario() {
+            var _this4 = this;
+
+            this.change_scenario_sent = true;
+            this.password = '';
+            Nova.request().post('/nova-vendor/indicator-updater/reset-game', {
+                scenario: this.selected_scenario
+            }).then(function (_ref6) {
+                var data = _ref6.data;
+
+                _this4.show_change_scenario_modal = false;
+                _this4.change_scenario_sent = false;
+            });
         }
     },
 
     watch: {},
 
     mounted: function () {
-        var _ref5 = _asyncToGenerator( /*#__PURE__*/__WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator___default.a.mark(function _callee2() {
+        var _ref7 = _asyncToGenerator( /*#__PURE__*/__WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator___default.a.mark(function _callee2() {
             return __WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator___default.a.wrap(function _callee2$(_context2) {
                 while (1) {
                     switch (_context2.prev = _context2.next) {
@@ -1072,7 +1182,7 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
         }));
 
         function mounted() {
-            return _ref5.apply(this, arguments);
+            return _ref7.apply(this, arguments);
         }
 
         return mounted;
@@ -3626,6 +3736,23 @@ var render = function() {
             }
           },
           [_vm._v("\n                Paramètres du jeu\n            ")]
+        ),
+        _vm._v(" "),
+        _c(
+          "button",
+          {
+            staticClass: "inline-block py-2 focus:outline-none text-lg",
+            class:
+              _vm.page_index == "scenario"
+                ? "border-b-2 border-vert text-vert font-medium"
+                : "text-vN hover:text-black",
+            on: {
+              click: function($event) {
+                _vm.page_index = "scenario"
+              }
+            }
+          },
+          [_vm._v("\n                Scénario\n            ")]
         )
       ])
     ]),
@@ -3697,10 +3824,10 @@ var render = function() {
                   _vm._v("Entreprise:")
                 ]),
                 _vm._v(" "),
-                _c("div", { staticClass: "ml-8 mb-2" }, [
+                _c("div", { staticClass: "flex mb-2" }, [
                   _c(
                     "button",
-                    { staticClass: "ml-4", on: { click: _vm.checkAllEntrep } },
+                    { staticClass: "mr-4", on: { click: _vm.checkAllEntrep } },
                     [
                       _vm._v(
                         "\n                        Select all\n                    "
@@ -3708,25 +3835,18 @@ var render = function() {
                     ]
                   ),
                   _vm._v(" "),
-                  _c(
-                    "button",
-                    {
-                      staticClass: "ml-4",
-                      on: { click: _vm.uncheckAllEntrep }
-                    },
-                    [
-                      _vm._v(
-                        "\n                        Unselect all\n                    "
-                      )
-                    ]
-                  )
+                  _c("button", { on: { click: _vm.uncheckAllEntrep } }, [
+                    _vm._v(
+                      "\n                        Unselect all\n                    "
+                    )
+                  ])
                 ]),
                 _vm._v(" "),
                 _c(
                   "div",
                   { staticClass: "flex" },
                   _vm._l(_vm.entreprises, function(entreprise, key) {
-                    return _c("div", { key: key, staticClass: "ml-4" }, [
+                    return _c("div", { key: key, staticClass: "flex mr-4" }, [
                       _c("input", {
                         directives: [
                           {
@@ -3768,9 +3888,14 @@ var render = function() {
                         }
                       }),
                       _vm._v(" "),
-                      _c("label", { attrs: { for: "entreprise.id" } }, [
-                        _vm._v(" " + _vm._s(entreprise.name) + " ")
-                      ])
+                      _c(
+                        "label",
+                        {
+                          staticClass: "ml-1",
+                          attrs: { for: "entreprise.id" }
+                        },
+                        [_vm._v(" " + _vm._s(entreprise.name) + " ")]
+                      )
                     ])
                   }),
                   0
@@ -4057,6 +4182,280 @@ var render = function() {
           "div",
           { staticClass: "flex justify-center" },
           [_c("GameSettings")],
+          1
+        )
+      : _vm._e(),
+    _vm._v(" "),
+    _vm.page_index == "scenario"
+      ? _c(
+          "div",
+          { staticClass: "justify-center" },
+          [
+            _c("div", { staticClass: "mb-6" }, [
+              !_vm.reset_game_sent
+                ? _c(
+                    "button",
+                    {
+                      staticClass:
+                        "bg-green-600 rounded-md px-3 border-2 border-green-600 py-1 text-white",
+                      on: {
+                        click: function($event) {
+                          _vm.show_reset_game_modal = true
+                        }
+                      }
+                    },
+                    [_vm._v("\n                Reset game\n            ")]
+                  )
+                : _vm._e()
+            ]),
+            _vm._v(" "),
+            _c("p", { staticClass: "text-left mb-2" }, [_vm._v("Scénario:")]),
+            _vm._v(" "),
+            _c("div", { staticClass: "mb-6 flex" }, [
+              _c(
+                "select",
+                {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.selected_scenario,
+                      expression: "selected_scenario"
+                    }
+                  ],
+                  staticClass:
+                    "w-1/3 form-control form-input form-input-bordered pl-2",
+                  on: {
+                    change: function($event) {
+                      var $$selectedVal = Array.prototype.filter
+                        .call($event.target.options, function(o) {
+                          return o.selected
+                        })
+                        .map(function(o) {
+                          var val = "_value" in o ? o._value : o.value
+                          return val
+                        })
+                      _vm.selected_scenario = $event.target.multiple
+                        ? $$selectedVal
+                        : $$selectedVal[0]
+                    }
+                  }
+                },
+                _vm._l(_vm.scenarios, function(scenario, key) {
+                  return _c(
+                    "option",
+                    { key: key, domProps: { value: scenario } },
+                    [
+                      _vm._v(
+                        "\n                    " +
+                          _vm._s(scenario) +
+                          "\n                "
+                      )
+                    ]
+                  )
+                }),
+                0
+              ),
+              _vm._v(" "),
+              !_vm.change_scenario_sent
+                ? _c(
+                    "button",
+                    {
+                      staticClass:
+                        "bg-green-600 rounded-md px-3 border-2 border-green-600 py-1 text-white",
+                      on: {
+                        click: function($event) {
+                          _vm.show_change_scenario_modal = true
+                        }
+                      }
+                    },
+                    [_vm._v("\n                Change scenario\n            ")]
+                  )
+                : _vm._e()
+            ]),
+            _vm._v(" "),
+            _vm.show_reset_game_modal
+              ? _c("Modal", {
+                  staticClass: "pt-44",
+                  scopedSlots: _vm._u(
+                    [
+                      {
+                        key: "content",
+                        fn: function() {
+                          return [
+                            _c("div", { staticClass: "flex flex-col gap-2" }, [
+                              _c("p", [_vm._v("Réinitialiser le jeu ?")]),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.password,
+                                    expression: "password"
+                                  }
+                                ],
+                                attrs: {
+                                  type: "text",
+                                  placeholder: "Mot de passe"
+                                },
+                                domProps: { value: _vm.password },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.password = $event.target.value
+                                  }
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c(
+                                "div",
+                                { staticClass: "flex gap-5 justify-center" },
+                                [
+                                  _vm.password == _vm.correct_password
+                                    ? _c(
+                                        "button",
+                                        {
+                                          staticClass:
+                                            "bg-green-600 rounded-md px-3 border-2 border-green-600 py-1 text-white",
+                                          on: { click: _vm.resetGame }
+                                        },
+                                        [
+                                          _vm._v(
+                                            "\n                            Confirmer\n                        "
+                                          )
+                                        ]
+                                      )
+                                    : _vm._e(),
+                                  _vm._v(" "),
+                                  _c(
+                                    "button",
+                                    {
+                                      staticClass:
+                                        "bg-white border-vert border-2 rounded-md px-3 py-1 text-black",
+                                      on: {
+                                        click: function($event) {
+                                          _vm.show_reset_game_modal = false
+                                        }
+                                      }
+                                    },
+                                    [
+                                      _vm._v(
+                                        "\n                            Annuler\n                        "
+                                      )
+                                    ]
+                                  )
+                                ]
+                              )
+                            ])
+                          ]
+                        },
+                        proxy: true
+                      }
+                    ],
+                    null,
+                    false,
+                    1843680636
+                  )
+                })
+              : _vm._e(),
+            _vm._v(" "),
+            _vm.show_change_scenario_modal
+              ? _c("Modal", {
+                  staticClass: "pt-44",
+                  scopedSlots: _vm._u(
+                    [
+                      {
+                        key: "content",
+                        fn: function() {
+                          return [
+                            _c("div", { staticClass: "flex flex-col gap-2" }, [
+                              _c("p", [
+                                _vm._v(
+                                  "Lancer le scénario " +
+                                    _vm._s(_vm.selected_scenario) +
+                                    " ?"
+                                )
+                              ]),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.password,
+                                    expression: "password"
+                                  }
+                                ],
+                                attrs: {
+                                  type: "text",
+                                  placeholder: "Mot de passe"
+                                },
+                                domProps: { value: _vm.password },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.password = $event.target.value
+                                  }
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c(
+                                "div",
+                                { staticClass: "flex gap-5 justify-center" },
+                                [
+                                  _vm.password == _vm.correct_password
+                                    ? _c(
+                                        "button",
+                                        {
+                                          staticClass:
+                                            "bg-green-600 rounded-md px-3 border-2 border-green-600 py-1 text-white",
+                                          on: { click: _vm.changeScenario }
+                                        },
+                                        [
+                                          _vm._v(
+                                            "\n                            Confirmer\n                        "
+                                          )
+                                        ]
+                                      )
+                                    : _vm._e(),
+                                  _vm._v(" "),
+                                  _c(
+                                    "button",
+                                    {
+                                      staticClass:
+                                        "bg-white border-vert border-2 rounded-md px-3 py-1 text-black",
+                                      on: {
+                                        click: function($event) {
+                                          _vm.show_change_scenario_modal = false
+                                        }
+                                      }
+                                    },
+                                    [
+                                      _vm._v(
+                                        "\n                            Annuler\n                        "
+                                      )
+                                    ]
+                                  )
+                                ]
+                              )
+                            ])
+                          ]
+                        },
+                        proxy: true
+                      }
+                    ],
+                    null,
+                    false,
+                    3929752366
+                  )
+                })
+              : _vm._e()
+          ],
           1
         )
       : _vm._e()

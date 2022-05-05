@@ -60,6 +60,10 @@ class GameSetting extends Resource
             Number::make('Default Value')
                 ->rules('required')
                 ->step(0.01),
+
+            Text::make('Type')
+                ->sortable()
+                ->rules('required', 'max:255'),
         ];
     }
 

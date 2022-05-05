@@ -66,8 +66,9 @@ class CommandScheduler implements ShouldQueue
             ->update(["status" => "confirmed"]);
 
         $message = "Les " . $this->command["quantity"] . " " .
-            $raw_mat->unit . " de " . $raw_mat->name .
-            " de la commande " . $this->command["command_id"] . " vous ont été livrés";
+                    $raw_mat->unit . " de " . $raw_mat->name .
+                    " de la commande " . $this->command["command_id"] . " vous ont été livrés";
+
         $notification = [
             "entreprise_id" => $entreprise_id,
             "type" => "CommandUpdate",

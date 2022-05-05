@@ -338,7 +338,7 @@
                                     ? addRow()
                                     : editRow(editing_command_id, true)
                             "
-                            :disabled="commandDisabled && supp_raw_mat_updated"
+                            :disabled="commandDisabled || !supp_raw_mat_updated"
                             class="font-heading py-3 px-3 text-vN rounded-md font-medium"
                             v-bind:class="{
                                 'text-vN text-opacity-20': commandDisabled,

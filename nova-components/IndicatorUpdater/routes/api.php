@@ -25,3 +25,6 @@ Route::post('/entreprise-indicators', [IndicatorUpdaterController::class, "getEn
 Route::get('/get-settings', [IndicatorUpdaterController::class, "getSettings"]);
 Route::post('/set-setting', [IndicatorUpdaterController::class, "setSetting"]);
 Route::post('/reset-setting', [IndicatorUpdaterController::class, "resetSetting"]);
+
+Route::post('/reset-game', [IndicatorUpdaterController::class, "resetGame"]);
+Route::post('/change-scenario', [IndicatorUpdaterController::class, "changeScenario"]);

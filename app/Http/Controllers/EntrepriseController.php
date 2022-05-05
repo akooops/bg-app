@@ -206,7 +206,7 @@ class EntrepriseController extends Controller
 
             if (!$available) {
                 // Stop the command and return error: raw material not available for this supplier
-                $message = "Impossible d'effectuer la commande: Les quantités doivent être positives.";
+                $message = "Impossible d'effectuer la commande: Une des matières premières est indisponibles.";
                 return Response::json(["message" => $message, "success" => false], 200);
             }
 
@@ -228,18 +228,19 @@ class EntrepriseController extends Controller
                 return Response::json(["message" => $message, "success" => false], 200);
             }
 
-            // Status will be "pending" until the command is delivered to the player
-            $status = "pending";
-
-            // I don't we'll have errors here since it's all in the back, but just in case
-            $creation_date = $this->getSimulationTime();
+            // Do a shipping time check
             $time_to_ship = $cmd["time_to_ship"];
-
             if ($time_to_ship <= 0) {
                 // Stop the command and return error: command's time to ship must be positive
                 $message = "Impossible d'effectuer la commande: Le temps de livraison doit être positif.";
                 return Response::json(["message" => $message, "success" => false], 200);
             }
+
+            // Status will be "pending" until the command is delivered to the player
+            $status = "pending";
+
+            // I don't think we'll have errors here since it's all in the back, but just in case
+            $creation_date = $this->getSimulationTime();
 
             // Fill in the array to insert into the database later
             $cmd_item = [
@@ -272,8 +273,10 @@ class EntrepriseController extends Controller
             });
         });
 
+        // Take out price from disponibilities
         $this->updateIndicator('caisse', $entreprise_id, -1 * $final_price);
 
+        // Send notification
         $message = "Votre commande a été effectuée. Livraison en cours...";
         $notification = [
             "entreprise_id" => $entreprise_id,
