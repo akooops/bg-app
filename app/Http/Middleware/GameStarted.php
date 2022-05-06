@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App\Traits\HelperTrait;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class GameStarted
 {
@@ -25,7 +26,7 @@ class GameStarted
             return $next($request);
         }
         else {
-            abort(401);
+            return new Response(view('welcome'));
         }
 
     }
