@@ -374,7 +374,7 @@ export default {
             this.change_scenario_sent = true;
             this.password = '';
             Nova.request()
-                .post('/nova-vendor/indicator-updater/reset-game', {
+                .post('/nova-vendor/indicator-updater/change-scenario', {
                     scenario: this.selected_scenario,
                 })
                 .then(({ data }) => {

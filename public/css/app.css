@@ -532,6 +532,10 @@ Ensure the default browser behavior of the `hidden` attribute.
   margin-left: auto;
   margin-right: auto;
 }
+.my-3 {
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+}
 .my-5 {
   margin-top: 1.25rem;
   margin-bottom: 1.25rem;
@@ -555,10 +559,6 @@ Ensure the default browser behavior of the `hidden` attribute.
 .mx-5 {
   margin-left: 1.25rem;
   margin-right: 1.25rem;
-}
-.my-3 {
-  margin-top: 0.75rem;
-  margin-bottom: 0.75rem;
 }
 .mx-3 {
   margin-left: 0.75rem;
@@ -631,6 +631,9 @@ Ensure the default browser behavior of the `hidden` attribute.
 .ml-auto {
   margin-left: auto;
 }
+.mb-2 {
+  margin-bottom: 0.5rem;
+}
 .mr-12 {
   margin-right: 3rem;
 }
@@ -660,9 +663,6 @@ Ensure the default browser behavior of the `hidden` attribute.
 }
 .mt-7 {
   margin-top: 1.75rem;
-}
-.mb-2 {
-  margin-bottom: 0.5rem;
 }
 .mt-16 {
   margin-top: 4rem;
@@ -906,6 +906,9 @@ Ensure the default browser behavior of the `hidden` attribute.
   min-width: -moz-max-content;
   min-width: max-content;
 }
+.max-w-sm {
+  max-width: 24rem;
+}
 .max-w-xl {
   max-width: 36rem;
 }
@@ -917,9 +920,6 @@ Ensure the default browser behavior of the `hidden` attribute.
 }
 .max-w-7xl {
   max-width: 80rem;
-}
-.max-w-sm {
-  max-width: 24rem;
 }
 .flex-1 {
   flex: 1 1 0%;
@@ -1417,6 +1417,9 @@ Ensure the default browser behavior of the `hidden` attribute.
 .p-6 {
   padding: 1.5rem;
 }
+.p-8 {
+  padding: 2rem;
+}
 .p-4 {
   padding: 1rem;
 }
@@ -1425,9 +1428,6 @@ Ensure the default browser behavior of the `hidden` attribute.
 }
 .p-2 {
   padding: 0.5rem;
-}
-.p-8 {
-  padding: 2rem;
 }
 .p-5 {
   padding: 1.25rem;
@@ -1456,6 +1456,10 @@ Ensure the default browser behavior of the `hidden` attribute.
   padding-top: 2.5rem;
   padding-bottom: 2.5rem;
 }
+.py-8 {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
 .py-12 {
   padding-top: 3rem;
   padding-bottom: 3rem;
@@ -1471,10 +1475,6 @@ Ensure the default browser behavior of the `hidden` attribute.
 .px-6 {
   padding-left: 1.5rem;
   padding-right: 1.5rem;
-}
-.py-8 {
-  padding-top: 2rem;
-  padding-bottom: 2rem;
 }
 .py-7 {
   padding-top: 1.75rem;
@@ -1565,11 +1565,11 @@ Ensure the default browser behavior of the `hidden` attribute.
 .align-middle {
   vertical-align: middle;
 }
-.font-heading {
-  font-family: IBM Plex Sans, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-}
 .font-sans {
   font-family: Inter, Ubuntu, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+.font-heading {
+  font-family: IBM Plex Sans, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 .text-sm {
   font-size: 0.875rem;
@@ -1666,6 +1666,10 @@ Ensure the default browser behavior of the `hidden` attribute.
   --tw-text-opacity: 1;
   color: rgb(220 38 38 / var(--tw-text-opacity));
 }
+.text-black {
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity));
+}
 .text-vert {
   --tw-text-opacity: 1;
   color: rgb(178 208 107 / var(--tw-text-opacity));
@@ -1751,10 +1755,6 @@ Ensure the default browser behavior of the `hidden` attribute.
 .text-red-800 {
   --tw-text-opacity: 1;
   color: rgb(153 27 27 / var(--tw-text-opacity));
-}
-.text-black {
-  --tw-text-opacity: 1;
-  color: rgb(0 0 0 / var(--tw-text-opacity));
 }
 .text-\[\#0B3434A6\] {
   color: #0B3434A6;

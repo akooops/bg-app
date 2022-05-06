@@ -799,20 +799,11 @@ export default {
 
                     audit: 60000,
 
-                    maintenance_lv1:
-                        this.machine.buy_price_lv1 *
-                        (1 - this.indicators["machines_lv1_health"]["value"]) *
-                        this.indicators["nb_machines_lv1"]["value"],
+                    maintenance_lv1: 0,
 
-                    maintenance_lv2:
-                        this.machine.buy_price_lv2 *
-                        (1 - this.indicators["machines_lv2_health"]["value"]) *
-                        this.indicators["nb_machines_lv2"]["value"],
+                    maintenance_lv2: 0,
 
-                    maintenance_lv3:
-                        this.machine.buy_price_lv3 *
-                        (1 - this.indicators["machines_lv3_health"]["value"]) *
-                        this.indicators["nb_machines_lv3"]["value"],
+                    maintenance_lv3: 0,
                 },
                 phrase: "",
                 result_phrase: "",
