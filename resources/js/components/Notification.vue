@@ -1,5 +1,14 @@
 <template>
     <div>
+        <div
+            class="z-[49] bg-opacity-30 absolute top-0 left-0 w-screen h-screen bg-gray-100"
+            v-if="show_scenario_modal"
+        ></div>
+        <ScenarioModal
+            v-if="show_scenario_modal"
+            @close="show_scenario_modal = false"
+            :event="event"
+        />
         <div class="relative">
             <button @click="toggleNotifBox" class="icon-wrapper">
                 <img
@@ -54,17 +63,20 @@
 
 <script>
 import NotificationItem from "./departments/ui/NotificationItem";
+import ScenarioModal from "./ScenarioModal";
 export default {
     name: "Notification",
     components: {
         NotificationItem,
+        ScenarioModal,
     },
     props: ["user", "actual"],
     data() {
         return {
             notifications: [],
-
+            show_scenario_modal: false,
             show_notifications: false,
+            event: "",
         };
     },
     computed: {
@@ -143,6 +155,32 @@ export default {
                     if (e.notification.type === "GameReset") {
                         window.localStorage.clear();
                         document.location.href = "/";
+                    }
+                    if (e.notification.type === "ScenarioNotif") {
+                        switch (e.notification.title) {
+                            case "Incendies":
+                                this.event = "incendies";
+                                break;
+                            case "Loi des finances":
+                                this.event = "finances";
+                                break;
+                            case "Crise cacao":
+                                this.event = "cacao";
+                                break;
+                            case "Guerre_1":
+                                this.event = "war_1";
+                                break;
+                            case "Guerre_2":
+                                this.event = "war_2";
+                                break;
+                            case "Guerre_3":
+                                this.event = "war_3";
+                                break;
+                            default:
+                                this.event = "";
+                                break;
+                        }
+                        this.show_scenario_modal = true;
                     }
                     this.getNotifications();
                     this.$forceUpdate();

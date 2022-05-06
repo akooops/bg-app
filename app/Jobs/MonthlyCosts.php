@@ -88,7 +88,7 @@ class MonthlyCosts implements ShouldQueue
                         $machines_lv3 * $pollution_machines_lv3_factor);
 
                 // Compute CA taxes
-                $prev_ca = DB::table('stats')->where('entreprise_id', '=', $entreprise->id)->where('date', '=', $current_date - 4)->where('indicator', '=', 'ca')->first();
+                $prev_ca = DB::table('stats')->where('entreprise_id', '=', $entreprise->id)->where('date', '=', $current_date - 4)->where('indicator', '=', 'ca')->first()->value;
                 $monthly_ca = $this->getIndicator('ca', $entreprise->id)['value'] - $prev_ca;
 
                 $ca_tax_percent = $this->get_game_setting('ca_tax_percent');

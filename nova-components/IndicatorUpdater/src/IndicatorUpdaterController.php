@@ -167,7 +167,8 @@ class IndicatorUpdaterController
         return response()->json(["message" => "Le paramètre a été réinitialisé.", "success" => true], 200);
     }
 
-    public function resetGame(NovaRequest $request) {
+    public function resetGame(NovaRequest $request)
+    {
         // Reset indicators
         $indicators = Indicator::all();
 
@@ -196,8 +197,8 @@ class IndicatorUpdaterController
         $entreprises = Entreprise::all();
         $products = Product::all();
 
-        foreach($entreprises as $entrep) {
-            foreach($products as $prod) {
+        foreach ($entreprises as $entrep) {
+            foreach ($products as $prod) {
                 $stock = DB::table('stock')->where('entreprise_id', '=', $entrep->id)->where('product_id', '=', $prod->id);
                 if ($stock->count() > 0) {
                     $stock->update([
@@ -205,8 +206,7 @@ class IndicatorUpdaterController
                         'quantity_selling' => 0,
                         'price' => ($prod->price_min + $prod->price_max) / 2,
                     ]);
-                }
-                else {
+                } else {
                     DB::table('stock')->insert([
                         [
                             'entreprise_id' => $entrep->id,
@@ -231,8 +231,7 @@ class IndicatorUpdaterController
                     $stock->update([
                         'quantity' => 0,
                     ]);
-                }
-                else {
+                } else {
                     DB::table('raw_materials_stock')->insert([
                         [
                             'entreprise_id' => $entrep->id,
@@ -287,18 +286,18 @@ class IndicatorUpdaterController
         }
 
         return response()->json(["message" => "Le jeu a été réinitialisé", "success" => true], 200);
-
     }
 
-    public function changeScenario(NovaRequest $request) {
+    public function changeScenario(NovaRequest $request)
+    {
         $scenario = $request->scenario;
 
         if ($scenario == 'incendies') {
             // Update raw materials prices
-            DB::table('raw_materials')->where('id', '=', 1)->update(['price' => '']);   // Sucre
-            DB::table('raw_materials')->where('id', '=', 4)->update(['price' => '']);   // Blé
-            DB::table('raw_materials')->where('id', '=', 5)->update(['price' => '']);   // Lait
-            DB::table('raw_materials')->where('id', '=', 8)->update(['price' => '']);   // Avoine
+            // DB::table('raw_materials')->where('id', '=', 1)->update(['price' => '']);   // Sucre
+            // DB::table('raw_materials')->where('id', '=', 4)->update(['price' => '']);   // Blé
+            // DB::table('raw_materials')->where('id', '=', 5)->update(['price' => '']);   // Lait
+            // DB::table('raw_materials')->where('id', '=', 8)->update(['price' => '']);   // Avoine
 
             // Update % population
 
@@ -312,26 +311,24 @@ class IndicatorUpdaterController
 
                     "text" => "Des incendies se sont déclenchés!",
                     "title" => "Incendies",
-                    "icon_path" => "",
+                    "icon_path" => "/assets/icons/fire.svg",
 
                     "style" => "scenario",
                 ];
                 event(new NewNotification($notification));
             }
-        }
-
-        else if ($scenario == 'loi des finances') {
+        } else if ($scenario == 'loi des finances') {
             // Update CA taxes %
-            $this->set_game_setting('ca_tax_percent', '');
+            // $this->set_game_setting('ca_tax_percent', '');
 
-            // Update pollution taxes %
-            $this->set_game_setting('pollution_unit_cost', '');
+            // // Update pollution taxes %
+            // $this->set_game_setting('pollution_unit_cost', '');
 
-            // Update raw materials prices
-            DB::table('raw_materials')->where('id', '=', 1)->update(['price' => '']);   // Sucre
-            DB::table('raw_materials')->where('id', '=', 4)->update(['price' => '']);   // Blé
-            DB::table('raw_materials')->where('id', '=', 5)->update(['price' => '']);   // Lait
-            DB::table('raw_materials')->where('id', '=', 6)->update(['price' => '']);   // Beurre
+            // // Update raw materials prices
+            // DB::table('raw_materials')->where('id', '=', 1)->update(['price' => '']);   // Sucre
+            // DB::table('raw_materials')->where('id', '=', 4)->update(['price' => '']);   // Blé
+            // DB::table('raw_materials')->where('id', '=', 5)->update(['price' => '']);   // Lait
+            // DB::table('raw_materials')->where('id', '=', 6)->update(['price' => '']);   // Beurre
 
             $entreprises = Entreprise::all();
             foreach ($entreprises as $entrep) {
@@ -343,19 +340,17 @@ class IndicatorUpdaterController
 
                     "text" => "La nouvelle loi des finances a été mise en place!",
                     "title" => "Loi des finances",
-                    "icon_path" => "",
+                    "icon_path" => "/assets/icons/loi_finance.svg",
 
                     "style" => "scenario",
                 ];
                 event(new NewNotification($notification));
             }
-        }
-
-        else if ($scenario == 'crise cacao') {
+        } else if ($scenario == 'crise cacao') {
             // Update cocoa availability
-            DB::table('raw_materials_supplier')
-                ->where('raw_material_id', '=', 9)
-                ->update(['is_available' => false]);   // Chocolat
+            // DB::table('raw_materials_supplier')
+            //     ->where('raw_material_id', '=', 9)
+            //     ->update(['is_available' => false]);   // Chocolat
 
             // Update % population
 
@@ -369,27 +364,25 @@ class IndicatorUpdaterController
 
                     "text" => "Une crise de cacao frappe l'industrie!",
                     "title" => "Crise cacao",
-                    "icon_path" => "",
+                    "icon_path" => "/assets/icons/cacao.svg",
 
                     "style" => "scenario",
                 ];
                 event(new NewNotification($notification));
             }
-        }
-
-        else if ($scenario == 'war start') {
+        } else if ($scenario == 'war start') {
             // Update raw materials prices
-            DB::table('raw_materials')->where('id', '=', 1)->update(['price' => '']);   // Sucre
-            DB::table('raw_materials')->where('id', '=', 4)->update(['price' => '']);   // Blé
-            DB::table('raw_materials')->where('id', '=', 8)->update(['price' => '']);   // Avoine
+            // DB::table('raw_materials')->where('id', '=', 1)->update(['price' => '']);   // Sucre
+            // DB::table('raw_materials')->where('id', '=', 4)->update(['price' => '']);   // Blé
+            // DB::table('raw_materials')->where('id', '=', 8)->update(['price' => '']);   // Avoine
 
-            // Update CA taxes %
-            $this->set_game_setting('ca_tax_percent', '');
+            // // Update CA taxes %
+            // $this->set_game_setting('ca_tax_percent', '');
 
-            // Update % population
+            // // Update % population
 
-            // Update RH decrease factor
-            $this->set_game_setting('workers_mood_decay_rate', '');
+            // // Update RH decrease factor
+            // $this->set_game_setting('workers_mood_decay_rate', '');
 
             $entreprises = Entreprise::all();
             foreach ($entreprises as $entrep) {
@@ -400,30 +393,28 @@ class IndicatorUpdaterController
                     "store" => true,
 
                     "text" => "Une guerre se déclenche et chamboule l'industrie mondiale!",
-                    "title" => "Guerre",
-                    "icon_path" => "",
+                    "title" => "Guerre_1",
+                    "icon_path" => "/assets/icons/war.svg",
 
                     "style" => "scenario",
                 ];
                 event(new NewNotification($notification));
             }
-        }
-
-        else if ($scenario == 'war middle') {
+        } else if ($scenario == 'war middle') {
             // Update delivery times
-            DB::table('raw_materials_supplier')->update(['time_to_deliver' => DB::raw('time_to_deliver' * 1)]);
+            // DB::table('raw_materials_supplier')->update(['time_to_deliver' => DB::raw('time_to_deliver' * 1)]);
 
-            // Update loans interests
+            // // Update loans interests
 
-            // Update % population
+            // // Update % population
 
-            // Update machines prices
-            $this->set_game_setting('machines_lv1_price', '');
-            $this->set_game_setting('machines_lv2_price', '');
-            $this->set_game_setting('machines_lv3_price', '');
+            // // Update machines prices
+            // $this->set_game_setting('machines_lv1_price', '');
+            // $this->set_game_setting('machines_lv2_price', '');
+            // $this->set_game_setting('machines_lv3_price', '');
 
-            // Update RH decrease factor
-            $this->set_game_setting('workers_mood_decay_rate', '');
+            // // Update RH decrease factor
+            // $this->set_game_setting('workers_mood_decay_rate', '');
 
             $entreprises = Entreprise::all();
             foreach ($entreprises as $entrep) {
@@ -434,33 +425,31 @@ class IndicatorUpdaterController
                     "store" => true,
 
                     "text" => "La guerre continue et ses répercussions se font sentir!",
-                    "title" => "Guerre",
-                    "icon_path" => "",
+                    "title" => "Guerre_2",
+                    "icon_path" => "/assets/icons/war.svg",
 
                     "style" => "scenario",
                 ];
                 event(new NewNotification($notification));
             }
-        }
-
-        else if ($scenario == 'war end') {
+        } else if ($scenario == 'war end') {
             // Update % population
 
             // Update raw materials prices
-            DB::table('raw_materials')->where('id', '=', 1)->update(['price' => '']);   // Sucre
-            DB::table('raw_materials')->where('id', '=', 4)->update(['price' => '']);   // Blé
-            DB::table('raw_materials')->where('id', '=', 8)->update(['price' => '']);   // Avoine
+            // DB::table('raw_materials')->where('id', '=', 1)->update(['price' => '']);   // Sucre
+            // DB::table('raw_materials')->where('id', '=', 4)->update(['price' => '']);   // Blé
+            // DB::table('raw_materials')->where('id', '=', 8)->update(['price' => '']);   // Avoine
 
-            // Update CA taxes %
-            $this->set_game_setting('ca_tax_percent', '');
+            // // Update CA taxes %
+            // $this->set_game_setting('ca_tax_percent', '');
 
-            // Update machines prices
-            $this->set_game_setting('machines_lv1_price', '');
-            $this->set_game_setting('machines_lv2_price', '');
-            $this->set_game_setting('machines_lv3_price', '');
+            // // Update machines prices
+            // $this->set_game_setting('machines_lv1_price', '');
+            // $this->set_game_setting('machines_lv2_price', '');
+            // $this->set_game_setting('machines_lv3_price', '');
 
-            // Update RH decrease factor
-            $this->set_game_setting('workers_mood_decay_rate', '');
+            // // Update RH decrease factor
+            // $this->set_game_setting('workers_mood_decay_rate', '');
 
             // Update marketing price
 
@@ -473,8 +462,8 @@ class IndicatorUpdaterController
                     "store" => true,
 
                     "text" => "La guerre se termine enfin...",
-                    "title" => "Guerre",
-                    "icon_path" => "",
+                    "title" => "Guerre_3",
+                    "icon_path" => "/assets/icons/war.svg",
 
                     "style" => "scenario",
                 ];

@@ -9,9 +9,9 @@
         >
             Classement
         </h1>
-        <button class="absolute top-10 left-10" @click="refresh">
+        <!-- <button class="absolute top-10 left-10" @click="refresh">
             <img src="/assets/icons/refresh.svg" alt="refresh icon" />
-        </button>
+        </button> -->
 
         <transition-group
             name="flip-list"
@@ -158,6 +158,9 @@ export default {
         this.getListing();
     },
     mounted() {
+        setInterval(() => {
+            this.getListing();
+        }, 60000);
         /*
 			if(this.showFs == false){
 				this.show_score = false
