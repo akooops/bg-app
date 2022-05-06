@@ -310,7 +310,7 @@ class IndicatorUpdaterController
 
                     "store" => true,
 
-                    "text" => "Des incendies se sont déclénchés!",
+                    "text" => "Des incendies se sont déclenchés!",
                     "title" => "Incendies",
                     "icon_path" => "",
 
