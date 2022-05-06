@@ -161,7 +161,13 @@
                 </select>
                 <button
                     @click="showActionInfo"
-                    class="bg-vN bg-opacity-85 text-white mx-auto py-2 px-11 mb-8 text-lg font-medium rounded-3xl"
+                    class="bg-opacity-85 mx-auto py-2 px-11 mb-8 text-lg font-medium rounded-3xl"
+                    :class="
+                        loaded_prices
+                            ? 'bg-gray-100 text-vN text-opacity-20'
+                            : 'bg-vN text-white'
+                    "
+                    :disabled="loaded_prices"
                 >
                     Lancer
                 </button>
@@ -344,6 +350,18 @@
                                     ) in selectedProd.raw_materials"
                                     :key="key"
                                     class="text-vN border-b border-tableBorder"
+                                    :class="
+                                        material.pivot.quantity *
+                                            launch_data.quantity <=
+                                        stock.find((item) => {
+                                            return (
+                                                item.id ==
+                                                material.pivot.raw_material_id
+                                            );
+                                        }).quantity
+                                            ? ''
+                                            : 'bg-red-100'
+                                    "
                                 >
                                     <td
                                         class="flex justify-center icon-material py-1"
@@ -799,20 +817,11 @@ export default {
 
                     audit: 60000,
 
-                    maintenance_lv1:
-                        this.machine.buy_price_lv1 *
-                        (1 - this.indicators["machines_lv1_health"]["value"]) *
-                        this.indicators["nb_machines_lv1"]["value"],
+                    maintenance_lv1: 0,
 
-                    maintenance_lv2:
-                        this.machine.buy_price_lv2 *
-                        (1 - this.indicators["machines_lv2_health"]["value"]) *
-                        this.indicators["nb_machines_lv2"]["value"],
+                    maintenance_lv2: 0,
 
-                    maintenance_lv3:
-                        this.machine.buy_price_lv3 *
-                        (1 - this.indicators["machines_lv3_health"]["value"]) *
-                        this.indicators["nb_machines_lv3"]["value"],
+                    maintenance_lv3: 0,
                 },
                 phrase: "",
                 result_phrase: "",
@@ -902,7 +911,7 @@ export default {
             }
         },
 
-        'machine.buy_price_lv1': function() {
+        "machine.buy_price_lv1": function () {
             this.action.price["maintenance_lv1"] =
                 this.machine.buy_price_lv1 *
                 (1 - this.indicators["machines_lv1_health"]["value"]) *
@@ -912,7 +921,7 @@ export default {
             this.verifyProd();
         },
 
-        'machine.buy_price_lv2': function() {
+        "machine.buy_price_lv2": function () {
             this.action.price["maintenance_lv2"] =
                 this.machine.buy_price_lv2 *
                 (1 - this.indicators["machines_lv2_health"]["value"]) *
@@ -922,7 +931,7 @@ export default {
             this.verifyProd();
         },
 
-        'machine.buy_price_lv3': function() {
+        "machine.buy_price_lv3": function () {
             this.action.price["maintenance_lv3"] =
                 this.machine.buy_price_lv3 *
                 (1 - this.indicators["machines_lv3_health"]["value"]) *
@@ -932,7 +941,7 @@ export default {
             this.verifyProd();
         },
 
-        'indicators': function (n) {
+        indicators: function (n) {
             this.action.price["maintenance_lv1"] =
                 this.machine.buy_price_lv1 *
                 (1 - n["machines_lv1_health"]["value"]) *
@@ -953,6 +962,14 @@ export default {
         },
     },
     computed: {
+        loaded_prices() {
+            return (
+                this.machine.buy_price_lv1 +
+                    this.machine.buy_price_lv2 +
+                    this.machine.buy_price_lv3 ==
+                0
+            );
+        },
         selectedProd() {
             return this.products.find(
                 (item) => item.id == this.launch_data.prod_id
@@ -1039,7 +1056,7 @@ export default {
                         },
                         position: "bottom-right",
                         className: "toast-success",
-                        duration: 3000,
+                        duration: 5000,
                     });
                 })
                 .catch((e) => {
@@ -1055,7 +1072,7 @@ export default {
                         },
                         position: "bottom-right",
                         className: "toast-error",
-                        duration: 3000,
+                        duration: 5000,
                     });
 
                     this.launch_data.prod_id = 5;
@@ -1096,8 +1113,11 @@ export default {
                 // this.launch_data.quantity * this.selectedProd.machine_units,
 
                 labor_lv1:
-                    (this.launch_data.machine_lvl == 1 ? 1 : this.launch_data.machine_lvl == 2 ? 2 : 3) *
-                    this.launch_data.machine_nb,
+                    (this.launch_data.machine_lvl == 1
+                        ? 1
+                        : this.launch_data.machine_lvl == 2
+                        ? 2
+                        : 3) * this.launch_data.machine_nb,
 
                 labor_lv2:
                     this.launch_data.machine_lvl == 3

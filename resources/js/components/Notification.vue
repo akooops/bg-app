@@ -140,6 +140,10 @@ export default {
             window.Echo.channel("entreprise_" + this.user.id).listen(
                 "NewNotification",
                 (e) => {
+                    if (e.notification.type === "GameReset") {
+                        window.localStorage.clear();
+                        document.location.href = "/";
+                    }
                     this.getNotifications();
                     this.$forceUpdate();
                     if (
