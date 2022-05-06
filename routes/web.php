@@ -40,7 +40,7 @@ Route::prefix("entreprise")->middleware(["auth", "entreprise", "game_started"])-
 	Route::get('/profil' , [EntrepriseController::class, 'showProfil'] )->name("profil");
 });
 
-Route::prefix("supplier")->middleware(["auth", "supplier"])->group(function () {
+Route::prefix("supplier")->middleware(["auth", "supplier", "game_started"])->group(function () {
 
     Route::get('/dashboard', function () {
         return view('supplier.dashboard');
@@ -59,7 +59,7 @@ Route::get('/logout', function () {
 
 Route::get('/banker/dashboard', function () {
     return view('banker.dashboard');
-})->middleware(['auth', 'banker'])->name('banker_dashboard');
+})->middleware(['auth', 'banker', 'game_started'])->name('banker_dashboard');
 
 
 Route::get('/leaderboard', function () {

@@ -102,6 +102,7 @@ class EntrepriseController extends Controller
 
     function getProducts(Request $request)
     {
+
         $products = Product::with('rawMaterials')->get()->all();
         return $products;
     }
@@ -168,6 +169,10 @@ class EntrepriseController extends Controller
 
     function createCommand(Request $request)
     {
+        if ($this->get_game_setting('game_started') == "0") {
+            return Response::json(["message" => "La simulation n'est pas en cours actuellement", "success" => false], 200);
+        }
+
         $entreprise_id = $request->entreprise_id;
 
         // Just a way of labeling the commands with ids
@@ -369,6 +374,10 @@ class EntrepriseController extends Controller
 
     public function launchProduction(Request $request)
     {
+        if ($this->get_game_setting('game_started') == "0") {
+            return Response::json(["message" => "La simulation n'est pas en cours actuellement", "success" => false], 200);
+        }
+
         $entreprise_id = $request->entreprise_id;
         $cost = $request->cost;
 
@@ -576,6 +585,10 @@ class EntrepriseController extends Controller
 
     function sellProd(Request $request)
     {
+        if ($this->get_game_setting('game_started') == "0") {
+            return Response::json(["message" => "La simulation n'est pas en cours actuellement", "success" => false], 200);
+        }
+
         $entreprise_id = $request->entreprise_id;
         $production_id = $request->production_id;
 
@@ -639,6 +652,10 @@ class EntrepriseController extends Controller
     // Machine functions
     public function buyMachine(Request $request)
     {
+        if ($this->get_game_setting('game_started') == "0") {
+            return Response::json(["message" => "La simulation n'est pas en cours actuellement", "success" => false], 200);
+        }
+
         $entreprise_id = $request->entreprise_id;
         $number = $request->number;
         $level = $request->level;
@@ -753,6 +770,10 @@ class EntrepriseController extends Controller
 
     public function sellMachine(Request $request)
     {
+        if ($this->get_game_setting('game_started') == "0") {
+            return Response::json(["message" => "La simulation n'est pas en cours actuellement", "success" => false], 200);
+        }
+
         $entreprise_id = $request->entreprise_id;
         $number = $request->number;
         $level = $request->level;
@@ -907,6 +928,10 @@ class EntrepriseController extends Controller
 
     public function applyProdAction(Request $request)
     {
+        if ($this->get_game_setting('game_started') == "0") {
+            return Response::json(["message" => "La simulation n'est pas en cours actuellement", "success" => false], 200);
+        }
+
         $type = $request->type;
         $price = $request->price;
         $entreprise_id = $request->entreprise_id;
@@ -1355,6 +1380,10 @@ class EntrepriseController extends Controller
 
     public function putProdToSell(Request $request)
     {
+        if ($this->get_game_setting('game_started') == "0") {
+            return Response::json(["message" => "La simulation n'est pas en cours actuellement", "success" => false], 200);
+        }
+        
         $entreprise_id = $request->entreprise_id;
         $product_id = $request->product_id;
 

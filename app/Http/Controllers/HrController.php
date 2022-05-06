@@ -44,6 +44,10 @@ class HrController extends Controller
 
     public function hireWorkers(Request $request)
     {
+        if ($this->get_game_setting('game_started') == "0") {
+            return Response::json(["message" => "La simulation n'est pas en cours actuellement", "success" => false], 200);
+        }
+
         $entreprise_id = $request->entreprise_id;
         $nb_workers = $request->workers;
 
@@ -73,6 +77,10 @@ class HrController extends Controller
 
     public function launchWorkshop(Request $request)
     {
+        if ($this->get_game_setting('game_started') == "0") {
+            return Response::json(["message" => "La simulation n'est pas en cours actuellement", "success" => false], 200);
+        }
+
         $nb_workers_to_train = $request->nb_workers_to_train;
         $price = $this->get_game_setting('workshop_price');
         $caisse = $this->getIndicator('caisse', $request->entreprise_id)['value'];
@@ -122,8 +130,13 @@ class HrController extends Controller
 
         return Response::json(["message" => $message, "success" => true], 200);
     }
+
     public function primeWorkers(Request $request)
     {
+        if ($this->get_game_setting('game_started') == "0") {
+            return Response::json(["message" => "La simulation n'est pas en cours actuellement", "success" => false], 200);
+        }
+
         $nb_workers_lv1 = $this->getIndicator('nb_workers_lv1', $request->entreprise_id)['value'];
         $nb_workers_lv2 = $this->getIndicator('nb_workers_lv2', $request->entreprise_id)['value'];
 
@@ -184,6 +197,10 @@ class HrController extends Controller
 
     public function fireWorkers(Request $request)
     {
+        if ($this->get_game_setting('game_started') == "0") {
+            return Response::json(["message" => "La simulation n'est pas en cours actuellement", "success" => false], 200);
+        }
+        
         $entreprise_id = $request->entreprise_id;
         $nb_workers_lv1_to_fire = $request->nb_workers_lv1_to_fire;
         $nb_workers_lv2_to_fire = $request->nb_workers_lv2_to_fire;

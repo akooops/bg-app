@@ -28,7 +28,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 //Route::post("/commands/create",[EntrepriseController::class,"createCommand"]);
 
-Route::prefix("entreprise")->group(function () {
+Route::prefix("entreprise")->middleware(['game_started'])->group(function () {
 	Route::get("/commands", [EntrepriseController::class, "getEntrepriseCommands"]);
 
 	Route::get("/stock", [EntrepriseController::class, "getStock"]);

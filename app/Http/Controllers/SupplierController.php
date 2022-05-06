@@ -61,6 +61,10 @@ class SupplierController extends Controller
 
     public function validateCommand(Request $request)
     {
+        if ($this->get_game_setting('game_started') == "0") {
+            return Response::json(["message" => "La simulation n'est pas en cours actuellement", "success" => false], 200);
+        }
+
         $command = $request->command;
         $supplier_id = $request->supplier_id;
         $cmd_id = $request->command_id;
@@ -107,6 +111,10 @@ class SupplierController extends Controller
 
     public function addToStock($stock_items, $cost)
     {
+        if ($this->get_game_setting('game_started') == "0") {
+            return Response::json(["message" => "La simulation n'est pas en cours actuellement", "success" => false], 200);
+        }
+        
         foreach ($stock_items as $stock_item) {
             $stock = DB::table("raw_materials_stock")->where("raw_material_id", "=", $stock_item["raw_material_id"])->where("entreprise_id", "=", $stock_item["entreprise_id"]);
             //dd(count($stock->get()->toArray()));

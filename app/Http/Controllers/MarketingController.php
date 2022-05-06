@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Traits\IndicatorTrait;
 use App\Events\NewNotification;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Response;
 
 class MarketingController extends Controller
 {
@@ -38,6 +39,10 @@ class MarketingController extends Controller
 
     public function createAd(Request $request)
     {
+        if ($this->get_game_setting('game_started') == "0") {
+            return Response::json(["message" => "La simulation n'est pas en cours actuellement", "success" => false], 200);
+        }
+        
         //Validating Data depending on the ad type
         $request->validate([
             'type' => 'required|string|max:255',

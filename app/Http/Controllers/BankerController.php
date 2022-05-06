@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Banker;
-use App\Models\Loan;
-use App\Models\Entreprise;
-use Illuminate\Support\Facades\DB;
-use App\Events\LoanCreated;
-use App\Events\NewNotification;
-use App\Traits\HelperTrait;
-use App\Traits\IndicatorTrait;
 use Carbon\Carbon;
+use App\Models\Loan;
+use App\Models\Banker;
+use App\Models\Entreprise;
+use App\Events\LoanCreated;
+use App\Traits\HelperTrait;
+use Illuminate\Http\Request;
+use App\Traits\IndicatorTrait;
+use App\Events\NewNotification;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Response;
 
 class BankerController extends Controller
 {
@@ -61,6 +62,10 @@ class BankerController extends Controller
     }
     function createLoan(Request $request)
     {
+        if ($this->get_game_setting('game_started') == "0") {
+            return Response::json(["message" => "La simulation n'est pas en cours actuellement", "success" => false], 200);
+        }
+        
         // Do the checks
         if ($request->amount <= 0) {
             return response()->json(["message" => "Impossible d'effectuer un prêt avec une somme nulle ou négative", "success" => false], 200);

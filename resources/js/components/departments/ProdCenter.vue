@@ -800,17 +800,17 @@ export default {
                     audit: 60000,
 
                     maintenance_lv1:
-                        10000 *
+                        this.machine.buy_price_lv1 *
                         (1 - this.indicators["machines_lv1_health"]["value"]) *
                         this.indicators["nb_machines_lv1"]["value"],
 
                     maintenance_lv2:
-                        15000 *
+                        this.machine.buy_price_lv2 *
                         (1 - this.indicators["machines_lv2_health"]["value"]) *
                         this.indicators["nb_machines_lv2"]["value"],
 
                     maintenance_lv3:
-                        20000 *
+                        this.machine.buy_price_lv3 *
                         (1 - this.indicators["machines_lv3_health"]["value"]) *
                         this.indicators["nb_machines_lv3"]["value"],
                 },
@@ -902,19 +902,52 @@ export default {
             }
         },
 
-        indicators: function (n) {
+        'machine.buy_price_lv1': function() {
             this.action.price["maintenance_lv1"] =
-                10000 *
+                this.machine.buy_price_lv1 *
+                (1 - this.indicators["machines_lv1_health"]["value"]) *
+                this.indicators["nb_machines_lv1"]["value"];
+
+            this.$forceUpdate();
+            this.verifyProd();
+        },
+
+        'machine.buy_price_lv2': function() {
+            this.action.price["maintenance_lv2"] =
+                this.machine.buy_price_lv2 *
+                (1 - this.indicators["machines_lv2_health"]["value"]) *
+                this.indicators["nb_machines_lv2"]["value"];
+
+            this.$forceUpdate();
+            this.verifyProd();
+        },
+
+        'machine.buy_price_lv3': function() {
+            this.action.price["maintenance_lv3"] =
+                this.machine.buy_price_lv3 *
+                (1 - this.indicators["machines_lv3_health"]["value"]) *
+                this.indicators["nb_machines_lv3"]["value"];
+
+            this.$forceUpdate();
+            this.verifyProd();
+        },
+
+        'indicators': function (n) {
+            this.action.price["maintenance_lv1"] =
+                this.machine.buy_price_lv1 *
                 (1 - n["machines_lv1_health"]["value"]) *
                 n["nb_machines_lv1"]["value"];
+
             this.action.price["maintenance_lv2"] =
-                10000 *
+                this.machine.buy_price_lv2 *
                 (1 - n["machines_lv2_health"]["value"]) *
                 n["nb_machines_lv2"]["value"];
+
             this.action.price["maintenance_lv3"] =
-                10000 *
+                this.machine.buy_price_lv3 *
                 (1 - n["machines_lv3_health"]["value"]) *
                 n["nb_machines_lv3"]["value"];
+
             this.$forceUpdate();
             this.verifyProd();
         },
