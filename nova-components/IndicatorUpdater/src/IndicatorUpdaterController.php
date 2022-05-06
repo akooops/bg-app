@@ -270,19 +270,21 @@ class IndicatorUpdaterController
         // Clear queue
         Artisan::call('queue:clear');
 
-        $notification = [
-            "entreprise_id" => $entrep->id,
-            "type" => "GameReset",
+        foreach ($entreprises as $entrep) {
+            $notification = [
+                "entreprise_id" => $entrep->id,
+                "type" => "GameReset",
 
-            "store" => false,
+                "store" => false,
 
-            "text" => "",
-            "title" => "",
-            "icon_path" => "",
+                "text" => "",
+                "title" => "",
+                "icon_path" => "",
 
-            "style" => "",
-        ];
-        event(new NewNotification($notification));
+                "style" => "",
+            ];
+            event(new NewNotification($notification));
+        }
 
         return response()->json(["message" => "Le jeu a été réinitialisé", "success" => true], 200);
 
@@ -300,7 +302,22 @@ class IndicatorUpdaterController
 
             // Update % population
 
-            // Update nb workers available
+            $entreprises = Entreprise::all();
+            foreach ($entreprises as $entrep) {
+                $notification = [
+                    "entreprise_id" => $entrep->id,
+                    "type" => "ScenarioNotif",
+
+                    "store" => true,
+
+                    "text" => "Des incendies se sont déclénchés!",
+                    "title" => "Incendies",
+                    "icon_path" => "",
+
+                    "style" => "scenario",
+                ];
+                event(new NewNotification($notification));
+            }
         }
 
         else if ($scenario == 'loi des finances') {
@@ -315,6 +332,23 @@ class IndicatorUpdaterController
             DB::table('raw_materials')->where('id', '=', 4)->update(['price' => '']);   // Blé
             DB::table('raw_materials')->where('id', '=', 5)->update(['price' => '']);   // Lait
             DB::table('raw_materials')->where('id', '=', 6)->update(['price' => '']);   // Beurre
+
+            $entreprises = Entreprise::all();
+            foreach ($entreprises as $entrep) {
+                $notification = [
+                    "entreprise_id" => $entrep->id,
+                    "type" => "ScenarioNotif",
+
+                    "store" => true,
+
+                    "text" => "La nouvelle loi des finances a été mise en place!",
+                    "title" => "Loi des finances",
+                    "icon_path" => "",
+
+                    "style" => "scenario",
+                ];
+                event(new NewNotification($notification));
+            }
         }
 
         else if ($scenario == 'crise cacao') {
@@ -324,6 +358,23 @@ class IndicatorUpdaterController
                 ->update(['is_available' => false]);   // Chocolat
 
             // Update % population
+
+            $entreprises = Entreprise::all();
+            foreach ($entreprises as $entrep) {
+                $notification = [
+                    "entreprise_id" => $entrep->id,
+                    "type" => "ScenarioNotif",
+
+                    "store" => true,
+
+                    "text" => "Une crise de cacao frappe l'industrie!",
+                    "title" => "Crise cacao",
+                    "icon_path" => "",
+
+                    "style" => "scenario",
+                ];
+                event(new NewNotification($notification));
+            }
         }
 
         else if ($scenario == 'war start') {
@@ -339,6 +390,23 @@ class IndicatorUpdaterController
 
             // Update RH decrease factor
             $this->set_game_setting('workers_mood_decay_rate', '');
+
+            $entreprises = Entreprise::all();
+            foreach ($entreprises as $entrep) {
+                $notification = [
+                    "entreprise_id" => $entrep->id,
+                    "type" => "ScenarioNotif",
+
+                    "store" => true,
+
+                    "text" => "Une guerre se déclenche et chamboule l'industrie mondiale!",
+                    "title" => "Guerre",
+                    "icon_path" => "",
+
+                    "style" => "scenario",
+                ];
+                event(new NewNotification($notification));
+            }
         }
 
         else if ($scenario == 'war middle') {
@@ -356,6 +424,23 @@ class IndicatorUpdaterController
 
             // Update RH decrease factor
             $this->set_game_setting('workers_mood_decay_rate', '');
+
+            $entreprises = Entreprise::all();
+            foreach ($entreprises as $entrep) {
+                $notification = [
+                    "entreprise_id" => $entrep->id,
+                    "type" => "ScenarioNotif",
+
+                    "store" => true,
+
+                    "text" => "La guerre continue et ses répercussions se font sentir!",
+                    "title" => "Guerre",
+                    "icon_path" => "",
+
+                    "style" => "scenario",
+                ];
+                event(new NewNotification($notification));
+            }
         }
 
         else if ($scenario == 'war end') {
@@ -378,6 +463,23 @@ class IndicatorUpdaterController
             $this->set_game_setting('workers_mood_decay_rate', '');
 
             // Update marketing price
+
+            $entreprises = Entreprise::all();
+            foreach ($entreprises as $entrep) {
+                $notification = [
+                    "entreprise_id" => $entrep->id,
+                    "type" => "ScenarioNotif",
+
+                    "store" => true,
+
+                    "text" => "La guerre se termine enfin...",
+                    "title" => "Guerre",
+                    "icon_path" => "",
+
+                    "style" => "scenario",
+                ];
+                event(new NewNotification($notification));
+            }
         }
 
         return response()->json(["message" => "Scénario " . $scenario . " lancé.", "success" => true], 200);
