@@ -11,7 +11,6 @@
                 <x-bar-dep name="Marketing" :active="request()->routeIs('marketing')" link="{{ route('marketing') }}"></x-bar-dep>
                 <x-bar-dep name="Finance" :active="request()->routeIs('finance')" link="{{ route('finance') }}"></x-bar-dep>
                 <x-bar-dep name="Human Resources" :active="request()->routeIs('rh')" link="{{ route('rh') }}"></x-bar-dep>
-                <x-bar-dep name="Profil" :active="request()->routeIs('profil')" link="{{ route('profil') }}"></x-bar-dep>
 
             </div>
             @endif
