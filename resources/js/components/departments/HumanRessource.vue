@@ -802,6 +802,17 @@ export default {
             });
         },
     },
+    watch: {
+        'bonus': function() {
+            if (this.bonus > this.bonus_max) {
+                this.bonus = this.bonus_max;
+            }
+
+            else if (this.bonus < 0) {
+                this.bonus = 0;
+            }
+        }
+    },
     created() {
         this.getIndiators();
         this.getHrData();

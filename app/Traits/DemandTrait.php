@@ -22,7 +22,7 @@ trait DemandTrait
         $total_population = (int) $this->get_game_setting('population');
 
         switch ($prod_id) {
-            case 5:
+            case 5:         // Galettes
                 $demand = $prices->map(function ($p) use ($total_population) {
                     $percent = sqrt(1 - ($p - 75) / 30);
 
@@ -36,7 +36,7 @@ trait DemandTrait
                 });
                 break;
 
-            case 6:
+            case 6:         // Cookies
                 $demand = $prices->map(function ($p) use ($total_population) {
                     $percent = sqrt(1 - pow(($p - 110) / 30, 4));
 
@@ -50,7 +50,7 @@ trait DemandTrait
                 });
                 break;
 
-            case 7:
+            case 7:         // Sandwiches
                 $demand = $prices->map(function ($p) use ($total_population) {
                     $percent = pow(1 - ($p - 260) / 70, 0.4);
 
@@ -64,9 +64,9 @@ trait DemandTrait
                 });
                 break;
 
-            case 8:
+            case 8:         // Céréales
                 $demand = $prices->map(function ($p) use ($total_population) {
-                    $percent = sqrt(1 - pow(($p - 250) / 75, 4));
+                    $percent = sqrt(1 - pow(($p - 300) / 75, 4));
 
                     $pop_percent = (float) Product::where('id', '=', 8)->first()["percent_population"];
 
@@ -78,7 +78,7 @@ trait DemandTrait
                 });
                 break;
 
-            case 9:
+            case 9:         // Granola
                 $demand = $prices->map(function ($p) use ($total_population) {
                     $percent = (exp(cos( pi() * ($p - 600) / 100 )) - exp(-1)) / (exp(1) - exp(-1));
 
@@ -196,7 +196,7 @@ trait DemandTrait
 
                 // $p = $price;
 
-                $percent = sqrt(1 - pow(($p - 250) / 75, 4));
+                $percent = sqrt(1 - pow(($p - 300) / 75, 4));
 
                 $pop_percent = (float) Product::where('id', '=', 8)->first()["percent_population"];
 

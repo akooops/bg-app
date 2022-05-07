@@ -384,7 +384,7 @@ class EntrepriseController extends Controller
         // Check if enough money to launch prod
         $caisse = $this->getIndicator("caisse", $entreprise_id)["value"];
         if ($cost > $caisse) {
-            $message = "Impossible de lancer la production: Disponnibiltiés insuffisantes.";
+            $message = "Impossible de lancer la production: Disponnibiltiés insuffisantes pour payer les frais de production.";
             return Response::json(["message" => $message, "success" => false], 200);
         }
 
@@ -1320,9 +1320,9 @@ class EntrepriseController extends Controller
         $health_lv2 = $this->getIndicator("machines_lv2_health", $entreprise_id)['value'];
         $health_lv3 = $this->getIndicator("machines_lv3_health", $entreprise_id)['value'];
 
-        $sell_price_lv1 = round($buy_price_lv1 * $health_lv1);
-        $sell_price_lv2 = round($buy_price_lv2 * $health_lv2);
-        $sell_price_lv3 = round($buy_price_lv3 * $health_lv3);
+        $sell_price_lv1 = round($buy_price_lv1 * $health_lv1 * 0.4);
+        $sell_price_lv2 = round($buy_price_lv2 * $health_lv2 * 0.4);
+        $sell_price_lv3 = round($buy_price_lv3 * $health_lv3 * 0.4);
 
         return [
             "buy_price_lv1" => $buy_price_lv1, "buy_price_lv2" => $buy_price_lv2, "buy_price_lv3" => $buy_price_lv3,
@@ -1383,7 +1383,7 @@ class EntrepriseController extends Controller
         if ($this->get_game_setting('game_started') == "0") {
             return Response::json(["message" => "La simulation n'est pas en cours actuellement", "success" => false], 200);
         }
-        
+
         $entreprise_id = $request->entreprise_id;
         $product_id = $request->product_id;
 
