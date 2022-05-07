@@ -992,13 +992,10 @@ export default {
                     : this.launch_data.machine_lvl == 2
                     ? this.machine.speed_lv2
                     : this.machine.speed_lv3) *
-                this.launch_data.machine_nb;
+                this.launch_data.machine_nb *
+                this.selectedProd.prod_speed_factor;
 
-            return (
-                (this.selectedProd.prod_speed_factor *
-                    this.launch_data.quantity) /
-                coeff
-            );
+            return this.launch_data.quantity / coeff;
         },
     },
     methods: {
