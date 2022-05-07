@@ -463,7 +463,7 @@
                                                 prodDelay * Math.pow(10, 2)
                                             ) / Math.pow(10, 2)
                                         }}
-                                        J
+                                        Sem
                                     </td>
                                     <!-- <td
                                         class="text-center text-yellow-500 py-1"
@@ -537,7 +537,7 @@
                                         Chiffre d’Affaire Estimés
                                     </th> -->
                                     <th class="px-4 text-vN py-3">
-                                        Coût Total Estimé
+                                        Frais supplémentaires
                                     </th>
                                     <!-- <th class="px-4 py-1 text-vN">
                                         Profit Estimé
@@ -913,7 +913,7 @@ export default {
 
         "machine.buy_price_lv1": function () {
             this.action.price["maintenance_lv1"] =
-                this.machine.buy_price_lv1 *
+                this.machine.buy_price_lv1 * 0.4 *
                 (1 - this.indicators["machines_lv1_health"]["value"]) *
                 this.indicators["nb_machines_lv1"]["value"];
 
@@ -923,7 +923,7 @@ export default {
 
         "machine.buy_price_lv2": function () {
             this.action.price["maintenance_lv2"] =
-                this.machine.buy_price_lv2 *
+                this.machine.buy_price_lv2 * 0.4 *
                 (1 - this.indicators["machines_lv2_health"]["value"]) *
                 this.indicators["nb_machines_lv2"]["value"];
 
@@ -933,7 +933,7 @@ export default {
 
         "machine.buy_price_lv3": function () {
             this.action.price["maintenance_lv3"] =
-                this.machine.buy_price_lv3 *
+                this.machine.buy_price_lv3 * 0.4 *
                 (1 - this.indicators["machines_lv3_health"]["value"]) *
                 this.indicators["nb_machines_lv3"]["value"];
 
@@ -943,17 +943,17 @@ export default {
 
         indicators: function (n) {
             this.action.price["maintenance_lv1"] =
-                this.machine.buy_price_lv1 *
+                this.machine.buy_price_lv1 * 0.4 *
                 (1 - n["machines_lv1_health"]["value"]) *
                 n["nb_machines_lv1"]["value"];
 
             this.action.price["maintenance_lv2"] =
-                this.machine.buy_price_lv2 *
+                this.machine.buy_price_lv2 * 0.4 *
                 (1 - n["machines_lv2_health"]["value"]) *
                 n["nb_machines_lv2"]["value"];
 
             this.action.price["maintenance_lv3"] =
-                this.machine.buy_price_lv3 *
+                this.machine.buy_price_lv3 * 0.4 *
                 (1 - n["machines_lv3_health"]["value"]) *
                 n["nb_machines_lv3"]["value"];
 
@@ -1442,7 +1442,7 @@ export default {
                     this.action.name = "Maintenance Niveau 1";
                     this.action.phrase =
                         "Vous allez réparer vos machines de niveau 1, celà vous coutera " +
-                        this.action.price["maintenance_lv1"].toPrecision(6) +
+                        this.action.price["maintenance_lv1"].toPrecision(8) +
                         " DA";
                     this.action.result_phrase =
                         "Vous pouvez vendre vos machines de niveau 1 avec un prix plus élevé.";
@@ -1451,7 +1451,7 @@ export default {
                     this.action.name = "Maintenance Niveau 2";
                     this.action.phrase =
                         "Vous allez réparer vos machines de niveau 2, celà vous coutera " +
-                        this.action.price["maintenance_lv2"].toPrecision(6) +
+                        this.action.price["maintenance_lv2"].toPrecision(8) +
                         " DA";
                     this.action.result_phrase =
                         "Vous pouvez vendre vos machines de niveau 2 avec un prix plus élevé.";
@@ -1460,7 +1460,7 @@ export default {
                     this.action.name = "Maintenance Niveau 3";
                     this.action.phrase =
                         "Vous allez réparer vos machines de niveau 3, celà vous coutera " +
-                        this.action.price["maintenance_lv3"].toPrecision(6) +
+                        this.action.price["maintenance_lv3"].toPrecision(8) +
                         " DA";
                     this.action.result_phrase =
                         "Vous pouvez vendre vos machines de niveau 3 avec un prix plus élevé.";
