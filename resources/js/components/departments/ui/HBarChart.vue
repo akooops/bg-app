@@ -65,7 +65,7 @@ export default {
         focus: 'series'
       },
       data: [320, 302, 301, 334, 390, 330, 320],
-      color: "rgba(11, 52, 52, 0.8)",
+      color: "rgba(11, 52, 52, 1)",
     },
     {
       name: 'Quantité en stock',

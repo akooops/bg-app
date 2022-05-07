@@ -1,5 +1,5 @@
 <template>
-    <v-chart ref="chart" class=""  :option="option" autoresize />
+    <v-chart ref="chart" :style="{height:this.height+'px'}"  :option="option" autoresize />
 </template>
 
 <script>
@@ -28,7 +28,7 @@ export default {
     components: {
         VChart,
     },
-    props: ["xData", "yData", "unit", "width"],
+    props: ["xData", "yData", "unit", "width","height"],
     data() {
         return {
             option: {

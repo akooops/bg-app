@@ -13,20 +13,20 @@
         <div class="w-full border-b border-[#807A7A33]"></div>
         <div class="w-full flex items-center">
             <div
-                class="flex gap-4 justify-evenly w-full rounded-xl"
-                style="background: rgba(178, 208, 107, 0.1)"
+                class="flex gap-4 justify-evenly w-full "
+                
             >
-                <div class="flex flex-col text-left p-4">
-                    <h1 class="text-gray-400">Disponibilités</h1>
+                <div class="flex flex-col text-left p-4 rounded-xl flex-1 shadow-lg" style="background: rgba(178, 208, 107, 0.1)">
+                    <h1 class="text-gray-500">Disponibilités</h1>
                     <h1 class="text-4xl">{{ caisse }}</h1>
                 </div>
-                <div class="flex flex-col text-left p-4">
-                    <h1 class="text-gray-400">Dettes</h1>
+                <div class="flex flex-col text-left p-4 rounded-xl flex-1 shadow-lg" style="background: rgba(178, 208, 107, 0.1)">
+                    <h1 class="text-gray-500">Dettes</h1>
                     <h1 class="text-4xl">{{ dettes }}</h1>
                 </div>
 
-                <div class="flex flex-col text-left p-4">
-                    <h1 class="text-gray-400">Abonnées</h1>
+                <div class="flex flex-col text-left p-4 rounded-xl flex-1 shadow-lg" style="background: rgba(178, 208, 107, 0.1)">
+                    <h1 class="text-gray-500">Abonnées</h1>
                     <h1 v-if="mark != null" class="text-4xl">
                         {{ Math.round(mark.nb_subscribers.value.toFixed(2)) }}
                     </h1>
@@ -34,8 +34,8 @@
                         0
                     </h1>
                 </div>
-                <div class="flex flex-col text-left p-4">
-                    <h1 class="text-gray-400">Présence RSS</h1>
+                <div class="flex flex-col text-left p-4 rounded-xl flex-1 shadow-lg" style="background: rgba(178, 208, 107, 0.1)">
+                    <h1 class="text-gray-500">Présence RSS</h1>
                     <h1 v-if="mark != null" class="text-4xl">
                         {{ mark.social_presence.value.toFixed(2) }}
                     </h1>
@@ -43,8 +43,8 @@
                         0
                     </h1>
                 </div>
-                <div class="flex flex-col text-left p-4">
-                    <h1 class="text-gray-400">Présence Média</h1>
+                <div class="flex flex-col text-left p-4 rounded-xl flex-1 shadow-lg" style="background: rgba(178, 208, 107, 0.1)">
+                    <h1 class="text-gray-500">Présence Média</h1>
                     <h1 v-if="mark != null" class="text-4xl">
                         {{ mark.media_presence.value.toFixed(2) }}
                     </h1>
@@ -52,8 +52,8 @@
                         0
                     </h1>
                 </div>
-                <div class="flex flex-col text-left p-4">
-                    <h1 class="text-gray-400">Présence aux event</h1>
+                <div class="flex flex-col text-left p-4 rounded-xl flex-1 shadow-lg" style="background: rgba(178, 208, 107, 0.1)">
+                    <h1 class="text-gray-500">Présence aux event</h1>
                     <h1 v-if="mark != null" class="text-4xl">
                         {{ mark.events_presence.value.toFixed(2) }}
                     </h1>
@@ -64,9 +64,9 @@
             </div>
         </div>
 
-        <div class="flex h-max items-end bg-white shadow-lg">
-            <div class="w-2/3">
-                <h2 class="text-xl font-bold text-vN text-center py-3">
+        <div class="flex h-max gap-2">
+            <div class="w-2/3 bg-white shadow-lg h-auto">
+                <h2 class="text-xl font-bold text-vN ml-4  py-3">
                     Vos Ventes
                 </h2>
                 <VenteGraph
@@ -80,18 +80,24 @@
                 >
                 </VenteGraph>
             </div>
-            <div class="w-1/3">
-                <h2 class="text-xl font-bold text-vN text-center py-3">
+            <div class="w-2/3 bg-white shadow-lg">
+                <h2 class="ml-4  text-xl align-top font-bold text-vN  py-3">
                     Vos approvisionnement
                 </h2>
-                <BarChart :yData="stock_quatity" :xData="stock_name"></BarChart>
+                
+                 <BarChart :yData="stock_quatity" :xData="stock_name" :width="20" :height="350"></BarChart>
+             
+                
             </div>
         </div>
 
         <div
-            class="flex flex-row bg-white shadow-lg rounded-lg h-max justify-around"
+            class="flex flex-row  rounded-lg h-max gap-4"
         >
-            <div class="w-1/3 justify-end flex flex-col h-full mt-5 mb-7">
+            <div class=" w-3/5 bg-white shadow-lg justify-end flex flex-col h-full ">
+                <h2 class="ml-4 py-3 text-xl font-bold text-vN ">
+                    Vos ressources
+                </h2>
                 <nav class="text-sm flex justify-center gap-8">
                     <button
                         @click="page_index = 'machines'"
@@ -106,7 +112,7 @@
                     </button>
 
                     <button
-                        @click="page_index = 'employees'"
+                        @click="page_index  = 'employees'"
                         :class="
                             page_index == 'employees'
                                 ? 'border-b-2 border-vert text-vert'
@@ -119,6 +125,7 @@
                 </nav>
 
                 <div v-if="page_index == 'machines' && machine != null">
+                    <div>
                     <CircleChart
                         :legend="[
                             machine[0].name.replace('Machines -', ''),
@@ -132,13 +139,13 @@
                         :simple="false"
                         class="vv"
                     ></CircleChart>
-
+                 </div>
                     <div class="flex flex-row w-5/6 mx-auto mt-2">
                         <div class="rounded-l-full bg-vN h-2 w-full"></div>
                         <div class="rounded-r-full bg-jaune h-2 w-full"></div>
                     </div>
 
-                    <div class="w-full flex justify-around mt-6">
+                    <div class="w-full flex justify-around mt-6 mb-6">
                         <div class="flex flex-col w-max gap-3">
                             <div class="flex flex-row items-center gap-4">
                                 <div class="w-4 h-4 rounded-full bg-vN"></div>
@@ -181,6 +188,7 @@
                 </div>
 
                 <div v-if="page_index == 'employees'">
+                    <div>
                     <CircleChart
                         :legend="[
                             employee[0].name.replace('Employés - ', ''),
@@ -193,13 +201,14 @@
                         :simple="false"
                         class="vv"
                     ></CircleChart>
-
-                    <div class="flex flex-row w-5/6 mx-auto mt-2">
-                        <div class="rounded-l-full bg-vN h-2 w-full"></div>
-                        <div class="rounded-r-full bg-jaune h-2 w-full"></div>
                     </div>
 
-                    <div class="w-full flex justify-around mt-6">
+                    <div class="flex flex-row w-5/6 mx-auto mt-2">
+                        <div class="rounded-l-full bg-vN h-2 " ></div>
+                        <div class="rounded-r-full bg-jaune h-2 " ></div>
+                    </div>
+
+                    <div class="w-full flex justify-around mt-6 mb-6">
                         <div class="flex flex-col w-max gap-3">
                             <div class="flex flex-row items-center gap-4">
                                 <div class="w-4 h-4 rounded-full bg-vN"></div>
@@ -259,9 +268,9 @@
             </div>
 
             <div
-                class="w-3/5 py-4 pl-8 flex flex-col gap-4 items-center text-center"
+                class="w-full bg-white shadow-lg py-4 pl-8 flex flex-col gap-4"
             >
-                <h2 class="self-start text-xl font-bold text-vN mx-auto">
+                <h2 class=" text-xl font-bold text-vN  ">
                     Suivi de production
                 </h2>
                 <HBarChart

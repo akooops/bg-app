@@ -175,7 +175,7 @@
         </div>
         <Modal v-if="launch_prod_modal" class="openmodal">
             <template v-slot:content>
-                <div class="flex flex-col w-2/5 px-6 mx-auto gap-3">
+                <div class="flex flex-col w-[60px] px-6 mx-auto gap-3">
                     <h1 class="text-vert font-semibold text-2xl font-heading">
                         Lancer une production
                     </h1>
@@ -323,7 +323,7 @@
                     </div>
                 </div>
 
-                <div class="flex flex-col w-4/5 px-6">
+                <div class="flex flex-col w-[100px] px-6">
                     <h1 class="text-vN pl-3 font-bold font-heading text-lg">
                         Informations importantes
                     </h1>
