@@ -9,7 +9,7 @@
             <div
                 class="w-12 p-1 h-12 relative flex justify-center items-center rounded-full text-sm text-white uppercase bg-vN"
             >
-                <img src="/assets/logo/IEC_WHITE.png" alt="IEC logo" />
+            <a href="/entreprise/profil"> <img src="/assets/logo/IEC_WHITE.png" alt="IEC logo" /></a>
             </div>
             <button
                 @click="show_menu = !show_menu"
