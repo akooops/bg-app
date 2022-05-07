@@ -230,7 +230,9 @@
                         </h1>
                         <h1 class="opacity-80">
                             L'humeur de vos employés augmentera de :
-                            <span class="text-vert"> {{ mood_increase * 100 }}% </span>
+                            <span class="text-vert">
+                                {{ mood_increase * 100 }}%
+                            </span>
                         </h1>
                     </div>
 
@@ -609,25 +611,25 @@ export default {
                     if (resp.data.success) {
                         this.show_success = true;
                         this.show_error = false;
-                        this.$toasted.success("Formation lancée", {
-                            keepOnHover: true,
-                            icon: {
-                                name: "✔",
-                            },
-                            position: "bottom-right",
-                            className: "toast-success",
-                            duration: 1000,
-                        });
+                        // this.$toasted.success("Formation lancée", {
+                        //     keepOnHover: true,
+                        //     icon: {
+                        //         name: "✔",
+                        //     },
+                        //     position: "bottom-right",
+                        //     className: "toast-success",
+                        //     duration: 1000,
+                        // });
                     } else {
-                        this.$toasted.error("Pas autant d'employés", {
-                            keepOnHover: true,
-                            icon: {
-                                name: "❌",
-                            },
-                            position: "bottom-right",
-                            className: "toast-error",
-                            duration: 1000,
-                        });
+                        // this.$toasted.error("Pas autant d'employés", {
+                        //     keepOnHover: true,
+                        //     icon: {
+                        //         name: "❌",
+                        //     },
+                        //     position: "bottom-right",
+                        //     className: "toast-error",
+                        //     duration: 1000,
+                        // });
                         this.show_success = false;
                         this.show_error = true;
                     }
@@ -650,27 +652,27 @@ export default {
                 })
                 .then((resp) => {
                     if (resp.data.success) {
-                        this.$toasted.success("Primes attribuées", {
-                            keepOnHover: true,
-                            icon: {
-                                name: "✔",
-                            },
-                            position: "bottom-right",
-                            className: "toast-success",
-                            duration: 1000,
-                        });
+                        // this.$toasted.success("Primes attribuées", {
+                        //     keepOnHover: true,
+                        //     icon: {
+                        //         name: "✔",
+                        //     },
+                        //     position: "bottom-right",
+                        //     className: "toast-success",
+                        //     duration: 1000,
+                        // });
                         this.show_success = true;
                         this.show_error = false;
                     } else {
-                        this.$toasted.error("Primes non attribuées", {
-                            keepOnHover: true,
-                            icon: {
-                                name: "❌",
-                            },
-                            position: "bottom-right",
-                            className: "toast-error",
-                            duration: 1000,
-                        });
+                        // this.$toasted.error("Primes non attribuées", {
+                        //     keepOnHover: true,
+                        //     icon: {
+                        //         name: "❌",
+                        //     },
+                        //     position: "bottom-right",
+                        //     className: "toast-error",
+                        //     duration: 1000,
+                        // });
                         this.show_success = false;
                         this.show_error = true;
                     }
@@ -691,27 +693,27 @@ export default {
                 })
                 .then((resp) => {
                     if (resp.data.success) {
-                        this.$toasted.success("Debut des recrutements", {
-                            keepOnHover: true,
-                            icon: {
-                                name: "✔",
-                            },
-                            position: "bottom-right",
-                            className: "toast-success",
-                            duration: 1000,
-                        });
+                        // this.$toasted.success("Debut des recrutements", {
+                        //     keepOnHover: true,
+                        //     icon: {
+                        //         name: "✔",
+                        //     },
+                        //     position: "bottom-right",
+                        //     className: "toast-success",
+                        //     duration: 1000,
+                        // });
                         this.show_success = true;
                         this.show_error = false;
                     } else {
-                        this.$toasted.error("Employés non recrutés", {
-                            keepOnHover: true,
-                            icon: {
-                                name: "❌",
-                            },
-                            position: "bottom-right",
-                            className: "toast-error",
-                            duration: 1000,
-                        });
+                        // this.$toasted.error("Employés non recrutés", {
+                        //     keepOnHover: true,
+                        //     icon: {
+                        //         name: "❌",
+                        //     },
+                        //     position: "bottom-right",
+                        //     className: "toast-error",
+                        //     duration: 1000,
+                        // });
                         this.show_success = false;
                         this.show_error = true;
                     }

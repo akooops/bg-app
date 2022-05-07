@@ -1,7 +1,7 @@
 <template>
     <transition name="modal">
         <div
-            class="fixed z-50 inset-0 h-3/4 bg-opacity-50 overflow-auto rounded-2xl m-auto w-3/4 text-vN"
+            class="fixed z-50 inset-0 h-3/4 bg-opacity-50 overflow-auto rounded-2xl m-auto w-3/5 text-vN"
         >
             <!-- <div class="z-10" aria-hidden="true">
                 <div class="absolute inset-0 bg-gray-100 opacity-75"></div>
@@ -10,7 +10,7 @@
             <!-- This element is to trick the browser into centering the modal contents. -->
 
             <div
-                class="relative flex gap-x-16 pr-8 items-center mx-auto my-auto bg-white rounded-2xl h-full w-full"
+                class="relative flex gap-x-8 pr-8 items-center mx-auto my-auto bg-white rounded-2xl h-full w-full"
                 style="box-shadow: 2px 6px 47px 4px rgba(0, 0, 0, 0.25)"
                 role="dialog"
                 aria-modal="true"

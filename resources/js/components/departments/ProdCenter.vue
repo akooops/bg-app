@@ -993,7 +993,8 @@ export default {
                     ? this.machine.speed_lv2
                     : this.machine.speed_lv3) *
                 this.launch_data.machine_nb *
-                this.selectedProd.prod_speed_factor * 26;
+                this.selectedProd.prod_speed_factor *
+                26;
 
             return this.launch_data.quantity / coeff;
         },
@@ -1317,25 +1318,25 @@ export default {
                         if (resp.data.success) {
                             this.show_success = true;
                             this.show_error = false;
-                            this.$toasted.success("Machine(s) Achetée(s)", {
-                                keepOnHover: true,
-                                icon: {
-                                    name: "✔",
-                                },
-                                position: "bottom-right",
-                                className: "toast-success",
-                                duration: 3000,
-                            });
+                            // this.$toasted.success("Machine(s) Achetée(s)", {
+                            //     keepOnHover: true,
+                            //     icon: {
+                            //         name: "✔",
+                            //     },
+                            //     position: "bottom-right",
+                            //     className: "toast-success",
+                            //     duration: 3000,
+                            // });
                         } else {
-                            this.$toasted.error("Machine(s) Achetée(s)", {
-                                keepOnHover: true,
-                                icon: {
-                                    name: "❌",
-                                },
-                                position: "bottom-right",
-                                className: "toast-error",
-                                duration: 3000,
-                            });
+                            // this.$toasted.error("Machine(s) Achetée(s)", {
+                            //     keepOnHover: true,
+                            //     icon: {
+                            //         name: "❌",
+                            //     },
+                            //     position: "bottom-right",
+                            //     className: "toast-error",
+                            //     duration: 3000,
+                            // });
                             this.show_success = false;
                             this.show_error = true;
                         }
@@ -1388,27 +1389,27 @@ export default {
                         this.machine.transaction_lv = 1;
 
                         if (resp.data.success) {
-                            this.$toasted.success("Machine(s) Vendue(s)", {
-                                keepOnHover: true,
-                                icon: {
-                                    name: "✔",
-                                },
-                                position: "bottom-right",
-                                className: "toast-success",
-                                duration: 2000,
-                            });
+                            // this.$toasted.success("Machine(s) Vendue(s)", {
+                            //     keepOnHover: true,
+                            //     icon: {
+                            //         name: "✔",
+                            //     },
+                            //     position: "bottom-right",
+                            //     className: "toast-success",
+                            //     duration: 2000,
+                            // });
                             this.show_success = true;
                             this.show_error = false;
                         } else {
-                            this.$toasted.error("Machine(s) Vendue(s)", {
-                                keepOnHover: true,
-                                icon: {
-                                    name: "❌",
-                                },
-                                position: "bottom-right",
-                                className: "toast-error",
-                                duration: 2000,
-                            });
+                            // this.$toasted.error("Machine(s) Vendue(s)", {
+                            //     keepOnHover: true,
+                            //     icon: {
+                            //         name: "❌",
+                            //     },
+                            //     position: "bottom-right",
+                            //     className: "toast-error",
+                            //     duration: 2000,
+                            // });
                             this.show_success = false;
                             this.show_error = true;
                         }
@@ -1489,27 +1490,27 @@ export default {
                     if (resp.data.success) {
                         this.show_success = true;
                         this.show_error = false;
-                        this.$toasted.show(resp.data.message, {
-                            keepOnHover: true,
-                            singleton: true,
-                            icon: {
-                                name: "✔",
-                            },
-                            position: "bottom-right",
-                            className: "toast-success",
-                            duration: 3000,
-                        });
+                        // this.$toasted.show(resp.data.message, {
+                        //     keepOnHover: true,
+                        //     singleton: true,
+                        //     icon: {
+                        //         name: "✔",
+                        //     },
+                        //     position: "bottom-right",
+                        //     className: "toast-success",
+                        //     duration: 3000,
+                        // });
                     } else {
-                        this.$toasted.show(resp.data.message, {
-                            keepOnHover: true,
-                            singleton: true,
-                            icon: {
-                                name: "❌",
-                            },
-                            position: "bottom-right",
-                            className: "toast-error",
-                            duration: 3000,
-                        });
+                        // this.$toasted.show(resp.data.message, {
+                        //     keepOnHover: true,
+                        //     singleton: true,
+                        //     icon: {
+                        //         name: "❌",
+                        //     },
+                        //     position: "bottom-right",
+                        //     className: "toast-error",
+                        //     duration: 3000,
+                        // });
                         this.show_success = false;
                         this.show_error = true;
                     }
