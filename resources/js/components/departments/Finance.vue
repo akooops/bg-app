@@ -188,6 +188,7 @@
                     class="vv1"
                     orient="vertical"
                     left="2%"
+                    :name="'Part du marché'"
                     bottom="center"
                 ></CircleChart>
             </div>

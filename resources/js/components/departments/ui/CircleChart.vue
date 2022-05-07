@@ -28,7 +28,7 @@ export default {
     components: {
         VChart,
     },
-    props: ["legend", "serie","simple",'vv','bottom','left','orient'],
+    props: ["legend", "serie","simple",'vv','bottom','left','orient','name'],
     watch: {
         serie: function (n, o) {
             this.$forceUpdate();
@@ -45,7 +45,7 @@ export default {
                 },
                 series: [
                     {
-                        name: "Part du Marché",
+                        name: this.name,
                         type: "pie",
                         radius: ["40%", "70%"],
                         label: {
@@ -91,7 +91,9 @@ export default {
         this.option.legend.bottom = this.bottom;
          this.option.legend.left = this.left;
            this.option.legend.orient = this.orient;
-        this.option.series[0].data = this.serie;
+        this.option.series[0].name = this.name;
+                this.option.series[0].data = this.serie;
+
         if (this.simple == true){
                 this.option.series[0].itemStyle  = {borderRadius: 10,
                                                     borderColor: "#fff",
