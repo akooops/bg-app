@@ -338,9 +338,11 @@
                                 >
                                     <th class="px-3 py-3">Matière première</th>
                                     <th class="px-3 py-3">
-                                        Quantité nécessaire
+                                        Quantité nécessaire (KG)
                                     </th>
-                                    <th class="px-3 py-3">Quantité en stock</th>
+                                    <th class="px-3 py-3">
+                                        Quantité en stock (KG)
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -913,7 +915,8 @@ export default {
 
         "machine.buy_price_lv1": function () {
             this.action.price["maintenance_lv1"] =
-                this.machine.buy_price_lv1 * 0.4 *
+                this.machine.buy_price_lv1 *
+                0.4 *
                 (1 - this.indicators["machines_lv1_health"]["value"]) *
                 this.indicators["nb_machines_lv1"]["value"];
 
@@ -923,7 +926,8 @@ export default {
 
         "machine.buy_price_lv2": function () {
             this.action.price["maintenance_lv2"] =
-                this.machine.buy_price_lv2 * 0.4 *
+                this.machine.buy_price_lv2 *
+                0.4 *
                 (1 - this.indicators["machines_lv2_health"]["value"]) *
                 this.indicators["nb_machines_lv2"]["value"];
 
@@ -933,27 +937,35 @@ export default {
 
         "machine.buy_price_lv3": function () {
             this.action.price["maintenance_lv3"] =
-                this.machine.buy_price_lv3 * 0.4 *
+                this.machine.buy_price_lv3 *
+                0.4 *
                 (1 - this.indicators["machines_lv3_health"]["value"]) *
                 this.indicators["nb_machines_lv3"]["value"];
 
             this.$forceUpdate();
             this.verifyProd();
         },
-
+        "machine.transaction_nb": function (n) {
+            if (n < 0) {
+                this.machine.transaction_nb = 0;
+            }
+        },
         indicators: function (n) {
             this.action.price["maintenance_lv1"] =
-                this.machine.buy_price_lv1 * 0.4 *
+                this.machine.buy_price_lv1 *
+                0.4 *
                 (1 - n["machines_lv1_health"]["value"]) *
                 n["nb_machines_lv1"]["value"];
 
             this.action.price["maintenance_lv2"] =
-                this.machine.buy_price_lv2 * 0.4 *
+                this.machine.buy_price_lv2 *
+                0.4 *
                 (1 - n["machines_lv2_health"]["value"]) *
                 n["nb_machines_lv2"]["value"];
 
             this.action.price["maintenance_lv3"] =
-                this.machine.buy_price_lv3 * 0.4 *
+                this.machine.buy_price_lv3 *
+                0.4 *
                 (1 - n["machines_lv3_health"]["value"]) *
                 n["nb_machines_lv3"]["value"];
 

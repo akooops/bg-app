@@ -89,7 +89,8 @@
                     !new_changes ||
                     sending_changes ||
                     !canSell ||
-                    item.quantity == 0
+                    item.quantity == 0 ||
+                    quantity_selling == 0
                 "
             >
                 Vendre
@@ -131,7 +132,8 @@ export default {
                 let quant_temp = this.item.quantity;
 
                 this.item.price = this.price;
-                this.item.quantity -= (this.quantity_selling - this.item.quantity_selling);
+                this.item.quantity -=
+                    this.quantity_selling - this.item.quantity_selling;
 
                 axios
                     .post("/api/entreprise/sell-product", data)

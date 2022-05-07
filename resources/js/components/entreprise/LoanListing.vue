@@ -661,6 +661,16 @@ export default {
                 this.full = true;
             }
         },
+        amount: function (n) {
+            if (n < 0) {
+                this.amount = 0;
+            }
+        },
+        deadline: function (n) {
+            if (n < 0) {
+                this.deadline = 0;
+            }
+        },
     },
     methods: {
         payFull() {

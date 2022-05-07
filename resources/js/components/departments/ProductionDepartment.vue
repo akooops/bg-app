@@ -417,7 +417,7 @@
                                 class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
                                 @click="sort('quantity')"
                             >
-                                Quantité
+                                Quantité (Unités)
                             </th>
                             <th
                                 class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"

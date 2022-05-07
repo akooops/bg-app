@@ -65,7 +65,7 @@
                             Délai de Livraison
                         </th>
                         <th class="p-3 text-sm table-cell text-center">
-                            Quantité
+                            Quantité (KG)
                         </th>
                         <th class="p-3 text-sm table-cell text-center">
                             Prix Unitaire
@@ -149,7 +149,10 @@
                             class="lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
                         ></td>
                         <td
-                            class="bg-tableBorder lg:w-auto p-1 text-center block lg:table-cell relative lg:static " v-bind:class='{"text-red-600" : this.caisse < this.overallPrice }'
+                            class="bg-tableBorder lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                            v-bind:class="{
+                                'text-red-600': this.caisse < this.overallPrice,
+                            }"
                         >
                             {{ overallPrice }} DA
                         </td>
@@ -234,10 +237,15 @@
                     @click="sendCommand"
                     class="text-white my-3 w-34 h-10 px-3 py-2 rounded-full"
                     v-bind:class="{
-                        'bg-gray-500': (this.command_sent == true || this.caisse < this.overallPrice),
+                        'bg-gray-500':
+                            this.command_sent == true ||
+                            this.caisse < this.overallPrice,
                         'bg-vN': this.command_sent == false,
                     }"
-                    :disabled="this.command_sent == true || this.caisse < this.overallPrice"
+                    :disabled="
+                        this.command_sent == true ||
+                        this.caisse < this.overallPrice
+                    "
                 >
                     Envoyer la commande
                 </button>

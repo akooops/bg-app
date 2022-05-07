@@ -519,6 +519,18 @@ export default {
             });
         },
     },
+    watch: {
+        "new_ad.amount": function (n) {
+            if (n < 0) {
+                this.new_ad.amount = 0;
+            }
+        },
+        "new_ad.days": function (n) {
+            if (n < 0) {
+                this.new_ad.days = 0;
+            }
+        },
+    },
     created() {
         axios
             .get("/api/navbar", {

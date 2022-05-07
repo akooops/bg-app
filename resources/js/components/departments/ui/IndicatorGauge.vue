@@ -76,7 +76,7 @@ export default {
                         },
                         data: [
                             {
-                                value: 100,
+                                value: 0,
                                 name: "niveau 1",
                             },
                         ],
