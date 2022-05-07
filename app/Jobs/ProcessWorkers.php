@@ -59,32 +59,31 @@ class ProcessWorkers implements ShouldQueue
             $workers_mood = $this->getIndicator("workers_mood", $entreprise->id)["value"];
             $workers_mood_th = $this->get_game_setting("mood_quitting_threshold");
 
-            // Workers mood decreases every month
-            if ($current_date % 4 == 0 && $nb_workers > 0) {
-                $workers_mood_decay_rate = $this->get_game_setting('workers_mood_decay_rate');
-                if ($workers_mood - $workers_mood_decay_rate >= 0) {
-                    $this->updateIndicator("workers_mood", $entreprise->id, -1 * $workers_mood_decay_rate);
-                } else {
-                    $this->setIndicator("workers_mood", $entreprise->id, 0);
-                }
+            $workers_mood_decay_rate = $this->get_game_setting('workers_mood_decay_rate');
 
-                $notification = [
-                    "entreprise_id" => $entreprise->id,
-                    "type" => "WorkersUpdate",
-
-                    "store" => true,
-
-                    "text" => "L'humeur au sein de votre entreprise décroit",
-                    "title" => "L'humeur décroit",
-                    "icon_path" => "/assets/icons/info.svg",
-
-                    "style" => "info",
-                ];
-                event(new NewNotification($notification));
+            // Workers mood decreases every week
+            if ($workers_mood - $workers_mood_decay_rate >= 0) {
+                $this->updateIndicator("workers_mood", $entreprise->id, -1 * $workers_mood_decay_rate);
+            } else {
+                $this->setIndicator("workers_mood", $entreprise->id, 0);
             }
 
+            $notification = [
+                "entreprise_id" => $entreprise->id,
+                "type" => "WorkersUpdate",
+
+                "store" => false,
+
+                "text" => "L'humeur au sein de votre entreprise décroit",
+                "title" => "L'humeur décroit",
+                "icon_path" => "/assets/icons/info.svg",
+
+                "style" => "info",
+            ];
+            event(new NewNotification($notification));
+
             // Warn that workers are going to quit
-            if ($workers_mood - $this->get_game_setting('workers_mood_decay_rate') < $workers_mood_th && $nb_workers > 0) {
+            if ($workers_mood - $workers_mood_decay_rate < $workers_mood_th && $workers_mood > $workers_mood_th && $nb_workers > 0) {
                 if ($current_date % 30 == 0) {
                     $notification = [
                         "entreprise_id" => $entreprise->id,

@@ -189,6 +189,11 @@ class IndicatorUpdaterController
         DB::table('raw_materials')->where('id', '=', 8)->update(['price' => 400]);
         DB::table('raw_materials')->where('id', '=', 9)->update(['price' => 900]);
 
+        // Reset machine prices
+        $this->set_game_setting('machines_lv1_price', 500000);
+        $this->set_game_setting('machines_lv2_price', 1250000);
+        $this->set_game_setting('machines_lv3_price', 2500000);
+
         // Reset products' left demand
         DB::table('products')->update(['left_demand' => DB::raw('avg_demand')]);
 
@@ -227,9 +232,50 @@ class IndicatorUpdaterController
         foreach ($entreprises as $entrep) {
             foreach ($raw_materials as $raw_mat) {
                 $stock = DB::table('raw_materials_stock')->where('entreprise_id', '=', $entrep->id)->where('raw_material_id', '=', $raw_mat->id);
+
+                $quantity = 0;
+
+                switch ($raw_mat->id) {
+                    case 1:         // Sucre
+                        $quantity = 137.2;
+                        break;
+
+                    case 2:         // Emballage
+                        $quantity = 130;
+                        break;
+
+                    case 3:         // Additifs
+                        $quantity = 36;
+                        break;
+
+                    case 4:         // Blé
+                        $quantity = 636;
+                        break;
+
+                    case 5:         // Lait
+                        $quantity = 125;
+                        break;
+
+                    case 6:         // Beurre
+                        $quantity = 165;
+                        break;
+
+                    case 7:         // Fruits
+                        $quantity = 180;
+                        break;
+
+                    case 8:         // Avoine
+                        $quantity = 250;
+                        break;
+
+                    case 9:         // Cacao
+                        $quantity = 295;
+                        break;
+                }
+
                 if ($stock->count() > 0) {
                     $stock->update([
-                        'quantity' => 0,
+                        'quantity' => $quantity,
                     ]);
                 }
                 else {
@@ -237,7 +283,7 @@ class IndicatorUpdaterController
                         [
                             'entreprise_id' => $entrep->id,
                             'raw_material_id' => $raw_mat->id,
-                            'quantity' => 0,
+                            'quantity' => $quantity,
                             'phase' => 0,
                         ],
                     ]);
@@ -295,12 +341,17 @@ class IndicatorUpdaterController
 
         if ($scenario == 'incendies') {
             // Update raw materials prices
-            DB::table('raw_materials')->where('id', '=', 1)->update(['price' => '']);   // Sucre
-            DB::table('raw_materials')->where('id', '=', 4)->update(['price' => '']);   // Blé
-            DB::table('raw_materials')->where('id', '=', 5)->update(['price' => '']);   // Lait
-            DB::table('raw_materials')->where('id', '=', 8)->update(['price' => '']);   // Avoine
+            DB::table('raw_materials')->where('id', '=', 1)->update(['price' => 200]);   // Sucre
+            DB::table('raw_materials')->where('id', '=', 4)->update(['price' => 130]);   // Blé
+            DB::table('raw_materials')->where('id', '=', 5)->update(['price' => 1300]);   // Lait
+            DB::table('raw_materials')->where('id', '=', 8)->update(['price' => 700]);   // Avoine
 
             // Update % population
+            DB::table('products')->where('id', '=', 1)->update(['percent_population' => 0.99]);     // Galettes
+            DB::table('products')->where('id', '=', 2)->update(['percent_population' => 0.55]);     // Cookies
+            DB::table('products')->where('id', '=', 3)->update(['percent_population' => 0.35]);     // Sandwich glacé
+            DB::table('products')->where('id', '=', 4)->update(['percent_population' => 0.35]);     // Céréales
+            DB::table('products')->where('id', '=', 5)->update(['percent_population' => 0.1]);      // Granola
 
             $entreprises = Entreprise::all();
             foreach ($entreprises as $entrep) {
@@ -322,16 +373,16 @@ class IndicatorUpdaterController
 
         else if ($scenario == 'loi des finances') {
             // Update CA taxes %
-            $this->set_game_setting('ca_tax_percent', '');
+            $this->set_game_setting('ca_tax_percent', 0.215);
 
             // Update pollution taxes %
             $this->set_game_setting('pollution_unit_cost', '');
 
             // Update raw materials prices
-            DB::table('raw_materials')->where('id', '=', 1)->update(['price' => '']);   // Sucre
-            DB::table('raw_materials')->where('id', '=', 4)->update(['price' => '']);   // Blé
-            DB::table('raw_materials')->where('id', '=', 5)->update(['price' => '']);   // Lait
-            DB::table('raw_materials')->where('id', '=', 6)->update(['price' => '']);   // Beurre
+            DB::table('raw_materials')->where('id', '=', 1)->update(['price' => 230]);   // Sucre
+            DB::table('raw_materials')->where('id', '=', 4)->update(['price' => 132]);   // Blé
+            DB::table('raw_materials')->where('id', '=', 5)->update(['price' => 1350]);   // Lait
+            DB::table('raw_materials')->where('id', '=', 6)->update(['price' => 1000]);   // Beurre
 
             $entreprises = Entreprise::all();
             foreach ($entreprises as $entrep) {
@@ -358,6 +409,12 @@ class IndicatorUpdaterController
                 ->update(['is_available' => false]);   // Chocolat
 
             // Update % population
+            DB::table('products')->where('id', '=', 1)->update(['percent_population' => 0.85]);   // Galettes
+            DB::table('products')->where('id', '=', 2)->update(['percent_population' => 0.47]);   // Cookies
+            DB::table('products')->where('id', '=', 3)->update(['percent_population' => 0.32]);   // Sandwich glacé
+            DB::table('products')->where('id', '=', 4)->update(['percent_population' => 0.28]);   // Céréales
+            DB::table('products')->where('id', '=', 5)->update(['percent_population' => 0.04]);   // Granola
+
 
             $entreprises = Entreprise::all();
             foreach ($entreprises as $entrep) {
@@ -379,17 +436,23 @@ class IndicatorUpdaterController
 
         else if ($scenario == 'war start') {
             // Update raw materials prices
-            DB::table('raw_materials')->where('id', '=', 1)->update(['price' => '']);   // Sucre
-            DB::table('raw_materials')->where('id', '=', 4)->update(['price' => '']);   // Blé
-            DB::table('raw_materials')->where('id', '=', 8)->update(['price' => '']);   // Avoine
+            DB::table('raw_materials')->where('id', '=', 1)->update(['price' => 250]);   // Sucre
+            DB::table('raw_materials')->where('id', '=', 4)->update(['price' => 140]);   // Blé
+            DB::table('raw_materials')->where('id', '=', 8)->update(['price' => 900]);   // Avoine
+            DB::table('raw_materials')->where('id', '=', 9)->update(['price' => 1100]);   // Cacao
 
             // Update CA taxes %
-            $this->set_game_setting('ca_tax_percent', '');
+            $this->set_game_setting('ca_tax_percent', 0.23);
 
             // Update % population
+            DB::table('products')->where('id', '=', 1)->update(['percent_population' => 0.9]);   // Galettes
+            DB::table('products')->where('id', '=', 2)->update(['percent_population' => 0.5]);   // Cookies
+            DB::table('products')->where('id', '=', 3)->update(['percent_population' => 0.35]);   // Sandwich glacé
+            DB::table('products')->where('id', '=', 4)->update(['percent_population' => 0.3]);   // Céréales
+            DB::table('products')->where('id', '=', 5)->update(['percent_population' => 0.05]);   // Granola
 
             // Update RH decrease factor
-            $this->set_game_setting('workers_mood_decay_rate', '');
+            $this->set_game_setting('workers_mood_decay_rate', 0.0575);
 
             $entreprises = Entreprise::all();
             foreach ($entreprises as $entrep) {
@@ -411,19 +474,25 @@ class IndicatorUpdaterController
 
         else if ($scenario == 'war middle') {
             // Update delivery times
-            DB::table('raw_materials_supplier')->update(['time_to_deliver' => DB::raw('time_to_deliver' * 1)]);
+            DB::table('raw_material_supplier')->where('supplier_id', 1)->update(['time_to_deliver' => 3]);
+            DB::table('raw_material_supplier')->where('supplier_id', 2)->update(['time_to_deliver' => 6]);
 
             // Update loans interests
 
             // Update % population
+            DB::table('products')->where('id', '=', 1)->update(['percent_population' => 0.9]);   // Galettes
+            DB::table('products')->where('id', '=', 2)->update(['percent_population' => 0.4]);   // Cookies
+            DB::table('products')->where('id', '=', 3)->update(['percent_population' => 0.28]);   // Sandwich glacé
+            DB::table('products')->where('id', '=', 4)->update(['percent_population' => 0.24]);   // Céréales
+            DB::table('products')->where('id', '=', 5)->update(['percent_population' => 0.05]);   // Granola
 
             // Update machines prices
-            $this->set_game_setting('machines_lv1_price', '');
-            $this->set_game_setting('machines_lv2_price', '');
-            $this->set_game_setting('machines_lv3_price', '');
+            $this->set_game_setting('machines_lv1_price', 600000);
+            $this->set_game_setting('machines_lv2_price', 1500000);
+            $this->set_game_setting('machines_lv3_price', 3000000);
 
             // Update RH decrease factor
-            $this->set_game_setting('workers_mood_decay_rate', '');
+            $this->set_game_setting('workers_mood_decay_rate', 0.0625);
 
             $entreprises = Entreprise::all();
             foreach ($entreprises as $entrep) {
@@ -445,22 +514,27 @@ class IndicatorUpdaterController
 
         else if ($scenario == 'war end') {
             // Update % population
+            DB::table('products')->where('id', '=', 1)->update(['percent_population' => 0.95]);   // Galettes
+            DB::table('products')->where('id', '=', 2)->update(['percent_population' => 0.55]);   // Cookies
+            DB::table('products')->where('id', '=', 3)->update(['percent_population' => 0.40]);   // Sandwich glacé
+            DB::table('products')->where('id', '=', 4)->update(['percent_population' => 0.35]);   // Céréales
+            DB::table('products')->where('id', '=', 5)->update(['percent_population' => 0.12]);   // Granola
 
             // Update raw materials prices
-            DB::table('raw_materials')->where('id', '=', 1)->update(['price' => '']);   // Sucre
-            DB::table('raw_materials')->where('id', '=', 4)->update(['price' => '']);   // Blé
-            DB::table('raw_materials')->where('id', '=', 8)->update(['price' => '']);   // Avoine
+            DB::table('raw_materials')->where('id', '=', 1)->update(['price' => 250]);   // Sucre
+            DB::table('raw_materials')->where('id', '=', 4)->update(['price' => 90]);   // Blé
+            DB::table('raw_materials')->where('id', '=', 8)->update(['price' => 700]);   // Avoine
 
             // Update CA taxes %
-            $this->set_game_setting('ca_tax_percent', '');
+            $this->set_game_setting('ca_tax_percent', 0.17);
 
             // Update machines prices
-            $this->set_game_setting('machines_lv1_price', '');
-            $this->set_game_setting('machines_lv2_price', '');
-            $this->set_game_setting('machines_lv3_price', '');
+            $this->set_game_setting('machines_lv1_price', 450000);
+            $this->set_game_setting('machines_lv2_price', 1125000);
+            $this->set_game_setting('machines_lv3_price', 2250000);
 
             // Update RH decrease factor
-            $this->set_game_setting('workers_mood_decay_rate', '');
+            $this->set_game_setting('workers_mood_decay_rate', 0.05);
 
             // Update marketing price
 
