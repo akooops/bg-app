@@ -2,10 +2,12 @@
 
 namespace App\Jobs;
 
+use App\Models\Entreprise;
 use App\Traits\HelperTrait;
 use Illuminate\Bus\Queueable;
 use Illuminate\Support\Facades\DB;
 use App\Events\SimulationDateChanged;
+use App\Models\Product;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -66,7 +68,14 @@ class WeeklyOperations implements ShouldQueue
         DB::table('products')->where('id', '=', 7)->update(['percent_population' => $pop_percent]);
 
         // Refresh products' left demand every week
-        DB::table('products')->update(['left_demand' => DB::raw('avg_demand')]);
+        $nb_entrep = count(Entreprise::all());
+        $population = $this->get_game_setting('population');
+        $coeff = $nb_entrep * $population / 2;
+        
+        $products = Product::all();
+        foreach($products as $product) {
+            DB::table('products')->where('id', $product->id)->update(['left_demand' => $coeff * $product->percent_population]);
+        }
 
         // Send changing date event
         event(new SimulationDateChanged());

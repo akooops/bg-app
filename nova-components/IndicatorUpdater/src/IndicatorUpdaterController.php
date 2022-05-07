@@ -399,9 +399,9 @@ class IndicatorUpdaterController
             }
         } else if ($scenario == 'crise cacao') {
             // Update cocoa availability
-            // DB::table('raw_materials_supplier')
-            //     ->where('raw_material_id', '=', 9)
-            //     ->update(['is_available' => false]);   // Chocolat
+            DB::table('raw_material_supplier')
+                ->where('raw_material_id', '=', 9)
+                ->update(['is_available' => false]);   // Chocolat
 
             // Update % population
             DB::table('products')->where('id', '=', 1)->update(['percent_population' => 0.85]);   // Galettes
