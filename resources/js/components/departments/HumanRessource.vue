@@ -562,6 +562,38 @@ export default {
             bonus_coeff: 0,
         };
     },
+    watch: {
+        nb_workers_to_train: function (n) {
+            if (n > this.indicators["nb_workers_lv1"].value) {
+                this.nb_workers_to_train =
+                    this.indicators["nb_workers_lv1"].value;
+            } else if (n < 0) {
+                this.nb_workers_to_train = 0;
+            }
+        },
+        nb_workers_lv1_to_fire: function (n) {
+            if (
+                n >
+                this.indicators["nb_workers_lv1"].value -
+                    this.indicators["nb_workers_lv1_busy"].value
+            ) {
+                this.nb_workers_lv1_to_fire =
+                    this.indicators["nb_workers_lv1"].value -
+                    this.indicators["nb_workers_lv1_busy"].value;
+            }
+        },
+        nb_workers_lv2_to_fire: function (n) {
+            if (
+                n >
+                this.indicators["nb_workers_lv2"].value -
+                    this.indicators["nb_workers_lv2_busy"].value
+            ) {
+                this.nb_workers_lv2_to_fire =
+                    this.indicators["nb_workers_lv2"].value -
+                    this.indicators["nb_workers_lv2_busy"].value;
+            }
+        },
+    },
     computed: {
         total_nb_employees() {
             return (

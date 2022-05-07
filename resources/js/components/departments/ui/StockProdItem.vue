@@ -74,15 +74,23 @@
                 @click="apply_changes(item)"
                 class="rounded-3xl font-semibold px-3 py-2 bg-vert text-white"
                 :class="
-                    new_changes && canSell
+                    new_changes &&
+                    canSell &&
+                    item.quantity > 0 &&
+                    quantity_selling > 0
                         ? 'bg-vert'
                         : sending_changes
                         ? 'bg-blue-200'
-                        : !canSell
-                        ? 'bg-red-500'
-                        : 'bg-gris text-black'
+                        : !canSell || item.quantity == 0 || quantity_selling > 0
+                        ? 'bg-gris text-black'
+                        : 'bg-red-500'
                 "
-                :disabled="!new_changes || sending_changes || !canSell"
+                :disabled="
+                    !new_changes ||
+                    sending_changes ||
+                    !canSell ||
+                    item.quantity == 0
+                "
             >
                 Vendre
             </button>

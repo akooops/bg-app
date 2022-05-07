@@ -283,6 +283,7 @@
                             type="number"
                             name="refund_amount"
                             v-model="refund_amount"
+                            :disabled="full"
                             class="ring-1 ring-tableBorder border-0 focus-within:ring-vert"
                             :max="selected_loan.remaining_amount"
                             :min="0"
@@ -306,6 +307,17 @@
                                     : 1
                             "
                         />
+                    </div>
+                    <div class="flex items-center rounded-md px-2 py-2">
+                        <input
+                            type="checkbox"
+                            @change="payFull"
+                            :checked="full"
+                            class="focus:ring-gray-500 h-4 w-4 text-gray-600 border-gray-150 rounded"
+                        />
+                        <label class="text-vN ml-2"
+                            >Payer la dette en entier</label
+                        >
                     </div>
                     <div>
                         <h2 class="text-vN text-lg font-heading font-medium">
@@ -544,6 +556,7 @@ export default {
     name: "EntrepriseLoanListing",
     data() {
         return {
+            full: false,
             loans: [],
             loans_loaded: false,
 
@@ -557,7 +570,9 @@ export default {
             create_error_message: "",
 
             accept: false,
-            selected_loan: null,
+            selected_loan: {
+                remaining_amount: 0,
+            },
             refund_amount: 0,
 
             pay_error_message: "",
@@ -639,8 +654,19 @@ export default {
             return true;
         },
     },
-    watch: {},
+    watch: {
+        refund_amount: function (n) {
+            if (n > this.selected_loan.remaining_amount) {
+                this.refund_amount = this.selected_loan.remaining_amount;
+                this.full = true;
+            }
+        },
+    },
     methods: {
+        payFull() {
+            this.full = !this.full;
+            this.refund_amount = this.selected_loan.remaining_amount;
+        },
         getLoans() {
             axios
                 .get("/api/loan/get", {
@@ -670,13 +696,15 @@ export default {
         },
         closePayModal() {
             this.refund_amount = 0;
-            this.selected_loan = null;
+            this.selected_loan = {};
             this.pay_loan_modal = false;
             this.pay_error_message = "";
             this.pay_message = "";
+            this.full = false;
         },
         openModal() {
             this.loan_modal = true;
+            this.full = false;
         },
         closeModal() {
             this.loan_modal = false;
@@ -684,6 +712,7 @@ export default {
             this.deadline = 0;
             this.create_message = "";
             this.errr_messsage = "";
+            this.full = false;
         },
         checkboxChanged() {
             this.accept = !this.accept;
@@ -734,6 +763,7 @@ export default {
                         this.message = resp.data.message;
                     });
             }
+            this.full = false;
         },
         sort(key) {
             this.reverse = !this.reverse;
