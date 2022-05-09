@@ -27,12 +27,19 @@
         <td
             class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
         >
+            {{ item.quantity_selling }}
+        </td>
+
+        <td
+            class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+        >
             <!-- {{ item.quantity_selling }} -->
             <input
                 type="number"
                 v-model.number="quantity_selling"
-                :min="item.quantity_selling"
-                :max="item.quantity_selling + item.quantity"
+                :min="0"
+                :max="item.quantity"
+                step="10"
                 class="w-4/5 text-center ring-1 ring-tableBorder border-0 focus-within:ring-vert"
             />
         </td>
@@ -75,22 +82,18 @@
                 class="rounded-3xl font-semibold px-3 py-2 bg-vert text-white"
                 :class="
                     new_changes &&
-                    canSell &&
-                    item.quantity > 0 &&
-                    quantity_selling > 0
+                    canSell
                         ? 'bg-vert'
                         : sending_changes
                         ? 'bg-blue-200'
-                        : !canSell || item.quantity == 0 || quantity_selling > 0
+                        : canSell
                         ? 'bg-gris text-black'
                         : 'bg-red-500'
                 "
                 :disabled="
                     !new_changes ||
                     sending_changes ||
-                    !canSell ||
-                    item.quantity == 0 ||
-                    quantity_selling == 0
+                    !canSell
                 "
             >
                 Vendre
@@ -110,7 +113,7 @@ export default {
             sending_changes: false,
 
             price: this.item.price,
-            quantity_selling: this.item.quantity_selling,
+            quantity_selling: 0,
         };
     },
 
@@ -124,16 +127,19 @@ export default {
                     entreprise_id: this.user.id,
                     product_id: product.id,
 
-                    new_selling_quantity: this.quantity_selling,
+                    new_selling_quantity: this.quantity_selling + this.item.quantity_selling,
                     new_price: this.price,
                 };
 
                 let price_temp = this.item.price;
                 let quant_temp = this.item.quantity;
+                let quant_sell_temp = this.item.quantity_selling;
 
                 this.item.price = this.price;
-                this.item.quantity -=
-                    this.quantity_selling - this.item.quantity_selling;
+                this.item.quantity -= this.quantity_selling;
+                this.item.quantity_selling += this.quantity_selling;
+
+                this.quantity_selling = 0;
 
                 axios
                     .post("/api/entreprise/sell-product", data)
@@ -141,7 +147,6 @@ export default {
                         this.sending_changes = false;
 
                         if (resp.data.success) {
-                            this.item.quantity_selling = this.quantity_selling;
                             this.$toasted.success(
                                 "Données de vente mises à jour",
                                 {
@@ -159,6 +164,7 @@ export default {
 
                             this.item.price = price_temp;
                             this.item.quantity = quant_temp;
+                            this.item.quantity_selling = quant_sell_temp;
                         }
                     });
             }
@@ -167,22 +173,17 @@ export default {
 
     watch: {
         quantity_selling: function () {
-            if (
-                this.quantity_selling >
-                this.item.quantity_selling + this.item.quantity
-            ) {
-                this.quantity_selling =
-                    this.item.quantity_selling + this.item.quantity;
-            } else if (this.quantity_selling < this.item.quantity_selling) {
-                this.quantity_selling = this.item.quantity_selling;
+            if (this.quantity_selling > this.item.quantity) {
+                this.quantity_selling = this.item.quantity;
+            }
+            else if (this.quantity_selling < 0) {
+                this.quantity_selling = 0;
             }
 
-            if (
-                this.quantity_selling == this.item.quantity_selling &&
-                this.price == this.item.price
-            ) {
+            if (this.quantity_selling == 0 && this.price == this.item.price) {
                 this.new_changes = false;
-            } else {
+            }
+            else {
                 this.new_changes = true;
             }
         },
@@ -194,27 +195,23 @@ export default {
                 this.price = this.item.price_max;
             }
 
-            if (
-                this.quantity_selling == this.item.quantity_selling &&
-                this.price == this.item.price
-            ) {
+            if (this.quantity_selling == 0 && this.price == this.item.price) {
                 this.new_changes = false;
             } else {
                 this.new_changes = true;
             }
         },
 
-        "item.quantity_selling": function () {
-            this.quantity_selling = this.item.quantity_selling;
-        },
+        // "item.quantity_selling": function () {
+        //     this.quantity_selling = this.item.quantity_selling;
+        // },
     },
 
     computed: {
         canSell() {
             if (
-                this.quantity_selling >
-                    this.item.quantity_selling + this.item.quantity ||
-                this.quantity_selling < this.item.quantity_selling
+                this.quantity_selling > this.item.quantity ||
+                this.quantity_selling < 0
             ) {
                 return false;
             }

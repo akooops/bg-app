@@ -7,7 +7,7 @@ import Toasted from "vue-toasted";
 
 axios.defaults.withCredentials = false;
 let local_url = "http://10.42.0.1:8000";
-let localhost = "http://10.90.90.22:8000";
+let localhost = "http://127.0.0.1:8000";
 axios.defaults.baseURL = localhost;
 
 Vue.component(
