@@ -117,7 +117,6 @@
                             {{ product_selected.price_max }}
                         </p>
                         <svg
-                            width="105"
                             height="17"
                             viewBox="0 0 105 17"
                             fill="none"
