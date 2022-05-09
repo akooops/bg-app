@@ -979,8 +979,8 @@ class EntrepriseController extends Controller
 
                 $day_5s = $this->getIndicator("5s_day", $entreprise_id)["value"];
 
-                if ($day_5s < 30) {
-                    $message = "Impossible de relancer les 5S: Il vous en reste encore " . (30 - $day_5s) . " jour(s)!";
+                if ($day_5s < 4) {
+                    $message = "Impossible de relancer les 5S: Il vous en reste encore " . (4 - $day_5s) . " semaine(s)!";
                     $notification = [
                         "type" => "ActionUpdate",
                         "entreprise_id" => $entreprise_id,
@@ -1019,8 +1019,8 @@ class EntrepriseController extends Controller
 
             case 'audit':
                 $reject_rate = $this->getIndicator("reject_rate", $entreprise_id)["value"];
-                if ($reject_rate < 0.01) {
-                    $message = "Vous ne pouvez plus réduire vos taux de rebuts.";
+                if ($reject_rate <= 0.001) {
+                    $message = "Vous ne pouvez plus réduire votre taux de rebut.";
                     $notification = [
                         "type" => "ActionUpdate",
                         "entreprise_id" => $entreprise_id,
@@ -1036,7 +1036,7 @@ class EntrepriseController extends Controller
                     event(new NewNotification($notification));
                     return Response::json(["message" => $message, "success" => false], 200);
                 } else {
-                    $this->updateIndicator("reject_rate", $entreprise_id, -0.01);
+                    $this->updateIndicator("reject_rate", $entreprise_id, -0.001);
                     $this->updateIndicator("caisse", $entreprise_id, -1 * $price);
 
                     $message = "Votre taux de rebut est maintenant plus faible.";
@@ -1055,6 +1055,9 @@ class EntrepriseController extends Controller
                     event(new NewNotification($notification));
                     return Response::json(["message" => $message, "success" => true], 200);
                 }
+
+                $this->setIndicator("reject_rate", $entreprise_id, max($reject_rate, 0.001));
+
                 break;
             case 'maintenance_lv1':
                 $nb_machines = $this->getIndicator("nb_machines_lv1", $entreprise_id)["value"];
