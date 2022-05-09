@@ -74,15 +74,24 @@
                 @click="apply_changes(item)"
                 class="rounded-3xl font-semibold px-3 py-2 bg-vert text-white"
                 :class="
-                    new_changes && canSell
+                    new_changes &&
+                    canSell &&
+                    item.quantity > 0 &&
+                    quantity_selling > 0
                         ? 'bg-vert'
                         : sending_changes
                         ? 'bg-blue-200'
-                        : !canSell
-                        ? 'bg-red-500'
-                        : 'bg-gris text-black'
+                        : !canSell || item.quantity == 0 || quantity_selling > 0
+                        ? 'bg-gris text-black'
+                        : 'bg-red-500'
                 "
-                :disabled="!new_changes || sending_changes || !canSell"
+                :disabled="
+                    !new_changes ||
+                    sending_changes ||
+                    !canSell ||
+                    item.quantity == 0 ||
+                    quantity_selling == 0
+                "
             >
                 Vendre
             </button>
@@ -119,16 +128,19 @@ export default {
                     new_price: this.price,
                 };
 
+                let price_temp = this.item.price;
+                let quant_temp = this.item.quantity;
+
+                this.item.price = this.price;
+                this.item.quantity -=
+                    this.quantity_selling - this.item.quantity_selling;
+
                 axios
                     .post("/api/entreprise/sell-product", data)
                     .then((resp) => {
                         this.sending_changes = false;
 
                         if (resp.data.success) {
-                            this.item.price = this.price;
-                            this.item.quantity -=
-                                this.quantity_selling -
-                                this.item.quantity_selling;
                             this.item.quantity_selling = this.quantity_selling;
                             this.$toasted.success(
                                 "Données de vente mises à jour",
@@ -144,6 +156,9 @@ export default {
                             );
                         } else {
                             this.new_changes = true;
+
+                            this.item.price = price_temp;
+                            this.item.quantity = quant_temp;
                         }
                     });
             }

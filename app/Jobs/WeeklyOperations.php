@@ -48,8 +48,8 @@ class WeeklyOperations implements ShouldQueue
         $this->set_game_setting("current_date", $current_date);
 
         // Delete old rows from stats and notifications tables
-        $nb_stat_weeks_to_keep = 20;
-        $nb_notif_weeks_to_keep = 20;
+        $nb_stat_weeks_to_keep = 10;
+        $nb_notif_weeks_to_keep = 10;
 
         DB::table('stats')->where('date', '<', $current_date - $nb_stat_weeks_to_keep)->delete();
         DB::table('notifications')->where('time', '<', $current_date - $nb_notif_weeks_to_keep)->delete();
@@ -71,7 +71,7 @@ class WeeklyOperations implements ShouldQueue
         $nb_entrep = count(Entreprise::all());
         $population = $this->get_game_setting('population');
         $coeff = $nb_entrep * $population / 2;
-        
+
         $products = Product::all();
         foreach($products as $product) {
             DB::table('products')->where('id', $product->id)->update(['left_demand' => $coeff * $product->percent_population]);

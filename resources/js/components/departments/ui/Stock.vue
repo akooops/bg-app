@@ -27,7 +27,7 @@
                         class="p-3 text-sm table-cell cursor-pointer hover:text-vert select-none"
                         @click="sort('quantity')"
                     >
-                        Quantité
+                        Quantité (KG)
                     </th>
                 </tr>
             </thead>

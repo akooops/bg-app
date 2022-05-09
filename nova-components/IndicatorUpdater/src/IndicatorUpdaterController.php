@@ -2,21 +2,22 @@
 
 namespace Manou\IndicatorUpdater;
 
+use App\Models\Product;
+use App\Models\Indicator;
 use App\Models\Entreprise;
+use App\Models\RawMaterial;
 use App\Traits\HelperTrait;
+use App\Traits\IndicatorTrait;
 use App\Events\NewNotification;
 use Illuminate\Support\Facades\DB;
 use App\Events\SimulationDateChanged;
-use App\Models\Indicator;
-use App\Models\Product;
-use App\Models\RawMaterial;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\Artisan;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 class IndicatorUpdaterController
 {
-    use HelperTrait;
+    use HelperTrait, IndicatorTrait;
 
     public function getIndicators(NovaRequest $request)
     {
@@ -30,6 +31,7 @@ class IndicatorUpdaterController
     public function updateIndicators(NovaRequest $request)
     {
         $indicator_id = $request->selected_indicator;
+        $indicator_code = DB::table('indicators')->where('id', $indicator_id)->first()->code;
         $entreprise_ids = $request->entreprise_ids;
 
         $operation = $request->selected_operation;
@@ -54,17 +56,24 @@ class IndicatorUpdaterController
                 ->where('indicator_id', $indicator_id);
 
             if ($operation == 'replace') {
-                $indicator->update(["value" => $value]);
-            } else if ($operation == 'add') {
-                $indicator->update(["value" => $indicator->first()->value + $value]);
-            } else if ($operation == 'mult') {
+                // $indicator->update(["value" => $value]);
+                $this->setIndicator($indicator_code, $entreprise_id, $value);
+            }
+            else if ($operation == 'add') {
+                // $indicator->update(["value" => $indicator->first()->value + $value]);
+                $this->updateIndicator($indicator_code, $entreprise_id, $value);
+            }
+            else if ($operation == 'mult') {
                 if ($value < 0) {
                     return response()->json(["message" => "Impossible de mettre l'indicateur à jour: multiplication par nombre négatif.", "success" => false], 200);
                 }
-                $indicator->update(["value" => $indicator->first()->value * $value]);
-            } else if ($operation == 'reset') {
-                $default_value = DB::table('indicators')->where('indicator_id', '=', $indicator_id)->first()->starting_value;
-                $indicator->update(["value" => $default_value]);
+                // $indicator->update(["value" => $indicator->first()->value * $value]);
+                $indicator->setIndicator($indicator_code, $entreprise_id, $indicator->first()->value * $value);
+            }
+            else if ($operation == 'reset') {
+                // $default_value = DB::table('indicators')->where('indicator_id', '=', $indicator_id)->first()->starting_value;
+                // $indicator->update(["value" => $default_value]);
+                $this->resetIndicator($indicator_code, $entreprise_id);
             }
 
             $notification = [
@@ -180,15 +189,15 @@ class IndicatorUpdaterController
         DB::table('game_settings')->update(['value' => DB::raw('default_value')]);
 
         // Reset raw materials prices
-        DB::table('raw_materials')->where('id', '=', 1)->update(['price' => 150]);
-        DB::table('raw_materials')->where('id', '=', 2)->update(['price' => 30]);
-        DB::table('raw_materials')->where('id', '=', 3)->update(['price' => 600]);
-        DB::table('raw_materials')->where('id', '=', 4)->update(['price' => 120]);
-        DB::table('raw_materials')->where('id', '=', 5)->update(['price' => 900]);
-        DB::table('raw_materials')->where('id', '=', 6)->update(['price' => 900]);
-        DB::table('raw_materials')->where('id', '=', 7)->update(['price' => 1300]);
-        DB::table('raw_materials')->where('id', '=', 8)->update(['price' => 400]);
-        DB::table('raw_materials')->where('id', '=', 9)->update(['price' => 900]);
+        DB::table('raw_materials')->where('id', '=', 1)->update(['price' => 70]);      // Sucre
+        DB::table('raw_materials')->where('id', '=', 2)->update(['price' => 30]);       // Emballage
+        DB::table('raw_materials')->where('id', '=', 3)->update(['price' => 500]);      // Additifs
+        DB::table('raw_materials')->where('id', '=', 4)->update(['price' => 50]);      // Blé
+        DB::table('raw_materials')->where('id', '=', 5)->update(['price' => 900]);      // Lait
+        DB::table('raw_materials')->where('id', '=', 6)->update(['price' => 750]);      // Beurre
+        DB::table('raw_materials')->where('id', '=', 7)->update(['price' => 1300]);     // Fruits
+        DB::table('raw_materials')->where('id', '=', 8)->update(['price' => 400]);      // Avoine
+        DB::table('raw_materials')->where('id', '=', 9)->update(['price' => 900]);      // Cacao
 
         // Reset machine prices
         $this->set_game_setting('machines_lv1_price', 500000);
@@ -340,9 +349,9 @@ class IndicatorUpdaterController
 
         if ($scenario == 'incendies') {
             // Update raw materials prices
-            DB::table('raw_materials')->where('id', '=', 1)->update(['price' => 200]);   // Sucre
-            DB::table('raw_materials')->where('id', '=', 4)->update(['price' => 130]);   // Blé
-            DB::table('raw_materials')->where('id', '=', 5)->update(['price' => 1300]);   // Lait
+            DB::table('raw_materials')->where('id', '=', 1)->update(['price' => 100]);   // Sucre
+            DB::table('raw_materials')->where('id', '=', 4)->update(['price' => 60]);   // Blé
+            DB::table('raw_materials')->where('id', '=', 5)->update(['price' => 1200]);   // Lait
             DB::table('raw_materials')->where('id', '=', 8)->update(['price' => 700]);   // Avoine
 
             // Update % population
@@ -370,16 +379,16 @@ class IndicatorUpdaterController
             }
         } else if ($scenario == 'loi des finances') {
             // Update CA taxes %
-            $this->set_game_setting('ca_tax_percent', 0.215);
+            $this->set_game_setting('ca_tax_percent', 0.15);
 
             // // Update pollution taxes %
             // $this->set_game_setting('pollution_unit_cost', '');
 
             // Update raw materials prices
-            DB::table('raw_materials')->where('id', '=', 1)->update(['price' => 230]);   // Sucre
-            DB::table('raw_materials')->where('id', '=', 4)->update(['price' => 132]);   // Blé
-            DB::table('raw_materials')->where('id', '=', 5)->update(['price' => 1350]);   // Lait
-            DB::table('raw_materials')->where('id', '=', 6)->update(['price' => 1000]);   // Beurre
+            DB::table('raw_materials')->where('id', '=', 1)->update(['price' => 130]);   // Sucre
+            DB::table('raw_materials')->where('id', '=', 4)->update(['price' => 63]);   // Blé
+            DB::table('raw_materials')->where('id', '=', 5)->update(['price' => 1250]);   // Lait
+            DB::table('raw_materials')->where('id', '=', 6)->update(['price' => 900]);   // Beurre
 
             $entreprises = Entreprise::all();
             foreach ($entreprises as $entrep) {
@@ -427,15 +436,16 @@ class IndicatorUpdaterController
                 ];
                 event(new NewNotification($notification));
             }
-        } else if ($scenario == 'war start') {
+        }
+        else if ($scenario == 'war start') {
             // Update raw materials prices
-            DB::table('raw_materials')->where('id', '=', 1)->update(['price' => 250]);   // Sucre
-            DB::table('raw_materials')->where('id', '=', 4)->update(['price' => 140]);   // Blé
+            DB::table('raw_materials')->where('id', '=', 1)->update(['price' => 130]);   // Sucre
+            DB::table('raw_materials')->where('id', '=', 4)->update(['price' => 65]);   // Blé
             DB::table('raw_materials')->where('id', '=', 8)->update(['price' => 900]);   // Avoine
             DB::table('raw_materials')->where('id', '=', 9)->update(['price' => 1100]);   // Cacao
 
             // Update CA taxes %
-            $this->set_game_setting('ca_tax_percent', 0.23);
+            $this->set_game_setting('ca_tax_percent', 0.17);
 
             // Update % population
             DB::table('products')->where('id', '=', 1)->update(['percent_population' => 0.9]);   // Galettes
@@ -510,12 +520,12 @@ class IndicatorUpdaterController
             DB::table('products')->where('id', '=', 5)->update(['percent_population' => 0.12]);   // Granola
 
             // Update raw materials prices
-            DB::table('raw_materials')->where('id', '=', 1)->update(['price' => 250]);   // Sucre
-            DB::table('raw_materials')->where('id', '=', 4)->update(['price' => 90]);   // Blé
-            DB::table('raw_materials')->where('id', '=', 8)->update(['price' => 700]);   // Avoine
+            DB::table('raw_materials')->where('id', '=', 1)->update(['price' => 80]);   // Sucre
+            DB::table('raw_materials')->where('id', '=', 4)->update(['price' => 50]);   // Blé
+            DB::table('raw_materials')->where('id', '=', 8)->update(['price' => 400]);   // Avoine
 
             // Update CA taxes %
-            $this->set_game_setting('ca_tax_percent', 0.17);
+            $this->set_game_setting('ca_tax_percent', 0.09);
 
             // Update machines prices
             $this->set_game_setting('machines_lv1_price', 450000);

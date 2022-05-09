@@ -307,9 +307,7 @@
                                     class="border-b border-t border-tableBorder text-vN"
                                 >
                                     <th class="px-4 py-3">Matière Premiere</th>
-                                    <th class="px-4 py-3">
-                                        Quantité Nécessaire
-                                    </th>
+                                    <th class="px-4 py-3">Quantité (KG)</th>
                                     <th class="px-4 py-3">Fournisseur</th>
                                     <th class="px-4 py-3">Date de Livraison</th>
                                     <th class="px-4 py-3">Statue</th>

@@ -333,12 +333,11 @@
                         <button
                             class="font-medium font-heading border-0 px-3 py-1 text-vN hover:text-vert bg-opacity-30"
                             :class="
-                                fire_sent
+                                nb_workers_lv2_to_fire == 0 &&
+                                nb_workers_lv1_to_fire == 0
+                                    ? ' text-gray-200 hover:text-gray-200'
+                                    : ' text-vN hover:text-vert' && fire_sent
                                     ? 'opacity-50'
-                                    : '' +
-                                      (nb_workers_lv2_to_fire == 0 &&
-                                          nb_workers_lv1_to_fire == 0)
-                                    ? 'text-gray-200 hover:text-gray-200'
                                     : ''
                             "
                             :disabled="
@@ -768,6 +767,49 @@ export default {
 
                 this.data_loaded = true;
             });
+        },
+    },
+    watch: {
+        bonus: function () {
+            if (this.bonus > this.bonus_max) {
+                this.bonus = this.bonus_max;
+            } else if (this.bonus < 0) {
+                this.bonus = 0;
+            }
+        },
+        nb_workers_to_train: function (n) {
+            if (n > this.indicators["nb_workers_lv1"].value) {
+                this.nb_workers_to_train =
+                    this.indicators["nb_workers_lv1"].value;
+            } else if (n < 0) {
+                this.nb_workers_to_train = 0;
+            }
+        },
+        nb_workers_lv1_to_fire: function (n) {
+            if (
+                n >
+                this.indicators["nb_workers_lv1"].value -
+                    this.indicators["nb_workers_lv1_busy"].value
+            ) {
+                this.nb_workers_lv1_to_fire =
+                    this.indicators["nb_workers_lv1"].value -
+                    this.indicators["nb_workers_lv1_busy"].value;
+            } else if (n < 0) {
+                this.nb_workers_lv1_to_fire = 0;
+            }
+        },
+        nb_workers_lv2_to_fire: function (n) {
+            if (
+                n >
+                this.indicators["nb_workers_lv2"].value -
+                    this.indicators["nb_workers_lv2_busy"].value
+            ) {
+                this.nb_workers_lv2_to_fire =
+                    this.indicators["nb_workers_lv2"].value -
+                    this.indicators["nb_workers_lv2_busy"].value;
+            } else if (n < 0) {
+                this.nb_workers_lv2_to_fire = 0;
+            }
         },
     },
     created() {

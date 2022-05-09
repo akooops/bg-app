@@ -1,7 +1,7 @@
 <template>
     <transition name="modal">
         <div
-            class="fixed z-50 inset-0 h-3/4 bg-opacity-50 overflow-auto rounded-2xl m-auto w-3/5 text-vN"
+            class="fixed z-[9999] inset-0 h-3/4 bg-opacity-50 overflow-auto rounded-2xl m-auto w-3/5 text-vN"
         >
             <!-- <div class="z-10" aria-hidden="true">
                 <div class="absolute inset-0 bg-gray-100 opacity-75"></div>
