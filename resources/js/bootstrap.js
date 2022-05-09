@@ -25,6 +25,4 @@ window.io = require('socket.io-client')
      broadcaster: 'socket.io',
      host:  '127.0.0.1:6001',
      namespace: 'App.Events',
-
-
  });

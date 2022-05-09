@@ -201,7 +201,7 @@
                             name="bonus"
                             v-model="bonus"
                             :min="0"
-                            :max="bonus_max"
+                            :max="Math.round(bonus_max)"
                             :step="
                                 bonus_max - bonus > 10000
                                     ? 10000
@@ -220,10 +220,10 @@
                         <h1 class="pt-3 opacity-80">
                             Le montant total est :
                             <span class="text-yellow-600"
-                                >{{
-                                    bonus *
+                                >{{ Math.round( bonus *
                                     (indicators["nb_workers_lv1"]["value"] +
-                                        indicators["nb_workers_lv2"]["value"])
+                                        indicators["nb_workers_lv2"]["value"]))
+
                                 }}
                                 DA</span
                             >

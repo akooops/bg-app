@@ -246,39 +246,39 @@ class IndicatorUpdaterController
 
                 switch ($raw_mat->id) {
                     case 1:         // Sucre
-                        $quantity = 137.2;
+                        $quantity = 13720;
                         break;
 
                     case 2:         // Emballage
-                        $quantity = 130;
+                        $quantity = 13000;
                         break;
 
                     case 3:         // Additifs
-                        $quantity = 36;
+                        $quantity = 3600;
                         break;
 
                     case 4:         // Blé
-                        $quantity = 636;
+                        $quantity = 63600;
                         break;
 
                     case 5:         // Lait
-                        $quantity = 125;
+                        $quantity = 12500;
                         break;
 
                     case 6:         // Beurre
-                        $quantity = 165;
+                        $quantity = 16500;
                         break;
 
                     case 7:         // Fruits
-                        $quantity = 180;
+                        $quantity = 18000;
                         break;
 
                     case 8:         // Avoine
-                        $quantity = 250;
+                        $quantity = 25000;
                         break;
 
                     case 9:         // Cacao
-                        $quantity = 295;
+                        $quantity = 29500;
                         break;
                 }
 
