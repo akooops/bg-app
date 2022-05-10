@@ -42,6 +42,7 @@ export default {
                     show: true,
                 },
                 series: [
+                    
                    
                     {
                         //remove tooltip for line chart

@@ -38,11 +38,15 @@
             @if(!in_array(Route::currentRouteName(), array('finance','profil')))
             <div class="flex flex-col w-1/5 z-10  py-10 pr-6 bg-white min-h-screen gap-10">
                 <div class=" flex gap-8 flex-col text-lg font-heading font-medium">
+                  
                     <x-nav-link :href="route('dashboard')" :path='["/assets/icons/dashboard.svg", "/assets/icons/dashboard_inactive.svg"]' :active="request()->routeIs('dashboard') || Request::is('entreprise/department/*')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
                     <x-nav-link href="/entreprise/loans" :path='["/assets/icons/banque.svg", "/assets/icons/banque_inactive.svg"]' :active="Request::is('entreprise/loans')">
                         {{ __('Banque Locale') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('profil')" :path='["/assets/icons/dashboard.svg", "/assets/icons/dashboard_inactive.svg"]' :active="request()->routeIs('profil') ">
+                        {{ __('Profil') }}
                     </x-nav-link>
                     <x-nav-link href="/leaderboard" :path='["/assets/icons/classement.svg", "/assets/icons/classement_inactive.svg"]' :active="Request::is('leaderboard')">
                         {{ __('Classement') }}

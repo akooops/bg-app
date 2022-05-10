@@ -367,11 +367,11 @@
         </Modal>
 
         <!-- Adding some details -->
-        <div v-if="indicators_loaded" class="flex justify-center">
+        <div v-if="indicators_loaded" class="flex justify-center text-vN">
             <!-- les 4 cards  -->
             <div class="flex flex-col gap-5 justify-center w-max">
                 <div
-                    class="flex flex-row items-center border-2 shadow-lg rounded-2xl justify-left"
+                    class="flex flex-row items-center px-4 py-2 gap-2 border-2 shadow-lg rounded-2xl justify-left"
                 >
                     <img
                         src="/assets/icons/employees.svg"
@@ -388,7 +388,7 @@
                 </div>
 
                 <div
-                    class="flex flex-row items-center border-2 shadow-lg rounded-2xl justify-left"
+                    class="flex flex-row items-center px-4 py-2 gap-2 border-2 shadow-lg rounded-2xl justify-left"
                 >
                     <img
                         src="/assets/icons/employees.svg"
@@ -404,10 +404,10 @@
                     </div>
                 </div>
                 <div
-                    class="flex flex-row items-center border-2 shadow-lg rounded-2xl justify-left pr-3"
+                    class="flex flex-row items-center px-4 py-2 gap-2 border-2 shadow-lg rounded-2xl justify-left pr-3"
                 >
                     <img
-                        src="/assets/icons/employees.svg"
+                        src="/assets/icons/loupe.png"
                         alt=""
                         class="w-14 p-2 h-14"
                     />
@@ -416,7 +416,7 @@
                     </p>
                 </div>
                 <div
-                    class="flex flex-row items-center border-2 shadow-lg rounded-2xl justify-left"
+                    class="flex flex-row items-center px-4 py-2 gap-2 border-2 shadow-lg rounded-2xl justify-left"
                 >
                     <img
                         src="/assets/icons/humeur.svg"
@@ -450,11 +450,12 @@
                 <button
                     @click="hire_modal = true"
                     :disabled="!indicators_loaded || !data_loaded"
-                    class="rounded-3xl font-semibold text-white py-2"
+                    class="rounded-3xl font-semibold text-vN py-2 " 
+                    style="border: solid 0.5px #B2D06B ; "
                     :class="
                         !indicators_loaded || !data_loaded
-                            ? 'bg-gray-200'
-                            : 'bg-vN'
+                            ? 'bg-gray-200 shadow-lg'
+                            : 'bg-white  shadow-lg '
                     "
                 >
                     Recruter des employés
@@ -466,13 +467,14 @@
                         !data_loaded ||
                         total_nb_employees == 0
                     "
-                    class="rounded-3xl font-semibold text-white py-2"
+                    class="rounded-3xl font-semibold text-vN  py-2"
+                     style="border: solid 0.5px #B2D06B ; "
                     :class="
                         !indicators_loaded ||
                         !data_loaded ||
                         total_nb_employees == 0
-                            ? 'bg-gray-200'
-                            : 'bg-vN'
+                            ? 'bg-gray-200 shadow-lg'
+                            : 'bg-white shadow-lg '
                     "
                 >
                     Former des employés
@@ -484,13 +486,14 @@
                         !data_loaded ||
                         total_nb_employees == 0
                     "
-                    class="rounded-3xl font-semibold text-white py-2 px-3"
+                    class="rounded-3xl font-semibold text-vN  py-2 px-3"
+                     style="border: solid 0.5px #B2D06B ; "
                     :class="
                         !indicators_loaded ||
                         !data_loaded ||
                         total_nb_employees == 0
-                            ? 'bg-gray-200'
-                            : 'bg-vN'
+                            ? 'bg-gray-200 shadow-lg'
+                            : 'bg-white shadow-lg '
                     "
                 >
                     Ajouter une prime aux employés
@@ -502,13 +505,14 @@
                         !data_loaded ||
                         total_nb_employees == 0
                     "
-                    class="rounded-3xl font-semibold text-white py-2"
+                    class="rounded-3xl font-semibold text-vN py-2"
+                     style="border: solid 0.5px #B2D06B ; "
                     :class="
                         !indicators_loaded ||
                         !data_loaded ||
                         total_nb_employees == 0
-                            ? 'bg-gray-200'
-                            : 'bg-vN'
+                            ? 'bg-gray-200 shadow-lg'
+                            : 'bg-white shadow-lg'
                     "
                 >
                     Virer des employés

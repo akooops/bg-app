@@ -13,7 +13,7 @@
             </h1>
             <span class="text-vN text-opacity-80 text-lg"
                 >{{
-                    Math.round(indicators["ca"].value).toLocaleString()
+                    Math.round(indicators["ca"].value).toLocaleString().split(/\s/).join(',')
                 }}
                 DA</span
             >

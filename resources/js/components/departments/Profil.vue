@@ -37,7 +37,7 @@
                 <div class="flex flex-col text-left p-4 rounded-xl flex-1 shadow-lg" style="background: rgba(178, 208, 107, 0.1)">
                     <h1 class="text-gray-500">Présence RSS</h1>
                     <h1 v-if="mark != null" class="text-4xl">
-                        {{ mark.social_presence.value.toFixed(2) }}
+                        {{ Math.round(mark.social_presence.value.toFixed(2)) }}
                     </h1>
                     <h1 v-else class="text-4xl">
                         0
@@ -46,7 +46,7 @@
                 <div class="flex flex-col text-left p-4 rounded-xl flex-1 shadow-lg" style="background: rgba(178, 208, 107, 0.1)">
                     <h1 class="text-gray-500">Présence Média</h1>
                     <h1 v-if="mark != null" class="text-4xl">
-                        {{ mark.media_presence.value.toFixed(2) }}
+                        {{ Math.round(mark.media_presence.value.toFixed(2) )}}
                     </h1>
                     <h1 v-else class="text-4xl">
                         0
@@ -55,7 +55,7 @@
                 <div class="flex flex-col text-left p-4 rounded-xl flex-1 shadow-lg" style="background: rgba(178, 208, 107, 0.1)">
                     <h1 class="text-gray-500">Présence aux event</h1>
                     <h1 v-if="mark != null" class="text-4xl">
-                        {{ mark.events_presence.value.toFixed(2) }}
+                        {{ Math.round(mark.events_presence.value.toFixed(2)) }}
                     </h1>
                     <h1 v-else class="text-4xl">
                         0
@@ -97,55 +97,8 @@
             <div class=" w-3/5 bg-white shadow-lg justify-end flex flex-col h-full ">
                 <h2 class="ml-4 py-3 text-xl font-bold text-vN ">
                     Vos ressources
-                </h2>
-                <nav class="text-sm flex justify-center gap-8">
-                    <button
-                        @click="page_index = 'machines'"
-                        :class="
-                            page_index == 'machines'
-                                ? 'border-b-2 border-vert text-vert'
-                                : ' hover:text-black'
-                        "
-                        class="inline-block py-2 focus:outline-none text-lg font-heading font-medium text-vN"
-                    >
-                        Machines
-                    </button>
-
-                    <button
-                        @click="page_index  = 'employees'"
-                        :class="
-                            page_index == 'employees'
-                                ? 'border-b-2 border-vert text-vert'
-                                : 'text-vN hover:text-black'
-                        "
-                        class="inline-block py-2 focus:outline-none text-lg font-heading font-medium text-vN"
-                    >
-                        Employés
-                    </button>
-                </nav>
-
-                <div v-if="page_index == 'machines' && machine != null">
-                    <div>
-                    <CircleChart
-                        :legend="[
-                            machine[0].name.replace('Machines -', ''),
-                            machine[1].name.replace('Machines -', ''),
-                            machine[2].name.replace('Machines -', ''),
-                        ]"
-                        orient="vertical"
-                        left="10%"
-                        bottom="center"
-                        :serie="machine"
-                        :simple="false"
-                        class="vv"
-                    ></CircleChart>
-                 </div>
-                    <div class="flex flex-row w-5/6 mx-auto mt-2">
-                        <div class="rounded-l-full bg-vN h-2 w-full"></div>
-                        <div class="rounded-r-full bg-jaune h-2 w-full"></div>
-                    </div>
-
-                    <div class="w-full flex justify-around mt-6 mb-6">
+                </h2>  
+           <div class="w-full flex justify-around pt-6 ">
                         <div class="flex flex-col w-max gap-3">
                             <div class="flex flex-row items-center gap-4">
                                 <div class="w-4 h-4 rounded-full bg-vN"></div>
@@ -185,11 +138,21 @@
                             </p>
                         </div>
                     </div>
-                </div>
-
-                <div v-if="page_index == 'employees'">
-                    <div>
+                  
                     <CircleChart
+                        :legend="[
+                            machine[0].name.replace('Machines -', ''),
+                            machine[1].name.replace('Machines -', ''),
+                            machine[2].name.replace('Machines -', ''),
+                        ]"
+                        orient="vertical"
+                        left="10%"
+                        bottom="center"
+                        :serie="machine"
+                        :simple="false"
+                        class="vv"
+                    ></CircleChart>
+                     <CircleChart
                         :legend="[
                             employee[0].name.replace('Employés - ', ''),
                             employee[1].name.replace('Employés - ', ''),
@@ -201,13 +164,6 @@
                         :simple="false"
                         class="vv"
                     ></CircleChart>
-                    </div>
-
-                    <div class="flex flex-row w-5/6 mx-auto mt-2">
-                        <div class="rounded-l-full bg-vN h-2 " ></div>
-                        <div class="rounded-r-full bg-jaune h-2 " ></div>
-                    </div>
-
                     <div class="w-full flex justify-around mt-6 mb-6">
                         <div class="flex flex-col w-max gap-3">
                             <div class="flex flex-row items-center gap-4">
@@ -264,6 +220,33 @@
                             </p>
                         </div>
                     </div>
+            
+
+                  
+               
+
+                <div v-if="page_index == 'employees'">
+                    <div>
+                    <CircleChart
+                        :legend="[
+                            employee[0].name.replace('Employés - ', ''),
+                            employee[1].name.replace('Employés - ', ''),
+                        ]"
+                        orient="vertical"
+                        left="10%"
+                        bottom="center"
+                        :serie="employee"
+                        :simple="false"
+                        class="vv"
+                    ></CircleChart>
+                    </div>
+
+                    <div class="flex flex-row w-5/6 mx-auto mt-2">
+                        <div class="rounded-l-full bg-vN h-2 " ></div>
+                        <div class="rounded-r-full bg-jaune h-2 " ></div>
+                    </div>
+
+                    
                 </div>
             </div>
 
