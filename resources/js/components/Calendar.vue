@@ -15,13 +15,13 @@
                 <p class="text-xs text-nav">Mois</p>
             </div>
         </div>
-        <vc-date-picker
+        <!-- <vc-date-picker
             ref="datepicker"
             color="orange"
             v-model="range"
             :disabled-dates="{}"
             is-range
-        ></vc-date-picker>
+        ></vc-date-picker> -->
     </div>
 </template>
 

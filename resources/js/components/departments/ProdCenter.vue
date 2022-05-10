@@ -296,10 +296,12 @@
                             :disabled="
                                 stock_updated == true &&
                                 machine_info_updated == true &&
-                                (can_produce == false || prod_launched == true)
+                                (can_produce == false ||
+                                    prod_launched == true ||
+                                    totalCost > caisse)
                             "
                             :class="
-                                can_produce == false
+                                can_produce == false || totalCost > caisse
                                     ? 'opacity-40 bg-gray-600'
                                     : 'bg-vN'
                             "
@@ -551,7 +553,14 @@
                                     <!-- <td class="flex justify-center icon-material text-yellow-500 py-1">
                                         {{ salesRevenues }} DA
                                     </td> -->
-                                    <td class="text-center text-vert py-1">
+                                    <td
+                                        class="text-center py-1"
+                                        :class="
+                                            totalCost > caisse
+                                                ? 'text-red-500'
+                                                : 'text-vert'
+                                        "
+                                    >
                                         {{ Math.round(totalCost) }} DA
                                     </td>
                                     <!-- <td class="text-center text-yellow-500 py-1">

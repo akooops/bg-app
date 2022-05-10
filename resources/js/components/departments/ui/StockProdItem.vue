@@ -31,7 +31,7 @@
         </td>
 
         <td
-            class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+            class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static bg-slate-100"
         >
             <!-- {{ item.quantity_selling }} -->
             <input
@@ -57,7 +57,7 @@
         </td>
 
         <td
-            class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+            class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static bg-slate-100"
         >
             <input
                 type="number"
@@ -81,8 +81,7 @@
                 @click="apply_changes(item)"
                 class="rounded-3xl font-semibold px-3 py-2 bg-vert text-white"
                 :class="
-                    new_changes &&
-                    canSell
+                    new_changes && canSell && quantity_selling > 0
                         ? 'bg-vert'
                         : sending_changes
                         ? 'bg-blue-200'
@@ -93,6 +92,7 @@
                 :disabled="
                     !new_changes ||
                     sending_changes ||
+                    quantity_selling == 0 ||
                     !canSell
                 "
             >
@@ -127,7 +127,8 @@ export default {
                     entreprise_id: this.user.id,
                     product_id: product.id,
 
-                    new_selling_quantity: this.quantity_selling + this.item.quantity_selling,
+                    new_selling_quantity:
+                        this.quantity_selling + this.item.quantity_selling,
                     new_price: this.price,
                 };
 
@@ -175,15 +176,13 @@ export default {
         quantity_selling: function () {
             if (this.quantity_selling > this.item.quantity) {
                 this.quantity_selling = this.item.quantity;
-            }
-            else if (this.quantity_selling < 0) {
+            } else if (this.quantity_selling < 0) {
                 this.quantity_selling = 0;
             }
 
             if (this.quantity_selling == 0 && this.price == this.item.price) {
                 this.new_changes = false;
-            }
-            else {
+            } else {
                 this.new_changes = true;
             }
         },

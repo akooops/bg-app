@@ -220,10 +220,16 @@
                         <h1 class="pt-3 opacity-80">
                             Le montant total est :
                             <span class="text-yellow-600"
-                                >{{ Math.round( bonus *
-                                    (indicators["nb_workers_lv1"]["value"] +
-                                        indicators["nb_workers_lv2"]["value"]))
-
+                                >{{
+                                    Math.round(
+                                        bonus *
+                                            (indicators["nb_workers_lv1"][
+                                                "value"
+                                            ] +
+                                                indicators["nb_workers_lv2"][
+                                                    "value"
+                                                ])
+                                    )
                                 }}
                                 DA</span
                             >
@@ -393,7 +399,7 @@
                         <p>Expert: {{ indicators["nb_workers_lv2"].value }}</p>
                         <p>
                             Occupé :
-                            {{ indicators["nb_workers_lv1_busy"].value }}
+                            {{ indicators["nb_workers_lv2_busy"].value }}
                         </p>
                     </div>
                 </div>

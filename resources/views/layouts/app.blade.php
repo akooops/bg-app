@@ -28,9 +28,9 @@
 
 <body class="font-sans antialiased">
     <div id="app" class="min-h-screen bg-vert bg-opacity-5">
-        
-            @include('layouts.navigation')
-       
+
+        @include('layouts.navigation')
+
 
         <!-- Page Content -->
         <main class='flex'>

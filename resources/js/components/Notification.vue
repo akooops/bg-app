@@ -157,24 +157,165 @@ export default {
                         document.location.href = "/";
                     }
                     if (e.notification.type === "ScenarioNotif") {
+                        console.log(e.notification);
                         switch (e.notification.title) {
                             case "Incendies":
                                 this.event = "incendies";
+                                localStorage.setItem(
+                                    "current_event",
+                                    JSON.stringify({
+                                        name: "Incendies",
+                                        changes: {
+                                            raw_materials: [
+                                                {
+                                                    name: "Sucre",
+                                                    new_value: 100,
+                                                },
+                                                {
+                                                    name: "Blé",
+                                                    new_value: 60,
+                                                },
+                                                {
+                                                    name: "Lait",
+                                                    new_value: 1200,
+                                                },
+                                                {
+                                                    name: "Avoine",
+                                                    new_value: 700,
+                                                },
+                                            ],
+                                        },
+                                    })
+                                );
                                 break;
                             case "Loi des finances":
                                 this.event = "finances";
+                                localStorage.setItem(
+                                    "current_event",
+                                    JSON.stringify({
+                                        name: "finances",
+                                        changes: {
+                                            raw_materials: [
+                                                {
+                                                    name: "Sucre",
+                                                    new_value: 130,
+                                                },
+                                                {
+                                                    name: "Blé",
+                                                    new_value: 63,
+                                                },
+                                                {
+                                                    name: "Lait",
+                                                    new_value: 1250,
+                                                },
+                                                {
+                                                    name: "Beurre",
+                                                    new_value: 900,
+                                                },
+                                            ],
+                                        },
+                                    })
+                                );
                                 break;
                             case "Crise cacao":
                                 this.event = "cacao";
+                                localStorage.setItem(
+                                    "current_event",
+                                    JSON.stringify({
+                                        name: "Incendies",
+                                        changes: {
+                                            raw_materials: [
+                                                {
+                                                    name: "Cacao",
+                                                    new_value: "Crise",
+                                                },
+                                            ],
+                                        },
+                                    })
+                                );
                                 break;
                             case "Guerre_1":
                                 this.event = "war_1";
+                                localStorage.setItem(
+                                    "current_event",
+                                    JSON.stringify({
+                                        name: "Début de la guerre",
+                                        changes: {
+                                            raw_materials: [
+                                                {
+                                                    name: "Sucre",
+                                                    new_value: 130,
+                                                },
+                                                {
+                                                    name: "Blé",
+                                                    new_value: 65,
+                                                },
+                                                {
+                                                    name: "Avoine",
+                                                    new_value: 900,
+                                                },
+                                                {
+                                                    name: "Cacao",
+                                                    new_value: 1100,
+                                                },
+                                            ],
+                                        },
+                                    })
+                                );
                                 break;
                             case "Guerre_2":
                                 this.event = "war_2";
+                                localStorage.setItem(
+                                    "current_event",
+                                    JSON.stringify({
+                                        name: "Toujours la guerre",
+                                        changes: {
+                                            raw_materials: [
+                                                {
+                                                    name: "Sucre",
+                                                    new_value: 130,
+                                                },
+                                                {
+                                                    name: "Blé",
+                                                    new_value: 65,
+                                                },
+                                                {
+                                                    name: "Avoine",
+                                                    new_value: 900,
+                                                },
+                                                {
+                                                    name: "Cacao",
+                                                    new_value: 1100,
+                                                },
+                                            ],
+                                        },
+                                    })
+                                );
                                 break;
                             case "Guerre_3":
                                 this.event = "war_3";
+                                localStorage.setItem(
+                                    "current_event",
+                                    JSON.stringify({
+                                        name: "Fin de la guerre",
+                                        changes: {
+                                            raw_materials: [
+                                                {
+                                                    name: "Sucre",
+                                                    new_value: 80,
+                                                },
+                                                {
+                                                    name: "Blé",
+                                                    new_value: 50,
+                                                },
+                                                {
+                                                    name: "Avoine",
+                                                    new_value: 400,
+                                                },
+                                            ],
+                                        },
+                                    })
+                                );
                                 break;
                             default:
                                 this.event = "";

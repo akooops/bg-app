@@ -16,13 +16,17 @@
 
                     <th class="p-3 text-sm table-cell">Quantité en vente</th>
 
-                    <th class="p-3 text-sm table-cell">Mettre en vente</th>
+                    <th class="p-3 text-sm table-cell bg-slate-100">
+                        Mettre en vente
+                    </th>
 
                     <th class="p-3 text-sm table-cell">Prix Minimal</th>
 
                     <th class="p-3 text-sm table-cell">Prix Maximal</th>
 
-                    <th class="p-3 text-sm table-cell">Changer le prix</th>
+                    <th class="p-3 text-sm table-cell bg-slate-100">
+                        Changer le prix
+                    </th>
 
                     <th class="p-3 text-sm table-cell">Profit unitaire</th>
 
@@ -74,11 +78,7 @@ export default {
         //         .catch(function (error) {});
         // },
     },
-    mounted() {
-
-    },
-    created() {
-
-    }
+    mounted() {},
+    created() {},
 };
 </script>
