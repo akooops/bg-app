@@ -393,7 +393,7 @@
                         <p>Expert: {{ indicators["nb_workers_lv2"].value }}</p>
                         <p>
                             Occupé :
-                            {{ indicators["nb_workers_lv1_busy"].value }}
+                            {{ indicators["nb_workers_lv2_busy"].value }}
                         </p>
                     </div>
                 </div>
