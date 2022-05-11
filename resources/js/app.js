@@ -4,7 +4,6 @@ import Vue from "vue";
 import VCalendar from "v-calendar";
 import Toasted from "vue-toasted";
 
-
 axios.defaults.withCredentials = false;
 let local_url = "http://10.42.0.1:8000";
 let localhost = "http://127.0.0.1:8000";
@@ -18,7 +17,6 @@ Vue.component(
     "VenteGraph",
     require("./components/departments/ui/VenteGraph.vue").default
 );
-
 
 Vue.component(
     "departmentcard",
@@ -62,10 +60,7 @@ Vue.component(
     require("./components/departments/Finance.vue").default
 );
 
-Vue.component(
-    "Profil",
-    require("./components/departments/Profil.vue").default
-);
+Vue.component("Profil", require("./components/departments/Profil.vue").default);
 
 Vue.component(
     "humanressource",

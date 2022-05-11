@@ -65,7 +65,7 @@ class HrController extends Controller
             "store" => true,
 
             "text" => $message,
-            "title" => "Employés recrutés",
+            "title" => "Recrutement lancé",
             "icon_path" => "/assets/icons/info.svg",
 
             "style" => "info",
@@ -200,7 +200,7 @@ class HrController extends Controller
         if ($this->get_game_setting('game_started') == "0") {
             return Response::json(["message" => "La simulation n'est pas en cours actuellement", "success" => false], 200);
         }
-        
+
         $entreprise_id = $request->entreprise_id;
         $nb_workers_lv1_to_fire = $request->nb_workers_lv1_to_fire;
         $nb_workers_lv2_to_fire = $request->nb_workers_lv2_to_fire;

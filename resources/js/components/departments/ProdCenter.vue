@@ -586,7 +586,7 @@
                                     indicators["reject_rate"].value *
                                         Math.pow(10, 2)
                                 )
-                            }}%, pour le réduire, lancez une étude AMDEC.
+                            }}%, pour le réduire, effectuez un audit qualité.
                         </h1>
                     </div>
                 </div>
