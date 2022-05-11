@@ -1,6 +1,6 @@
 <template>
     <div class="flex flex-col gap-8 text-vN">
-        <div class="relative flex justify-between items-center">
+        <!-- <div class="relative flex justify-between items-center">
             <div>
                 <h2 class="text-2xl text-vN font-normal mb-4">
                     Hi {{ user.name }},
@@ -10,7 +10,7 @@
                 </h1>
             </div>
         </div>
-        <div class="w-full border-b border-[#807A7A33]"></div>
+        <div class="w-full border-b border-[#807A7A33]"></div> -->
         <div class="w-full flex items-center">
             <div class="flex gap-4 justify-evenly w-full">
                 <div
@@ -29,7 +29,7 @@
                 <div
                     class="flex flex-col text-left p-4 rounded-xl flex-1 shadow-lg bg-[#B2D06B12]"
                 >
-                    <h1 class="text-lg font-semibold mb-2">Abonnées</h1>
+                    <h1 class="text-lg font-semibold mb-2">Abonnés</h1>
                     <h1 v-if="mark != null" class="text-xl">
                         {{ Math.round(mark.nb_subscribers.value.toFixed(2)) }}
                     </h1>
@@ -57,7 +57,7 @@
                     class="flex flex-col text-left p-4 rounded-xl flex-1 shadow-lg bg-[#807A7A0F]"
                 >
                     <h1 class="text-lg font-semibold mb-2">
-                        Présence aux event
+                        Présence aux Évènements
                     </h1>
                     <h1 v-if="mark != null" class="text-xl">
                         {{ Math.round(mark.events_presence.value.toFixed(2)) }}
@@ -83,7 +83,7 @@
             </div>
             <div class="w-2/3 bg-white shadow-lg">
                 <h2 class="ml-4 text-xl align-top font-bold text-vN py-3">
-                    Vos approvisionnement
+                    Vos Approvisionnement
                 </h2>
 
                 <BarChart
@@ -100,7 +100,7 @@
                 class="w-3/5 bg-white shadow-lg justify-end flex flex-col h-full"
             >
                 <h2 class="ml-4 py-3 text-xl font-bold text-vN">
-                    Vos ressources
+                    Vos Ressources
                 </h2>
                 <div class="w-full flex justify-around pt-6">
                     <div class="flex flex-col w-max gap-3">
@@ -110,7 +110,7 @@
                         </div>
                         <div class="flex flex-row items-center gap-4">
                             <div class="w-4 h-4 rounded-full bg-jaune"></div>
-                            <h1>Machines libres</h1>
+                            <h1>Machines Libres</h1>
                         </div>
                     </div>
                     <div class="flex flex-col w-max justify-center gap-3">

@@ -7,7 +7,7 @@
     >
         <div class="flex flex-col h-3/4 items-start justify-between">
             <h1 class="uppercase text-2xl font-bold text-vN">
-                {{ name }} <br />team
+                {{ name }}
             </h1>
             <div class="flex items-center gap-4">
                 <p class="text-2xl font-bold text-vN">

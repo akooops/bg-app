@@ -8,7 +8,7 @@
                     <img src="/assets/logo/IEC_WHITE.png" />
                 </div>
                 <h1 class="uppercase text-2xl font-bold text-vN">
-                    {{ name }} team
+                    {{ name }}
                 </h1>
             </div>
             <div class="flex items-center gap-4 mx-auto">

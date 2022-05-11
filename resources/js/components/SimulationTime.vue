@@ -4,7 +4,6 @@
         <div class="flex items-center gap-3">
             <p class="font-semibold">
                 <span class="uppercase">{{ user.name }}</span>
-                Team
             </p>
             <div
                 class="w-12 p-1 h-12 relative flex justify-center items-center rounded-full text-sm text-white uppercase bg-vN"
