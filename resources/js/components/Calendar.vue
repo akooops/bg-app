@@ -14,7 +14,7 @@
             ></div>
             <div class="flex flex-col items-center font-semibold">
                 <p class="text-vN text-4xl py-4 px-4 shadow-md rounded-md mb-1">
-                    {{ time / 4 }}
+                    {{ months[time % 48] }}
                 </p>
                 <p class="text-sm text-nav">Mois</p>
             </div>
@@ -38,16 +38,52 @@ export default {
             time: 1,
             months: [
                 "Janvier",
+                "Janvier",
+                "Janvier",
+                "Janvier",
+                "Février",
+                "Février",
+                "Février",
                 "Février",
                 "Mars",
+                "Mars",
+                "Mars",
+                "Mars",
+                "Avril",
+                "Avril",
+                "Avril",
                 "Avril",
                 "Mai",
+                "Mai",
+                "Mai",
+                "Mai",
+                "Juin",
+                "Juin",
+                "Juin",
                 "Juin",
                 "Juillet",
+                "Juillet",
+                "Juillet",
+                "Juillet",
+                "Août",
+                "Août",
+                "Août",
                 "Août",
                 "Septembre",
+                "Septembre",
+                "Septembre",
+                "Septembre",
+                "Octobre",
+                "Octobre",
+                "Octobre",
                 "Octobre",
                 "Novembre",
+                "Novembre",
+                "Novembre",
+                "Novembre",
+                "Décembre",
+                "Décembre",
+                "Décembre",
                 "Décembre",
             ],
         };
