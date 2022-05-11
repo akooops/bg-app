@@ -69,7 +69,8 @@
                                     id="amount"
                                     type="number"
                                     name="amount"
-                                    :min="0"
+                                    :min="1"
+                                    :max="caisse"
                                     :step="1000"
                                     v-model="new_ad.amount"
                                     class="text-bleu font-normal w-full rounded-sm ring-1 ring-tableBorder border-0 focus-within:ring-vert"
@@ -352,8 +353,8 @@ export default {
             },
 
             new_ad: {
-                days: 0,
-                amount: 0,
+                days: 1,
+                amount: 1,
                 type: "social",
             },
 
@@ -480,8 +481,8 @@ export default {
         },
         closeModal() {
             this.error_message = "";
-            this.new_ad.days = 0;
-            this.new_ad.amount = 0;
+            this.new_ad.days = 1;
+            this.new_ad.amount = 1;
             this.new_ad.type = "social";
             this.ad_modal = false;
         },
@@ -523,6 +524,8 @@ export default {
         "new_ad.amount": function (n) {
             if (n < 0) {
                 this.new_ad.amount = 0;
+            } else if (n > this.caisse) {
+                this.new_ad.amount = this.caisse;
             }
         },
         "new_ad.days": function (n) {

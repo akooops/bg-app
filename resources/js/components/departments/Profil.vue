@@ -17,7 +17,14 @@
                     class="flex flex-col text-left p-4 rounded-xl flex-1 shadow-lg bg-[#B2D06B12]"
                 >
                     <h1 class="text-lg font-semibold mb-2">Disponibilités</h1>
-                    <h1 class="text-xl">{{ caisse }}</h1>
+                    <h1 class="text-xl">
+                        {{
+                            Math.round(caisse)
+                                .toLocaleString()
+                                .split(/\s/)
+                                .join(",")
+                        }}
+                    </h1>
                 </div>
                 <div
                     class="flex flex-col text-left p-4 rounded-xl flex-1 shadow-lg bg-[#B2D06B12]"
@@ -69,7 +76,9 @@
 
         <div class="flex h-max gap-2">
             <div class="w-2/3 bg-white shadow-lg h-auto">
-                <h2 class="text-xl font-bold text-vN ml-4 py-3">Vos Ventes</h2>
+                <h2 class="text-xl font-bold text-vN ml-4 py-3">
+                    Vos Chiffres d'affaire
+                </h2>
                 <VenteGraph
                     v-if="stats != null"
                     :xData="stats.dates.map(Number)"
@@ -143,6 +152,7 @@
                 </div>
 
                 <CircleChart
+                    v-if="machine != null"
                     :legend="[
                         machine[0].name.replace('Machines -', ''),
                         machine[1].name.replace('Machines -', ''),
@@ -156,6 +166,7 @@
                     class="vv"
                 ></CircleChart>
                 <CircleChart
+                    v-if="employee != null"
                     :legend="[
                         employee[0].name.replace('Employés - ', ''),
                         employee[1].name.replace('Employés - ', ''),
@@ -218,9 +229,10 @@
                     </div>
                 </div>
 
-                <div v-if="page_index == 'employees'">
+                <!-- <div v-if="page_index == 'employees'">
                     <div>
                         <CircleChart
+                            v-if="employee != null"
                             :legend="[
                                 employee[0].name.replace('Employés - ', ''),
                                 employee[1].name.replace('Employés - ', ''),
@@ -238,7 +250,7 @@
                         <div class="rounded-l-full bg-vN h-2"></div>
                         <div class="rounded-r-full bg-jaune h-2"></div>
                     </div>
-                </div>
+                </div> -->
             </div>
 
             <div
@@ -302,7 +314,7 @@ export default {
             employee_used: "",
             total_employee: "",
             free_employee: "",
-            employee: [],
+            employee: null,
             total_machines: "",
             free_machines: "",
             machine: null,

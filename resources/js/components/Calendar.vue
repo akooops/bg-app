@@ -1,8 +1,8 @@
 <template>
     <div
-        class="flex flex-col items-center gap-5 ml-6 bg-gradient-to-r from-[#B2D06B45] to-[#B2D06B15] rounded-xl px-2 py-2"
+        class="flex flex-col items-center gap-4 ml-2 bg-gradient-to-r from-[#B2D06B45] to-[#B2D06B15] rounded-xl py-2"
     >
-        <div class="flex item-center gap-6 my-5">
+        <div class="flex item-center gap-4 my-5">
             <div class="flex flex-col font-semibold items-center">
                 <p class="text-vN text-3xl py-4 px-4 shadow-md rounded-md mb-1">
                     {{ time }}

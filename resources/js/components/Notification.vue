@@ -34,7 +34,7 @@
             <transition name="notifs">
                 <div
                     v-if="show_notifications"
-                    class="absolute dropDown w-max notif z-20 flex flex-col gap-1 bottom-22 right-0 bg-white shadow-2xl h-96 rounded-lg overflow-x-hidden overflow-y-scroll"
+                    class="absolute dropDown min-w-[350px] w-max notif z-20 flex flex-col gap-1 bottom-22 right-0 bg-white shadow-2xl h-96 rounded-lg overflow-x-hidden overflow-y-scroll"
                     style="border: 0.5px solid rgba(128, 128, 128, 0.5)"
                 >
                     <div class="flex flex-row mx-5 my-3">
@@ -251,7 +251,7 @@ export default {
                                 name: "❕",
                             },
                             position: "bottom-right",
-                            duration: 3000,
+                            duration: 5000,
                             className: "toast-info",
 
                             action: [
@@ -279,7 +279,7 @@ export default {
                             },
                             position: "bottom-right",
                             className: "toast-success",
-                            duration: 3000,
+                            duration: 5000,
                             action: [
                                 {
                                     text: "Voir",
@@ -305,7 +305,7 @@ export default {
                             },
                             position: "bottom-right",
                             className: "toast-error",
-                            duration: 3000,
+                            duration: 5000,
                             action: [
                                 {
                                     text: "Voir",
@@ -331,7 +331,7 @@ export default {
                             },
                             position: "bottom-right",
                             className: "toast-warning",
-                            duration: 3000,
+                            duration: 5000,
                             action: [
                                 {
                                     text: "Voir",

@@ -301,6 +301,7 @@
                                 class="ring-tableBorder border-0 focus-within:ring-vert ring-1 rounded-md"
                                 type="number"
                                 min="1"
+                                :max="caisse / materialPrice"
                                 placeholder="Quantité en unité"
                                 v-model="commandItem.quantity"
                             />
@@ -511,7 +512,15 @@ export default {
             return false;
         },
     },
-
+    watch: {
+        "commandItem.quantity": function (n) {
+            if (n <= 0) {
+                this.commandItem.quantity = 1;
+            } else if (n > this.caisse / this.materialPrice) {
+                this.commandItem.quantity = this.caisse / this.materialPrice;
+            }
+        },
+    },
     methods: {
         commandModal() {
             this.commandItem.material =

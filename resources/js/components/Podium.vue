@@ -11,7 +11,12 @@
             </h1>
             <div class="flex items-center gap-4">
                 <p class="text-2xl font-bold text-vN">
-                    {{ Math.round(caisse).toLocaleString() }}
+                    {{
+                        Math.round(caisse)
+                            .toLocaleString()
+                            .split(/\s/)
+                            .join(",")
+                    }}
                 </p>
                 <img
                     src="/assets/icons/star.svg"

@@ -2,7 +2,9 @@
     <div
         class="relative flex items-center bg-gradient-to-t rounded-[41px] py-7 w-full px-4 text-vN mb-10 bg-[#0B343414]"
     >
-        <div class="flex items-center font-heading font-semibold w-full">
+        <div
+            class="relative only:flex items-center font-heading font-semibold w-full"
+        >
             <div class="flex items-center gap-4">
                 <div class="bg-vN p-3 h-20 w-20 rounded-full">
                     <img src="/assets/logo/IEC_WHITE.png" />
@@ -11,9 +13,16 @@
                     {{ name }}
                 </h1>
             </div>
-            <div class="flex items-center gap-4 mx-auto">
+            <div
+                class="absolute flex items-center gap-4 mx-auto right-[300px] bottom-1/2"
+            >
                 <p class="text-2xl font-bold text-vN">
-                    {{ Math.round(caisse).toLocaleString() }}
+                    {{
+                        Math.round(caisse)
+                            .toLocaleString()
+                            .split(/\s/)
+                            .join(",")
+                    }}
                 </p>
                 <img
                     src="/assets/icons/star.svg"
