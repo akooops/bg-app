@@ -252,7 +252,7 @@
         <div v-if="page_index == 'prod_stats'">
             <div
                 v-if="show_market_demand"
-                class="grid grid-rows-2 grid-cols-2 justify-between gap-8 mt-8"
+                class="grid grid-rows-2 grid-cols-2 justify-between gap-8 mt-8 text-vN"
             >
                 <div
                     v-for="(prod, i) in prod_data"

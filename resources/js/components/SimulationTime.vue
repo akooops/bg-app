@@ -1,5 +1,5 @@
 <template>
-    <div class="flex items-center gap-3">
+    <div class="text-vN flex items-center gap-3">
         <Notification :user="user" :actual="time"></Notification>
         <div class="flex items-center gap-3">
             <p class="font-semibold">
@@ -9,7 +9,9 @@
             <div
                 class="w-12 p-1 h-12 relative flex justify-center items-center rounded-full text-sm text-white uppercase bg-vN"
             >
-            <a href="/entreprise/profil"> <img src="/assets/logo/IEC_WHITE.png" alt="IEC logo" /></a>
+                <a href="/entreprise/profil">
+                    <img src="/assets/logo/IEC_WHITE.png" alt="IEC logo"
+                /></a>
             </div>
             <button
                 @click="show_menu = !show_menu"

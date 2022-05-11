@@ -12,63 +12,64 @@
         </div>
         <div class="w-full border-b border-[#807A7A33]"></div>
         <div class="w-full flex items-center">
-            <div
-                class="flex gap-4 justify-evenly w-full "
-                
-            >
-                <div class="flex flex-col text-left p-4 rounded-xl flex-1 shadow-lg" style="background: rgba(178, 208, 107, 0.1)">
-                    <h1 class="text-gray-500">Disponibilités</h1>
-                    <h1 class="text-4xl">{{ caisse }}</h1>
+            <div class="flex gap-4 justify-evenly w-full">
+                <div
+                    class="flex flex-col text-left p-4 rounded-xl flex-1 shadow-lg bg-[#B2D06B12]"
+                >
+                    <h1 class="text-lg font-semibold mb-2">Disponibilités</h1>
+                    <h1 class="text-xl">{{ caisse }}</h1>
                 </div>
-                <div class="flex flex-col text-left p-4 rounded-xl flex-1 shadow-lg" style="background: rgba(178, 208, 107, 0.1)">
-                    <h1 class="text-gray-500">Dettes</h1>
-                    <h1 class="text-4xl">{{ dettes }}</h1>
+                <div
+                    class="flex flex-col text-left p-4 rounded-xl flex-1 shadow-lg bg-[#B2D06B12]"
+                >
+                    <h1 class="text-lg font-semibold mb-2">Dettes</h1>
+                    <h1 class="text-xl">{{ dettes }}</h1>
                 </div>
 
-                <div class="flex flex-col text-left p-4 rounded-xl flex-1 shadow-lg" style="background: rgba(178, 208, 107, 0.1)">
-                    <h1 class="text-gray-500">Abonnées</h1>
-                    <h1 v-if="mark != null" class="text-4xl">
+                <div
+                    class="flex flex-col text-left p-4 rounded-xl flex-1 shadow-lg bg-[#B2D06B12]"
+                >
+                    <h1 class="text-lg font-semibold mb-2">Abonnées</h1>
+                    <h1 v-if="mark != null" class="text-xl">
                         {{ Math.round(mark.nb_subscribers.value.toFixed(2)) }}
                     </h1>
-                    <h1 v-else class="text-4xl">
-                        0
-                    </h1>
+                    <h1 v-else class="text-xl">0</h1>
                 </div>
-                <div class="flex flex-col text-left p-4 rounded-xl flex-1 shadow-lg" style="background: rgba(178, 208, 107, 0.1)">
-                    <h1 class="text-gray-500">Présence RSS</h1>
-                    <h1 v-if="mark != null" class="text-4xl">
+                <div
+                    class="flex flex-col text-left p-4 rounded-xl flex-1 shadow-lg bg-[#FFBC3E17]"
+                >
+                    <h1 class="text-lg font-semibold mb-2">Présence RSS</h1>
+                    <h1 v-if="mark != null" class="text-xl">
                         {{ Math.round(mark.social_presence.value.toFixed(2)) }}
                     </h1>
-                    <h1 v-else class="text-4xl">
-                        0
-                    </h1>
+                    <h1 v-else class="text-xl">0</h1>
                 </div>
-                <div class="flex flex-col text-left p-4 rounded-xl flex-1 shadow-lg" style="background: rgba(178, 208, 107, 0.1)">
-                    <h1 class="text-gray-500">Présence Média</h1>
-                    <h1 v-if="mark != null" class="text-4xl">
-                        {{ Math.round(mark.media_presence.value.toFixed(2) )}}
+                <div
+                    class="flex flex-col text-left p-4 rounded-xl flex-1 shadow-lg bg-[#0B34341A]"
+                >
+                    <h1 class="text-lg font-semibold mb-2">Présence Média</h1>
+                    <h1 v-if="mark != null" class="text-xl">
+                        {{ Math.round(mark.media_presence.value.toFixed(2)) }}
                     </h1>
-                    <h1 v-else class="text-4xl">
-                        0
-                    </h1>
+                    <h1 v-else class="text-xl">0</h1>
                 </div>
-                <div class="flex flex-col text-left p-4 rounded-xl flex-1 shadow-lg" style="background: rgba(178, 208, 107, 0.1)">
-                    <h1 class="text-gray-500">Présence aux event</h1>
-                    <h1 v-if="mark != null" class="text-4xl">
+                <div
+                    class="flex flex-col text-left p-4 rounded-xl flex-1 shadow-lg bg-[#807A7A0F]"
+                >
+                    <h1 class="text-lg font-semibold mb-2">
+                        Présence aux event
+                    </h1>
+                    <h1 v-if="mark != null" class="text-xl">
                         {{ Math.round(mark.events_presence.value.toFixed(2)) }}
                     </h1>
-                    <h1 v-else class="text-4xl">
-                        0
-                    </h1>
+                    <h1 v-else class="text-xl">0</h1>
                 </div>
             </div>
         </div>
 
         <div class="flex h-max gap-2">
             <div class="w-2/3 bg-white shadow-lg h-auto">
-                <h2 class="text-xl font-bold text-vN ml-4  py-3">
-                    Vos Ventes
-                </h2>
+                <h2 class="text-xl font-bold text-vN ml-4 py-3">Vos Ventes</h2>
                 <VenteGraph
                     v-if="stats != null"
                     :xData="stats.dates.map(Number)"
@@ -81,181 +82,168 @@
                 </VenteGraph>
             </div>
             <div class="w-2/3 bg-white shadow-lg">
-                <h2 class="ml-4  text-xl align-top font-bold text-vN  py-3">
+                <h2 class="ml-4 text-xl align-top font-bold text-vN py-3">
                     Vos approvisionnement
                 </h2>
-                
-                 <BarChart :yData="stock_quatity" :xData="stock_name" :width="20" :height="350"></BarChart>
-             
-                
+
+                <BarChart
+                    :yData="stock_quatity"
+                    :xData="stock_name"
+                    :width="20"
+                    :height="350"
+                ></BarChart>
             </div>
         </div>
 
-        <div
-            class="flex flex-row  rounded-lg h-max gap-4"
-        >
-            <div class=" w-3/5 bg-white shadow-lg justify-end flex flex-col h-full ">
-                <h2 class="ml-4 py-3 text-xl font-bold text-vN ">
+        <div class="flex flex-row rounded-lg h-max gap-4">
+            <div
+                class="w-3/5 bg-white shadow-lg justify-end flex flex-col h-full"
+            >
+                <h2 class="ml-4 py-3 text-xl font-bold text-vN">
                     Vos ressources
-                </h2>  
-           <div class="w-full flex justify-around pt-6 ">
-                        <div class="flex flex-col w-max gap-3">
-                            <div class="flex flex-row items-center gap-4">
-                                <div class="w-4 h-4 rounded-full bg-vN"></div>
-                                <h1>Machines Occupés</h1>
-                            </div>
-                            <div class="flex flex-row items-center gap-4">
-                                <div
-                                    class="w-4 h-4 rounded-full bg-jaune"
-                                ></div>
-                                <h1>Machines libres</h1>
-                            </div>
+                </h2>
+                <div class="w-full flex justify-around pt-6">
+                    <div class="flex flex-col w-max gap-3">
+                        <div class="flex flex-row items-center gap-4">
+                            <div class="w-4 h-4 rounded-full bg-vN"></div>
+                            <h1>Machines Occupés</h1>
                         </div>
-                        <div class="flex flex-col w-max justify-center gap-3">
-                            <p class="text-center">{{ machine_used }}</p>
-                            <p class="text-center">{{ free_machines }}</p>
-                        </div>
-                        <div class="flex flex-col w-max gap-3">
-                            <p
-                                class="text-center rounded-full px-2"
-                                style="background: rgba(230, 242, 254, 1)"
-                            >
-                                {{
-                                    Math.round(
-                                        (machine_used / total_machines) * 100
-                                    )
-                                }}%
-                            </p>
-                            <p
-                                class="text-center rounded-full px-2"
-                                style="background: rgba(230, 242, 254, 1)"
-                            >
-                                {{
-                                    Math.round(
-                                        (free_machines / total_machines) * 100
-                                    )
-                                }}%
-                            </p>
+                        <div class="flex flex-row items-center gap-4">
+                            <div class="w-4 h-4 rounded-full bg-jaune"></div>
+                            <h1>Machines libres</h1>
                         </div>
                     </div>
-                  
-                    <CircleChart
-                        :legend="[
-                            machine[0].name.replace('Machines -', ''),
-                            machine[1].name.replace('Machines -', ''),
-                            machine[2].name.replace('Machines -', ''),
-                        ]"
-                        orient="vertical"
-                        left="10%"
-                        bottom="center"
-                        :serie="machine"
-                        :simple="false"
-                        class="vv"
-                    ></CircleChart>
-                     <CircleChart
-                        :legend="[
-                            employee[0].name.replace('Employés - ', ''),
-                            employee[1].name.replace('Employés - ', ''),
-                        ]"
-                        orient="vertical"
-                        left="10%"
-                        bottom="center"
-                        :serie="employee"
-                        :simple="false"
-                        class="vv"
-                    ></CircleChart>
-                    <div class="w-full flex justify-around mt-6 mb-6">
-                        <div class="flex flex-col w-max gap-3">
-                            <div class="flex flex-row items-center gap-4">
-                                <div class="w-4 h-4 rounded-full bg-vN"></div>
-                                <h1>Employés Occupés</h1>
-                            </div>
-                            <div class="flex flex-row items-center gap-4">
-                                <div
-                                    class="w-4 h-4 rounded-full bg-jaune"
-                                ></div>
-                                <h1>Employés libres</h1>
-                            </div>
-                        </div>
-                        <div class="flex flex-col w-max justify-center gap-3">
-                            <p class="text-center">{{ employee_used }}</p>
-                            <p class="text-center">{{ free_employee }}</p>
-                        </div>
-                        <div class="flex flex-col w-max gap-3">
-                            <p
-                                class="text-center rounded-full px-2"
-                                style="background: rgba(230, 242, 254, 1)"
-                            >
-                                {{
-                                    isNaN(
-                                        Math.round(
-                                            (employee_used / total_employee) *
-                                                100
-                                        )
-                                    )
-                                        ? 0
-                                        : Math.round(
-                                              (employee_used / total_employee) *
-                                                  100
-                                          )
-                                }}%
-                            </p>
-                            <p
-                                class="text-center rounded-full px-2"
-                                style="background: rgba(230, 242, 254, 1)"
-                            >
-                                {{
-                                    isNaN(
-                                        Math.round(
-                                            (free_employee / total_employee) *
-                                                100
-                                        )
-                                    )
-                                        ? 0
-                                        : Math.round(
-                                              (free_employee / total_employee) *
-                                                  100
-                                          )
-                                }}%
-                            </p>
-                        </div>
+                    <div class="flex flex-col w-max justify-center gap-3">
+                        <p class="text-center">{{ machine_used }}</p>
+                        <p class="text-center">{{ free_machines }}</p>
                     </div>
-            
+                    <div class="flex flex-col w-max gap-3">
+                        <p
+                            class="text-center rounded-full px-2"
+                            style="background: rgba(230, 242, 254, 1)"
+                        >
+                            {{
+                                Math.round(
+                                    (machine_used / total_machines) * 100
+                                )
+                            }}%
+                        </p>
+                        <p
+                            class="text-center rounded-full px-2"
+                            style="background: rgba(230, 242, 254, 1)"
+                        >
+                            {{
+                                Math.round(
+                                    (free_machines / total_machines) * 100
+                                )
+                            }}%
+                        </p>
+                    </div>
+                </div>
 
-                  
-               
+                <CircleChart
+                    :legend="[
+                        machine[0].name.replace('Machines -', ''),
+                        machine[1].name.replace('Machines -', ''),
+                        machine[2].name.replace('Machines -', ''),
+                    ]"
+                    orient="vertical"
+                    left="10%"
+                    bottom="center"
+                    :serie="machine"
+                    :simple="false"
+                    class="vv"
+                ></CircleChart>
+                <CircleChart
+                    :legend="[
+                        employee[0].name.replace('Employés - ', ''),
+                        employee[1].name.replace('Employés - ', ''),
+                    ]"
+                    orient="vertical"
+                    left="10%"
+                    bottom="center"
+                    :serie="employee"
+                    :simple="false"
+                    class="vv"
+                ></CircleChart>
+                <div class="w-full flex justify-around mt-6 mb-6">
+                    <div class="flex flex-col w-max gap-3">
+                        <div class="flex flex-row items-center gap-4">
+                            <div class="w-4 h-4 rounded-full bg-vN"></div>
+                            <h1>Employés Occupés</h1>
+                        </div>
+                        <div class="flex flex-row items-center gap-4">
+                            <div class="w-4 h-4 rounded-full bg-jaune"></div>
+                            <h1>Employés libres</h1>
+                        </div>
+                    </div>
+                    <div class="flex flex-col w-max justify-center gap-3">
+                        <p class="text-center">{{ employee_used }}</p>
+                        <p class="text-center">{{ free_employee }}</p>
+                    </div>
+                    <div class="flex flex-col w-max gap-3">
+                        <p
+                            class="text-center rounded-full px-2"
+                            style="background: rgba(230, 242, 254, 1)"
+                        >
+                            {{
+                                isNaN(
+                                    Math.round(
+                                        (employee_used / total_employee) * 100
+                                    )
+                                )
+                                    ? 0
+                                    : Math.round(
+                                          (employee_used / total_employee) * 100
+                                      )
+                            }}%
+                        </p>
+                        <p
+                            class="text-center rounded-full px-2"
+                            style="background: rgba(230, 242, 254, 1)"
+                        >
+                            {{
+                                isNaN(
+                                    Math.round(
+                                        (free_employee / total_employee) * 100
+                                    )
+                                )
+                                    ? 0
+                                    : Math.round(
+                                          (free_employee / total_employee) * 100
+                                      )
+                            }}%
+                        </p>
+                    </div>
+                </div>
 
                 <div v-if="page_index == 'employees'">
                     <div>
-                    <CircleChart
-                        :legend="[
-                            employee[0].name.replace('Employés - ', ''),
-                            employee[1].name.replace('Employés - ', ''),
-                        ]"
-                        orient="vertical"
-                        left="10%"
-                        bottom="center"
-                        :serie="employee"
-                        :simple="false"
-                        class="vv"
-                    ></CircleChart>
+                        <CircleChart
+                            :legend="[
+                                employee[0].name.replace('Employés - ', ''),
+                                employee[1].name.replace('Employés - ', ''),
+                            ]"
+                            orient="vertical"
+                            left="10%"
+                            bottom="center"
+                            :serie="employee"
+                            :simple="false"
+                            class="vv"
+                        ></CircleChart>
                     </div>
 
                     <div class="flex flex-row w-5/6 mx-auto mt-2">
-                        <div class="rounded-l-full bg-vN h-2 " ></div>
-                        <div class="rounded-r-full bg-jaune h-2 " ></div>
+                        <div class="rounded-l-full bg-vN h-2"></div>
+                        <div class="rounded-r-full bg-jaune h-2"></div>
                     </div>
-
-                    
                 </div>
             </div>
 
             <div
                 class="w-full bg-white shadow-lg py-4 pl-8 flex flex-col gap-4"
             >
-                <h2 class=" text-xl font-bold text-vN  ">
-                    Suivi de production
-                </h2>
+                <h2 class="text-xl font-bold text-vN">Suivi de production</h2>
                 <HBarChart
                     v-if="prod != null && products_stock != null"
                     :produit_vendu="[
@@ -372,7 +360,6 @@ export default {
         //     this.product_selected.quantity = this.products_stock.filter(
         //         (p) => p.id == n
         //     )[0].quantity;
-
         //     this.product_selected.left_demand = this.products.filter(
         //         (p) => p.id == n
         //     )[0].left_demand;

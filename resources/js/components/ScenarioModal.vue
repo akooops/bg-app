@@ -35,19 +35,7 @@
                     <p class="text-lg font-semibold">
                         {{ currentEvent.description }}
                     </p>
-                    <div
-                        class="bg-white shadow-xl rounded-xl z-[1000] absolute top-1/2 right-1/2 -translate-1/2"
-                        v-if="show_changes"
-                    >
-                        changes
-                    </div>
-                    <p
-                        @mouseover="show_changes = true"
-                        @mouseout="show_changes = false"
-                        class="text-vN hover:text-vert absolute right-28 bottom-10 cursor-pointer"
-                    >
-                        Preview changes
-                    </p>
+
                     <button
                         class="font-serif absolute right-10 bottom-10"
                         @click="close"

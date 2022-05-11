@@ -13,7 +13,7 @@
         <p
             v-for="(v, key) in value"
             :key="key"
-            class="text-md font-medium text-gray"
+            class="text-md font-medium text-vN"
         >
             {{ v }}
             <span

@@ -149,7 +149,7 @@
                             class="lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
                         ></td>
                         <td
-                            class="bg-tableBorder lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                            class="bg-tableBorder lg:w-auto p-1 text-center block lg:table-cell relative lg:static text-vN"
                             v-bind:class="{
                                 'text-red-600': this.caisse < this.overallPrice,
                             }"

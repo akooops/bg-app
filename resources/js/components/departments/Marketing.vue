@@ -180,7 +180,7 @@
                 <div class="w-full">
                     <div
                         v-if="ads.length == 0"
-                        class="text-center flex flex-col items-center gap-4"
+                        class="text-center flex flex-col items-center gap-4 text-vN"
                     >
                         <p>
                             Il semble que vous n'ayez pas encore créé votre
@@ -200,7 +200,7 @@
                             campagne(s) publicitaire(s)
                         </p>
 
-                        <p class="text-red-800" v-if="ads.length > 0">
+                        <p class="text-red-600" v-if="ads.length > 0">
                             Risque de scandale médiatique actuel:
                             {{ scandal_risk }}%
                         </p>

@@ -15,11 +15,19 @@
         </div>
 
         <div class="flex flex-col w-max">
-            <p class="font-bold text-vN  flex justify-start">
-                {{ Math.round(dettes).toLocaleString().split(/\s/).join(',') }}  
+            <p class="font-bold text-vN flex justify-start">
+                {{ Math.round(dettes).toLocaleString().split(/\s/).join(",") }}
             </p>
-            <p class="text-vert font-bold flex justify-start">
-                {{ Math.round(dettes_diff).toLocaleString().split(/\s/).join(',') }}  
+            <p
+                class="font-bold flex justify-start"
+                :class="dettes_diff > 0 ? 'text-jaune' : 'text-vert'"
+            >
+                {{
+                    Math.round(dettes_diff)
+                        .toLocaleString()
+                        .split(/\s/)
+                        .join(",")
+                }}
             </p>
         </div>
         <v-chart ref="chart" class="chart" :option="option2" autoresize />
@@ -40,10 +48,18 @@
         </div>
         <div class="flex flex-col w-max">
             <div class="font-bold text-vN flex justify-start">
-                {{ Math.round(caisse).toLocaleString().split(/\s/).join(',') }}   
+                {{ Math.round(caisse).toLocaleString().split(/\s/).join(",") }}
             </div>
-            <div class="text-jaune font-bold flex justify-start">
-                {{ Math.round(caisse_diff).toLocaleString().split(/\s/).join(',') }} 
+            <div
+                class="font-bold flex justify-start"
+                :class="caisse_diff > 0 ? 'text-vert' : 'text-jaune'"
+            >
+                {{
+                    Math.round(caisse_diff)
+                        .toLocaleString()
+                        .split(/\s/)
+                        .join(",")
+                }}
             </div>
         </div>
         <v-chart ref="chart" class="chart" :option="option" autoresize />
@@ -150,10 +166,12 @@ export default {
                 this.option.series[0].data = [
                     0.1, 0.2, 0.3, 0.2, 0.4, 0.6, 0.5, 0.7,
                 ];
+                this.option.color = ["#B2D06B"];
             } else {
                 this.option.series[0].data = [
                     0.7, 0.5, 0.6, 0.4, 0.2, 0.3, 0.2, 0.1,
                 ];
+                this.option.color = ["#FFBC3E"];
             }
         },
         dettes_diff: function (n, o) {
@@ -161,10 +179,12 @@ export default {
                 this.option2.series[0].data = [
                     0.1, 0.2, 0.3, 0.2, 0.4, 0.6, 0.5, 0.7,
                 ];
+                this.option2.color = ["#FFBC3E"];
             } else {
                 this.option2.series[0].data = [
                     0.7, 0.5, 0.6, 0.4, 0.2, 0.3, 0.2, 0.1,
                 ];
+                this.option2.color = ["#B2D06B"];
             }
         },
     },

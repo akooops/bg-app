@@ -86,7 +86,7 @@
                         : sending_changes
                         ? 'bg-blue-200'
                         : canSell
-                        ? 'bg-gris text-black'
+                        ? 'bg-gris text-vN'
                         : 'bg-red-500'
                 "
                 :disabled="
