@@ -91,6 +91,7 @@
                     :xData="stock_name"
                     :width="20"
                     :height="350"
+                    unit="KG"
                 ></BarChart>
             </div>
         </div>

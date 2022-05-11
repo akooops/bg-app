@@ -146,9 +146,13 @@
                         <IndicatorGauge
                             :data="[
                                 {
-                                    value: Math.round(
-                                        indicators[selected_lvl].value * 100
-                                    ),
+                                    value:
+                                        number == 0
+                                            ? 0
+                                            : Math.round(
+                                                  indicators[selected_lvl]
+                                                      .value * 100
+                                              ),
                                     name: lvl,
                                 },
                             ]"
@@ -592,6 +596,7 @@ export default {
             showEmployees: false,
 
             indicators_loaded: false,
+            number: 0,
         };
     },
 
@@ -605,12 +610,15 @@ export default {
         },
         lvl() {
             if (this.selected_lvl == "machines_lv1_health") {
+                this.number = this.indicators["nb_machines_lv1"].value;
                 return "Niveau 1";
             }
             if (this.selected_lvl == "machines_lv2_health") {
+                this.number = this.indicators["nb_machines_lv2"].value;
                 return "Niveau 2";
             }
             if (this.selected_lvl == "machines_lv3_health") {
+                this.number = this.indicators["nb_machines_lv3"].value;
                 return "Niveau 3";
             }
         },

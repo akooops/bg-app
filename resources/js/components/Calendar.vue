@@ -4,7 +4,7 @@
     >
         <div class="flex item-center gap-6 my-5">
             <div class="flex flex-col font-semibold items-center">
-                <p class="text-vN text-4xl py-4 px-4 shadow-md rounded-md mb-1">
+                <p class="text-vN text-3xl py-4 px-4 shadow-md rounded-md mb-1">
                     {{ time }}
                 </p>
                 <p class="text-sm text-nav">Semaines</p>
@@ -13,7 +13,7 @@
                 class="h-16 mt-1 border-opacity-60 border-l-2 border-nav"
             ></div>
             <div class="flex flex-col items-center font-semibold">
-                <p class="text-vN text-4xl py-4 px-4 shadow-md rounded-md mb-1">
+                <p class="text-vN text-3xl py-4 px-4 shadow-md rounded-md mb-1">
                     {{ months[(time % 48) - 1] }}
                 </p>
                 <p class="text-sm text-nav">Mois</p>
@@ -69,10 +69,10 @@ export default {
                 "Août",
                 "Août",
                 "Août",
-                "Septembre",
-                "Septembre",
-                "Septembre",
-                "Septembre",
+                "Sep",
+                "Sep",
+                "Sep",
+                "Sep",
                 "Octobre",
                 "Octobre",
                 "Octobre",

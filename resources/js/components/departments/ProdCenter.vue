@@ -287,7 +287,10 @@
                         /> -->
                     </div>
 
-                    <p class="text-red-500 w-auto" v-if="can_produce == false">
+                    <p
+                        class="text-red-500 w-[240px]"
+                        v-if="can_produce == false"
+                    >
                         {{ can_produce_msg }}
                     </p>
 
@@ -755,7 +758,17 @@
                     <div class="w-full flex items-center gap-4 justify-end">
                         <button
                             @click="confirmAction"
-                            class="font-heading font-medium px-3 py-1 text-vN hover:text-vert"
+                            class="font-heading font-medium px-3 py-1"
+                            :class="
+                                action.price[action.value] > caisse ||
+                                action.price[action.value] == 0
+                                    ? 'text-gray-200'
+                                    : 'text-vN hover:text-vert'
+                            "
+                            :disabled="
+                                action.price[action.value] > caisse ||
+                                action.price[action.value] == 0
+                            "
                         >
                             Confirmer
                         </button>
