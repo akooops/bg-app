@@ -188,11 +188,11 @@ export default {
         },
 
         price: function () {
-            if (this.price < this.item.price_min) {
-                this.price = this.item.price_min;
-            } else if (this.item.price_max < this.price) {
-                this.price = this.item.price_max;
-            }
+            // if (this.price < this.item.price_min) {
+            //     this.price = this.item.price_min;
+            // } else if (this.item.price_max < this.price) {
+            //     this.price = this.item.price_max;
+            // }
 
             if (this.quantity_selling == 0 && this.price == this.item.price) {
                 this.new_changes = false;

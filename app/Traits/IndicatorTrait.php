@@ -168,7 +168,10 @@ trait IndicatorTrait
             foreach ($entreprises as $entrep) {
                 $total += $this->getIndicator($key, $entrep->id)["value"];
             }
-            $market_share_prod = round($value / $total, 3);
+            $market_share_prod = 0;
+            if ($total != 0) {
+                $market_share_prod = round($value / $total, 3);
+            }
             array_push($values, $market_share_prod);
         }
 
@@ -183,14 +186,19 @@ trait IndicatorTrait
         $key = "ca_" . $product_id;
         $total = 0;
         $data = [];
+
         foreach ($entreprises as $entrep) {
             $value = $this->getIndicator($key, $entrep->id)["value"];
             $total += $value;
         }
+
         foreach ($entreprises as $entrep) {
             $value = $this->getIndicator($key, $entrep->id)["value"];
 
-            $prod_share = round($value / $total, 3);
+            $prod_share = 0;
+            if ($total != 0) {
+                $prod_share = round($value / $total, 3);
+            }
             $prod_share = ["name" => $entrep->name, "value" => $prod_share];
             array_push($data, $prod_share);
         }
