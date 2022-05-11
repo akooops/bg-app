@@ -28,7 +28,7 @@
                         Changer le prix
                     </th>
 
-                    <th class="p-3 text-sm table-cell">Profit unitaire</th>
+                    <!-- <th class="p-3 text-sm table-cell">Profit unitaire</th> -->
 
                     <th class="p-3 text-sm table-cell"></th>
                 </tr>

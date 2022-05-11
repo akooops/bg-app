@@ -68,11 +68,11 @@
             />
         </td>
 
-        <td
+        <!-- <td
             class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
         >
             {{ price - item.dist_cost }}
-        </td>
+        </td> -->
 
         <td
             class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
@@ -81,7 +81,7 @@
                 @click="apply_changes(item)"
                 class="rounded-3xl font-semibold px-3 py-2 bg-vert text-white"
                 :class="
-                    new_changes && canSell && quantity_selling > 0
+                    new_changes && canSell
                         ? 'bg-vert'
                         : sending_changes
                         ? 'bg-blue-200'
@@ -92,7 +92,6 @@
                 :disabled="
                     !new_changes ||
                     sending_changes ||
-                    quantity_selling == 0 ||
                     !canSell
                 "
             >
