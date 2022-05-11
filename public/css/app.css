@@ -1401,6 +1401,9 @@ Ensure the default browser behavior of the `hidden` attribute.
 .bg-opacity-70 {
   --tw-bg-opacity: 0.7;
 }
+.bg-opacity-20 {
+  --tw-bg-opacity: 0.2;
+}
 .bg-gradient-to-r {
   background-image: linear-gradient(to right, var(--tw-gradient-stops));
 }

@@ -662,16 +662,21 @@
                             <p class="text-me font-medium text-nav">Prix</p>
                             <p
                                 v-if="machine.transaction == 'buy'"
-                                class="py-2 px-4 border-gray-200 w-40 text-jaune"
+                                class="py-2 px-4 border-gray-200 w-40"
+                                :class="
+                                    disabled ? 'text-red-600' : 'text-jaune'
+                                "
                                 style="border-width: 1px"
                             >
                                 {{
-                                    (machine.transaction_lv == 1
-                                        ? machine.buy_price_lv1
-                                        : machine.transaction_lv == 2
-                                        ? machine.buy_price_lv2
-                                        : machine.buy_price_lv3) *
-                                    machine.transaction_nb
+                                    (
+                                        (machine.transaction_lv == 1
+                                            ? machine.buy_price_lv1
+                                            : machine.transaction_lv == 2
+                                            ? machine.buy_price_lv2
+                                            : machine.buy_price_lv3) *
+                                        machine.transaction_nb
+                                    ).toPrecision(8)
                                 }}
                             </p>
                             <p
@@ -694,7 +699,7 @@
                                                 ? "machines_lv2_health"
                                                 : "machines_lv3_health"
                                         ].value
-                                    ).toPrecision(6)
+                                    ).toPrecision(8)
                                 }}
                             </p>
                         </div>
@@ -708,7 +713,13 @@
                                 machine.transaction == 'buy'
                             "
                             @click="confirmMachineTransaction"
-                            class="font-heading font-medium border-0 px-3 py-1 text-vN hover:text-vert bg-opacity-30"
+                            class="font-heading font-medium border-0 px-3 py-1 bg-opacity-30"
+                            :class="
+                                disabled
+                                    ? 'text-gray-200'
+                                    : 'text-vN hover:text-vert'
+                            "
+                            :disabled="disabled"
                         >
                             Confirmer
                         </button>
@@ -981,8 +992,77 @@ export default {
             this.$forceUpdate();
             this.verifyProd();
         },
+        "machine.transaction_nb": function (n) {
+            if (n < 0) {
+                this.machine.transaction_nb = 0;
+            } else if (this.machine.transaction == "sell") {
+                if (this.machine.transaction_lv == 1) {
+                    if (
+                        this.indicators["nb_machines_lv1"]["value"] -
+                            this.indicators["nb_machines_lv1_busy"]["value"] <
+                        n
+                    ) {
+                        this.machine.transaction_nb =
+                            this.indicators["nb_machines_lv1"]["value"] -
+                            this.indicators["nb_machines_lv1_busy"]["value"];
+                    }
+                } else if (this.machine.transaction_lv == 2) {
+                    if (
+                        this.indicators["nb_machines_lv2"]["value"] -
+                            this.indicators["nb_machines_lv2_busy"]["value"] <
+                        n
+                    ) {
+                        this.machine.transaction_nb =
+                            this.indicators["nb_machines_lv2"]["value"] -
+                            this.indicators["nb_machines_lv2_busy"]["value"];
+                    }
+                } else if (this.machine.transaction_lv == 3) {
+                    if (
+                        this.indicators["nb_machines_lv3"]["value"] -
+                            this.indicators["nb_machines_lv3_busy"]["value"] <
+                        n
+                    ) {
+                        this.machine.transaction_nb =
+                            this.indicators["nb_machines_lv3"]["value"] -
+                            this.indicators["nb_machines_lv3_busy"]["value"];
+                    }
+                }
+            }
+        },
     },
     computed: {
+        disabled: function () {
+            if (this.machine.transaction == "buy") {
+                if (this.machine.transaction_lv == 1) {
+                    if (
+                        this.machine.buy_price_lv1 *
+                            this.indicators["machines_lv1_health"].value *
+                            this.machine.transaction_nb >
+                        this.caisse
+                    ) {
+                        return true;
+                    } else return false;
+                } else if (this.machine.transaction_lv == 2) {
+                    if (
+                        this.machine.buy_price_lv2 *
+                            this.indicators["machines_lv2_health"].value *
+                            this.machine.transaction_nb >
+                        this.caisse
+                    ) {
+                        return true;
+                    } else return false;
+                } else if (this.machine.transaction_lv == 3) {
+                    if (
+                        this.machine.buy_price_lv3 *
+                            this.indicators["machines_lv3_health"].value *
+                            this.machine.transaction_nb >
+                        this.caisse
+                    ) {
+                        return true;
+                    } else return false;
+                }
+            } else return false;
+        },
         loaded_prices() {
             return (
                 this.machine.buy_price_lv1 +

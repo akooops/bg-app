@@ -31,7 +31,7 @@
         </td>
 
         <td
-            class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static bg-slate-100"
+            class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static bg-vN bg-opacity-20"
         >
             <!-- {{ item.quantity_selling }} -->
             <input
@@ -57,7 +57,7 @@
         </td>
 
         <td
-            class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static bg-slate-100"
+            class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static bg-vN bg-opacity-20"
         >
             <input
                 type="number"

@@ -14,7 +14,7 @@
             ></div>
             <div class="flex flex-col items-center font-semibold">
                 <p class="text-vN text-4xl py-4 px-4 shadow-md rounded-md mb-1">
-                    {{ months[time % 48] }}
+                    {{ months[(time % 48) - 1] }}
                 </p>
                 <p class="text-sm text-nav">Mois</p>
             </div>

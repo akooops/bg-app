@@ -16,7 +16,7 @@
 
                     <th class="p-3 text-sm table-cell">Quantité en vente</th>
 
-                    <th class="p-3 text-sm table-cell bg-slate-100">
+                    <th class="p-3 text-sm table-cell bg-vN bg-opacity-20">
                         Mettre en vente
                     </th>
 
@@ -24,7 +24,7 @@
 
                     <th class="p-3 text-sm table-cell">Prix Maximal</th>
 
-                    <th class="p-3 text-sm table-cell bg-slate-100">
+                    <th class="p-3 text-sm table-cell bg-vN bg-opacity-20">
                         Changer le prix
                     </th>
 
