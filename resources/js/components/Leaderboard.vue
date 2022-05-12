@@ -50,7 +50,7 @@
         <div class="w-4/5 flex flex-col gap-10">
             <transition-group name="flip-list" tag="ul">
                 <Listing
-                    v-for="(item, i) in listing.slice(4, 13)"
+                    v-for="(item, i) in listing.slice(3, 13)"
                     :key="item.entreprise_name"
                     :name="item.entreprise_name"
                     :caisse="item.caisse"
