@@ -143,6 +143,7 @@
                 </div>
 
                 <CircleChart
+                    v-if="machine != null"
                     :legend="[
                         machine[0].name.replace('Machines -', ''),
                         machine[1].name.replace('Machines -', ''),
@@ -156,6 +157,7 @@
                     class="vv"
                 ></CircleChart>
                 <CircleChart
+                    v-if="employee != null"
                     :legend="[
                         employee[0].name.replace('Employés - ', ''),
                         employee[1].name.replace('Employés - ', ''),
@@ -221,6 +223,7 @@
                 <div v-if="page_index == 'employees'">
                     <div>
                         <CircleChart
+                            v-if="employee != null"
                             :legend="[
                                 employee[0].name.replace('Employés - ', ''),
                                 employee[1].name.replace('Employés - ', ''),
@@ -302,7 +305,7 @@ export default {
             employee_used: "",
             total_employee: "",
             free_employee: "",
-            employee: [],
+            employee: null,
             total_machines: "",
             free_machines: "",
             machine: null,
