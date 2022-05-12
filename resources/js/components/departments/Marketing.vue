@@ -63,7 +63,7 @@
                         <div class="flex flex-col items-start gap-4">
                             <div class="flex flex-col items-start gap-4">
                                 <label for="amount">
-                                    Budget journalier en DA
+                                    Budget hebdomadaire en DA
                                 </label>
                                 <input
                                     id="amount"
