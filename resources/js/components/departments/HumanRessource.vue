@@ -278,11 +278,11 @@
             <template v-slot:content>
                 <div class="flex flex-col text-vN px-5 gap-4">
                     <h1 class="text-center text-vert text-2xl">
-                        Virer des employés
+                        Licencier des employés
                     </h1>
                     <div>
                         <h1 class="pt-5 pb-3">
-                            Nombre d'employé simple à virer :
+                            Nombre d'employé simple à licencier :
                         </h1>
                         <input
                             type="number"
@@ -297,7 +297,7 @@
                     </div>
                     <div>
                         <h1 class="pt-5 pb-3">
-                            Nombre d'employé experts à virer :
+                            Nombre d'employé experts à licencier :
                         </h1>
                         <input
                             type="number"
@@ -450,7 +450,7 @@
                 <button
                     @click="hire_modal = true"
                     :disabled="!indicators_loaded || !data_loaded"
-                    class="rounded-3xl font-semibold text-vN py-2 " 
+                    class="rounded-3xl font-semibold text-vN py-2 "
                     style="border: solid 0.5px #B2D06B ; "
                     :class="
                         !indicators_loaded || !data_loaded
@@ -515,7 +515,7 @@
                             : 'bg-white shadow-lg'
                     "
                 >
-                    Virer des employés
+                    Licencier des employés
                 </button>
             </div>
         </div>

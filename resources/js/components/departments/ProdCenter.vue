@@ -271,7 +271,7 @@
                     </div>
                     <div>
                         <h1 class="text-vN text-lg font-heading font-medium">
-                            Quantité( en lot de 1000 pièces)
+                            Quantité (en lots de 1000 pièces)
                         </h1>
                         <input
                             type="number"
@@ -456,7 +456,7 @@
                                         Temps unitaire
                                     </th> -->
                                     <th class="px-4 text-vN py-3">
-                                        Employés libres
+                                        Employés nécessaires
                                     </th>
                                 </tr>
                             </thead>
