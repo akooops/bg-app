@@ -58,6 +58,11 @@
 
                     <div class="flex flex-row mt-4">
                         <div class="flex flex-col w-1/2">
+                            <p
+                                v-if="create_error_message != ''"
+                                class="text-red-600">
+                                {{ create_error_message }}
+                            </p>
                             <h2
                                 for="amount"
                                 class="text-vN text-lg font-heading font-medium"
@@ -159,7 +164,7 @@
                     <div>
 
                     </div>
-                    
+
                     <div>
                         <h2
                             for="amount"
@@ -590,8 +595,8 @@ export default {
     },
     computed: {
         ratio() {
-            if (this.amount == 0 || this.deadline == 0) {
-                return null;
+            if (this.amount == 0 || this.deadline == 0 || this.ca == 0) {
+                return 0;
             }
 
             let x = this.amount / this.ca;
@@ -616,6 +621,11 @@ export default {
                 return false;
             } else if (this.deadline <= 0) {
                 this.create_error_message = "La durée doit être positive";
+                return false;
+            }
+
+            if (this.ca == 0) {
+                this.create_error_message = "Vous ne pouvez pas effectuer un prêt avec un chiffre d'affaires nul";
                 return false;
             }
 
