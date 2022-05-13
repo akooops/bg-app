@@ -585,10 +585,7 @@
                         <h1 class="w-80 text-vN">
                             Votre taux de rebut est de
                             {{
-                                Math.round(
-                                    indicators["reject_rate"].value *
-                                        Math.pow(10, 2)
-                                )
+                                Math.round( indicators["reject_rate"].value * 1000 ) / 1000
                             }}%, pour le réduire, effectuez un audit qualité.
                         </h1>
                     </div>

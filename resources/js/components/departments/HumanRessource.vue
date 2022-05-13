@@ -587,7 +587,7 @@ export default {
                 (this.salary_lv1 * this.indicators["nb_workers_lv1"]["value"] +
                     this.salary_lv2 *
                         this.indicators["nb_workers_lv2"]["value"]);
-            return parseFloat(result).toFixed(2);
+            return round(result, 2);
         },
         total_bonus() {
             return (

@@ -431,8 +431,12 @@
         >
             <template v-slot:content>
                 <div class="flex flex-col p-2">
-                    <h3 class="font-extrabold text-lg my-3 text-vN">
+                    <h3 v-if="!$refs.command_maker.command_sent" class="font-extrabold text-lg my-3 text-vN">
                         Voulez vous annuler la commande ?
+                    </h3>
+
+                    <h3 v-else class="font-extrabold text-lg my-3 text-vN">
+                        Si vous quittez maintenant, vous allez annuler la commande que vous venez d'envoyer.
                     </h3>
 
                     <div class="flex gap-3">
@@ -548,7 +552,7 @@ export default {
             if (!confirm) {
                 if (
                     this.page_index == "command_creator" &&
-                    this.$refs.command_maker.commands.length > 0
+                    (this.$refs.command_maker.commands.length > 0 || this.$refs.command_maker.command_sent)
                 ) {
                     this.next_tab = tab_name;
                     this.show_change_tab_modal = true;
