@@ -496,6 +496,7 @@ export default {
                     .post("/api/marketing/create", this.new_ad)
                     .then((resp) => {
                         if (resp.data.success) {
+                            this.getAds();
                             this.show_success = true;
                             this.show_error = false;
                         } else {

@@ -301,7 +301,7 @@
                                 class="ring-tableBorder border-0 focus-within:ring-vert ring-1 rounded-md"
                                 type="number"
                                 min="1"
-                                :max="caisse / materialPrice"
+                                :max="Math.floor(caisse / materialPrice)"
                                 placeholder="Quantité en unité"
                                 v-model="commandItem.quantity"
                             />
@@ -369,6 +369,15 @@
                 </div>
             </template>
         </Modal>
+        <div
+            v-if="command_sent"
+            class="z-[9999] absolute w-full h-full top-0 left-0 bg-gray-100 bg-opacity-50 flex flex-col items-center justify-center my-auto"
+        >
+            <img class="w-16 h-16 load" src="/assets/logo/bg_logo.svg" alt="" />
+            <div class="text-vN pt-2 font-semibold">
+                Votre commande est en cours d'envoi ...
+            </div>
+        </div>
     </div>
 </template>
 
@@ -517,7 +526,9 @@ export default {
             if (n <= 0) {
                 this.commandItem.quantity = 1;
             } else if (n > this.caisse / this.materialPrice) {
-                this.commandItem.quantity = this.caisse / this.materialPrice;
+                this.commandItem.quantity = Math.floor(
+                    this.caisse / this.materialPrice
+                );
             }
         },
     },
@@ -596,10 +607,11 @@ export default {
                     entreprise_id: this.user.id,
                 })
                 .then((resp) => {
-                    this.command_sent = false;
                     this.commands = [];
 
                     if (resp.data.success) {
+                        this.$emit("command_sent");
+                        this.command_sent = false;
                         this.show_success = true;
                         this.show_error = false;
                         this.overallPrice = 0;

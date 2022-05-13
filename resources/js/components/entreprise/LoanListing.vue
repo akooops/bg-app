@@ -49,6 +49,24 @@
                 </svg>
             </span>
         </div> -->
+        <div
+            v-if="sent_create"
+            class="z-[9999] absolute w-full h-full top-0 left-0 bg-gray-100 bg-opacity-50 flex flex-col items-center justify-center my-auto"
+        >
+            <img class="w-16 h-16 load" src="/assets/logo/bg_logo.svg" alt="" />
+            <div class="text-vN pt-2 font-semibold">
+                Votre prêt bancaire est en cours d'envoi ...
+            </div>
+        </div>
+        <div
+            v-if="sent_payment"
+            class="z-[9999] absolute w-full h-full top-0 left-0 bg-gray-100 bg-opacity-50 flex flex-col items-center justify-center my-auto"
+        >
+            <img class="w-16 h-16 load" src="/assets/logo/bg_logo.svg" alt="" />
+            <div class="text-vN pt-2 font-semibold">
+                Le paiement de votre dette est en cours ...
+            </div>
+        </div>
         <Modal v-if="loan_modal" class="align-center openmodal">
             <template v-slot:content>
                 <div class="flex flex-col mx-4">
@@ -60,7 +78,8 @@
                         <div class="flex flex-col w-1/2">
                             <p
                                 v-if="create_error_message != ''"
-                                class="text-red-600">
+                                class="text-red-600"
+                            >
                                 {{ create_error_message }}
                             </p>
                             <h2
@@ -625,7 +644,8 @@ export default {
             }
 
             if (this.ca == 0) {
-                this.create_error_message = "Vous ne pouvez pas effectuer un prêt avec un chiffre d'affaires nul";
+                this.create_error_message =
+                    "Vous ne pouvez pas effectuer un prêt avec un chiffre d'affaires nul";
                 return false;
             }
 
@@ -748,9 +768,9 @@ export default {
                         ratio: this.ratio,
                     })
                     .then((resp) => {
-                        this.sent_create = false;
-
                         if (resp.data.success) {
+                            this.sent_create = false;
+                            this.getLoans();
                             this.show_success = true;
                             this.show_error = false;
                         } else {
@@ -771,9 +791,9 @@ export default {
                         refund_amount: this.refund_amount,
                     })
                     .then((resp) => {
-                        this.sent_payment = false;
-
                         if (resp.data.success) {
+                            this.sent_payment = false;
+                            this.getLoans();
                             this.show_success = true;
                             this.show_error = false;
                         } else {

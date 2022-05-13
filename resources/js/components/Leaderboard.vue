@@ -160,7 +160,7 @@ export default {
     mounted() {
         setInterval(() => {
             this.getListing();
-        }, 60000);
+        }, 45000);
         /*
 			if(this.showFs == false){
 				this.show_score = false
