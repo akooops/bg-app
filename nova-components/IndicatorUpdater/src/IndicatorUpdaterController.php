@@ -246,39 +246,39 @@ class IndicatorUpdaterController
 
                 switch ($raw_mat->id) {
                     case 1:         // Sucre
-                        $quantity = 13720;
+                        $quantity = 6860;
                         break;
 
                     case 2:         // Emballage
-                        $quantity = 13000;
+                        $quantity = 6500;
                         break;
 
                     case 3:         // Additifs
-                        $quantity = 3600;
+                        $quantity = 1800;
                         break;
 
                     case 4:         // Blé
-                        $quantity = 63600;
+                        $quantity = 31800;
                         break;
 
                     case 5:         // Lait
-                        $quantity = 12500;
+                        $quantity = 6250;
                         break;
 
                     case 6:         // Beurre
-                        $quantity = 16500;
+                        $quantity = 8250;
                         break;
 
                     case 7:         // Fruits
-                        $quantity = 18000;
+                        $quantity = 9000;
                         break;
 
                     case 8:         // Avoine
-                        $quantity = 25000;
+                        $quantity = 12500;
                         break;
 
                     case 9:         // Cacao
-                        $quantity = 29500;
+                        $quantity = 14750;
                         break;
                 }
 
@@ -486,6 +486,9 @@ class IndicatorUpdaterController
             DB::table('products')->where('id', '=', 3)->update(['percent_population' => 0.28]);   // Sandwich glacé
             DB::table('products')->where('id', '=', 4)->update(['percent_population' => 0.24]);   // Céréales
             DB::table('products')->where('id', '=', 5)->update(['percent_population' => 0.05]);   // Granola
+
+            // Update avoine price
+            DB::table('raw_materials')->where('id', '=', 8)->update(['price' => 1100]);   // Avoine
 
             // Update machines prices
             $this->set_game_setting('machines_lv1_price', 600000);
