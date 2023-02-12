@@ -119,7 +119,8 @@ return [
 
     'redis' => [
 
-        'client' => env('REDIS_CLIENT', 'phpredis'),
+        // 'client' => env('REDIS_CLIENT', 'phpredis'),
+        'client' => env('REDIS_CLIENT', 'predis'),          // ref: https://stackoverflow.com/questions/61168156/logicexception-please-make-sure-the-php-redis-extension-is-installed-and-enable
 
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'redis'),

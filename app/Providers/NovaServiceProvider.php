@@ -69,7 +69,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
             Boolean::make('Simulation en cours ?', 'game_started'),
             Number::make('Jour début de la simulation', 'start_date'),
             Number::make('Jour courant de la simulation', 'current_date'),
-            Boolean::make('Afficher le score finale', 'show_final_score')
+            Boolean::make('Afficher le score final', 'show_final_score')
         ], [
             'salary_lv1' => 'float',
             'salary_lv2' => 'float',
