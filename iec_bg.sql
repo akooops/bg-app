@@ -1844,7 +1844,7 @@ CREATE TABLE IF NOT EXISTS `raw_materials` (
 -- Dumping data for table `raw_materials`
 --
 
-INSERT INTO `raw_materials` (`id`, `created_at`, `updated_at`, `price`, `unit`, `name`, `volume`, `icon`) VALUES
+// INSERT INTO `raw_materials` (`id`, `created_at`, `updated_at`, `price`, `unit`, `name`, `volume`, `icon`) VALUES
 (1, '2021-04-09 10:20:43', '2022-04-27 23:21:04', 70.00, 'Kg', 'Sucre', 2, '/assets/icons/sugar.svg'),
 (2, '2021-04-09 10:21:22', '2022-04-27 23:21:01', 30.00, 'Kg', 'Emballage (Carton / Alumnium)', 3, '/assets/icons/emballage.svg'),
 (3, '2021-04-09 10:21:58', '2022-04-27 23:20:53', 500.00, 'Kg', 'Additifs Alimentaires', 1, '/assets/icons/additives.svg'),
@@ -1854,6 +1854,19 @@ INSERT INTO `raw_materials` (`id`, `created_at`, `updated_at`, `price`, `unit`, 
 (7, '2022-04-20 10:32:34', '2022-04-27 23:19:59', 1300.00, 'Kg', 'Fruits', 1, '/assets/icons/fruits.svg'),
 (8, '2022-04-20 10:33:49', '2022-04-27 23:19:52', 400.00, 'Kg', 'Flocons d\'Avoine', 1, '/assets/icons/flocans.svg'),
 (9, '2022-04-20 10:34:41', '2022-04-27 23:19:14', 900.00, 'Kg', 'Chocolat', 1, '/assets/icons/chocolate.svg');
+
+ RawMaterial edition 3 
+
+ INSERT INTO `raw_materials` ( `id` ,`created_at`, `updated_at`, `price`, `unit`, `name`, `volume`, `icon`) VALUES 
+(10, '2023-04-15 13:50:54', '2023-04-15 13:50:54', '70.00', NULL , 'Laine', '1', '/assets/icons/nv/laine.svg'), 
+( 11,'2023-04-15 13:52:11', '2023-04-16 17:40:55', '30.00', NULL, 'Coton', '1', '/assets/icons/nv/cotton.svg'), 
+( 18,'2023-04-15 13:53:45', '2023-04-15 13:53:45', '500.00', NULL, 'Matières chimiques', '1', '/assets/icons/nv/chemicals.svg'),
+(17,'2023-04-15 13:54:20', '2023-04-15 13:54:20', '50.00', NULL, 'Fixation', '2', '/assets/icons/nv/fixation.svg'), 
+( 12,'2023-04-15 13:57:35', '2023-04-15 13:57:35', '900.00', NULL, 'Polyester', '1', '/assets/icons/nv/polyester.svg'),
+(19,'2023-04-15 13:58:30', '2023-04-15 14:01:23', '750.00', NULL, 'Packaging', '3', '/assets/icons/nv/packaging.svg'), 
+( 14,'2023-04-15 13:59:16', '2023-04-15 13:59:16', '1300.00', NULL, 'Lin', '1', '/assets/icons/nv/lin.svg'),
+( 13,'2023-04-15 13:59:46', '2023-04-15 13:59:46', '400.00', NULL, 'Garniture', '3', '/assets/icons/nv/garniture.svg'),
+( 15,'2023-04-15 14:00:12', '2023-04-15 14:00:12', '900.00', NULL, 'La soie', '1', '/assets/icons/nv/soie.svg'), (16, '2023-04-15 14:00:48', '2023-04-15 14:00:48', '1200.00', NULL, 'Cuir', '1', '/assets/icons/nv/cuire.svg')
 
 -- --------------------------------------------------------
 
@@ -1875,6 +1888,10 @@ CREATE TABLE IF NOT EXISTS `raw_materials_products` (
 --
 
 INSERT INTO `raw_materials_products` (`product_id`, `raw_material_id`, `quantity`) VALUES
+(8, 15, 15),
+(8, 16, 12),
+(8, 47, 200),
+(8, 6, 60),
 (1, 1, 8.5),
 (1, 2, 30),
 (1, 3, 0.6),
@@ -2091,6 +2108,20 @@ CREATE TABLE IF NOT EXISTS `raw_material_supplier` (
 --
 
 INSERT INTO `raw_material_supplier` (`raw_material_id`, `supplier_id`, `price_factor`, `time_to_deliver`, `created_at`, `updated_at`, `is_available`) VALUES
+(10, 1, 1.00, 3, NULL, NULL, 1),
+(11, 1, 1.00, 3, NULL, NULL, 1),
+(12, 1, 1.00, 3, NULL, NULL, 1),
+(13, 1, 1.00, 3, NULL, NULL, 1),
+(14, 1, 1.00, 3, NULL, NULL, 1),
+(15, 1, 1.00, 3, NULL, NULL, 1),
+(16, 1, 1.00, 3, NULL, NULL, 1),
+(17, 1, 1.00, 3, NULL, NULL, 1),
+(18, 1, 1.00, 3, NULL, NULL, 1),
+(18, 2, 0.80, 6, NULL, NULL, 1),
+(6, 2, 0.80, 6, NULL, NULL, 1),
+(4, 2, 0.80, 6, NULL, NULL, 1),
+(9, 2, 0.80, 6, NULL, NULL, 1),
+//
 (1, 1, 1.00, 3, NULL, NULL, 1),
 (2, 1, 1.00, 3, NULL, NULL, 1),
 (4, 1, 1.00, 3, NULL, NULL, 1),
