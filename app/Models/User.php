@@ -47,4 +47,19 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+    
+    protected static function booted()
+    {
+        static::created(function ($user) {
+            $rawMaterials = RawMaterial::all();
+            foreach ($rawMaterials as $rawMaterial) {
+                $rawMaterialStock = new RawMaterialStock;
+                $rawMaterialStock->entreprise_id = $user->id;
+                $rawMaterialStock->raw_material_id = $rawMaterial->id;
+                $rawMaterialStock->quantity = 0;
+                $rawMaterialStock->phase = 0;
+                $rawMaterialStock->save();
+            }
+        });
+}
 }
