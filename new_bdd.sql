@@ -4,20 +4,6 @@
  the old rows in iec_bg database that are not assosiated with your entreprise_id (especially the commands table , stock table or the raw_material_stock table )
 
 */ 
-
--- lors de la création dune entreprise , inserer directement ce script dans la bdd : 
-INSERT INTO `raw_materials_stock` (`entreprise_id`, `raw_material_id`, `quantity`, `unit`, `phase`)
- VALUES ('id', '10', '0.00', NULL, '0'), 
- ('id', '11', '0.00', NULL, '0'),
- ('id', '12', '0.00', NULL, '0'),
- ('id', '13', '0.00', NULL, '0'),
- ('id', '14', '0.00', NULL, '0'),
- ('id', '15', '0.00', NULL, '0'),
- ('id', '16', '0.00', NULL, '0'),
- ('id', '17', '0.00', NULL, '0'),
- ('id', '18', '0.00', NULL, '0'),
- ('id', '19', '0.00', NULL, '0');
-
 -- raw materials 
 INSERT INTO `raw_materials` (`id`, `created_at`, `updated_at`, `price`, `unit`, `name`, `volume`, `icon`) VALUES
  (10, '2023-04-15 13:50:54', '2023-04-15 13:50:54', '70.00', NULL, 'Laine', '1', '/assets/icons/nv/laine.svg'), 
