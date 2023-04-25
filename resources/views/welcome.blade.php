@@ -394,13 +394,22 @@
         .welcome {
             height: 100vh;
             width: 100vw;
+<<<<<<< HEAD
             background: linear-gradient(to top right,#0b3232ee 20%,#c59966ee);
+=======
+           
+            background: linear-gradient(to top right,#0b3232,#0b3232ee 45%,#c59966ee 70%,#c59966);
+>>>>>>> 2517c90 (modifier les couleurs selon le modele figma)
             background-size: 300% 300%;
             display: grid;
             place-items: center;
             cursor: pointer;
             justify-content: space-around;
+<<<<<<< HEAD
             animation: animate  5s ease-in-out infinite;
+=======
+            /* animation: animate  5s ease-in-out infinite; */
+>>>>>>> 2517c90 (modifier les couleurs selon le modele figma)
         }
         @keyframes animate{
             0 {
@@ -466,6 +475,15 @@
         body {
             font-family: 'Ubuntu', sans-serif;
         }
+        .letStartBtn{
+            width: 200px;
+            background-color: #C59866;
+            border: 2px solid #000;
+            border-radius: 20px;
+            padding: 20px 40px;
+            font-size: 20px;
+            /* font-family: 'Ubuntu', sans-serif; */
+        }
     </style>
 </head>
 
@@ -475,7 +493,8 @@
             <img src="/assets/logo/bg1.svg" alt="logo">
         </div>
         <div class='typewriter w-fit'>
-            <h1>Click Anywhere to start!</h1>
+            <button class="letStartBtn">let's start</button>
+            <!-- <h1>Click Anywhere to start!</h1> -->
         </div>
     </div>
 </body>
