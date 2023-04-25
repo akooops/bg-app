@@ -78,7 +78,7 @@ trait IndicatorTrait
     public function getFinanceIndicators(Request $request)
     {
         $cost_keys = ["prod_cost", "dist_cost", "raw_materials_cost"];
-        $ca_keys = ["ca_5", "ca_6", "ca_7", "ca_8", "ca_9", "ca"];
+        $ca_keys = ["ca_1", "ca_2", "ca_3", "ca_4", "ca_5", "ca_6", "ca_7", "ca_8", "ca_9", "ca_10", "ca_11", "ca_12",  "ca"];
         $other_keys = ["caisse", "dettes", "debt_ratio"];
         $data = [];
         $costs = [];
