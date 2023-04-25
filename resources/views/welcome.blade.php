@@ -394,12 +394,24 @@
         .welcome {
             height: 100vh;
             width: 100vw;
-            background-color: #0B3434;
+            background: linear-gradient(to top right,#0b3232ee 20%,#c59966ee);
+            background-size: 300% 300%;
             display: grid;
             place-items: center;
             cursor: pointer;
             justify-content: space-around;
+            animation: animate  5s ease-in-out infinite;
         }
+        @keyframes animate{
+            0 {
+                background-position: 100 50%;
+            }
+            50% {
+                background-position: 0% 50%;
+            }
+            100% {
+                background-position: 100 50%;
+            }}
 
         .welcome_logo {
             width: 350px;
@@ -460,7 +472,7 @@
 <body>
     <div class="welcome" onClick="document.location.href = '/login'">
         <div class="welcome_logo ">
-            <img src="/assets/logo/bg.svg" alt="logo">
+            <img src="/assets/logo/bg1.svg" alt="logo">
         </div>
         <div class='typewriter w-fit'>
             <h1>Click Anywhere to start!</h1>

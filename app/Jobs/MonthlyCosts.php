@@ -48,6 +48,7 @@ class MonthlyCosts implements ShouldQueue
             $pollution_machines_lv1_factor = $this->get_game_setting('machines_lv1_pollution');
             $pollution_machines_lv2_factor = $this->get_game_setting('machines_lv2_pollution');
             $pollution_machines_lv3_factor = $this->get_game_setting('machines_lv3_pollution');
+            $pollution_machines_lv0_factor = $this->get_game_setting('machines_lv0_pollution');
 
             $pollution_unit_cost = $this->get_game_setting('pollution_unit_cost');
 
@@ -62,6 +63,7 @@ class MonthlyCosts implements ShouldQueue
                 $machines_lv1 = $this->getIndicator('nb_machines_lv1', $entreprise->id)['value'];
                 $machines_lv2 = $this->getIndicator('nb_machines_lv2', $entreprise->id)['value'];
                 $machines_lv3 = $this->getIndicator('nb_machines_lv3', $entreprise->id)['value'];
+                $machines_lv0 = $this->getIndicator('nb_machines_lv0', $entreprise->id)['value'];
 
                 $workers_lv1 = $this->getIndicator('nb_workers_lv1', $entreprise->id)['value'];
                 $workers_lv2 = $this->getIndicator('nb_workers_lv2', $entreprise->id)['value'];
@@ -84,7 +86,8 @@ class MonthlyCosts implements ShouldQueue
                 $pollution_cost = 0;
                 $pollution_cost += $pollution_unit_cost *
                     ($machines_lv1 * $pollution_machines_lv1_factor +
-                        $machines_lv2 * $pollution_machines_lv2_factor +
+                    $machines_lv0 * $pollution_machines_lv0_factor+
+                    $machines_lv2 * $pollution_machines_lv2_factor +
                         $machines_lv3 * $pollution_machines_lv3_factor);
 
                 // Compute CA taxes
@@ -165,6 +168,17 @@ class MonthlyCosts implements ShouldQueue
                         $this->updateIndicator("machines_lv1_health", $entreprise->id, -1 * $machines_lv1_durability);
                     } else {
                         $this->setIndicator("machines_lv1_health", $entreprise->id, 0);
+                    }
+                }
+
+                $nb_machines_lv0 = $this->getIndicator('nb_machines_lv0', $entreprise->id)['value'];
+                $machines_lv0_health = $this->getIndicator('machines_lv0_health', $entreprise->id)['value'];
+                $machines_lv0_durability = $this->get_game_setting('machines_lv0_durability');
+                if ($nb_machines_lv0 > 0) {
+                    if ($machines_lv0_health - $machines_lv0_durability > 0) {
+                        $this->updateIndicator("machines_lv0_health", $entreprise->id, -1 * $machines_lv0_durability);
+                    } else {
+                        $this->setIndicator("machines_lv0_health", $entreprise->id, 0);
                     }
                 }
 

@@ -355,9 +355,9 @@ class EntrepriseController extends Controller
     {
         // Return production useful indicators
         $keys = [
-            "nb_machines_lv1", "nb_machines_lv2", "nb_machines_lv3",
-            "nb_machines_lv1_busy", "nb_machines_lv2_busy", "nb_machines_lv3_busy",
-            "machines_lv1_health", "machines_lv2_health", "machines_lv3_health",
+            "nb_machines_lv1", "nb_machines_lv0", "nb_machines_lv2", "nb_machines_lv3",
+            "nb_machines_lv1_busy", "nb_machines_lv0_busy","nb_machines_lv2_busy", "nb_machines_lv3_busy",
+            "machines_lv1_health", "machines_lv2_health","machines_lv2_health", "machines_lv3_health",
             "nb_workers_lv1", "nb_workers_lv2",
             "nb_workers_lv1_busy", "nb_workers_lv2_busy",
             "workers_mood", "5s_day",
@@ -422,7 +422,17 @@ class EntrepriseController extends Controller
         $nb_machines = null;
         $nb_busy_machines = null;
         $machines_health = null;
-        if ($machines_lvl == 1) {
+        if ($machines_lvl == 0) {
+            if ($this->getIndicator("machines_lv0_health", $entreprise_id) <= 0) {
+                $message = "Impossible de lancer la production: veuillez réparer vos machines.";
+                return Response::json(["message" => $message, "success" => false], 200);
+            }
+
+            $nb_machines = $this->getIndicator("nb_machines_lv0", $entreprise_id)["value"];
+            $nb_busy_machines = $this->getIndicator("nb_machines_lv0_busy", $entreprise_id)["value"];
+            $machines_health = $this->getIndicator("machines_lv0_health", $entreprise_id)["value"];
+        
+        } else if ($machines_lvl == 1) {
             if ($this->getIndicator("machines_lv1_health", $entreprise_id) <= 0) {
                 $message = "Impossible de lancer la production: veuillez réparer vos machines.";
                 return Response::json(["message" => $message, "success" => false], 200);
@@ -505,6 +515,7 @@ class EntrepriseController extends Controller
             "creation_date" => (int) $this->getSimulationTime(),
             "finish_date" => round((int) $this->getSimulationTime() + ($delay / 60)),
             "status" => "pending",
+            "machines_lv0" => $machines_lvl == 0 ? $nb_machines_needed : 0,
             "machines_lv1" => $machines_lvl == 1 ? $nb_machines_needed : 0,
             "machines_lv2" => $machines_lvl == 2 ? $nb_machines_needed : 0,
             "machines_lv3" => $machines_lvl == 3 ? $nb_machines_needed : 0,
@@ -518,9 +529,11 @@ class EntrepriseController extends Controller
         // Mark machines used as so in indicators
         if ($machines_lvl == 1) {
             $this->updateIndicator("nb_machines_lv1_busy", $entreprise_id, $nb_machines_needed);
-        } else if ($machines_lvl == 2) {
+        } else if ($machines_lvl == 0) {
+            $this->updateIndicator("nb_machines_lv0_busy", $entreprise_id, $nb_machines_needed);
+        }else if ($machines_lvl == 2) {
             $this->updateIndicator("nb_machines_lv2_busy", $entreprise_id, $nb_machines_needed);
-        } else if ($machines_lvl == 3) {
+        }else if ($machines_lvl == 3) {
             $this->updateIndicator("nb_machines_lv3_busy", $entreprise_id, $nb_machines_needed);
         }
 
@@ -668,6 +681,8 @@ class EntrepriseController extends Controller
             $buy_price = $this->get_game_setting("machines_lv2_price");
         } else if ($level == 3) {
             $buy_price = $this->get_game_setting("machines_lv3_price");
+        } else if ($level == 0) {
+        $buy_price = $this->get_game_setting("machines_lv0_price");
         }
 
         $caisse = $this->getIndicator("caisse", $entreprise_id)["value"];
@@ -748,6 +763,18 @@ class EntrepriseController extends Controller
             } else {
                 $this->setIndicator("machines_lv3_health", $entreprise_id, 1);
             }
+        }else if ($level == 0) {
+            $this->updateIndicator("nb_machines_lv0", $entreprise_id, $number);
+
+            $machines_health = $this->getIndicator("machines_lv0_health", $entreprise_id)["value"];
+            $nb_machines = $this->getIndicator("nb_machines_lv0", $entreprise_id)["value"];
+
+            if (($nb_machines * $machines_health + $number) / ($nb_machines + 1) <= 1) {
+                $this->setIndicator("machines_lv0_health", $entreprise_id, ($nb_machines * $machines_health + $number) / ($nb_machines + 1));
+                $health_msg = "Santé des machines légèrement augmentée.";
+            } else {
+                $this->setIndicator("machines_lv0_health", $entreprise_id, 1);
+            }
         }
 
         $message = "Vous avez acheté " . $number . " machine(s) de niveau " . $level . " au prix de " . $buy_price * $number . " DA. " . $health_msg;
@@ -794,6 +821,10 @@ class EntrepriseController extends Controller
             $nb_machines = $this->getIndicator("nb_machines_lv3", $entreprise_id)["value"];
             $nb_busy_machines = $this->getIndicator("nb_machines_lv3_busy", $entreprise_id)["value"];
             $machines_health = $this->getIndicator("machines_lv3_health", $entreprise_id)["value"];
+        } else if ($level == 0) {
+            $nb_machines = $this->getIndicator("nb_machines_lv0", $entreprise_id)["value"];
+            $nb_busy_machines = $this->getIndicator("nb_machines_lv0_busy", $entreprise_id)["value"];
+            $machines_health = $this->getIndicator("machines_lv0_health", $entreprise_id)["value"];
         }
 
         if ($machines_health < 0.2) {
@@ -885,6 +916,9 @@ class EntrepriseController extends Controller
         } else if ($level == 3) {
             $buy_price = $this->get_game_setting("machines_lv3_price");
             $sell_price = $buy_price * $this->getIndicator("machines_lv3_health", $entreprise_id)['value'];
+        } else if ($level == 0) {
+            $buy_price = $this->get_game_setting("machines_lv0_price");
+            $sell_price = $buy_price * $this->getIndicator("machines_lv0_health", $entreprise_id)['value'];
         }
 
         $this->updateIndicator("caisse", $entreprise_id, $sell_price * $number);
@@ -906,6 +940,12 @@ class EntrepriseController extends Controller
 
             if ($this->getIndicator("nb_machines_lv3", $entreprise_id)["value"] == 0) {
                 $this->setIndicator("machines_lv3_health", $entreprise_id, 1);
+            }
+        } else if ($level == 0) {
+            $this->updateIndicator("nb_machines_lv0", $entreprise_id, -1 * $number);
+
+            if ($this->getIndicator("nb_machines_lv0", $entreprise_id)["value"] == 0) {
+                $this->setIndicator("machines_lv0_health", $entreprise_id, 1);
             }
         }
 
@@ -1233,6 +1273,65 @@ class EntrepriseController extends Controller
                     return Response::json(["message" => $message, "success" => true], 200);
                 }
                 break;
+                case 'maintenance_lv0':
+                    $nb_machines = $this->getIndicator("nb_machines_lv0", $entreprise_id)["value"];
+                    if ($nb_machines <= 0) {
+                        $message = "Vous n'avez pas de machines de niveau 0!";
+                        $notification = [
+                            "type" => "ActionUpdate",
+                            "entreprise_id" => $entreprise_id,
+    
+                            "store" => true,
+    
+                            "text" => $message,
+                            "title" => "Réparation machines niveau 0",
+                            "icon_path" => "/assets/icons/alerte.svg",
+    
+                            "style" => "failure",
+                        ];
+                        event(new NewNotification($notification));
+                        return Response::json(["message" => $message, "success" => false], 200);
+                    }
+    
+                    $machines_health = $this->getIndicator("machines_lv0_health", $entreprise_id)["value"];
+                    if ($machines_health >= 0.9) {
+                        $message = "Vos machines de niveau 1 sont en bon état, vous ne pouvez pas les réparer plus que ça!";
+                        $notification = [
+                            "type" => "ActionUpdate",
+                            "entreprise_id" => $entreprise_id,
+    
+                            "store" => true,
+    
+                            "text" => $message,
+                            "title" => "Réparation machines niveau 0",
+                            "icon_path" => "/assets/icons/alerte.svg",
+    
+                            "style" => "failure",
+                        ];
+                        event(new NewNotification($notification));
+                        return Response::json(["message" => $message, "success" => false], 200);
+                    } else {
+                        $this->setIndicator("machines_lv0_health", $entreprise_id, 0.9);
+                        $this->updateIndicator("caisse", $entreprise_id, -1 * $price);
+    
+                        $message = "Vos machines de niveau 0 sont maintenant en meilleur état, vous pouvez les vendre plus cher!";
+                        $notification = [
+                            "type" => "ActionUpdate",
+                            "entreprise_id" => $entreprise_id,
+    
+                            "store" => true,
+    
+                            "text" => $message,
+                            "title" => "Réparation machines niveau 0",
+                            "icon_path" => "/assets/icons/check.svg",
+    
+                            "style" => "success",
+                        ];
+                        event(new NewNotification($notification));
+                        return Response::json(["message" => $message, "success" => true], 200);
+                    }
+                    break;
+                
         }
     }
     /*
@@ -1304,35 +1403,41 @@ class EntrepriseController extends Controller
         $entreprise_id = $request->entreprise_id;
 
         $buy_price_lv1 = $this->get_game_setting("machines_lv1_price");
+        $buy_price_lv0 = $this->get_game_setting("machines_lv0_price");
         $buy_price_lv2 = $this->get_game_setting("machines_lv2_price");
         $buy_price_lv3 = $this->get_game_setting("machines_lv3_price");
 
         $speed_lv1 = $this->get_game_setting("machines_lv1_speed");
+        $speed_lv0 = $this->get_game_setting("machines_lv0_speed");
         $speed_lv2 = $this->get_game_setting("machines_lv2_speed");
         $speed_lv3 = $this->get_game_setting("machines_lv3_speed");
 
         $pollution_lv1 = $this->get_game_setting("machines_lv1_pollution");
+        $pollution_lv0 = $this->get_game_setting("machines_lv0_pollution");
         $pollution_lv2 = $this->get_game_setting("machines_lv2_pollution");
         $pollution_lv3 = $this->get_game_setting("machines_lv3_pollution");
 
         $durability_lv1 = $this->get_game_setting("machines_lv1_durability");
+        $durability_lv0 = $this->get_game_setting("machines_lv0_durability");
         $durability_lv2 = $this->get_game_setting("machines_lv2_durability");
         $durability_lv3 = $this->get_game_setting("machines_lv3_durability");
 
         $health_lv1 = $this->getIndicator("machines_lv1_health", $entreprise_id)['value'];
+        $health_lv0 = $this->getIndicator("machines_lv0_health", $entreprise_id)['value'];
         $health_lv2 = $this->getIndicator("machines_lv2_health", $entreprise_id)['value'];
         $health_lv3 = $this->getIndicator("machines_lv3_health", $entreprise_id)['value'];
 
         $sell_price_lv1 = round($buy_price_lv1 * $health_lv1 * 0.4);
+        $sell_price_lv0 = round($buy_price_lv0 * $health_lv0 * 0.4);
         $sell_price_lv2 = round($buy_price_lv2 * $health_lv2 * 0.4);
         $sell_price_lv3 = round($buy_price_lv3 * $health_lv3 * 0.4);
 
         return [
-            "buy_price_lv1" => $buy_price_lv1, "buy_price_lv2" => $buy_price_lv2, "buy_price_lv3" => $buy_price_lv3,
-            "sell_price_lv1" => $sell_price_lv1, "sell_price_lv2" => $sell_price_lv2, "sell_price_lv3" => $sell_price_lv3,
-            "speed_lv1" => $speed_lv1, "speed_lv2" => $speed_lv2, "speed_lv3" => $speed_lv3,
-            "pollution_lv1" => $pollution_lv1, "pollution_lv2" => $pollution_lv2, "pollution_lv3" => $pollution_lv3,
-            "durability_lv1" => $durability_lv1, "durability_lv2" => $durability_lv2, "durability_lv3" => $durability_lv3,
+            "buy_price_lv1" => $buy_price_lv1 ,"buy_price_lv0" => $buy_price_lv0, "buy_price_lv2" => $buy_price_lv2, "buy_price_lv3" => $buy_price_lv3,
+            "sell_price_lv1" => $sell_price_lv1, "sell_price_lv0" => $sell_price_lv0, "sell_price_lv2" => $sell_price_lv2, "sell_price_lv3" => $sell_price_lv3,
+            "speed_lv1" => $speed_lv1,"speed_lv0" => $speed_lv0, "speed_lv2" => $speed_lv2, "speed_lv3" => $speed_lv3,
+            "pollution_lv1" => $pollution_lv1,"pollution_lv0" => $pollution_lv0, "pollution_lv2" => $pollution_lv2, "pollution_lv3" => $pollution_lv3,
+            "durability_lv1" => $durability_lv1,"durability_lv0" => $durability_lv0, "durability_lv2" => $durability_lv2, "durability_lv3" => $durability_lv3,
         ];
     }
 
@@ -1463,6 +1568,43 @@ class EntrepriseController extends Controller
                 ->toArray()
         );
 
+        $ca_1 = array_reverse(
+            DB::table('stats')
+                ->where('entreprise_id', '=', $entreprise_id)
+                ->where('indicator', '=', 'ca_1')
+                ->orderByDesc("date")
+                ->take($number)
+                ->pluck('value')
+                ->toArray()
+        );
+        $ca_2 = array_reverse(
+            DB::table('stats')
+                ->where('entreprise_id', '=', $entreprise_id)
+                ->where('indicator', '=', 'ca_2')
+                ->orderByDesc("date")
+                ->take($number)
+                ->pluck('value')
+                ->toArray()
+        );
+        $ca_3 = array_reverse(
+            DB::table('stats')
+                ->where('entreprise_id', '=', $entreprise_id)
+                ->where('indicator', '=', 'ca_3')
+                ->orderByDesc("date")
+                ->take($number)
+                ->pluck('value')
+                ->toArray()
+        );
+        $ca_4 = array_reverse(
+            DB::table('stats')
+                ->where('entreprise_id', '=', $entreprise_id)
+                ->where('indicator', '=', 'ca_4')
+                ->orderByDesc("date")
+                ->take($number)
+                ->pluck('value')
+                ->toArray()
+        );
+     
         $ca_5 = array_reverse(
             DB::table('stats')
                 ->where('entreprise_id', '=', $entreprise_id)
@@ -1512,16 +1654,50 @@ class EntrepriseController extends Controller
                 ->pluck('value')
                 ->toArray()
         );
+        $ca_10 = array_reverse(
+            DB::table('stats')
+                ->where('entreprise_id', '=', $entreprise_id)
+                ->where('indicator', '=', 'ca_10')
+                ->orderByDesc("date")
+                ->take($number)
+                ->pluck('value')
+                ->toArray()
+        );
+        $ca_11 = array_reverse(
+            DB::table('stats')
+                ->where('entreprise_id', '=', $entreprise_id)
+                ->where('indicator', '=', 'ca_11')
+                ->orderByDesc("date")
+                ->take($number)
+                ->pluck('value')
+                ->toArray()
+        );
+        $ca_12 = array_reverse(
+            DB::table('stats')
+                ->where('entreprise_id', '=', $entreprise_id)
+                ->where('indicator', '=', 'ca_12')
+                ->orderByDesc("date")
+                ->take($number)
+                ->pluck('value')
+                ->toArray()
+        ); 
 
         $data = [
             'dates' => $dates,
             'caisse' => $disps,
             'dettes' => $debts,
+            'ca_1' => $ca_1,
+            'ca_2' => $ca_2,
+            'ca_3' => $ca_3,
+            'ca_4' => $ca_4,
             'ca_5' => $ca_5,
             'ca_6' => $ca_6,
             'ca_7' => $ca_7,
             'ca_8' => $ca_8,
             'ca_9' => $ca_9,
+            'ca_10' => $ca_10,
+            'ca_11' => $ca_11,
+            'ca_12' => $ca_12,
         ];
 
         return $data;

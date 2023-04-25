@@ -18,7 +18,7 @@ module.exports = {
                 heading: ["IBM Plex Sans", ...defaultTheme.fontFamily.sans],
             },
             colors: {
-                vert: "#B2D06B",
+                vert: "#dfac77",
                 vN: "#0B3434",
                 jaune: "#FFBC3E",
                 nav: "#0B3434",

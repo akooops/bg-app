@@ -147,6 +147,9 @@
                     class="rounded-md focus:border-vert focus:ring-0 w-5/6 mx-auto border-tableBorder"
                     style="border-width: 1px"
                 >
+                    <option value="maintenance_lv0">
+                        Réparation machines niveau 0
+                    </option>
                     <option value="maintenance_lv1">
                         Réparation machines niveau 1
                     </option>
@@ -226,6 +229,17 @@
                                 <input
                                     v-model="launch_data.machine_lvl"
                                     type="radio"
+                                    id="machine0"
+                                    name="machine0"
+                                    class="text-vert"
+                                    :value="0"
+                                /><label for="machine0">Niveau 0</label>
+                            </div>
+
+                            <div class="flex gap-3 items-center">
+                                <input
+                                    v-model="launch_data.machine_lvl"
+                                    type="radio"
                                     id="machine2"
                                     name="machine2"
                                     class="text-vert"
@@ -258,9 +272,12 @@
                             type="number"
                             min="1"
                             :max="
-                                launch_data.machine_lvl == 1
+                                 launch_data.machine_lvl == 1
                                     ? indicators['nb_machines_lv1'].value -
                                       indicators['nb_machines_lv1_busy'].value
+                                    : launch_data.machine_lvl == 0
+                                    ? indicators['nb_machines_lv0'].value -
+                                      indicators['nb_machines_lv0_busy'].value
                                     : launch_data.machine_lvl == 2
                                     ? indicators['nb_machines_lv2'].value -
                                       indicators['nb_machines_lv2_busy'].value
@@ -618,6 +635,7 @@
                                 style="border-width: 1px"
                                 v-model.number="machine.transaction_lv"
                             >
+                                <option value="0">0</option>
                                 <option value="1">1</option>
                                 <option value="2">2</option>
                                 <option value="3">3</option>
@@ -641,6 +659,11 @@
                                             ? indicators['nb_machines_lv1']
                                                   .value -
                                               indicators['nb_machines_lv1_busy']
+                                                  .value
+                                            : machine.transaction_lv == 0
+                                            ? indicators['nb_machines_lv0']
+                                                  .value -
+                                              indicators['nb_machines_lv0_busy']
                                                   .value
                                             : machine.transaction_lv == 2
                                             ? indicators['nb_machines_lv2']
@@ -672,10 +695,12 @@
                                     (
                                         (machine.transaction_lv == 1
                                             ? machine.buy_price_lv1
+                                            : machine.transaction_lv == 0
+                                            ? machine.buy_price_lv0
                                             : machine.transaction_lv == 2
                                             ? machine.buy_price_lv2
                                             : machine.buy_price_lv3) *
-                                        machine.transaction_nb
+                                              machine.transaction_nb
                                     ).toPrecision(8)
                                 }}
                             </p>
@@ -688,6 +713,8 @@
                                     (
                                         (machine.transaction_lv == 1
                                             ? machine.buy_price_lv1
+                                            : machine.transaction_lv == 0
+                                            ? machine.buy_price_lv0
                                             : machine.transaction_lv == 2
                                             ? machine.buy_price_lv2
                                             : machine.buy_price_lv3) *
@@ -695,6 +722,8 @@
                                         indicators[
                                             machine.transaction_lv == 1
                                                 ? "machines_lv1_health"
+                                                : machine.transaction_lv == 0
+                                                ? "machines_lv0_health"
                                                 : machine.transaction_lv == 2
                                                 ? "machines_lv2_health"
                                                 : "machines_lv3_health"
@@ -793,7 +822,7 @@ export default {
             quantity: 1,
             launch_prod_modal: false,
             launch_data: {
-                prod_id: 5,
+                prod_id: 5, //pourquoi 5 ?
                 // price: 0,
                 quantity: 1,
                 machine_lvl: 1,
@@ -808,22 +837,27 @@ export default {
                 show_transaction_modal: false,
                 transaction: "",
 
+                buy_price_lv0: 0,
                 buy_price_lv1: 0,
                 buy_price_lv2: 0,
                 buy_price_lv3: 0,
 
+                sell_price_lv0: 0,
                 sell_price_lv1: 0,
                 sell_price_lv2: 0,
                 sell_price_lv3: 0,
 
+                durability_lv0: 1,
                 durability_lv1: 1,
                 durability_lv2: 1,
                 durability_lv3: 1,
 
+                speed_lv0: 1,
                 speed_lv1: 1,
                 speed_lv2: 1,
                 speed_lv3: 1,
 
+                pollution_lv0: 1,
                 pollution_lv1: 1,
                 pollution_lv2: 1,
                 pollution_lv3: 1,
@@ -849,10 +883,9 @@ export default {
 
                     audit: 60000,
 
+                    maintenance_lv0: 0,
                     maintenance_lv1: 0,
-
                     maintenance_lv2: 0,
-
                     maintenance_lv3: 0,
                 },
                 phrase: "",
@@ -904,6 +937,24 @@ export default {
                 } else if (this.machine.transaction_nb == 0) {
                     this.machine.transaction_nb = 1;
                 }
+            }if (this.machine.transaction_lv == 0) {
+                if (
+                    this.indicators["nb_machines_lv0"]["value"] -
+                        this.indicators["nb_machines_lv0_busy"]["value"] ==
+                    0
+                ) {
+                    this.machine.transaction_nb = 0;
+                } else if (
+                    this.indicators["nb_machines_lv0"]["value"] -
+                        this.indicators["nb_machines_lv0_busy"]["value"] <
+                    this.machine.transaction_nb
+                ) {
+                    this.machine.transaction_nb =
+                        this.indicators["nb_machines_lv0"]["value"] -
+                        this.indicators["nb_machines_lv0_busy"]["value"];
+                } else if (this.machine.transaction_nb == 0) {
+                    this.machine.transaction_nb = 1;
+                }
             } else if (this.machine.transaction_lv == 2) {
                 if (
                     this.indicators["nb_machines_lv2"]["value"] -
@@ -952,6 +1003,16 @@ export default {
 
             this.$forceUpdate();
             this.verifyProd();
+
+        }, "machine.buy_price_lv0": function () {
+            this.action.price["maintenance_lv0"] =
+                this.machine.buy_price_lv0 *
+                0.4 *
+                (1 - this.indicators["machines_lv0_health"]["value"]) *
+                this.indicators["nb_machines_lv0"]["value"];
+
+            this.$forceUpdate();
+            this.verifyProd();
         },
 
         "machine.buy_price_lv2": function () {
@@ -986,6 +1047,12 @@ export default {
                 0.4 *
                 (1 - n["machines_lv1_health"]["value"]) *
                 n["nb_machines_lv1"]["value"];
+                
+            this.action.price["maintenance_lv0"] =
+                this.machine.buy_price_lv0 *
+                0.4 *
+                (1 - n["machines_lv0_health"]["value"]) *
+                n["nb_machines_lv0"]["value"];
 
             this.action.price["maintenance_lv2"] =
                 this.machine.buy_price_lv2 *
@@ -1015,6 +1082,16 @@ export default {
                         this.machine.transaction_nb =
                             this.indicators["nb_machines_lv1"]["value"] -
                             this.indicators["nb_machines_lv1_busy"]["value"];
+                    }
+                } else if (this.machine.transaction_lv == 0) {
+                    if (
+                        this.indicators["nb_machines_lv0"]["value"] -
+                            this.indicators["nb_machines_lv0_busy"]["value"] <
+                        n
+                    ) {
+                        this.machine.transaction_nb =
+                            this.indicators["nb_machines_lv0"]["value"] -
+                            this.indicators["nb_machines_lv0_busy"]["value"];
                     }
                 } else if (this.machine.transaction_lv == 2) {
                     if (
@@ -1052,6 +1129,15 @@ export default {
                     ) {
                         return true;
                     } else return false;
+                } else if (this.machine.transaction_lv == 0) {
+                    if (
+                        this.machine.buy_price_lv0 *
+                            this.indicators["machines_lv0_health"].value *
+                            this.machine.transaction_nb >
+                        this.caisse
+                    ) {
+                        return true;
+                    } else return false;
                 } else if (this.machine.transaction_lv == 2) {
                     if (
                         this.machine.buy_price_lv2 *
@@ -1075,10 +1161,9 @@ export default {
         },
         loaded_prices() {
             return (
-                this.machine.buy_price_lv1 +
+                this.machine.buy_price_lv1 + this.machine.buy_price_lv0 +
                     this.machine.buy_price_lv2 +
-                    this.machine.buy_price_lv3 ==
-                0
+                    this.machine.buy_price_lv3 == 0
             );
         },
         selectedProd() {
@@ -1100,6 +1185,8 @@ export default {
                 (this.indicators["5s_day"].value < 30 ? 1.5 : 1) *
                 (this.launch_data.machine_lvl == 1
                     ? this.machine.speed_lv1
+                    : this.launch_data.machine_lvl == 0
+                    ? this.machine.speed_lv0
                     : this.launch_data.machine_lvl == 2
                     ? this.machine.speed_lv2
                     : this.machine.speed_lv3) *
@@ -1224,6 +1311,8 @@ export default {
                 labor_lv1:
                     (this.launch_data.machine_lvl == 1
                         ? 1
+                        : this.launch_data.machine_lvl == 0
+                        ? 0 //not sure about it ??
                         : this.launch_data.machine_lvl == 2
                         ? 2
                         : 3) * this.launch_data.machine_nb,
@@ -1252,6 +1341,12 @@ export default {
                     this.indicators["nb_machines_lv1_busy"].value;
 
                 machines_health = this.indicators["machines_lv1_health"].value;
+            } else if (this.launch_data.machine_lvl == 0) {
+                free_machines =
+                    this.indicators["nb_machines_lv0"].value -
+                    this.indicators["nb_machines_lv0_busy"].value;
+
+                machines_health = this.indicators["machines_lv0_health"].value;
             } else if (this.launch_data.machine_lvl == 2) {
                 free_machines =
                     this.indicators["nb_machines_lv2"].value -
@@ -1376,22 +1471,27 @@ export default {
                 })
                 .then((resp) => {
                     this.machine.buy_price_lv1 = resp.data.buy_price_lv1;
+                    this.machine.buy_price_lv0 = resp.data.buy_price_lv0;
                     this.machine.buy_price_lv2 = resp.data.buy_price_lv2;
                     this.machine.buy_price_lv3 = resp.data.buy_price_lv3;
 
                     this.machine.sell_price_lv1 = resp.data.sell_price_lv1;
+                    this.machine.sell_price_lv0 = resp.data.sell_price_lv0;
                     this.machine.sell_price_lv2 = resp.data.sell_price_lv2;
                     this.machine.sell_price_lv3 = resp.data.sell_price_lv3;
 
                     this.machine.durability_lv1 = resp.data.durability_lv1;
+                    this.machine.durability_lv0 = resp.data.durability_lv0;
                     this.machine.durability_lv2 = resp.data.durability_lv2;
                     this.machine.durability_lv3 = resp.data.durability_lv3;
 
                     this.machine.speed_lv1 = resp.data.speed_lv1;
+                    this.machine.speed_lv0 = resp.data.speed_lv0;
                     this.machine.speed_lv2 = resp.data.speed_lv2;
                     this.machine.speed_lv3 = resp.data.speed_lv3;
 
                     this.machine.pollution_lv1 = resp.data.pollution_lv1;
+                    this.machine.pollution_lv0 = resp.data.pollution_lv0;
                     this.machine.pollution_lv2 = resp.data.pollution_lv2;
                     this.machine.pollution_lv3 = resp.data.pollution_lv3;
 
@@ -1557,6 +1657,15 @@ export default {
                         " DA";
                     this.action.result_phrase =
                         "Vous pouvez vendre vos machines de niveau 1 avec un prix plus élevé.";
+                    break;
+                case "maintenance_lv0":
+                    this.action.name = "Maintenance Niveau 0";
+                    this.action.phrase =
+                        "Vous allez réparer vos machines de niveau 0, celà vous coutera " +
+                        this.action.price["maintenance_lv0"].toPrecision(8) +
+                        " DA";
+                    this.action.result_phrase =
+                        "Vous pouvez vendre vos machines de niveau  avec un prix plus élevé.";
                     break;
                 case "maintenance_lv2":
                     this.action.name = "Maintenance Niveau 2";

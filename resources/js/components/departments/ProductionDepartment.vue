@@ -78,6 +78,28 @@
                         <div class="flex justify-between w-full">
                             <div class="flex flex-col items-center gap-3">
                                 <button
+                                    @click="select_lvl('machines_lv0_health')"
+                                    class="px-2 py-1 rounded-md"
+                                    :class="
+                                        selected_lvl == 'machines_lv0_health'
+                                            ? 'bg-vN text-white'
+                                            : 'bg-white text-vN'
+                                    "
+                                >
+                                Niveau 0
+                                </button>
+                                <p class="text-vert">
+                                    {{ indicators["nb_machines_lv0"].value }}
+                                </p>
+                                <p class="text-[#0B3434A6]">Occupés</p>
+                                <p class="text-jaune">
+                                    {{
+                                        indicators["nb_machines_lv0_busy"].value
+                                    }}
+                                </p>
+                            </div>
+                            <div class="flex flex-col items-center gap-3">
+                                <button
                                     @click="select_lvl('machines_lv1_health')"
                                     class="px-2 py-1 rounded-md"
                                     :class="
@@ -98,6 +120,7 @@
                                     }}
                                 </p>
                             </div>
+                            
                             <div class="flex flex-col items-center gap-3">
                                 <button
                                     @click="select_lvl('machines_lv2_health')"
@@ -108,7 +131,7 @@
                                             : 'bg-white text-vN'
                                     "
                                 >
-                                    Niveau 2
+                                Niveau 2
                                 </button>
                                 <p class="text-vert">
                                     {{ indicators["nb_machines_lv2"].value }}
@@ -556,13 +579,13 @@ export default {
     data() {
         return {
             reverse: false,
-            selected_lvl: "machines_lv1_health",
+            selected_lvl: "machines_lv0_health",
             lvl_value: 0,
             products: [],
 
             market_demand: [],
 
-            id_list: [5, 6, 7, 8, 9],
+            id_list: [1,2,3,4,5, 6, 7, 8, 9,10,11,12],
 
             prod_data: [],
 
@@ -613,6 +636,10 @@ export default {
                 this.number = this.indicators["nb_machines_lv1"].value;
                 return "Niveau 1";
             }
+            if (this.selected_lvl == "machines_lv0_health") {
+                this.number = this.indicators["nb_machines_lv0"].value;
+                return "Niveau 0";
+            }
             if (this.selected_lvl == "machines_lv2_health") {
                 this.number = this.indicators["nb_machines_lv2"].value;
                 return "Niveau 2";
@@ -630,6 +657,10 @@ export default {
                 case "Niveau 1":
                     this.lvl_value =
                         this.indicators["machines_lv1_health"].value;
+                    break;
+                case "Niveau 0":
+                    this.lvl_value =
+                        this.indicators["machines_lv0_health"].value;
                     break;
                 case "Niveau 2":
                     this.lvl_value =
@@ -668,7 +699,7 @@ export default {
 
         async getMarketDemands() {
             // let data = []
-            for (var i = 5; i < 10; i++) {
+            for (var i = 1; i < 13; i++) {
                 let resp = await axios.get("/api/demand/prev", {
                     params: {
                         product_id: i,
@@ -676,10 +707,10 @@ export default {
                 });
 
                 if (!this.show_market_demand) {
-                    this.prod_data[i - 5] = resp.data;
+                    this.prod_data[i - 1] = resp.data;
                 } else {
-                    this.prod_data[i - 5].demand = resp.data.demand;
-                    this.prod_data[i - 5].prices = resp.data.prices;
+                    this.prod_data[i - 1].demand = resp.data.demand;
+                    this.prod_data[i - 1].prices = resp.data.prices;
                 }
             }
 
