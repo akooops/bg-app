@@ -357,7 +357,7 @@ class EntrepriseController extends Controller
         $keys = [
             "nb_machines_lv1", "nb_machines_lv0", "nb_machines_lv2", "nb_machines_lv3",
             "nb_machines_lv1_busy", "nb_machines_lv0_busy","nb_machines_lv2_busy", "nb_machines_lv3_busy",
-            "machines_lv1_health", "machines_lv2_health","machines_lv2_health", "machines_lv3_health",
+            "machines_lv1_health", "machines_lv0_health","machines_lv2_health", "machines_lv3_health",
             "nb_workers_lv1", "nb_workers_lv2",
             "nb_workers_lv1_busy", "nb_workers_lv2_busy",
             "workers_mood", "5s_day",
