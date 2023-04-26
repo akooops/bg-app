@@ -25,7 +25,7 @@
         }
 
         input {
-            background-color: rgba(178, 208, 107, 0.4) !important
+            background-color: #FAEEDE !important
         }
 
         input[type='checkbox'] {

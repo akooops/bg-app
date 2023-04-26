@@ -21,6 +21,7 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
+        
     ];
 
     /**
@@ -66,5 +67,6 @@ class Kernel extends HttpKernel
         'supplier' => \App\Http\Middleware\CheckSupplier::class,
         'entreprise' => \App\Http\Middleware\CheckEntreprise::class,
         'game_started' => \App\Http\Middleware\GameStarted::class,
+        
     ];
 }

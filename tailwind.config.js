@@ -22,7 +22,7 @@ module.exports = {
                 vN: "#0B3434",
                 jaune: "#FFBC3E",
                 nav: "#0B3434",  
-                // light_brown:"#C59866",
+                light_brown:"#C59866",
 
                 gris: "#EEEEF2",
                 lightVert: "#B2D06B54",

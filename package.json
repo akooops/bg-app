@@ -32,6 +32,7 @@
     "dependencies": {
         "@vue/composition-api": "^1.0.0-rc.6",
         "chart.js": "^2.7.1",
+        "cors": "^2.8.5",
         "echarts": "^5.0.2",
         "font-awesome": "^4.7.0",
         "laravel-echo-server": "^1.6.3",
