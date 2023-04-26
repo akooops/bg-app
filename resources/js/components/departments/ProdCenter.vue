@@ -286,8 +286,10 @@
                             "
                         />
                     </div>
+                    v-if="bochra == false"
                     <div>
-                        <h1 class="text-vN text-lg font-heading font-medium">
+                        <h1 class="text-vN text-lg font-heading font-medium"
+                         >
                             Quantité (en lots de 1000 pièces)
                         </h1>
                         <input
@@ -822,7 +824,7 @@ export default {
             quantity: 1,
             launch_prod_modal: false,
             launch_data: {
-                prod_id: 5, //pourquoi 5 ?
+                prod_id: 1, //pourquoi 5 ?
                 // price: 0,
                 quantity: 1,
                 machine_lvl: 1,
@@ -1235,7 +1237,7 @@ export default {
                     this.launch_prod_modal = false;
                     this.prod_launched = true;
 
-                    this.launch_data.prod_id = 5;
+                    this.launch_data.prod_id = 1;
 
                     this.launch_data.quantity = 1;
                     this.launch_data.machine_lvl = 1;
@@ -1271,7 +1273,7 @@ export default {
                         duration: 5000,
                     });
 
-                    this.launch_data.prod_id = 5;
+                    this.launch_data.prod_id = 1;
                     this.launch_data.quantity = 1;
                     this.launch_data.machine_lvl = 1;
 
