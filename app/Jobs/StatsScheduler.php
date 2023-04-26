@@ -39,7 +39,7 @@ class StatsScheduler implements ShouldQueue
         $entreprises = Entreprise::all();
 
         foreach ($entreprises as $entrep) {
-            $indicators = ['caisse', 'ca', 'ca_5', 'ca_6', 'ca_7', 'ca_8', 'ca_9'];
+            $indicators = ['caisse', 'ca', 'ca_1', 'ca_2', 'ca_3', 'ca_4', 'ca_5', 'ca_6', 'ca_7', 'ca_8', 'ca_9', 'ca_10', 'ca_11', 'ca_12'];
 
             foreach ($indicators as $ind) {
                 $row = [

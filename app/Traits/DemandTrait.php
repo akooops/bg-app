@@ -26,7 +26,7 @@ trait DemandTrait
                 $demand = $prices->map(function ($p) use ($total_population) {
                     $percent = sqrt(1 - ($p - 75) / 30);
 
-                    $pop_percent = (float) Product::where('id', '=', 5)->first()["percent_population"];
+                    $pop_percent = (float) Product::where('id', '=', 1)->first()["percent_population"];
 
                     $pop = $total_population * $pop_percent;
 
@@ -40,7 +40,7 @@ trait DemandTrait
                 $demand = $prices->map(function ($p) use ($total_population) {
                     $percent = sqrt(1 - pow(($p - 110) / 30, 4));
 
-                    $pop_percent = (float) Product::where('id', '=', 6)->first()["percent_population"];
+                    $pop_percent = (float) Product::where('id', '=', 2)->first()["percent_population"];
 
                     $pop = $total_population * $pop_percent;
 
@@ -54,7 +54,7 @@ trait DemandTrait
                 $demand = $prices->map(function ($p) use ($total_population) {
                     $percent = pow(1 - ($p - 260) / 70, 0.4);
 
-                    $pop_percent = (float) Product::where('id', '=', 7)->first()["percent_population"];
+                    $pop_percent = (float) Product::where('id', '=', 3)->first()["percent_population"];
 
                     $pop = $total_population * $pop_percent;
 
@@ -68,7 +68,7 @@ trait DemandTrait
                 $demand = $prices->map(function ($p) use ($total_population) {
                     $percent = sqrt(1 - pow(($p - 300) / 75, 4));
 
-                    $pop_percent = (float) Product::where('id', '=', 8)->first()["percent_population"];
+                    $pop_percent = (float) Product::where('id', '=', 4)->first()["percent_population"];
 
                     $pop = $total_population * $pop_percent;
 
@@ -82,7 +82,7 @@ trait DemandTrait
                 $demand = $prices->map(function ($p) use ($total_population) {
                     $percent = (exp(cos( pi() * ($p - 600) / 100 )) - exp(-1)) / (exp(1) - exp(-1));
 
-                    $pop_percent = (float) Product::where('id', '=', 9)->first()["percent_population"];
+                    $pop_percent = (float) Product::where('id', '=', 5)->first()["percent_population"];
 
                     $pop = $total_population * $pop_percent;
 
@@ -95,7 +95,7 @@ trait DemandTrait
                 $demand = $prices->map(function ($p) use ($total_population) {
                     $percent = (exp(cos( pi() * ($p - 600) / 100 )) - exp(-1)) / (exp(1) - exp(-1));
 
-                    $pop_percent = (float) Product::where('id', '=', 9)->first()["percent_population"];
+                    $pop_percent = (float) Product::where('id', '=', 6)->first()["percent_population"];
 
                     $pop = $total_population * $pop_percent;
 
@@ -108,7 +108,7 @@ trait DemandTrait
                 $demand = $prices->map(function ($p) use ($total_population) {
                     $percent = (exp(cos( pi() * ($p - 600) / 100 )) - exp(-1)) / (exp(1) - exp(-1));
 
-                    $pop_percent = (float) Product::where('id', '=', 9)->first()["percent_population"];
+                    $pop_percent = (float) Product::where('id', '=', 7)->first()["percent_population"];
 
                     $pop = $total_population * $pop_percent;
 
@@ -121,7 +121,7 @@ trait DemandTrait
                 $demand = $prices->map(function ($p) use ($total_population) {
                     $percent = (exp(cos( pi() * ($p - 600) / 100 )) - exp(-1)) / (exp(1) - exp(-1));
 
-                    $pop_percent = (float) Product::where('id', '=', 9)->first()["percent_population"];
+                    $pop_percent = (float) Product::where('id', '=', 8)->first()["percent_population"];
 
                     $pop = $total_population * $pop_percent;
 
@@ -147,7 +147,7 @@ trait DemandTrait
                 $demand = $prices->map(function ($p) use ($total_population) {
                     $percent = (exp(cos( pi() * ($p - 600) / 100 )) - exp(-1)) / (exp(1) - exp(-1));
 
-                    $pop_percent = (float) Product::where('id', '=', 9)->first()["percent_population"];
+                    $pop_percent = (float) Product::where('id', '=', 10)->first()["percent_population"];
 
                     $pop = $total_population * $pop_percent;
 
@@ -160,7 +160,7 @@ trait DemandTrait
                 $demand = $prices->map(function ($p) use ($total_population) {
                     $percent = (exp(cos( pi() * ($p - 600) / 100 )) - exp(-1)) / (exp(1) - exp(-1));
 
-                    $pop_percent = (float) Product::where('id', '=', 9)->first()["percent_population"];
+                    $pop_percent = (float) Product::where('id', '=', 11)->first()["percent_population"];
 
                     $pop = $total_population * $pop_percent;
 
@@ -173,7 +173,7 @@ trait DemandTrait
                 $demand = $prices->map(function ($p) use ($total_population) {
                     $percent = (exp(cos( pi() * ($p - 600) / 100 )) - exp(-1)) / (exp(1) - exp(-1));
 
-                    $pop_percent = (float) Product::where('id', '=', 9)->first()["percent_population"];
+                    $pop_percent = (float) Product::where('id', '=', 12)->first()["percent_population"];
 
                     $pop = $total_population * $pop_percent;
 
@@ -232,7 +232,7 @@ trait DemandTrait
 
                 $percent = sqrt(1 - ($p - 75) / 30);
 
-                $pop_percent = (float) Product::where('id', '=', 5)->first()["percent_population"];
+                $pop_percent = (float) Product::where('id', '=', 1)->first()["percent_population"];
 
                 $pop = $total_population * $pop_percent;
 
@@ -251,7 +251,7 @@ trait DemandTrait
 
                 $percent = sqrt(1 - pow(($p - 110) / 30, 4));
 
-                $pop_percent = (float) Product::where('id', '=', 6)->first()["percent_population"];
+                $pop_percent = (float) Product::where('id', '=', 2)->first()["percent_population"];
 
                 $pop = $total_population * $pop_percent;
 
@@ -270,7 +270,7 @@ trait DemandTrait
 
                 $percent = pow(1 - ($p - 260) / 70, 0.4);
 
-                $pop_percent = (float) Product::where('id', '=', 7)->first()["percent_population"];
+                $pop_percent = (float) Product::where('id', '=', 3)->first()["percent_population"];
 
                 $pop = $total_population * $pop_percent;
 
@@ -289,7 +289,7 @@ trait DemandTrait
 
                 $percent = sqrt(1 - pow(($p - 300) / 75, 4));
 
-                $pop_percent = (float) Product::where('id', '=', 8)->first()["percent_population"];
+                $pop_percent = (float) Product::where('id', '=', 4)->first()["percent_population"];
 
                 $pop = $total_population * $pop_percent;
 
@@ -308,7 +308,7 @@ trait DemandTrait
 
                 $percent = (exp(cos(pi() * ($p - 600) / 100)) - exp(-1)) / (exp(1) - exp(-1));
 
-                $pop_percent = (float) Product::where('id', '=', 9)->first()["percent_population"];
+                $pop_percent = (float) Product::where('id', '=', 5)->first()["percent_population"];
 
                 $pop = $total_population * $pop_percent;
 
@@ -326,7 +326,7 @@ trait DemandTrait
 
                 $percent = (exp(cos(pi() * ($p - 600) / 100)) - exp(-1)) / (exp(1) - exp(-1));
 
-                $pop_percent = (float) Product::where('id', '=', 9)->first()["percent_population"];
+                $pop_percent = (float) Product::where('id', '=', 6)->first()["percent_population"];
 
                 $pop = $total_population * $pop_percent;
 
@@ -344,7 +344,7 @@ trait DemandTrait
 
                 $percent = (exp(cos(pi() * ($p - 600) / 100)) - exp(-1)) / (exp(1) - exp(-1));
 
-                $pop_percent = (float) Product::where('id', '=', 9)->first()["percent_population"];
+                $pop_percent = (float) Product::where('id', '=', 7)->first()["percent_population"];
 
                 $pop = $total_population * $pop_percent;
 
@@ -362,7 +362,7 @@ trait DemandTrait
 
                 $percent = (exp(cos(pi() * ($p - 600) / 100)) - exp(-1)) / (exp(1) - exp(-1));
 
-                $pop_percent = (float) Product::where('id', '=', 9)->first()["percent_population"];
+                $pop_percent = (float) Product::where('id', '=', 8)->first()["percent_population"];
 
                 $pop = $total_population * $pop_percent;
 
@@ -398,7 +398,7 @@ trait DemandTrait
 
                 $percent = (exp(cos(pi() * ($p - 600) / 100)) - exp(-1)) / (exp(1) - exp(-1));
 
-                $pop_percent = (float) Product::where('id', '=', 9)->first()["percent_population"];
+                $pop_percent = (float) Product::where('id', '=', 10)->first()["percent_population"];
 
                 $pop = $total_population * $pop_percent;
 
@@ -416,7 +416,7 @@ trait DemandTrait
 
                 $percent = (exp(cos(pi() * ($p - 600) / 100)) - exp(-1)) / (exp(1) - exp(-1));
 
-                $pop_percent = (float) Product::where('id', '=', 9)->first()["percent_population"];
+                $pop_percent = (float) Product::where('id', '=', 11)->first()["percent_population"];
 
                 $pop = $total_population * $pop_percent;
 
@@ -434,7 +434,7 @@ trait DemandTrait
 
                 $percent = (exp(cos(pi() * ($p - 600) / 100)) - exp(-1)) / (exp(1) - exp(-1));
 
-                $pop_percent = (float) Product::where('id', '=', 9)->first()["percent_population"];
+                $pop_percent = (float) Product::where('id', '=', 12)->first()["percent_population"];
 
                 $pop = $total_population * $pop_percent;
 
