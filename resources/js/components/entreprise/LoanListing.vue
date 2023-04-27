@@ -396,7 +396,7 @@
                 </h1>
                 <button
                     v-if="loans.length > 0"
-                    class="bg-gradient-to-t from-lightVert to-lighterVert hover:opacity-80 text-vN px-4 py-2 shadow-lg rounded-full text-center font-semibold"
+                    class="bg-gradient-to-t from- to-lighterVert hover:opacity-80 text-vN px-4 py-2 shadow-lg rounded-full text-center font-semibold"
                     @click="openModal"
                 >
                     Créer une demande d'endettement
@@ -409,7 +409,7 @@
                     demande d'endettement
                 </p>
                 <button
-                    class="bg-gradient-to-t from-lightVert to-lighterVert hover:opacity-80 text-vN px-4 py-2 shadow-lg rounded-full text-center font-semibold mt-5"
+                    class="bg-gradient-to-t from- to-lighterVert hover:opacity-80 text-vN px-4 py-2 shadow-lg rounded-full text-center font-semibold mt-5"
                     @click="openModal"
                 >
                     Créer votre premier endettement

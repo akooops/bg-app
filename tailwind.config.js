@@ -26,8 +26,8 @@ module.exports = {
                 brown:"#5F4735",
 
                 gris: "#EEEEF2",
-                lightVert: "#B2D06B54",
-                lighterVert: "#B2D06B17",
+                lightVert: "#FAEEDE",
+                lighterVert: "#C59866",
                 tableBorder: "#EEEEF2",
                 bleu: "#0B3434",
                 
