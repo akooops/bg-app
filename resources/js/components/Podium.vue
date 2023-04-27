@@ -32,7 +32,7 @@
 
             <div
                 v-if="position == 1"
-                class="z-0 absolute h-12 w-12 -top-16 -right-16 rotate-45"
+                class="z-0 absolute h-12 w-12 -top-16 -right-16 rotate-45 p-2"
             >
                 <img src="/assets/icons/crown.svg" alt="crow icon" />
             </div>

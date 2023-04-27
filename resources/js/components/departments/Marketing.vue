@@ -207,7 +207,7 @@
                         </p>
 
                         <button
-                            class="bg-gradient-to-t from-lightVert to-lighterVert hover:opacity-80 text-vN px-4 py-2 shadow-lg rounded-full text-center mx-auto"
+                            class="bg-gradient-to-r from-lightBrown to-lightBrown hover:opacity-80 text-vN px-4 py-2 shadow-lg rounded-full text-center mx-auto"
                             @click="openModal"
                         >
                             Créer une campagne publicitaire

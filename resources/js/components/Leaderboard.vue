@@ -4,11 +4,12 @@
         class="relative flex flex-col items-center gap-12 bg-white rounded-2xl pt-4"
     >
         <h1
-            class="font-heading font-bold text-4xl welcome-text mt-4 text-vN"
+            class="font-heading font-bold text-4xl welcome-text mt-4 text-brown"
             style="text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25)"
         >
-            Classement
+            Leaderbord-Ranking
         </h1>
+        <br>
         <!-- <button class="absolute top-10 left-10" @click="refresh">
             <img src="/assets/icons/refresh.svg" alt="refresh icon" />
         </button> -->

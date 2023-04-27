@@ -1,6 +1,6 @@
 <template>
     <div
-        class="relative flex items-center bg-gradient-to-t rounded-[41px] py-7 w-full px-4 text-vN mb-10 bg-[#0B343414]"
+        class="relative flex items-center bg-gradient-to-t rounded-[41px] py-7 w-full px-4 text-vN mb-10 bg-[#FAEEDE]"
     >
         <div
             class="relative only:flex items-center font-heading font-semibold w-full"
@@ -34,7 +34,7 @@
         <div
             class="absolute flex flex-col items-center justify-center top-0 right-0 w-52 h-full bg-[#FFFFFFC9] text-vN rounded-bl-full text-2xl font-heading font-semibold rounded"
         >
-            <p class="text-center">{{ position }}</p>
+            <p class="text-center">#{{ position }}</p>
             <p class="text-center">Rank</p>
         </div>
     </div>

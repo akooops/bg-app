@@ -174,8 +174,8 @@
                                 <span
                                     :class="
                                         cmd.status == 'confirmed'
-                                            ? 'text-vert'
-                                            : 'text-yellow-500'
+                                            ? 'text-[#84C566]'
+                                            : 'text-lightBrown'
                                     "
                                     >{{ getStatus(cmd.status) }}</span
                                 >
@@ -190,7 +190,9 @@
                                         alt="un triangle aux trois côtés égaux"
                                         height="20px"
                                         width="15px"
+                                        title="détails"
                                     />
+                                    
                                 </button>
                             </td>
                         </tr>
@@ -282,9 +284,9 @@
             <Modal
                 v-if="show_details_modal"
                 id="modal"
-                class="align-content-center openmodal"
+                class="align-content-center openmodal bg-[#FAEEDE]"
             >
-                <template v-slot:content>
+                <template v-slot:content class="">
                     <div class="flex flex-col p-4 items-start">
                         <div class="flex justify-between item-center w-full">
                             <h1 class="text-vert text-2xl font-bold">
@@ -338,8 +340,8 @@
                                         <span
                                             :class="
                                                 item.status == 'confirmed'
-                                                    ? 'text-vert px-4 text-center'
-                                                    : 'text-jaune px-4 text-center'
+                                                    ? 'text-[#84C566] px-4 text-center'
+                                                    : 'text-lightBrown px-4 text-center'
                                             "
                                             >{{ getStatus(item.status) }}
                                         </span>

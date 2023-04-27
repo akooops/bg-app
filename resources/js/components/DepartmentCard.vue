@@ -3,9 +3,9 @@
         class="flex flex-col gap-3 items-center py-8 w-1/3 rounded-3xl bg-white shadow-md hover:shadow-lg"
     >
         <img
-            :src="'/assets/icons/' + name + '.svg'"
+            :src="'/assets/icons/nv/' + name + '.svg'"
             :alt="name + 'icon'"
-            class="h-12 w-12"
+            class="h-[80px] w-[80px]"
         />
         <div class="text-center">
             <a

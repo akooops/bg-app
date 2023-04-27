@@ -33,11 +33,11 @@
         }
 
         input[type='checkbox']:checked {
-            background-color: green !important
+            background-color: #C59866 !important
         }
 
         label {
-            color: #B2D06B !important;
+            color: #0B3434 !important;
         }
 
         /* create animation for three groups of svg with slight delay */

@@ -21,14 +21,16 @@ module.exports = {
                 vert: "#dfac77",
                 vN: "#0B3434",
                 jaune: "#FFBC3E",
-                nav: "#0B3434",  
-                light_brown:"#C59866",
+                nav: "#0B3434",
+                lightBrown: "#C59866",
+                brown:"#5F4735",
 
                 gris: "#EEEEF2",
                 lightVert: "#B2D06B54",
                 lighterVert: "#B2D06B17",
                 tableBorder: "#EEEEF2",
                 bleu: "#0B3434",
+                
             },
             zIndex: {
                 100: "100",

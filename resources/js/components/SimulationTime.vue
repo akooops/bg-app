@@ -33,7 +33,7 @@
                             alt="logout icon"
                             class="w-5 h-5"
                         />
-                        <p>Se déconnecter</p>
+                        <p>log out</p>
                     </a>
                 </transition>
             </button>

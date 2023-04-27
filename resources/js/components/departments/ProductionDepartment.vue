@@ -292,7 +292,7 @@
                         </h2>
                         <div class="flex gap-4">
                             <div
-                                class="flex flex-col items-center px-2 py-1 text-white bg-vert rounded-md"
+                                class="flex flex-col items-center px-2 py-1 text-white bg-vert hover:bg-white hover:text-vert rounded-md"
                             >
                                 <h3 class="font-medium text-sm">
                                     Demandes restantes
@@ -303,7 +303,7 @@
                             </div>
                             <button
                                 @click="showProductDescription(i)"
-                                class="bg-white border-vert border-2 text-vert px-4 py-1 rounded-md"
+                                class="bg-white hover:bg-vert hover:text-white border-vert border-2 text-vert px-4 py-1 rounded-md"
                             >
                                 Description
                             </button>
@@ -317,7 +317,7 @@
                 <Modal
                     v-if="show_product_info"
                     :description="true"
-                    class="openmodal"
+                    class="openmodal bg-[#FAEEDE]"
                 >
                     <template v-slot:content>
                         <div class="w-full flex flex-col gap-8 p-3">
@@ -380,7 +380,7 @@
                                                     "
                                                     alt="khobz"
                                                 />
-                                                <span>
+                                                <span class="bg-lightBrown">
                                                     {{ mat.name }}
                                                 </span>
                                             </td>
