@@ -348,10 +348,10 @@
                                     : editRow(editing_command_id, true)
                             "
                             :disabled="commandDisabled || !supp_raw_mat_updated"
-                            class="font-heading py-3 px-3 text-vN rounded-md font-medium"
+                            class="font-heading text-vN font-normal px-3 py-1 rounded bg-[#EAD7C0]"
                             v-bind:class="{
                                 'text-vN text-opacity-20': commandDisabled,
-                                'text-vN  hover:text-[#C59866]': !commandDisabled,
+                                'text-vN  hover:text-white': !commandDisabled,
                             }"
                         >
                             Ajouter
@@ -361,7 +361,7 @@
                                 editing_command_id = null;
                                 show_add_modal = false;
                             "
-                            class="py-3 px-3 text-vN font-medium font-heading text-opacity-80 hover:text-[#C59866] rounded-md"
+                            class=" text-vN px-3 py-1 rounded bg-[#EAD7C0] hover:text-[#ED3A3A]"
                         >
                             Fermer
                         </button>

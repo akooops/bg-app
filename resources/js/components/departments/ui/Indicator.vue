@@ -4,8 +4,8 @@
     >
         <img
             class="h-12 w-12 p-1"
-            src="/assets/icons/employees.svg"
-            alt="emplyees icon"
+            src="/assets/icons/nv/money.svg"
+            alt="chiffre d'affaire icon"
         />
         <div class="flex items-center flex-col gap-1">
             <h1 class="text-vN text-lg font-medium font-heading">

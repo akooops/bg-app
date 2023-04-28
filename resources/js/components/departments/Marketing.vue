@@ -140,10 +140,10 @@
                     </div>
                     <div class="flex items-center gap-4 self-end mt-4">
                         <button
-                            class="text-vN font-normal px-3 py-2 rounded"
+                            class="text-vN font-normal px-3 py-1 rounded bg-[#EAD7C0]"
                             :class="
                                 can_create
-                                    ? 'hover:text-vert'
+                                    ? 'hover:text-white'
                                     : 'bg-gray-100 text-opacity-50'
                             "
                             :disabled="!can_create"
@@ -155,7 +155,7 @@
                             Confirmer
                         </button>
                         <button
-                            class="hover:text-black text-vN text-opacity-80 px-3 py-2 rounded"
+                            class="text-vN px-3 py-1 rounded bg-[#EAD7C0] hover:text-[#ED3A3A]"
                             @click="closeModal"
                         >
                             Annuler
@@ -188,7 +188,7 @@
                             première campagne publicitaire
                         </p>
                         <button
-                            class="bg-gradient-to-t from-lightVert to-lighterVert hover:opacity-80 text-vN px-4 py-2 shadow-lg rounded-full text-center mx-auto"
+                            class="text-vN px-4 py-2 shadow-lg rounded-full text-center mx-auto bg-[#FAEEDE]"
                             @click="openModal"
                         >
                             Créer ma première campagne publicitaire
@@ -295,8 +295,8 @@
                                             class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
                                             :class="
                                                 ad.status == 'Terminé'
-                                                    ? 'text-vert'
-                                                    : 'text-jaune'
+                                                    ? 'text-[#84C566]'
+                                                    : 'text-lightBrown'
                                             "
                                         >
                                             {{ ad.status }}

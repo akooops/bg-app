@@ -54,7 +54,7 @@
             <div
                 class="flex-grow bg-white rounded-xl gap-6 text-center flex flex-col py-7 shadow-lg px-2"
             >
-                <img class="mx-auto h-16 w-16" src="/images/prod.png" alt="" />
+                <img class="mx-auto h-16 w-16" src="/assets/icons/nv/atelier.svg" alt="" />
                 <div class="mx-auto text-center text-vN flex-1">
                     <h1 class="text-2xl font-medium mb-4 font-heading">
                         Lancer une production
@@ -63,7 +63,7 @@
                         En lançant une production, vous produirez une quantité
                         d'un produit que vous pourrez par la suite vendre.<br />
 
-                        <span class="text-jaune font-medium"> Astuce :</span>
+                        <span class="text-[#84C566] font-medium"> Astuce :</span>
                         Planifiez bien votre production en amont pour eviter les
                         coûts de stock !
                     </p>
@@ -71,7 +71,7 @@
 
                 <button
                     @click="launch_prod_modal = true"
-                    class="bg-vN bg-opacity-85 text-white mx-auto py-2 px-11 mb-8 text-lg font-medium rounded-3xl"
+                    class="bg-lightBrown bg-opacity-85 text-white mx-auto py-2 px-11 mb-8 text-lg font-medium rounded-3xl"
                 >
                     Lancer
                 </button>
@@ -83,7 +83,7 @@
             >
                 <img
                     class="mx-auto h-16 w-16"
-                    src="/images/machine.png"
+                    src="/assets/icons/nv/atelier.svg"
                     alt=""
                 />
                 <div class="mx-auto text-center text-vN flex-1">
@@ -97,7 +97,7 @@
                         <br />
                     </p>
                     <p class="text-sm text-nav text-opacity-80 mt-2">
-                        <span class="text-jaune font-medium font-heading">
+                        <span class="text-[#84C566] font-medium font-heading">
                             Astuce :</span
                         >
                         Attention à ne pas sur-estimer vos besoins en machines
@@ -109,7 +109,7 @@
                             machine.transaction = 'buy';
                             machine.show_transaction_modal = true;
                         "
-                        class="bg-vN bg-opacity-85 text-white mx-auto py-2 px-11 text-lg font-medium rounded-3xl"
+                        class="bg-lightBrown bg-opacity-85 text-white mx-auto py-2 px-11 text-lg font-medium rounded-3xl"
                     >
                         Acheter
                     </button>
@@ -118,7 +118,7 @@
                             machine.transaction = 'sell';
                             machine.show_transaction_modal = true;
                         "
-                        class="bg-vN bg-opacity-85 text-white mx-auto py-2 px-11 text-lg font-medium rounded-3xl"
+                        class="bg-lightBrown bg-opacity-85 text-white mx-auto py-2 px-11 text-lg font-medium rounded-3xl"
                     >
                         Vendre
                     </button>
@@ -130,7 +130,7 @@
             >
                 <img
                     class="mx-auto h-16 w-16"
-                    src="/images/atelier.png"
+                    src="/assets/icons/nv/atelier.svg"
                     alt=""
                 />
                 <div class="mx-auto text-center text-vN flex-1">
@@ -168,11 +168,11 @@
                     :class="
                         loaded_prices
                             ? 'bg-gray-100 text-vN text-opacity-20'
-                            : 'bg-vN text-white'
+                            : 'bg-lightBrown text-white'
                     "
                     :disabled="loaded_prices"
                 >
-                    Lancer
+                    Appliquer
                 </button>
             </div>
         </div>
@@ -286,7 +286,6 @@
                             "
                         />
                     </div>
-                    v-if="bochra == false"
                     <div>
                         <h1 class="text-vN text-lg font-heading font-medium"
                          >
@@ -333,7 +332,7 @@
                             Lancer
                         </button>
                         <button
-                            class="bg-vN text-white px-7 py-1 rounded-md hover:opacity-75"
+                            class="bg-vN text-white px-7 py-1 rounded-md hover:bg-lightBrown hover:text-red"
                             :disabled="prod_launched == true"
                             @click="
                                 launch_prod_modal = false;
@@ -551,7 +550,7 @@
                     </div>
 
                     <h1
-                        class="text-vert text-md font-heading font-semibold pl-3"
+                        class="text-[#84C566] text-md font-heading font-semibold pl-3"
                     >
                         Prévisions :
                     </h1>
@@ -580,7 +579,7 @@
                                         :class="
                                             totalCost > caisse
                                                 ? 'text-red-500'
-                                                : 'text-vert'
+                                                : 'text-[#84C566]'
                                         "
                                     >
                                         {{ Math.round(totalCost) }} DA
@@ -744,11 +743,11 @@
                                 machine.transaction == 'buy'
                             "
                             @click="confirmMachineTransaction"
-                            class="font-heading font-medium border-0 px-3 py-1 bg-opacity-30"
+                            class="font-heading font-medium border-3 px-3 py-1 text-vN font-normal px-3 py-1 rounded bg-[#EAD7C0]"
                             :class="
                                 disabled
                                     ? 'text-gray-200'
-                                    : 'text-vN hover:text-vert'
+                                    : 'text-vN hover:text-white'
                             "
                             :disabled="disabled"
                         >
@@ -763,7 +762,7 @@
                                 machine.transaction_lv = 1;
                                 machine.show_transaction_modal = false;
                             "
-                            class="font-heading font-medium px-3 py-1 text-vN opacity-80 hover:opacity-100"
+                            class="font-heading font-medium px-3 py-1 text-vN rounded bg-[#EAD7C0] hover:text-[#ED3A3A]"
                         >
                             Annuler
                         </button>
@@ -786,12 +785,12 @@
                     <div class="w-full flex items-center gap-4 justify-end">
                         <button
                             @click="confirmAction"
-                            class="font-heading font-medium px-3 py-1"
+                            class="font-heading text-vN font-normal px-3 py-1 rounded bg-[#EAD7C0]"
                             :class="
                                 action.price[action.value] > caisse ||
                                 action.price[action.value] == 0
                                     ? 'text-gray-200'
-                                    : 'text-vN hover:text-vert'
+                                    : 'text-vN hover:text-white'
                             "
                             :disabled="
                                 action.price[action.value] > caisse ||
@@ -802,9 +801,8 @@
                         </button>
                         <button
                             @click="action.show_info = false"
-                            class="font-heading font-medium px-3 py-1 text-vN text-opacity-80 hover:text-opacity-100"
-                        >
-                            Annuler
+                            class="font-heading text-vN px-3 py-1 rounded bg-[#EAD7C0] hover:text-[#ED3A3A]"
+                        >    Annuler
                         </button>
                     </div>
                 </div>

@@ -152,10 +152,10 @@
 
                     <div class="flex flex-row mt-9 gap-5 ml-auto text-vN">
                         <button
-                            class="text-vN font-normal px-3 py-2 rounded"
+                            class="text-vN font-normal px-3 py-1 rounded bg-[#EAD7C0]"
                             :class="
                                 can_create == true
-                                    ? 'hover:text-vert'
+                                    ? 'hover:text-[#84C566]'
                                     : 'bg-gray-100 text-opacity-50'
                             "
                             :disabled="!can_create"
@@ -168,7 +168,7 @@
                         </button>
 
                         <button
-                            class="hover:text-black text-vN text-opacity-80 px-3 py-2 rounded"
+                            class=" text-vN px-3 py-1 rounded bg-[#EAD7C0] hover:text-[#ED3A3A]"
                             @click="closeModal"
                         >
                             Annuler
@@ -364,10 +364,10 @@
 
                     <div class="flex flex-row mt-9 gap-2 ml-auto">
                         <button
-                            class="text-vN font-normal px-3 py-2 rounded"
+                            class="text-vN font-normal px-3 py-1 rounded bg-[#EAD7C0]"
                             :class="
                                 can_pay
-                                    ? 'hover:text-vert'
+                                    ? 'hover:text-[#84C566]'
                                     : 'bg-gray-100 text-opacity-50'
                             "
                             :disabled="!can_pay"
@@ -379,7 +379,7 @@
                             Payer
                         </button>
                         <button
-                            class="hover:text-black text-vN text-opacity-80 px-3 py-2 rounded"
+                            class="text-vN px-3 py-1 rounded bg-[#EAD7C0] hover:text-[#ED3A3A]"
                             @click="closePayModal"
                         >
                             Annuler
@@ -396,7 +396,7 @@
                 </h1>
                 <button
                     v-if="loans.length > 0"
-                    class="bg-gradient-to-t from- to-lighterVert hover:opacity-80 text-vN px-4 py-2 shadow-lg rounded-full text-center font-semibold"
+                    class="bg-[#FAEEDE] text-vN px-4 py-2 shadow-lg rounded-full text-center font-semibold"
                     @click="openModal"
                 >
                     Créer une demande d'endettement

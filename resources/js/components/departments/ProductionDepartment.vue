@@ -500,8 +500,8 @@
                             <td
                                 :class="
                                     prod.status_code == 'pending'
-                                        ? 'text-jaune'
-                                        : 'text-black'
+                                        ? 'text-[#84C566]'
+                                        : 'text-vN'
                                 "
                                 class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
                             >
