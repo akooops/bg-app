@@ -211,9 +211,9 @@ export default {
             products_stock: [],
             selected_product: 5,
             product_selected: {
-                name: "Galletes",
+                name: "Pantalon cargo",
                 description:
-                    "Galettes à la base du blé qui conviennent tous les jours, un produit simple mais un goût unique.",
+                    "Ce pantalon est fabriqué en coton et polyester pour un ajustement confortable et facile à porter. Les matières chimiques et les fixations sont utilisées pour garantir que le tissu est solide et durable, tandis que l'emballage est conçu pour une présentation soignée. Ce pantalon est idéal pour ceux qui cherchent un look moderne et tendance à un prix abordable.",
                 left_demand: 0,
                 quantity: 0,
                 price_min: 0,
