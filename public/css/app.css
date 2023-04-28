@@ -1446,6 +1446,10 @@ video {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
 }
+.bg-\[\#FAEEDE\] {
+  --tw-bg-opacity: 1;
+  background-color: rgb(250 238 222 / var(--tw-bg-opacity));
+}
 .bg-opacity-10 {
   --tw-bg-opacity: 0.1;
 }

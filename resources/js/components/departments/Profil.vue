@@ -82,11 +82,18 @@
                 <VenteGraph
                     v-if="stats != null"
                     :xData="stats.dates.map(Number)"
-                    :cookies="stats.ca_6.map(Number)"
-                    :granola="stats.ca_9.map(Number)"
-                    :sandwich="stats.ca_7.map(Number)"
-                    :cereales="stats.ca_8.map(Number)"
-                    :galettes="stats.ca_5.map(Number)"
+                    :cargo="stats.ca_1.map(Number)"
+                    :portofino="stats.ca_2.map(Number)"
+                    :robe="stats.ca_3.map(Number)"
+                    :tshirt="stats.ca_4.map(Number)"
+                    :polo="stats.ca_5.map(Number)"
+                    :pull="stats.ca_6.map(Number)"
+                    :parka="stats.ca_7.map(Number)"
+                    :richelieu="stats.ca_8.map(Number)"
+                    :tuxedo="stats.ca_9.map(Number)"
+                    :jupe1="stats.ca_10.map(Number)"
+                    :jupe2="stats.ca_11.map(Number)"
+                    :pullcol="stats.ca_12.map(Number)"
                 >
                 </VenteGraph>
             </div>
@@ -157,7 +164,9 @@
                         machine[0].name.replace('Machines -', ''),
                         machine[1].name.replace('Machines -', ''),
                         machine[2].name.replace('Machines -', ''),
-                    ]"
+                        machine[3].name.replace('Machines -', ''),
+
+]"
                     orient="vertical"
                     left="10%"
                     bottom="center"
@@ -260,35 +269,70 @@
                 <HBarChart
                     v-if="prod != null && products_stock != null"
                     :produit_vendu="[
-                        prod.find((e) => e.name == 'Galettes').value -
-                            products_stock.find((e) => e.product == 'Galettes')
+                        prod.find((e) => e.name == 'Pantalon cargo').value -
+                            products_stock.find((e) => e.product == 'Pantalon cargo')
                                 .quantity,
-                        prod.find((e) => e.name == 'Sandwich glacé').value -
+                        prod.find((e) => e.name == 'Pantalon portofino').value -
                             products_stock.find(
-                                (e) => e.product == 'Sandwich glacé'
+                                (e) => e.product == 'Pantalon portofino'
                             ).quantity,
-                        prod.find((e) => e.name == 'Cookies').value -
-                            products_stock.find((e) => e.product == 'Cookies')
+                        prod.find((e) => e.name == 'Robe de mariée à dos ouvert').value -
+                            products_stock.find(
+                                (e) => e.product == 'Robe de mariée à dos ouvert'
+                            ).quantity,
+                        prod.find((e) => e.name == 'T-shirt').value -
+                            products_stock.find((e) => e.product == 'T-shirt')
                                 .quantity,
-                        prod.find((e) => e.name == 'Céréales').value -
-                            products_stock.find((e) => e.product == 'Céréales')
+                        prod.find((e) => e.name == 'Polo rugby').value -
+                            products_stock.find((e) => e.product == 'Polo rugby')
                                 .quantity,
-                        prod.find((e) => e.name == 'Granola').value -
-                            products_stock.find((e) => e.product == 'Granola')
+                        prod.find((e) => e.name == 'Pull à col rond').value -
+                            products_stock.find((e) => e.product == 'Pull à col rond')
+                                .quantity,
+                        prod.find((e) => e.name == 'Parkas').value -
+                           products_stock.find((e) => e.product == 'Parkas')
+                                .quantity,
+                        prod.find((e) => e.name == 'Richelieu').value -
+                           products_stock.find((e) => e.product == 'Richelieu')
+                                .quantity,
+                        prod.find((e) => e.name == 'Tuxedo').value -
+                          products_stock.find((e) => e.product == 'Tuxedo')
+                                .quantity,
+                        prod.find((e) => e.name == 'Jupe ajustée a taille ceinturée').value -
+                          products_stock.find((e) => e.product == 'Jupe ajustée a taille ceinturée')
+                                .quantity,
+                        prod.find((e) => e.name == 'Jupe longue').value -
+                          products_stock.find((e) => e.product == 'Jupe longue')
+                                .quantity,
+                        prod.find((e) => e.name == 'Pull à col bâteau').value -
+                          products_stock.find((e) => e.product == 'Pull à col bâteau')
                                 .quantity,
                     ]"
                     :produit_en_stock="[
-                        products_stock.find((e) => e.product == 'Galettes')
-                            .quantity,
-                        products_stock.find(
-                            (e) => e.product == 'Sandwich glacé'
-                        ).quantity,
-                        products_stock.find((e) => e.product == 'Cookies')
-                            .quantity,
-                        products_stock.find((e) => e.product == 'Céréales')
-                            .quantity,
-                        products_stock.find((e) => e.product == 'Granola')
-                            .quantity,
+                         products_stock.find((e) => e.product == 'Pantalon cargo')
+                                .quantity,
+                        products_stock.find( (e) => e.product == 'Pantalon portofino'
+                            ).quantity,
+                        products_stock.find( (e) => e.product == 'Robe de mariée à dos ouvert'
+                            ).quantity,
+                       products_stock.find((e) => e.product == 'T-shirt')
+                                .quantity,
+                        products_stock.find((e) => e.product == 'Polo rugby')
+                                .quantity,
+                         products_stock.find((e) => e.product == 'Pull à col rond')
+                                .quantity,
+                        products_stock.find((e) => e.product == 'Parkas')
+                                .quantity,
+                        products_stock.find((e) => e.product == 'Richelieu')
+                                .quantity,
+                        products_stock.find((e) => e.product == 'Tuxedo')
+                                .quantity,
+                        products_stock.find((e) => e.product == 'Jupe ajustée a taille ceinturée')
+                                .quantity,
+                        products_stock.find((e) => e.product == 'Jupe longue')
+                                .quantity,
+                        products_stock.find((e) => e.product == 'Pull à col bâteau')
+                                .quantity,
                     ]"
                 ></HBarChart>
             </div>
@@ -336,11 +380,11 @@ export default {
             stats: null,
 
             products_stock: null,
-            // selected_product: 5,
+            // selected_product: 1
             product_selected: {
-                name: "Galletes",
+                name: "Pantalon cargo",
                 description:
-                    "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley",
+                    "Ce pantalon est fabriqué en coton et polyester pour un ajustement confortable et facile à porter. Les matières chimiques et les fixations sont utilisées pour garantir que le tissu est solide et durable, tandis que l'emballage est conçu pour une présentation soignée. Ce pantalon est idéal pour ceux qui cherchent un look moderne et tendance à un prix abordable.",
                 left_demand: 0,
                 quantity: 0,
                 price_min: 0,
@@ -410,14 +454,14 @@ export default {
                 })
                 .then((response) => {
                     response.data.forEach((e) => {
-                        if (e.material == "Emballage (Carton / Alumnium)") {
-                            this.stock_name.push("Emballage");
+                        if (e.material == "Matières chimiques") {
+                            this.stock_name.push("M.chimiques");
                         } else {
-                            if (e.material == "Additifs Alimentaires") {
-                                this.stock_name.push("A.alimentaires");
+                            if (e.material == "Packaging") {
+                                this.stock_name.push("Packaging");
                             } else {
-                                if (e.material == "Flocons d'Avoine") {
-                                    this.stock_name.push("FA");
+                                if (e.material == "Fixation") {
+                                    this.stock_name.push("Fixation");
                                 } else {
                                     this.stock_name.push(e.material);
                                 }
@@ -439,49 +483,107 @@ export default {
                 })
                 .then((resp) => {
                     this.productions = resp.data.reverse();
-                    var gal_produced = 0;
-                    var cer_produced = 0;
-                    var gran_produced = 0;
-                    var cook_produced = 0;
-                    var san_produced = 0;
+                        var cargo_produced =0;
+                        var portfino_produced =0 ;
+                        var robe_produced =0;
+                        var tshirt_procuced =0 ;
+                        var polo_produced =0;
+                        var pull_produced =0;
+                        var parka_produced =0;
+                        var richelieu_produced =0;
+                        var tuxedo_produced =0;
+                        var jupe1_produced =0;
+                        var jupe2_produced =0 ;
+                        var pullcol_produced =0;
                     this.productions.forEach((element) => {
                         if (
-                            element.product == "Galettes" &&
+                            element.product == "Pantalon cargo" &&
                             element.status_code == "completed"
                         ) {
                             gal_produced = gal_produced + element.quantity;
                         }
                         if (
-                            element.product == "Sandwich glacé" &&
+                            element.product == "Pantalon portofino" &&
                             element.status_code == "completed"
                         ) {
                             san_produced = san_produced + element.quantity;
                         }
                         if (
-                            element.product == "Granola" &&
+                            element.product == "Robe de mariée à dos ouvert" &&
                             element.status_code == "completed"
                         ) {
                             gran_produced = gran_produced + element.quantity;
                         }
                         if (
-                            element.product == "Céréales" &&
+                            element.product == "T-shirt" &&
                             element.status_code == "completed"
                         ) {
                             cer_produced = cer_produced + element.quantity;
                         }
                         if (
-                            element.product == "Cookies" &&
+                            element.product == "Polo rugby" &&
                             element.status_code == "completed"
                         ) {
                             cook_produced = cook_produced + element.quantity;
                         }
+                        if (
+                            element.product == "Pull à col rond" &&
+                            element.status_code == "completed"
+                        ) {
+                            cook_produced = cook_produced + element.quantity;
+                        }
+                        if (
+                            element.product == "Parkas" &&
+                            element.status_code == "completed"
+                        ) {
+                            cook_produced = cook_produced + element.quantity;
+                        }
+                        if (
+                            element.product == "Richelieu" &&
+                            element.status_code == "completed"
+                        ) {
+                            cook_produced = cook_produced + element.quantity;
+                        }
+                        if (
+                            element.product == "Tuxedo" &&
+                            element.status_code == "completed"
+                        ) {
+                            cook_produced = cook_produced + element.quantity;
+                        }
+                        if (
+                            element.product == "Jupe ajustée a taille ceinturée" &&
+                            element.status_code == "completed"
+                        ) {
+                            cook_produced = cook_produced + element.quantity;
+                        }
+                        if (
+                            element.product == "Jupe longue" &&
+                            element.status_code == "completed"
+                        ) {
+                            cook_produced = cook_produced + element.quantity;
+                        }
+                        if (
+                            element.product == "Pull à col bâteau" &&
+                            element.status_code == "completed"
+                        ) {
+                            cook_produced = cook_produced + element.quantity;
+                        }
+
+
                     });
                     return (this.prod = [
-                        { name: "Galettes", value: gal_produced },
-                        { name: "Sandwich glacé", value: san_produced },
-                        { name: "Granola", value: gran_produced },
-                        { name: "Céréales", value: cer_produced },
-                        { name: "Cookies", value: cook_produced },
+                        { name: "Pantalon cargo", value: cargo_produced },
+                        { name: "Pantalon portofino", value: portfino_produced },
+                        { name: "Robe de mariée à dos ouvert", value: robe_produced },
+                        { name: "T-shirt", value: tshirt_procuced },
+                        { name: "Polo rugby", value: polo_produced }, 
+                        { name: "Pull à col rond", value: pull_produced },
+                        { name: "Parkas", value: parka_produced },
+                        { name: "Richelieu", value: richelieu_produced },
+                        { name: "Tuxedo", value: tuxedo_produced },
+                        { name: "Jupe ajustée a taille ceinturée", value: jupe1_produced },
+                        { name: "Jupe longue", value: jupe2_produced },
+                        { name: "Pull à col bâteau", value: pullcol_produced },
                     ]);
                 });
         },
@@ -545,6 +647,13 @@ export default {
                             ),
                             value: resp.data["nb_machines_lv3"].value,
                         },
+                        {
+                            name: resp.data["nb_machines_lv0"].name.replace(
+                                "Machines -",
+                                ""
+                            ),
+                            value: resp.data["nb_machines_lv0"].value,
+                        },
                     ];
 
                     this.employee = [
@@ -574,10 +683,12 @@ export default {
                         this.total_employee - this.employee_used;
 
                     this.machine_used =
+                        resp.data["nb_machines_lv0_busy"].value +
                         resp.data["nb_machines_lv1_busy"].value +
                         resp.data["nb_machines_lv2_busy"].value +
                         resp.data["nb_machines_lv3_busy"].value;
                     this.total_machines =
+                        resp.data["nb_machines_lv0"].value +
                         resp.data["nb_machines_lv1"].value +
                         resp.data["nb_machines_lv2"].value +
                         resp.data["nb_machines_lv3"].value;

@@ -6,6 +6,8 @@
                     machine[0].name.replace('Machines -', ''),
                     machine[1].name.replace('Machines -', ''),
                     machine[2].name.replace('Machines -', ''),
+                    machine[3].name.replace('Machines -', ''),
+
                 ]"
                 orient="vertical"
                 left="10%"

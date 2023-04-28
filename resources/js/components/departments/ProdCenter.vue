@@ -286,11 +286,11 @@
                             "
                         />
                     </div>
-                    v-if="bochra == false"
                     <div>
                         <h1 class="text-vN text-lg font-heading font-medium"
                          >
-                            Quantité (en lots de 1000 pièces)
+                         la quantite (  en lots 1000 pieces )
+                            
                         </h1>
                         <input
                             type="number"
@@ -1170,7 +1170,8 @@ export default {
         },
         selectedProd() {
             return this.products.find(
-                (item) => item.id == this.launch_data.prod_id
+                (item) => item.id == this.launch_data.prod_id,
+              // bochra  (item) => item.lot_quantity == this.launch_data.lot_quantity
             );
         },
 
@@ -1178,7 +1179,7 @@ export default {
             return (
                 this.launch_data.quantity *
                 this.selectedProd.unit_prod_price *
-                1000
+                this.selectedProd.lot_quantity //bochra for remember 
             );
         },
 
@@ -1213,6 +1214,7 @@ export default {
                 labor_lv1: this.prod_factors.labor_lv1, // number of necessary simple free workers to produce
                 labor_lv2: this.prod_factors.labor_lv2, // number of necessary simple free workers to produce
                 machines_lvl: this.launch_data.machine_lvl, // selected machine level
+                lot_quantity: this.selectedProd.lot_quantity 
             };
 
             if (this.caisse < data.cost) {
@@ -1314,7 +1316,7 @@ export default {
                     (this.launch_data.machine_lvl == 1
                         ? 1
                         : this.launch_data.machine_lvl == 0
-                        ? 0 //not sure about it ??
+                        ? 1 
                         : this.launch_data.machine_lvl == 2
                         ? 2
                         : 3) * this.launch_data.machine_nb,
