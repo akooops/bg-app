@@ -289,8 +289,7 @@
                     <div>
                         <h1 class="text-vN text-lg font-heading font-medium"
                          >
-                         la quantite (  en lots 1000 pieces )
-                            
+                         la quantite (En lots de {{ selectedProd.lot_quantity }} pieces) :
                         </h1>
                         <input
                             type="number"
@@ -824,7 +823,7 @@ export default {
             quantity: 1,
             launch_prod_modal: false,
             launch_data: {
-                prod_id: 1, //pourquoi 5 ?
+                prod_id: 1,
                 // price: 0,
                 quantity: 1,
                 machine_lvl: 1,
@@ -1049,7 +1048,7 @@ export default {
                 0.4 *
                 (1 - n["machines_lv1_health"]["value"]) *
                 n["nb_machines_lv1"]["value"];
-                
+
             this.action.price["maintenance_lv0"] =
                 this.machine.buy_price_lv0 *
                 0.4 *
@@ -1170,7 +1169,7 @@ export default {
         },
         selectedProd() {
             return this.products.find(
-                (item) => item.id == this.launch_data.prod_id,
+                (item) => item.id == this.launch_data.prod_id
               // bochra  (item) => item.lot_quantity == this.launch_data.lot_quantity
             );
         },
@@ -1179,7 +1178,7 @@ export default {
             return (
                 this.launch_data.quantity *
                 this.selectedProd.unit_prod_price *
-                this.selectedProd.lot_quantity //bochra for remember 
+                this.selectedProd.lot_quantity //bochra for remember
             );
         },
 
@@ -1214,7 +1213,7 @@ export default {
                 labor_lv1: this.prod_factors.labor_lv1, // number of necessary simple free workers to produce
                 labor_lv2: this.prod_factors.labor_lv2, // number of necessary simple free workers to produce
                 machines_lvl: this.launch_data.machine_lvl, // selected machine level
-                lot_quantity: this.selectedProd.lot_quantity 
+                lot_quantity: this.selectedProd.lot_quantity
             };
 
             if (this.caisse < data.cost) {
@@ -1316,7 +1315,7 @@ export default {
                     (this.launch_data.machine_lvl == 1
                         ? 1
                         : this.launch_data.machine_lvl == 0
-                        ? 1 
+                        ? 1
                         : this.launch_data.machine_lvl == 2
                         ? 2
                         : 3) * this.launch_data.machine_nb,
