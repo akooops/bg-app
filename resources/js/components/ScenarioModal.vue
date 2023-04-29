@@ -67,7 +67,7 @@ export default {
                     img: "fires.png",  //les images
                 },
                 influenceur: {
-                    title: "Un post d’un influenceur",
+                    title: "Un post dun influenceur",
                     description: //agg
                         "Le hasard fait bien les choses et une nouvelle loi de finance est apparue qui entraîne un relèvement de taxes et une entrave de subventions de matières premières. Comment allez-vous vous exempter de cette réglementation ?",
                     img: "finance.png", //agg
@@ -79,7 +79,7 @@ export default {
                     img: "cacao.png", //agg
                 },
                 turquie: {
-                    title: "Tremblement de terre -Turquie-",
+                    title: "Tremblement de terre Turquie",
                     description:
                         "La guerre frôle les portes, une guerre aux portes de l’Europe, un manichéisme qui va vous  faire oublier le boire et le manger, vous assistez mes chers joueurs à une hausse  vertigineuse du prix de blé de sucre et d’avoine principalement, de machines, de taxes et  un déclin démesurée de la demande portée sur les produits de luxe et la vitesse de  diminution du facteur RH est à perdre haleine !",
                     img: "war_1.png",
@@ -90,8 +90,8 @@ export default {
                         "La guerre avance ! Comment allez-vous procéder face à la hausse des prix de maintenance des machines, de la vitesse de descente du  facteur RH et des intérêts des banques qui entrent en jeu ? comment agiriez-vous et  quelle stratégie prévoyez-vous face à l’abâtardissement de la demande des glaces,  cookies et céréales ?",
                     img: "war_2.png",
                 },
-                guerre2: {
-                    title: "Les crises geopolitiques : la chine et l'economie mondiale",
+                chine: {
+                    title: "Les crises geopolitiques",
                     description:
                         "Place à la fin de la guerre ! Le camp de réfugiés est au centre de beaucoup de tensions, à cet effet la population fourmille et la demande sue pas mal de produits augmente à  l’identique, qu’allez-vous faire ?",
                     img: "war_3.png",
