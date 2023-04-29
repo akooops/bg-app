@@ -194,7 +194,7 @@
                 </button>
             </div>
 
-            <p class="text-left mb-2">Scénario:</p>
+            <p class="text-left mb-2">Scénario: bouchra </p>
             <div class="mb-6 flex">
                 <select
                     v-model="selected_scenario"
@@ -290,7 +290,7 @@ export default {
             settings: [],
             selected_setting: null,
 
-            scenarios: ['Changement climatique', 'Un post d’un influenceur', 'Reglement RH', 'Tremblement de terre -Turquie-', 'Les repercusions de la guerre', 'Les crises geopolitiques , la chine et leconomie mondiale'],  //agg
+            scenarios: ['Changement climatique', 'Un post dun influenceur', 'Reglement RH', 'Tremblement de terre Turquie', 'Les repercusions de la guerre', 'Les crises geopolitiques'],  //agg
             selected_scenario: 'Changement climatique', //agg
 
             show_reset_game_modal: false,

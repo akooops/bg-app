@@ -160,7 +160,7 @@ export default {
                         console.log(e.notification);
                         switch (e.notification.title) {
                             case "Changement climatique":                               //agg
-                                this.event = "Changement climatique";                   //agg
+                                this.event = "climat";                   //agg
                                 localStorage.setItem(
                                     "current_event",
                                     JSON.stringify({
@@ -181,12 +181,12 @@ export default {
                                     })
                                 );
                                 break;
-                            case " Tremblement de terre -Turquie-":         //agg
-                                this.event = " Tremblement de terre -Turquie-";
+                            case " Tremblement de terre Turquie":         //agg
+                                this.event = "turquie";
                                 localStorage.setItem(
                                     "current_event",
                                     JSON.stringify({
-                                        name: " Tremblement de terre -Turquie-",
+                                        name: " Tremblement de terre Turquie",
                                         changes: {
                                             raw_materials: [
                                                 {
@@ -204,19 +204,19 @@ export default {
                                 );
                                 break;
                             case "Un post d’un influenceur":
-                                this.event = "Un post d’un influenceur";
+                                this.event = "influenceur";
 
                                 break;
                             case "Reglement RH":
-                                this.event = "Reglement RH";
+                                this.event = "rh";
 
                                 break;
                             case "Les repercusions de la guerre":
-                                this.event = "Les repercusions de la guerre";
+                                this.event = "guerre";
 
                                 break;
-                            case "Les crises geopolitiques : la chine et l'economie mondiale":
-                                this.event = "Les crises geopolitiques : la chine et l'economie mondiale";
+                            case "Les crises geopolitiques ":
+                                this.event = "chine";
 
                                 break;
                             default:
