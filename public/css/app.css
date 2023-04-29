@@ -1353,6 +1353,10 @@ video {
 .bg-\[\#B2D06B12\] {
   background-color: #B2D06B12;
 }
+.bg-\[\#FAEEDE\] {
+  --tw-bg-opacity: 1;
+  background-color: rgb(250 238 222 / var(--tw-bg-opacity));
+}
 .bg-\[\#FFBC3E17\] {
   background-color: #FFBC3E17;
 }
@@ -1445,10 +1449,6 @@ video {
 .bg-white {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
-}
-.bg-\[\#FAEEDE\] {
-  --tw-bg-opacity: 1;
-  background-color: rgb(250 238 222 / var(--tw-bg-opacity));
 }
 .bg-opacity-10 {
   --tw-bg-opacity: 0.1;

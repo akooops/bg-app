@@ -5,7 +5,7 @@
         :option="option"
         autoresize
     />
-    
+
 </template>
 
 <script>
@@ -29,7 +29,7 @@ export default {
                     type: "category",
                     showGrid: false,
                     name: "Semaine",
-                    
+
                 },
                 yAxis: {
                     type: "value",
@@ -53,7 +53,7 @@ export default {
                     },
                     {
                         //remove tooltip for line chart
-                          name: 'Pontalon portfino',
+                          name: 'Pontalon portofino',
                           type: 'line',
                           stack: 'Total',
                           data: [120, 132, 200, 134, 90, 2, 111]
@@ -131,14 +131,14 @@ export default {
 
                 ],
             },
-            
+
         };
     },
     methods: {
         updateGraph() {
             // spread all xdata and ydata on the option data
             this.option.series[0].data = this.cargo;
-            this.option.series[1].data = this.portfino;
+            this.option.series[1].data = this.portofino;
             this.option.series[2].data = this.robe;
             this.option.series[3].data = this.tshirt;
             this.option.series[4].data = this.polo;
@@ -152,8 +152,8 @@ export default {
 
 
             this.option.xAxis.data = this.xData;
-            
-          
+
+
 
             this.$forceUpdate();
 

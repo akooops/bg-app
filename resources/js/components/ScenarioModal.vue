@@ -60,38 +60,38 @@ export default {
             },
             show_changes: false,
             events: {
-                incendies: {
-                    title: "Incendies",
-                    description:
-                        " Le jeu est lancé sous une conjoncture accidentée, un incendie a eu lieu. Suite à cet aléa, une hausse des prix du blé, de l'avoine, du lait et le prix de produits divers, ainsi que la demande de ces produits pour combler les besoins qui ont surgi suite à cet imprévu. À noter aussi que les employés ont été affectés par cet incendie, et que leur moral décroit plus vite. Quelle stratégie adopteriez-vous ?",
-                    img: "fires.png",
+                climat: {
+                    title: "Changement climatique",  //agg
+                    description: //description
+                       " Le jeu est lancé sous une conjoncture accidentée, un incendie a eu lieu. Suite à cet aléa, une hausse des prix du blé, de l'avoine, du lait et le prix de produits divers, ainsi que la demande de ces produits pour combler les besoins qui ont surgi suite à cet imprévu. À noter aussi que les employés ont été affectés par cet incendie, et que leur moral décroit plus vite. Quelle stratégie adopteriez-vous ?",
+                    img: "fires.png",  //les images
                 },
-                finances: {
-                    title: "Loi des finances",
-                    description:
+                influenceur: {
+                    title: "Un post d’un influenceur",
+                    description: //agg
                         "Le hasard fait bien les choses et une nouvelle loi de finance est apparue qui entraîne un relèvement de taxes et une entrave de subventions de matières premières. Comment allez-vous vous exempter de cette réglementation ?",
-                    img: "finance.png",
+                    img: "finance.png", //agg
                 },
-                cacao: {
-                    title: "Crise cacao",
-                    description:
+                rh: {
+                    title: "Reglement RH", //agg
+                    description: //agg
                         "Une crise diplomatique vient s’emmêler,  votre premier fournisseur de matières premières en termes de Cacao Ghana décide de couper les ponts avec votre pays, l’arrêt de l’importation de Cacao s’ensuit. Ce qui en résulte la non disponibilité de cette matière première essentielle dans la production de pas mal de vos produits notant les  cookies,les  sandwichs glacés et les céréales , par conséquent des clients de taille vous seront désavantagés. Allez-vous céder à vos concurrents une partie de l’avance que vous avez sur eux ougardez vous votre pour chercher une alternative ?",
-                    img: "cacao.png",
+                    img: "cacao.png", //agg
                 },
-                war_1: {
-                    title: "Debut de la Guerre",
+                turquie: {
+                    title: "Tremblement de terre -Turquie-",
                     description:
                         "La guerre frôle les portes, une guerre aux portes de l’Europe, un manichéisme qui va vous  faire oublier le boire et le manger, vous assistez mes chers joueurs à une hausse  vertigineuse du prix de blé de sucre et d’avoine principalement, de machines, de taxes et  un déclin démesurée de la demande portée sur les produits de luxe et la vitesse de  diminution du facteur RH est à perdre haleine !",
                     img: "war_1.png",
                 },
-                war_2: {
-                    title: "La guerre avance ! La situation empire…",
+                guerre: {
+                    title: "Les repercusions de la guerre",
                     description:
                         "La guerre avance ! Comment allez-vous procéder face à la hausse des prix de maintenance des machines, de la vitesse de descente du  facteur RH et des intérêts des banques qui entrent en jeu ? comment agiriez-vous et  quelle stratégie prévoyez-vous face à l’abâtardissement de la demande des glaces,  cookies et céréales ?",
                     img: "war_2.png",
                 },
-                war_3: {
-                    title: "Fin de la Guerre",
+                guerre2: {
+                    title: "Les crises geopolitiques : la chine et l'economie mondiale",
                     description:
                         "Place à la fin de la guerre ! Le camp de réfugiés est au centre de beaucoup de tensions, à cet effet la population fourmille et la demande sue pas mal de produits augmente à  l’identique, qu’allez-vous faire ?",
                     img: "war_3.png",

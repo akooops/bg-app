@@ -62,7 +62,8 @@ class WeeklyOperations implements ShouldQueue
         }
         else {
             $val = ($x - 13) / 26;
-            $pop_percent = 0.8 * sqrt( 1 - $val ) * $val * exp($val);
+           // $pop_percent = 0.8 * sqrt( 1 - $val ) * $val * exp($val);
+           $pop_percent = (1-(pow((($val-0.375)*2-0.25),2)))*exp(pow((($val-0.375)*2-0.25),2));
         }
 
         DB::table('products')->where('id', '=', 7)->update(['percent_population' => $pop_percent]);
@@ -70,6 +71,7 @@ class WeeklyOperations implements ShouldQueue
         // Refresh products' left demand every week
         $nb_entrep = count(Entreprise::all());
         $population = $this->get_game_setting('population');
+       // $coeff = $population ;
         $coeff = $nb_entrep * $population / 2;
 
         $products = Product::all();

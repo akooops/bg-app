@@ -22,9 +22,9 @@ trait DemandTrait
         $total_population = (int) $this->get_game_setting('population');
 
         switch ($prod_id) {
-            case 1:         // Pantalon éphémère tendance
+            case 1:         // Pantalon CARGO
                 $demand = $prices->map(function ($p) use ($total_population) {
-                    $percent = sqrt(1 - ($p - 75) / 30);
+                    $percent = 66102 * pow(1 - ($p - 2599)/1000, 0.4);
 
                     $pop_percent = (float) Product::where('id', '=', 1)->first()["percent_population"];
 
@@ -36,9 +36,9 @@ trait DemandTrait
                 });
                 break;
 
-            case 2:         //Pantalon de collection
+            case 2:         //Pantalon PORTOFINO
                 $demand = $prices->map(function ($p) use ($total_population) {
-                    $percent = sqrt(1 - pow(($p - 110) / 30, 4));
+                    $percent = 7624 * (exp(cos( pi() * ($p - 25999) / 10000 )) - exp(-1)) / (exp(1) - exp(-1)) ;
 
                     $pop_percent = (float) Product::where('id', '=', 2)->first()["percent_population"];
 
@@ -52,7 +52,7 @@ trait DemandTrait
 
             case 3:         // Robes de mariage
                 $demand = $prices->map(function ($p) use ($total_population) {
-                    $percent = pow(1 - ($p - 260) / 70, 0.4);
+                    $percent = 587 * (exp(cos( pi() * ($p - 91999) / 20000 )) - exp(-1)) / (exp(1) - exp(-1));
 
                     $pop_percent = (float) Product::where('id', '=', 3)->first()["percent_population"];
 
@@ -64,9 +64,9 @@ trait DemandTrait
                 });
                 break;
 
-            case 4:         //T-shirt tendance
+            case 4:         //T-shirt
                 $demand = $prices->map(function ($p) use ($total_population) {
-                    $percent = sqrt(1 - pow(($p - 300) / 75, 4));
+                    $percent = 341278 * pow(1 - ($p - 1999)/1000, 0.4);
 
                     $pop_percent = (float) Product::where('id', '=', 4)->first()["percent_population"];
 
@@ -78,9 +78,9 @@ trait DemandTrait
                 });
                 break;
 
-            case 5:         // T-shirt en édition limitée
+            case 5:         // POLO RUGBY
                 $demand = $prices->map(function ($p) use ($total_population) {
-                    $percent = (exp(cos( pi() * ($p - 600) / 100 )) - exp(-1)) / (exp(1) - exp(-1));
+                    $percent =9660 * (exp(cos( pi() * ($p - 25999) / 10000 )) - exp(-1)) / (exp(1) - exp(-1));
 
                     $pop_percent = (float) Product::where('id', '=', 5)->first()["percent_population"];
 
@@ -93,7 +93,7 @@ trait DemandTrait
                 break;
             case 6:         // Pull à col rond
                 $demand = $prices->map(function ($p) use ($total_population) {
-                    $percent = (exp(cos( pi() * ($p - 600) / 100 )) - exp(-1)) / (exp(1) - exp(-1));
+                    $percent = 15274 * (exp(cos( pi() * ($p - 20999) / 10000 )) - exp(-1)) / (exp(1) - exp(-1));
 
                     $pop_percent = (float) Product::where('id', '=', 6)->first()["percent_population"];
 
@@ -104,9 +104,9 @@ trait DemandTrait
                     return round(max($dem, 0));
                 });
                 break;
-            case 7:         // Veste parka urbaine
+            case 7:         // PARKA
                 $demand = $prices->map(function ($p) use ($total_population) {
-                    $percent = (exp(cos( pi() * ($p - 600) / 100 )) - exp(-1)) / (exp(1) - exp(-1));
+                    $percent =37840 * sqrt(1 - pow(($p - 4999) / 1500, 4));
 
                     $pop_percent = (float) Product::where('id', '=', 7)->first()["percent_population"];
 
@@ -117,9 +117,9 @@ trait DemandTrait
                     return round(max($dem, 0));
                 });
                 break;
-            case 8:         // Chaussures
+            case 8:         // RICHELIEU
                 $demand = $prices->map(function ($p) use ($total_population) {
-                    $percent = (exp(cos( pi() * ($p - 600) / 100 )) - exp(-1)) / (exp(1) - exp(-1));
+                    $percent =2079 * sqrt(1 - pow(($p - 22999) / 10000, 4));
 
                     $pop_percent = (float) Product::where('id', '=', 8)->first()["percent_population"];
 
@@ -130,9 +130,9 @@ trait DemandTrait
                     return round(max($dem, 0));
                 });
                 break;
-            case 9:         //Costume raffiné
+            case 9:         // TUXEDO
                 $demand = $prices->map(function ($p) use ($total_population) {
-                    $percent = (exp(cos( pi() * ($p - 600) / 100 )) - exp(-1)) / (exp(1) - exp(-1));
+                    $percent = 2106 * (exp(cos( pi() * ($p - 43999) / 15000 )) - exp(-1)) / (exp(1) - exp(-1));
 
                     $pop_percent = (float) Product::where('id', '=', 9)->first()["percent_population"];
 
@@ -145,7 +145,7 @@ trait DemandTrait
                 break;
             case 10:         //Jupe ajustée à taille ceinturée
                 $demand = $prices->map(function ($p) use ($total_population) {
-                    $percent = (exp(cos( pi() * ($p - 600) / 100 )) - exp(-1)) / (exp(1) - exp(-1));
+                    $percent = 7048 * (exp(cos( pi() * ($p - 20999) / 10000 )) - exp(-1)) / (exp(1) - exp(-1));
 
                     $pop_percent = (float) Product::where('id', '=', 10)->first()["percent_population"];
 
@@ -156,9 +156,9 @@ trait DemandTrait
                     return round(max($dem, 0));
                 });
                 break;
-            case 11:         //jupe de prêt-à-porter
+            case 11:         // JUPE LONGUE
                 $demand = $prices->map(function ($p) use ($total_population) {
-                    $percent = (exp(cos( pi() * ($p - 600) / 100 )) - exp(-1)) / (exp(1) - exp(-1));
+                    $percent = 74836 * pow(1 - ($p - 2399)/1000, 0.4);
 
                     $pop_percent = (float) Product::where('id', '=', 11)->first()["percent_population"];
 
@@ -171,7 +171,7 @@ trait DemandTrait
                 break;
             case 12:         //Pull à col bâteau
                 $demand = $prices->map(function ($p) use ($total_population) {
-                    $percent = (exp(cos( pi() * ($p - 600) / 100 )) - exp(-1)) / (exp(1) - exp(-1));
+                    $percent = 198671 * pow(1 - ($p - 2399)/1000, 0.4);
 
                     $pop_percent = (float) Product::where('id', '=', 12)->first()["percent_population"];
 
@@ -221,7 +221,7 @@ trait DemandTrait
         $nb_entrep = count(Entreprise::all());
 
         switch ($prod_id) {
-            case 1:
+            case 1: // cargo
                 $coeffs = [1, 1, 1, 1];
                 $ss = $this->socialInfluence($entreprise_id, $coeffs);
                 $x = (($quantity / $tot_quant) - (1 / $nb_entrep)) < 0 || ($ss - (1 / $nb_entrep)) < 0 ? $product->price_max : $product->price_min;
@@ -230,7 +230,7 @@ trait DemandTrait
 
                 // $p = $price;
 
-                $percent = sqrt(1 - ($p - 75) / 30);
+                $percent = 66102 * pow(1 - ($p - 2599)/1000, 0.4);
 
                 $pop_percent = (float) Product::where('id', '=', 1)->first()["percent_population"];
 
@@ -240,7 +240,7 @@ trait DemandTrait
 
                 break;
 
-            case 2:
+            case 2: // portofino
                 $coeffs = [1, 1, 1, 1];
                 $ss = $this->socialInfluence($entreprise_id, $coeffs);
                 $x = (($quantity / $tot_quant) - (1 / $nb_entrep)) < 0 || ($ss - (1 / $nb_entrep)) < 0 ? $product->price_max : $product->price_min;
@@ -249,7 +249,7 @@ trait DemandTrait
 
                 // $p = $price;
 
-                $percent = sqrt(1 - pow(($p - 110) / 30, 4));
+                $percent = 7624 * (exp(cos( pi() * ($p - 25999) / 10000 )) - exp(-1)) / (exp(1) - exp(-1));
 
                 $pop_percent = (float) Product::where('id', '=', 2)->first()["percent_population"];
 
@@ -259,7 +259,7 @@ trait DemandTrait
 
                 break;
 
-            case 3:
+            case 3: // robe marriage
                 $coeffs = [1, 1, 1, 1];
                 $ss = $this->socialInfluence($entreprise_id, $coeffs);
                 $x = (($quantity / $tot_quant) - (1 / $nb_entrep)) < 0 || ($ss - (1 / $nb_entrep)) < 0 ? $product->price_max : $product->price_min;
@@ -268,7 +268,7 @@ trait DemandTrait
 
                 // $p = $price;
 
-                $percent = pow(1 - ($p - 260) / 70, 0.4);
+                $percent = 587 * (exp(cos( pi() * ($p - 91999) / 20000 )) - exp(-1)) / (exp(1) - exp(-1));
 
                 $pop_percent = (float) Product::where('id', '=', 3)->first()["percent_population"];
 
@@ -278,7 +278,7 @@ trait DemandTrait
 
                 break;
 
-            case 4:
+            case 4: // tshirt
                 $coeffs = [1, 1, 1, 1];
                 $ss = $this->socialInfluence($entreprise_id, $coeffs);
                 $x = (($quantity / $tot_quant) - (1 / $nb_entrep)) < 0 || ($ss - (1 / $nb_entrep)) < 0 ? $product->price_max : $product->price_min;
@@ -287,7 +287,7 @@ trait DemandTrait
 
                 // $p = $price;
 
-                $percent = sqrt(1 - pow(($p - 300) / 75, 4));
+                $percent = 341278 * pow(1 - ($p - 1999)/1000, 0.4);
 
                 $pop_percent = (float) Product::where('id', '=', 4)->first()["percent_population"];
 
@@ -297,7 +297,7 @@ trait DemandTrait
 
                 break;
 
-            case 5:
+            case 5: //polo rugby
                 $coeffs = [1, 1, 1, 1];
                 $ss = $this->socialInfluence($entreprise_id, $coeffs);
                 $x = (($quantity / $tot_quant) - (1 / $nb_entrep)) < 0 || ($ss - (1 / $nb_entrep)) < 0 ? $product->price_max : $product->price_min;
@@ -306,7 +306,7 @@ trait DemandTrait
 
                 // $p = $price;
 
-                $percent = (exp(cos(pi() * ($p - 600) / 100)) - exp(-1)) / (exp(1) - exp(-1));
+                $percent = 9660 * (exp(cos( pi() * ($p - 25999) / 10000 )) - exp(-1)) / (exp(1) - exp(-1))                ;
 
                 $pop_percent = (float) Product::where('id', '=', 5)->first()["percent_population"];
 
@@ -315,7 +315,7 @@ trait DemandTrait
                 $demand = round($percent * $pop);
 
                 break;
-            case 6:
+            case 6: // pull a col rond
                 $coeffs = [1, 1, 1, 1];
                 $ss = $this->socialInfluence($entreprise_id, $coeffs);
                 $x = (($quantity / $tot_quant) - (1 / $nb_entrep)) < 0 || ($ss - (1 / $nb_entrep)) < 0 ? $product->price_max : $product->price_min;
@@ -324,7 +324,7 @@ trait DemandTrait
 
                 // $p = $price;
 
-                $percent = (exp(cos(pi() * ($p - 600) / 100)) - exp(-1)) / (exp(1) - exp(-1));
+                $percent = 15274 * (exp(cos( pi() * ($p - 20999) / 10000 )) - exp(-1)) / (exp(1) - exp(-1))                ;
 
                 $pop_percent = (float) Product::where('id', '=', 6)->first()["percent_population"];
 
@@ -333,7 +333,7 @@ trait DemandTrait
                 $demand = round($percent * $pop);
 
                 break;
-            case 7:
+            case 7: // parka
                 $coeffs = [1, 1, 1, 1];
                 $ss = $this->socialInfluence($entreprise_id, $coeffs);
                 $x = (($quantity / $tot_quant) - (1 / $nb_entrep)) < 0 || ($ss - (1 / $nb_entrep)) < 0 ? $product->price_max : $product->price_min;
@@ -342,7 +342,7 @@ trait DemandTrait
 
                 // $p = $price;
 
-                $percent = (exp(cos(pi() * ($p - 600) / 100)) - exp(-1)) / (exp(1) - exp(-1));
+                $percent = 37840 * sqrt(1 - pow(($p - 4999) / 1500, 4));                ;
 
                 $pop_percent = (float) Product::where('id', '=', 7)->first()["percent_population"];
 
@@ -351,7 +351,7 @@ trait DemandTrait
                 $demand = round($percent * $pop);
 
                 break;
-            case 8:
+            case 8: //richelieu
                 $coeffs = [1, 1, 1, 1];
                 $ss = $this->socialInfluence($entreprise_id, $coeffs);
                 $x = (($quantity / $tot_quant) - (1 / $nb_entrep)) < 0 || ($ss - (1 / $nb_entrep)) < 0 ? $product->price_max : $product->price_min;
@@ -360,7 +360,7 @@ trait DemandTrait
 
                 // $p = $price;
 
-                $percent = (exp(cos(pi() * ($p - 600) / 100)) - exp(-1)) / (exp(1) - exp(-1));
+                $percent = 2079 * sqrt(1 - pow(($p - 22999) / 10000, 4));                ;
 
                 $pop_percent = (float) Product::where('id', '=', 8)->first()["percent_population"];
 
@@ -369,7 +369,7 @@ trait DemandTrait
                 $demand = round($percent * $pop);
 
                 break;
-            case 9:
+            case 9: //  tuxedo
                 $coeffs = [1, 1, 1, 1];
                 $ss = $this->socialInfluence($entreprise_id, $coeffs);
                 $x = (($quantity / $tot_quant) - (1 / $nb_entrep)) < 0 || ($ss - (1 / $nb_entrep)) < 0 ? $product->price_max : $product->price_min;
@@ -378,7 +378,7 @@ trait DemandTrait
 
                 // $p = $price;
 
-                $percent = (exp(cos(pi() * ($p - 600) / 100)) - exp(-1)) / (exp(1) - exp(-1));
+                $percent = 2106 * (exp(cos( pi() * ($p - 43999) / 15000 )) - exp(-1)) / (exp(1) - exp(-1))                ;
 
                 $pop_percent = (float) Product::where('id', '=', 9)->first()["percent_population"];
 
@@ -387,7 +387,7 @@ trait DemandTrait
                 $demand = round($percent * $pop);
 
                 break;
-            case 10:
+            case 10: // jupe ajustéé
                 $coeffs = [1, 1, 1, 1];
                 $ss = $this->socialInfluence($entreprise_id, $coeffs);
                 $x = (($quantity / $tot_quant) - (1 / $nb_entrep)) < 0 || ($ss - (1 / $nb_entrep)) < 0 ? $product->price_max : $product->price_min;
@@ -396,7 +396,7 @@ trait DemandTrait
 
                 // $p = $price;
 
-                $percent = (exp(cos(pi() * ($p - 600) / 100)) - exp(-1)) / (exp(1) - exp(-1));
+                $percent = 7048 * (exp(cos( pi() * ($p - 20999) / 10000 )) - exp(-1)) / (exp(1) - exp(-1))                ;
 
                 $pop_percent = (float) Product::where('id', '=', 10)->first()["percent_population"];
 
@@ -405,7 +405,7 @@ trait DemandTrait
                 $demand = round($percent * $pop);
 
                 break;
-            case 11:
+            case 11: // jupe longue
                 $coeffs = [1, 1, 1, 1];
                 $ss = $this->socialInfluence($entreprise_id, $coeffs);
                 $x = (($quantity / $tot_quant) - (1 / $nb_entrep)) < 0 || ($ss - (1 / $nb_entrep)) < 0 ? $product->price_max : $product->price_min;
@@ -414,7 +414,7 @@ trait DemandTrait
 
                 // $p = $price;
 
-                $percent = (exp(cos(pi() * ($p - 600) / 100)) - exp(-1)) / (exp(1) - exp(-1));
+                $percent = 74836 * pow(1 - ($p - 2399)/1000, 0.4)                ;
 
                 $pop_percent = (float) Product::where('id', '=', 11)->first()["percent_population"];
 
@@ -423,7 +423,7 @@ trait DemandTrait
                 $demand = round($percent * $pop);
 
                 break;
-            case 12:
+            case 12: // pull col bateau
                 $coeffs = [1, 1, 1, 1];
                 $ss = $this->socialInfluence($entreprise_id, $coeffs);
                 $x = (($quantity / $tot_quant) - (1 / $nb_entrep)) < 0 || ($ss - (1 / $nb_entrep)) < 0 ? $product->price_max : $product->price_min;
@@ -432,7 +432,7 @@ trait DemandTrait
 
                 // $p = $price;
 
-                $percent = (exp(cos(pi() * ($p - 600) / 100)) - exp(-1)) / (exp(1) - exp(-1));
+                $percent = 198671 * pow(1 - ($p - 2399)/1000, 0.4)                ;
 
                 $pop_percent = (float) Product::where('id', '=', 12)->first()["percent_population"];
 

@@ -213,6 +213,17 @@
                             Choix de la machine :
                         </h1>
 
+                        <div class="flex gap-3 items-center">
+                                <input
+                                    v-model="launch_data.machine_lvl"
+                                    type="radio"
+                                    id="machine0"
+                                    name="machine0"
+                                    class="text-vert"
+                                    :value="0"
+                                /><label for="machine0">Niveau 0</label>
+                            </div>
+
                         <div class="flex flex-col m-3 gap-4 mx-auto">
                             <div class="flex gap-3 items-center">
                                 <input
@@ -223,17 +234,6 @@
                                     class="text-vert"
                                     :value="1"
                                 /><label for="machine1">Niveau 1</label>
-                            </div>
-
-                            <div class="flex gap-3 items-center">
-                                <input
-                                    v-model="launch_data.machine_lvl"
-                                    type="radio"
-                                    id="machine0"
-                                    name="machine0"
-                                    class="text-vert"
-                                    :value="0"
-                                /><label for="machine0">Niveau 0</label>
                             </div>
 
                             <div class="flex gap-3 items-center">
@@ -337,7 +337,7 @@
                             @click="
                                 launch_prod_modal = false;
                                 launch_data.quantity = 1;
-                                launch_data.machine_lvl = 1;
+                                launch_data.machine_lvl = 0;
                                 launch_data.machine_nb = 1;
                             "
                         >
@@ -826,7 +826,7 @@ export default {
                 prod_id: 1,
                 // price: 0,
                 quantity: 1,
-                machine_lvl: 1,
+                machine_lvl: 0,
                 machine_nb: 1,
             },
             prod_factors: {
@@ -1164,7 +1164,9 @@ export default {
             return (
                 this.machine.buy_price_lv1 + this.machine.buy_price_lv0 +
                     this.machine.buy_price_lv2 +
-                    this.machine.buy_price_lv3 == 0
+                    this.machine.buy_price_lv3 +
+                    0
+                    == 0
             );
         },
         selectedProd() {
@@ -1177,7 +1179,7 @@ export default {
         totalCost() {
             return (
                 this.launch_data.quantity *
-                this.selectedProd.unit_prod_price *
+                this.selectedProd.unit_prod_price * //unit price here means les frais supp de chaque produit et non pas son prix de production
                 this.selectedProd.lot_quantity //bochra for remember
             );
         },
@@ -1194,7 +1196,7 @@ export default {
                     : this.machine.speed_lv3) *
                 this.launch_data.machine_nb *
                 this.selectedProd.prod_speed_factor *
-                26;
+                2 ; //bochra
 
             return this.launch_data.quantity / coeff;
         },
@@ -1241,7 +1243,7 @@ export default {
                     this.launch_data.prod_id = 1;
 
                     this.launch_data.quantity = 1;
-                    this.launch_data.machine_lvl = 1;
+                    this.launch_data.machine_lvl = 0;
                     this.launch_data.machine_nb = 1;
 
                     // this.getStock();
@@ -1276,7 +1278,7 @@ export default {
 
                     this.launch_data.prod_id = 1;
                     this.launch_data.quantity = 1;
-                    this.launch_data.machine_lvl = 1;
+                    this.launch_data.machine_lvl = 0;
 
                     // this.getStock();
                 });
@@ -1315,7 +1317,7 @@ export default {
                     (this.launch_data.machine_lvl == 1
                         ? 1
                         : this.launch_data.machine_lvl == 0
-                        ? 1
+                        ? 2
                         : this.launch_data.machine_lvl == 2
                         ? 2
                         : 3) * this.launch_data.machine_nb,

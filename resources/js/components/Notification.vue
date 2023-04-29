@@ -159,78 +159,64 @@ export default {
                     if (e.notification.type === "ScenarioNotif") {
                         console.log(e.notification);
                         switch (e.notification.title) {
-                            case "Incendies":
-                                this.event = "incendies";
+                            case "Changement climatique":                               //agg
+                                this.event = "Changement climatique";                   //agg
                                 localStorage.setItem(
                                     "current_event",
                                     JSON.stringify({
-                                        name: "Incendies",
+                                        name: "Changement climatique",                  //agg
                                         changes: {
                                             raw_materials: [
                                                 {
-                                                    name: "Sucre",
-                                                    new_value: 100,
+                                                    name: "lin",                            //agg
+                                                    new_value: 24000,                       //agg
                                                 },
                                                 {
-                                                    name: "Blé",
-                                                    new_value: 60,
+                                                    name: "coton",                          //agg
+                                                    new_value: 2900,                        //agg
                                                 },
-                                                {
-                                                    name: "Lait",
-                                                    new_value: 1200,
-                                                },
-                                                {
-                                                    name: "Avoine",
-                                                    new_value: 700,
-                                                },
+
                                             ],
                                         },
                                     })
                                 );
                                 break;
-                            case "Loi des finances":
-                                this.event = "finances";
+                            case " Tremblement de terre -Turquie-":         //agg
+                                this.event = " Tremblement de terre -Turquie-";
                                 localStorage.setItem(
                                     "current_event",
                                     JSON.stringify({
-                                        name: "finances",
+                                        name: " Tremblement de terre -Turquie-",
                                         changes: {
                                             raw_materials: [
                                                 {
-                                                    name: "Sucre",
-                                                    new_value: 130,
+                                                    name: "coton",              //agg
+                                                    new_value: 3300,             //agg
                                                 },
                                                 {
-                                                    name: "Blé",
-                                                    new_value: 63,
+                                                    name: "laine",                    //agg
+                                                    new_value: 11000,                  //agg
                                                 },
-                                                {
-                                                    name: "Lait",
-                                                    new_value: 1250,
-                                                },
-                                                {
-                                                    name: "Beurre",
-                                                    new_value: 900,
-                                                },
+
                                             ],
                                         },
                                     })
                                 );
                                 break;
-                            case "Crise cacao":
-                                this.event = "cacao";
+                            case "Un post d’un influenceur":
+                                this.event = "Un post d’un influenceur";
 
                                 break;
-                            case "Guerre_1":
-                                this.event = "war_1";
+                            case "Reglement RH":
+                                this.event = "Reglement RH";
 
                                 break;
-                            case "Guerre_2":
-                                this.event = "war_2";
+                            case "Les repercusions de la guerre":
+                                this.event = "Les repercusions de la guerre";
 
                                 break;
-                            case "Guerre_3":
-                                this.event = "war_3";
+                            case "Les crises geopolitiques : la chine et l'economie mondiale":
+                                this.event = "Les crises geopolitiques : la chine et l'economie mondiale";
 
                                 break;
                             default:

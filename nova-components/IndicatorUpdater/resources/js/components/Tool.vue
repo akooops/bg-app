@@ -290,8 +290,8 @@ export default {
             settings: [],
             selected_setting: null,
 
-            scenarios: ['incendies', 'loi des finances', 'crise cacao', 'war start', 'war middle', 'war end'],
-            selected_scenario: 'incendies',
+            scenarios: ['Changement climatique', 'Un post d’un influenceur', 'Reglement RH', 'Tremblement de terre -Turquie-', 'Les repercusions de la guerre', 'Les crises geopolitiques , la chine et leconomie mondiale'],  //agg
+            selected_scenario: 'Changement climatique', //agg
 
             show_reset_game_modal: false,
             reset_game_sent: false,
