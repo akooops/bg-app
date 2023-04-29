@@ -94,7 +94,7 @@
                         class="w-full flex items-center gap-4 justify-end mt-5"
                     >
                         <button
-                            class="font-medium font-heading border-0 px-3 py-1 text-vN hover:text-vert bg-opacity-30"
+                            class="text-vN font-normal px-3 py-1 rounded bg-[#EAD7C0] hover:text-white"
                             :class="hire_sent ? 'opacity-50' : ''"
                             :disabled="hire_sent"
                             @click="hireWorker"
@@ -102,7 +102,7 @@
                             Valider
                         </button>
                         <button
-                            class="font-medium font-heading px-3 py-1 text-vN opacity-80 hover:opacity-100"
+                            class="text-vN px-3 py-1 rounded bg-[#EAD7C0] hover:text-[#ED3A3A]"
                             @click="hire_modal = false"
                         >
                             Annuler
@@ -158,7 +158,7 @@
                         class="w-full flex items-center gap-4 justify-end mt-5"
                     >
                         <button
-                            class="font-medium font-heading border-0 px-3 py-1 text-vN hover:text-vert bg-opacity-30"
+                            class="text-vN font-normal px-3 py-1 rounded bg-[#EAD7C0] hover:text-white"
                             :class="workshop_sent ? 'opacity-50' : ''"
                             :disabled="workshop_sent"
                             @click="launchWorkshop"
@@ -166,7 +166,7 @@
                             Lancer la formation
                         </button>
                         <button
-                            class="font-medium font-heading px-3 py-1 text-vN opacity-80 hover:opacity-100"
+                            class="text-vN px-3 py-1 rounded bg-[#EAD7C0] hover:text-[#ED3A3A]"
                             @click="
                                 nb_workers_to_train = 1;
                                 workshop_modal = false;
@@ -246,7 +246,7 @@
                         class="w-full flex items-center gap-4 justify-end mt-5"
                     >
                         <button
-                            class="font-medium font-heading border-0 px-3 py-1 text-vN hover:text-vert bg-opacity-30"
+                            class="text-vN font-normal px-3 py-1 rounded bg-[#EAD7C0] hover:text-white"
                             :class="
                                 prime_sent
                                     ? 'opacity-50'
@@ -260,7 +260,7 @@
                             Valider
                         </button>
                         <button
-                            class="font-medium font-heading px-3 py-1 text-vN opacity-80 hover:opacity-100"
+                            class="text-vN px-3 py-1 rounded bg-[#EAD7C0] hover:text-[#ED3A3A]"
                             @click="prime_modal = false"
                         >
                             Annuler
@@ -337,7 +337,7 @@
                         class="w-full flex items-center gap-4 justify-end mt-5"
                     >
                         <button
-                            class="font-medium font-heading border-0 px-3 py-1 text-vN hover:text-vert bg-opacity-30"
+                            class="text-vN font-normal px-3 py-1 rounded bg-[#EAD7C0] hover:text-white"
                             :class="
                                 nb_workers_lv2_to_fire == 0 &&
                                 nb_workers_lv1_to_fire == 0
@@ -356,7 +356,7 @@
                             Valider
                         </button>
                         <button
-                            class="font-medium font-heading px-3 py-1 text-vN opacity-80 hover:opacity-100"
+                            class="text-vN px-3 py-1 rounded bg-[#EAD7C0] hover:text-[#ED3A3A]"
                             @click="fire_modal = false"
                         >
                             Annuler
