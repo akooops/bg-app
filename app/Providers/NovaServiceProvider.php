@@ -100,6 +100,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
             'pollution_unit_cost' => 'float',
 
             'mp_stock_price' => 'float',
+            'pf_stock_price' =>'float',
             'show_final_score' => 'boolean'
         ], "Général");
     }

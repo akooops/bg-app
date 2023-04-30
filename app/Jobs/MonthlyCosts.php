@@ -81,6 +81,11 @@ class MonthlyCosts implements ShouldQueue
                     // Stock cost depends on quantity and volume of raw material
                     $stock_cost += $raw_material->quantity * RawMaterial::find($raw_material->raw_material_id)->volume * $mp_stock_price;
                 }
+                $stock_cost_p =0;
+                $products =  DB::table("stock")->where("entreprise_id", "=", $entreprise->id)->where('quantity', '<>', 0)->get();
+                foreach ($products as $product) {
+                    // Stock cost depends on quantity of product
+                    $stock_cost_p += $product->quantity *Product::find($product->product_id)->volume * $pf_stock_price;}
 
                 // Compute pollution cost based on machines
                 $pollution_cost = 0;
@@ -150,6 +155,7 @@ class MonthlyCosts implements ShouldQueue
                                     - Taxes ( " . $ca_tax_cost . " DA )
                                     - Salaires ( " . $salary_cost . " DA )
                                     - Stockage ( " . $stock_cost . " DA )
+                                    - Stockage produit fini  ( " . $stock_cost_p ." DA)
                                     - Pollution ( " . $pollution_cost . " DA ). Total: " . $cost . " DA.",
                         "title" => "Frais mensuels",
                         "icon_path" => "/assets/icons/info.svg",
