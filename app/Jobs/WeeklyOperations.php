@@ -70,16 +70,17 @@ class WeeklyOperations implements ShouldQueue
 
         // Refresh products' left demand every week
         $nb_entrep = count(Entreprise::all());
-        $population = $this->get_game_setting('population');        ;
-        $coeff = $population ;
+        $population = $this->get_game_setting('population');
+       // $coeff = $population ;
        // $coeff = $nb_entrep * $population / 2;
 
         $products = Product::all();
         foreach($products as $product) {
-            DB::table('products')->where('id', $product->id)->update(['left_demand' =>  $product->lot_quantity]);
+            DB::table('products')->where('id', $product->id)->update(['left_demand' => $product->percent_population * $population ]);
         }
 
         // Send changing date event
         event(new SimulationDateChanged());
     }
 }
+

@@ -219,6 +219,10 @@ export default {
                                 this.event = "chine";
 
                                 break;
+                            case "Crise banque et inflations":
+                                this.event = "banque";
+
+                                break;
                             default:
                                 this.event = "";
                                 break;

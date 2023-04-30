@@ -360,11 +360,11 @@ class IndicatorUpdaterController
 
 
             // Update % population
-            DB::table('products')->where('id', '=', 4)->update(['percent_population' => 0.99]);     // T-shirt      //agg
-            DB::table('products')->where('id', '=', 5)->update(['percent_population' => 0.042]);     // Polo rugby
-            DB::table('products')->where('id', '=', 7)->update(['percent_population' => 0.43]);     // Parkas
-            DB::table('products')->where('id', '=', 10)->update(['percent_population' => 0.051]);     // jupe ajuste
-            DB::table('products')->where('id', '=', 11)->update(['percent_population' => 0.76]);      // jupe longue
+            DB::table('products')->where('id', '=', 4)->update(['percent_population' => 37.541]);     // T-shirt      //agg
+            DB::table('products')->where('id', '=', 5)->update(['percent_population' => 1.063]);     // Polo rugby
+            DB::table('products')->where('id', '=', 7)->update(['percent_population' => 4.162]);     // Parkas
+            DB::table('products')->where('id', '=', 10)->update(['percent_population' => 0.775]);     // jupe ajuste
+            DB::table('products')->where('id', '=', 11)->update(['percent_population' => 8.2832]);      // jupe longue
             $entreprises = Entreprise::all();
             foreach ($entreprises as $entrep) {
                 $notification = [  //agg
@@ -384,14 +384,26 @@ class IndicatorUpdaterController
         } else if ($scenario == 'Un post dun influenceur') { //agg
 
             //prix marketing //agg
+            DB::table('products')->where('id', '=', 1)->update(['ad_coef' => 1.2]);     // Pantalo Cargo
+            DB::table('products')->where('id', '=', 2)->update(['ad_coef' => 1.2]);     // Pantalo Cargo
+            DB::table('products')->where('id', '=', 3)->update(['ad_coef' => 1.2]);     // Pantalo Cargo
+            DB::table('products')->where('id', '=', 4)->update(['ad_coef' => 1.2]);     // Pantalo Cargo
+            DB::table('products')->where('id', '=', 5)->update(['ad_coef' => 1.2]);     // Pantalo Cargo
+            DB::table('products')->where('id', '=', 6)->update(['ad_coef' => 1.2]);     // Pantalo Cargo
+            DB::table('products')->where('id', '=', 7)->update(['ad_coef' => 1.2]);     // Pantalo Cargo
+            DB::table('products')->where('id', '=', 8)->update(['ad_coef' => 1.2]);     // Pantalo Cargo
+            DB::table('products')->where('id', '=', 9)->update(['ad_coef' => 1.2]);     // Pantalo Cargo
+            DB::table('products')->where('id', '=', 10)->update(['ad_coef' => 1.2]);     // Pantalo Cargo
+            DB::table('products')->where('id', '=', 11)->update(['ad_coef' => 1.2]);     // Pantalo Cargo
+            DB::table('products')->where('id', '=', 12)->update(['ad_coef' => 1.2]);     // Pantalo Cargo
 
 
             // Update Products demand  //agg
-            DB::table('products')->where('id', '=', 1)->update(['percent_population' => 0.488]);     // Pantalo Cargo
-            DB::table('products')->where('id', '=', 4)->update(['percent_population' => 0.72]);    // T-shirt
-            DB::table('products')->where('id', '=', 7)->update(['percent_population' => 0.315]);     // Parkas
-            DB::table('products')->where('id', '=', 11)->update(['percent_population' => 0.553]);     // Jupe longue
-            DB::table('products')->where('id', '=', 12)->update(['percent_population' => 0.587]);   // Pull a col bateau
+            DB::table('products')->where('id', '=', 1)->update(['percent_population' => 5.288]);     // Pantalo Cargo
+            DB::table('products')->where('id', '=', 4)->update(['percent_population' => 27.302]);    // T-shirt
+            DB::table('products')->where('id', '=', 7)->update(['percent_population' => 3.027]);     // Parkas
+            DB::table('products')->where('id', '=', 11)->update(['percent_population' =>5.987]);     // Jupe longue
+            DB::table('products')->where('id', '=', 12)->update(['percent_population' => 15.894]);   // Pull a col bateau
 
             $entreprises = Entreprise::all();
             foreach ($entreprises as $entrep) {//agg
@@ -428,8 +440,9 @@ class IndicatorUpdaterController
              $entreprises = Entreprise::all();
              foreach ($entreprises as $entrep) {
              DB::table('entreprise_indicator')->where('entreprise_id', '=', $entrep->id)->where('indicator_id', '=', 52)->update(['value' => 0]) ;
-             }
-             $this->set_game_setting('machines_lv0_speed',0 );
+             } // nb de machine nv0 devient 0
+             $this->set_game_setting('machines_lv0_price',1000000000000000 );
+             $this->set_game_setting('machines_lv0_durability',0 );
 
             $entreprises = Entreprise::all();
             foreach ($entreprises as $entrep) {
@@ -456,12 +469,12 @@ class IndicatorUpdaterController
 
             // Update Products  //agg
 
-            DB::table('products')->where('id', '=', 1)->update(['percent_population' => 0.5]);     // Pantalo Cargo
-            DB::table('products')->where('id', '=', 4)->update(['percent_population' => 0.3]);     // T-shirt
-            DB::table('products')->where('id', '=', 7)->update(['percent_population' => 0.3]);     // Parkas
+            DB::table('products')->where('id', '=', 1)->update(['percent_population' => 8.593]);     // Pantalo Cargo
+            DB::table('products')->where('id', '=', 12)->update(['percent_population' => 25.827]);     // pull col bqtequ
+            DB::table('products')->where('id', '=', 7)->update(['percent_population' =>7.568]);     // Parkas
 
-            // Update Number of Workers  //agg
-            $this->set_game_setting('nb_workers', 0.0575); //agg
+            // Update POPULATION  //agg
+            $this->set_game_setting('population', 1010000); //agg
 
             $entreprises = Entreprise::all();
             foreach ($entreprises as $entrep) {
@@ -481,17 +494,29 @@ class IndicatorUpdaterController
             }
         } else if ($scenario == ' Les repercusions de la guerre') { //agg
             // Update delivery times  //agg
-            DB::table('raw_material_supplier')->where('supplier_id', 1)->update(['time_to_deliver' => 3]);
-            DB::table('raw_material_supplier')->where('supplier_id', 2)->update(['time_to_deliver' => 6]);
+            DB::table('raw_material_supplier')->where('supplier_id', 1)->update(['time_to_deliver' => 7]);
+            //DB::table('raw_material_supplier')->where('supplier_id', 2)->update(['time_to_deliver' => 6]);
 
 
             // Update Polyester and lin  price  //agg
-            DB::table('raw_materials')->where('id', '=', 10)->update(['price' => 1100]);    //Polyester
-            DB::table('raw_materials')->where('id', '=', 11)->update(['price' => 31000]);    //lin
+            DB::table('raw_materials')->where('id', '=', 12)->update(['price' => 1100]);    //Polyester
+            DB::table('raw_materials')->where('id', '=', 14)->update(['price' => 31000]);    //lin
             DB::table('raw_materials')->where('id', '=', 10)->update(['price' => 10000]);    //laine
             DB::table('raw_materials')->where('id', '=', 11)->update(['price' => 3000]);    //coton
 
             // Frais supplémentaires  //agg
+            DB::table('products')->where('id', '=', 1)->update(['unit_prod_price' => 575]);
+            DB::table('products')->where('id', '=', 2)->update(['unit_prod_price' => 2300]);
+            DB::table('products')->where('id', '=', 3)->update(['unit_prod_price' => 3450]);
+            DB::table('products')->where('id', '=', 4)->update(['unit_prod_price' => 575]);
+            DB::table('products')->where('id', '=', 5)->update(['unit_prod_price' => 2300]);
+            DB::table('products')->where('id', '=', 6)->update(['unit_prod_price' => 2300]);
+            DB::table('products')->where('id', '=', 7)->update(['unit_prod_price' => 920]);
+            DB::table('products')->where('id', '=', 8)->update(['unit_prod_price' => 2300]);
+            DB::table('products')->where('id', '=', 9)->update(['unit_prod_price' => 2875]);
+            DB::table('products')->where('id', '=', 10)->update(['unit_prod_price' => 2300]);
+            DB::table('products')->where('id', '=', 11)->update(['unit_prod_price' => 575]);
+            DB::table('products')->where('id', '=', 12)->update(['unit_prod_price' => 575]);
 
 
             $entreprises = Entreprise::all();
@@ -518,8 +543,8 @@ class IndicatorUpdaterController
             DB::table('raw_materials')->where('id', '=', 11)->update(['price' => 4000]);   // coton
 
            // Update delivery times  //agg
-           DB::table('raw_material_supplier')->where('supplier_id', 1)->update(['time_to_deliver' => 4]);
-           DB::table('raw_material_supplier')->where('supplier_id', 2)->update(['time_to_deliver' => 7]);
+           DB::table('raw_material_supplier')->where('supplier_id', 1)->update(['time_to_deliver' => 7]);
+           DB::table('raw_material_supplier')->where('supplier_id', 2)->update(['time_to_deliver' => 4]);
 
             // Update Machines Prix //agg
 
@@ -528,16 +553,21 @@ class IndicatorUpdaterController
             $this->set_game_setting('machines_lv2_price', 19800000); //agg
             $this->set_game_setting('machines_lv3_price', 49500000); //agg
 
-            // Update Prix De maintenance  //agg
-
-            $this->set_game_setting('maintenance_lv0', "jcp"*1.1); //agg
-            $this->set_game_setting('maintenance_lv1', "jcp"*1.1); //agg
-            $this->set_game_setting('maintenance_lv2', "jcp"*1.1); //agg
-            $this->set_game_setting('maintenance_lv3', "jcp"*1.1); //agg
-
-
            // Frais supplémentaires  //agg
+            DB::table('products')->where('id', '=', 1)->update(['unit_prod_price' => 625]);
+            DB::table('products')->where('id', '=', 2)->update(['unit_prod_price' => 2500]);
+            DB::table('products')->where('id', '=', 3)->update(['unit_prod_price' => 3750]);
+            DB::table('products')->where('id', '=', 4)->update(['unit_prod_price' => 625]);
+            DB::table('products')->where('id', '=', 5)->update(['unit_prod_price' => 2500]);
+            DB::table('products')->where('id', '=', 6)->update(['unit_prod_price' => 2500]);
+            DB::table('products')->where('id', '=', 7)->update(['unit_prod_price' => 1000]);
+            DB::table('products')->where('id', '=', 8)->update(['unit_prod_price' => 2500]);
+            DB::table('products')->where('id', '=', 9)->update(['unit_prod_price' => 3125]);
+            DB::table('products')->where('id', '=', 10)->update(['unit_prod_price' => 2500]);
+            DB::table('products')->where('id', '=', 11)->update(['unit_prod_price' => 625]);
+            DB::table('products')->where('id', '=', 12)->update(['unit_prod_price' => 625]);
 
+            // couts de transport
 
 
             $entreprises = Entreprise::all();
@@ -556,7 +586,21 @@ class IndicatorUpdaterController
                 ];
                 event(new NewNotification($notification));
             }
+        } else if  ($scenario == 'Crise banque et inflations') {
+            // prix unitaire emmisions carbon 	2000
+            $this->set_game_setting('pollution_unit_cost', 2000); //agg
+
+            //  % interets des banques	*1,05
+            $entreprises = Entreprise::all();
+             foreach ($entreprises as $entrep) {
+             DB::table('entreprise_indicator')->where('entreprise_id', '=', $entrep->id)->where('indicator_id', '=', "30")->update(['value' => 1.05]) ;
+             }
+
+            //% des taxes caf	15%
+            $this->set_game_setting('ca_tax_percent', 0.15); //agg
+
         }
+
 
         return response()->json(["message" => "Scénario " . $scenario . " lancé.", "success" => true], 200);
     }

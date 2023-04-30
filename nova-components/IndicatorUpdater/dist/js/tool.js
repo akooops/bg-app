@@ -1043,7 +1043,7 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
             settings: [],
             selected_setting: null,
 
-            scenarios: ['Changement climatique', 'Un post dun influenceur', 'Reglement RH', 'Tremblement de terre Turquie', 'Les repercusions de la guerre', 'Les crises geopolitiques'],  //agg
+            scenarios: ['Changement climatique', 'Un post dun influenceur', 'Reglement RH', 'Tremblement de terre Turquie', 'Les repercusions de la guerre', 'Les crises geopolitiques','Crise banque et inflations'],  //agg
             selected_scenario: 'Changement climatique', // agg
 
             show_reset_game_modal: false,
