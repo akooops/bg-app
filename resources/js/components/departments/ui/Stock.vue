@@ -43,7 +43,7 @@
                         <img
                             :src="item.icon"
                             alt="khobz"
-                            class="mx-auto w-10 h-10"
+                            class="mx-auto w-[2rem] h-[2rem]"
                         />
                     </td>
                     <td

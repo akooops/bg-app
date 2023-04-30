@@ -3,7 +3,7 @@
         class="flex gap-3 w-1/4 justify-evenly items-center rounded-xl p-1 bg-white shadow-sm"
     >
         <img
-            class="h-12 w-12 p-1"
+            class="h-[80px] w-[70px] p-1"
             src="/assets/icons/nv/money.svg"
             alt="chiffre d'affaire icon"
         />

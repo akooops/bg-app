@@ -54,7 +54,7 @@
             <div
                 class="flex-grow bg-white rounded-xl gap-6 text-center flex flex-col py-7 shadow-lg px-2"
             >
-                <img class="mx-auto h-16 w-16" src="/assets/icons/nv/atelier.svg" alt="" />
+                <img class="mx-auto h-[5rem] w-[5rem]" src="/assets/icons/nv/production.svg" alt="" />
                 <div class="mx-auto text-center text-vN flex-1">
                     <h1 class="text-2xl font-medium mb-4 font-heading">
                         Lancer une production
@@ -82,8 +82,8 @@
                 style="border-width: 0.5px"
             >
                 <img
-                    class="mx-auto h-16 w-16"
-                    src="/assets/icons/nv/atelier.svg"
+                    class="mx-auto h-[4rem] w-[4rem]"
+                    src="/assets/icons/production.svg"
                     alt=""
                 />
                 <div class="mx-auto text-center text-vN flex-1">
@@ -129,7 +129,7 @@
                 class="flex-grow bg-white rounded-xl gap-6 text-center flex flex-col py-7 shadow-lg px-2"
             >
                 <img
-                    class="mx-auto h-16 w-16"
+                    class="mx-auto h-[4rem] w-[4rem]"
                     src="/assets/icons/nv/atelier.svg"
                     alt=""
                 />

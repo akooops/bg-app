@@ -5,7 +5,7 @@
         <img
             :src="'/assets/icons/nv/' + name + '.svg'"
             :alt="name + 'icon'"
-            class="h-[80px] w-[80px]"
+            class="h-12 w-12"
         />
         <div class="text-center">
             <a

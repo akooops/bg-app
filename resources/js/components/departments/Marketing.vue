@@ -188,7 +188,8 @@
                             première campagne publicitaire
                         </p>
                         <button
-                            class="text-vN px-4 py-2 shadow-lg rounded-full text-center mx-auto bg-[#FAEEDE]"
+                            class="text-vN px-[10rem] py-2 shadow-lg rounded-full text-center mx-auto bg-[#FAEEDE]"
+                            style="letter-spacing: 2px;"
                             @click="openModal"
                         >
                             Créer ma première campagne publicitaire

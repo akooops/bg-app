@@ -14,7 +14,7 @@
                 <img
                     src="/assets/icons/notifications.svg"
                     alt="notification icon"
-                    class="h-11 w-11"
+                    class="h-11 w-[2.2em]"
                     :class="nb_unread_notifs > 0 ? 'horloge' : ''"
                 />
 

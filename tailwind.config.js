@@ -23,7 +23,7 @@ module.exports = {
                 jaune: "#FFBC3E",
                 nav: "#0B3434",
                 lightBrown: "#C59866",
-                brown:"#5F4735",
+                brown:"#5F4735" ,
 
                 gris: "#EEEEF2",
                 lightVert: "#FAEEDE",

@@ -34,7 +34,7 @@
                 </div>
 
                 <div
-                    class="flex flex-col text-left p-4 rounded-xl flex-1 shadow-lg bg-[#B2D06B12]"
+                    class="flex flex-col text-left p-4 rounded-xl flex-1 shadow-lg bg-[#FAEEDE]"
                 >
                     <h1 class="text-lg font-semibold mb-2">Abonnés</h1>
                     <h1 v-if="mark != null" class="text-xl">
@@ -52,10 +52,10 @@
                     <h1 v-else class="text-xl">0</h1>
                 </div>
                 <div
-                    class="flex flex-col text-left p-4 rounded-xl flex-1 shadow-lg bg-[#0B34341A]"
+                    class="text-white flex flex-col text-left p-4 rounded-xl flex-1 shadow-lg bg-[#0B34341A]"
                 >
                     <h1 class="text-lg font-semibold mb-2">Présence Média</h1>
-                    <h1 v-if="mark != null" class="text-xl">
+                    <h1 v-if="mark != null" class="text-xl text-white">
                         {{ Math.round(mark.media_presence.value.toFixed(2)) }}
                     </h1>
                     <h1 v-else class="text-xl">0</h1>
@@ -66,7 +66,7 @@
                     <h1 class="text-lg font-semibold mb-2">
                         Présence aux Évènements
                     </h1>
-                    <h1 v-if="mark != null" class="text-xl">
+                    <h1 v-if="mark != null" class="text-xl ">
                         {{ Math.round(mark.events_presence.value.toFixed(2)) }}
                     </h1>
                     <h1 v-else class="text-xl">0</h1>
