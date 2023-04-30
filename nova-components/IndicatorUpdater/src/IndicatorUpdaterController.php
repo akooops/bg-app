@@ -373,7 +373,7 @@ class IndicatorUpdaterController
 
                     "store" => true,
 
-                    "text" => "Des changements climatiques !",//agg
+                    "text" => " Un  décalage saisonnier impromptu !",//agg
                     "title" => "Changement climatique",
                     "icon_path" => "/assets/icons/fire.svg",//agg
 
@@ -441,8 +441,9 @@ class IndicatorUpdaterController
              foreach ($entreprises as $entrep) {
              DB::table('entreprise_indicator')->where('entreprise_id', '=', $entrep->id)->where('indicator_id', '=', 52)->update(['value' => 0]) ;
              } // nb de machine nv0 devient 0
-             $this->set_game_setting('machines_lv0_price',1000000000000000 );
+             $this->set_game_setting('machines_lv0_price',0);
              $this->set_game_setting('machines_lv0_durability',0 );
+
 
             $entreprises = Entreprise::all();
             foreach ($entreprises as $entrep) {
@@ -452,7 +453,7 @@ class IndicatorUpdaterController
 
                     "store" => true,
 
-                    "text" => "Une crise de RH frappe l'industrie!", //agg
+                    "text" => "Un nouveau règlement gouvernemental imposant aux entreprises d’utiliser des machines qui respectent quelques exigences", //agg
                     "title" => "Reglement RH",
                     "icon_path" => "/assets/icons/cacao.svg", //agg
 
@@ -484,7 +485,7 @@ class IndicatorUpdaterController
 
                     "store" => true,
 
-                    "text" => "Une guerre se déclenche et chamboule l'industrie mondiale!", //agg
+                    "text" => "Un séisme ravageur d'une magnitude de 7,7 a frappé le sud-est de la Turquie aux premières heures du 6 février!", //agg
                     "title" => "Tremblement de terre Turquie", //agg
                     "icon_path" => "/assets/icons/war.svg",  //agg
 
@@ -578,7 +579,7 @@ class IndicatorUpdaterController
 
                     "store" => true,
 
-                    "text" => "La guerre se termine enfin...", //agg
+                    "text" => "une crise géopolitique a éclaté dans le monde, touchant plusieurs...", //agg
                     "title" => "Les crises geopolitiques", //agg
                     "icon_path" => "/assets/icons/war.svg", //agg
 
@@ -598,6 +599,23 @@ class IndicatorUpdaterController
 
             //% des taxes caf	15%
             $this->set_game_setting('ca_tax_percent', 0.15); //agg
+
+            $entreprises = Entreprise::all();
+            foreach ($entreprises as $entrep) {
+                $notification = [
+                    "entreprise_id" => $entrep->id,
+                    "type" => "ScenarioNotif",
+
+                    "store" => true,
+
+                    "text" => "Les nombreux enjeux géopolitiques ont déclenché une crise bancaire, mettant en danger la santé financière ...", //agg
+                    "title" => "Crise banque et inflations", //agg
+                    "icon_path" => "/assets/icons/war.svg", //agg
+
+                    "style" => "scenario",
+                ];
+                event(new NewNotification($notification));
+            }
 
         }
 
