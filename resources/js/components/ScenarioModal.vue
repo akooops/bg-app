@@ -63,43 +63,43 @@ export default {
                 climat: {
                     title: "Changement climatique",  //agg
                     description: //description
-                       " Le jeu est lancé sous une conjoncture accidentée, un incendie a eu lieu. Suite à cet aléa, une hausse des prix du blé, de l'avoine, du lait et le prix de produits divers, ainsi que la demande de ces produits pour combler les besoins qui ont surgi suite à cet imprévu. À noter aussi que les employés ont été affectés par cet incendie, et que leur moral décroit plus vite. Quelle stratégie adopteriez-vous ?",
+                        "Cette année 2023 a été  marquée  par  un  décalage saisonnier impromptu et particulièrement dans la région  méditerranéenne où les températures moyennes sont les plus élevées, l'été est donc arrivé  assez tôt.  Ce changement soudain de température a créé plusieurs conséquences sur l’industrie du textile notamment un changement prompt de la demande des produits saisonniers  ainsi que quelques matières premières.",
                     img: "climat.png",  //les images
                 },
                 influenceur: {
                     title: "Un post dun influenceur",
                     description: //agg
-                        "Le hasard fait bien les choses et une nouvelle loi de finance est apparue qui entraîne un relèvement de taxes et une entrave de subventions de matières premières. Comment allez-vous vous exempter de cette réglementation ?",
+                        "Place aux Marketeurs,Suite à une story faite par un personnage public en vogue ou elle divulguait les méfaits et réels  dégâts écologiques résultant de certaine mouvance de marques, une grosse vague de soutien s’est formée autour de cette cause. Comment comptez-vous faire face à cette crise ?",
                     img: "influenceur.png", //agg
                 },
                 rh: {
                     title: "Reglement RH", //agg
                     description: //agg
-                        "Une crise diplomatique vient s’emmêler,  votre premier fournisseur de matières premières en termes de Cacao Ghana décide de couper les ponts avec votre pays, l’arrêt de l’importation de Cacao s’ensuit. Ce qui en résulte la non disponibilité de cette matière première essentielle dans la production de pas mal de vos produits notant les  cookies,les  sandwichs glacés et les céréales , par conséquent des clients de taille vous seront désavantagés. Allez-vous céder à vos concurrents une partie de l’avance que vous avez sur eux ougardez vous votre pour chercher une alternative ?",
+                        "Un nouveau règlement gouvernemental imposant aux entreprises d’utiliser des machines qui respectent quelques exigences, de ce fait les acteurs de cette industrie n’auront plus le droit d’utiliser certains types de machines non conformes à cette loi, aussi ils seront amenés à améliorer les conditions du travail afin de garder la motivation du personnel.",
                     img: "rh.png", //agg
                 },
                 turquie: {
                     title: "Tremblement de terre Turquie",
                     description:
-                        "La guerre frôle les portes, une guerre aux portes de l’Europe, un manichéisme qui va vous  faire oublier le boire et le manger, vous assistez mes chers joueurs à une hausse  vertigineuse du prix de blé de sucre et d’avoine principalement, de machines, de taxes et  un déclin démesurée de la demande portée sur les produits de luxe et la vitesse de  diminution du facteur RH est à perdre haleine !",
+                        "Un séisme ravageur d'une magnitude de 7,7 a frappé le sud-est de la Turquie aux premières heures du 6 février, suivi de plusieurs répliques, faisant des milliers de morts et de blessés dans la région. Ce dernier a causé des dommages aux infrastructures pouvant affecter la production et l'approvisionnement en matières premières ainsi que d’autres dommages contraignant les entreprises à adopter divers changements.",
                     img: "turquie.png",
                 },
                 guerre: {
                     title: "Les repercusions de la guerre",
                     description:
-                        "La guerre avance ! Comment allez-vous procéder face à la hausse des prix de maintenance des machines, de la vitesse de descente du  facteur RH et des intérêts des banques qui entrent en jeu ? comment agiriez-vous et  quelle stratégie prévoyez-vous face à l’abâtardissement de la demande des glaces,  cookies et céréales ?",
+                        "La guerre en Ukraine a eu de nombreuses répercussions sur la géopolitique, tant à l'échelle régionale qu'internationale. Notamment avec l’apparition d’une nouvelle carte politique, créant un impacte sur le marché d’énergie.",
                     img: "guerre.png",
                 },
                 chine: {
                     title: "Les crises geopolitiques",
                     description:
-                        "Place à la fin de la guerre ! Le camp de réfugiés est au centre de beaucoup de tensions, à cet effet la population fourmille et la demande sue pas mal de produits augmente à  l’identique, qu’allez-vous faire ?",
+                        "Au cours des dernières années, une crise géopolitique a éclaté dans le monde, touchant plusieurs pays et ayant un impact significatif sur le marché mondial du textile. Cette crise a commencé par une série de conflits commerciaux entre plusieurs parties prenantes dans cette industrie, cela a fait changer les prix de quelques matières premières, qui a son tour a engendré un retard dans les délais de livraison de ces derniers.",
                     img: "chine.png",
                 },
                 banque: {
                     title: "Crise banque et inflations",
                     description:
-                        "Place à la fin de la guerre ! Le camp de réfugiés est au centre de beaucoup de tensions, à cet effet la population fourmille et la demande sue pas mal de produits augmente à  l’identique, qu’allez-vous faire ?",
+                        "Les nombreux enjeux géopolitiques ont déclenché une crise bancaire, mettant en danger la santé financière de nombreuses entreprises du secteur. Les banques ont commencé à limiter les prêts, rendant difficile l'obtention de financement pour les investissements nécessaires, de ce fait, un fort impact est apparu sur les intérêts et les taxes.",
                     img: "banque.png",
                 },
             },
