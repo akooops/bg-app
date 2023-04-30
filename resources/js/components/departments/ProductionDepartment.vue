@@ -340,7 +340,7 @@
                             </p>
                             <div>
                                 <p class="font-medium mb-3">
-                                    Pour produire un lot de 1000 unités de ce
+                                    Pour produire un lot de {{ product_info.lot_quantity }} unités de ce
                                     produit vous avez besoin de :
                                 </p>
                                 <table class="w-2/3 border-colapse">

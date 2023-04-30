@@ -189,25 +189,27 @@ class IndicatorUpdaterController
         DB::table('game_settings')->update(['value' => DB::raw('default_value')]);
 
         // Reset raw materials prices
-        DB::table('raw_materials')->where('id', '=', 1)->update(['price' => 70]);      // Sucre
-        DB::table('raw_materials')->where('id', '=', 2)->update(['price' => 30]);       // Emballage
-        DB::table('raw_materials')->where('id', '=', 3)->update(['price' => 500]);      // Additifs
-        DB::table('raw_materials')->where('id', '=', 4)->update(['price' => 50]);      // Blé
-        DB::table('raw_materials')->where('id', '=', 5)->update(['price' => 900]);      // Lait
-        DB::table('raw_materials')->where('id', '=', 6)->update(['price' => 750]);      // Beurre
-        DB::table('raw_materials')->where('id', '=', 7)->update(['price' => 1300]);     // Fruits
-        DB::table('raw_materials')->where('id', '=', 8)->update(['price' => 400]);      // Avoine
-        DB::table('raw_materials')->where('id', '=', 9)->update(['price' => 900]);      // Cacao
+        DB::table('raw_materials')->where('id', '=', 10)->update(['price' => 10000]);      // Laine   //agg
+        DB::table('raw_materials')->where('id', '=', 11)->update(['price' => 3000]);       // Coton
+        DB::table('raw_materials')->where('id', '=', 12)->update(['price' => 800]);      // Polyester
+        DB::table('raw_materials')->where('id', '=', 13)->update(['price' => 850]);      // Garniture
+        DB::table('raw_materials')->where('id', '=', 14)->update(['price' => 2500]);      // Lin
+        DB::table('raw_materials')->where('id', '=', 15)->update(['price' => 25000]);      // La soie
+        DB::table('raw_materials')->where('id', '=', 16)->update(['price' => 2800]);     // Cuir
+        DB::table('raw_materials')->where('id', '=', 17)->update(['price' => 37000]);      // Fixation
+        DB::table('raw_materials')->where('id', '=', 18)->update(['price' => 900]);      // Matières chimiques
+        DB::table('raw_materials')->where('id', '=', 19)->update(['price' => 8000]);      // Packaging
 
         // Reset machine prices
-        $this->set_game_setting('machines_lv1_price', 500000);
-        $this->set_game_setting('machines_lv2_price', 1250000);
-        $this->set_game_setting('machines_lv3_price', 2500000);
+        $this->set_game_setting('machines_lv0_price', 6200000);  //agg
+        $this->set_game_setting('machines_lv1_price', 9000000);
+        $this->set_game_setting('machines_lv2_price', 18000000);
+        $this->set_game_setting('machines_lv3_price', 45000000);
 
         // Reset products' left demand
-        DB::table('products')->update(['left_demand' => DB::raw('avg_demand')]);
+        //DB::table('products')->update(['left_demand' => DB::raw('avg_demand')]);
 
-        // Reset products' stocks
+       // Reset products' stocks agg
         $entreprises = Entreprise::all();
         $products = Product::all();
 
@@ -235,7 +237,7 @@ class IndicatorUpdaterController
             }
         }
 
-        // Reset raw materials' stocks
+        // Reset raw materials'stocks
         $raw_materials = RawMaterial::all();
 
         foreach ($entreprises as $entrep) {
@@ -244,43 +246,47 @@ class IndicatorUpdaterController
 
                 $quantity = 0;
 
-                switch ($raw_mat->id) {
-                    case 1:         // Sucre
+                //switch ($raw_mat->id) {   //agg
+                  /*  case 10:         // Laine
                         $quantity = 6860;
                         break;
 
-                    case 2:         // Emballage
+                    case 11:         // Coton
                         $quantity = 6500;
                         break;
 
-                    case 3:         // Additifs
+                    case 12:         // Polyester
                         $quantity = 1800;
                         break;
 
-                    case 4:         // Blé
+                    case 13:         // Garniture
                         $quantity = 31800;
                         break;
 
-                    case 5:         // Lait
+                    case 14:         // Lin
                         $quantity = 6250;
                         break;
 
-                    case 6:         // Beurre
+                    case 15:         // La soie
                         $quantity = 8250;
                         break;
 
-                    case 7:         // Fruits
+                    case 16:         // Cuir
                         $quantity = 9000;
                         break;
 
-                    case 8:         // Avoine
+                    case 17:         // Fixation
                         $quantity = 12500;
                         break;
 
-                    case 9:         // Cacao
+                    case 18:         // Matières chimiques
                         $quantity = 14750;
                         break;
-                }
+
+                    case 19:         // Packaging
+                         $quantity = 14750;
+                         break;
+                } */
 
                 if ($stock->count() > 0) {
                     $stock->update([
@@ -347,77 +353,96 @@ class IndicatorUpdaterController
     {
         $scenario = $request->scenario;
 
-        if ($scenario == 'incendies') {
+        if ($scenario == 'Changement climatique') { //agg
             // Update raw materials prices
-            DB::table('raw_materials')->where('id', '=', 1)->update(['price' => 100]);   // Sucre
-            DB::table('raw_materials')->where('id', '=', 4)->update(['price' => 60]);   // Blé
-            DB::table('raw_materials')->where('id', '=', 5)->update(['price' => 1200]);   // Lait
-            DB::table('raw_materials')->where('id', '=', 8)->update(['price' => 700]);   // Avoine
+            DB::table('raw_materials')->where('id', '=', 11)->update(['price' => 2900]);   // Coton  //agg
+            DB::table('raw_materials')->where('id', '=', 14)->update(['price' => 24000]);   // Lin
+
 
             // Update % population
-            DB::table('products')->where('id', '=', 1)->update(['percent_population' => 0.99]);     // Galettes
-            DB::table('products')->where('id', '=', 2)->update(['percent_population' => 0.55]);     // Cookies
-            DB::table('products')->where('id', '=', 3)->update(['percent_population' => 0.35]);     // Sandwich glacé
-            DB::table('products')->where('id', '=', 4)->update(['percent_population' => 0.35]);     // Céréales
-            DB::table('products')->where('id', '=', 5)->update(['percent_population' => 0.1]);      // Granola
-
+            DB::table('products')->where('id', '=', 4)->update(['percent_population' => 37.541]);     // T-shirt      //agg
+            DB::table('products')->where('id', '=', 5)->update(['percent_population' => 1.063]);     // Polo rugby
+            DB::table('products')->where('id', '=', 7)->update(['percent_population' => 4.162]);     // Parkas
+            DB::table('products')->where('id', '=', 10)->update(['percent_population' => 0.775]);     // jupe ajuste
+            DB::table('products')->where('id', '=', 11)->update(['percent_population' => 8.2832]);      // jupe longue
             $entreprises = Entreprise::all();
             foreach ($entreprises as $entrep) {
-                $notification = [
+                $notification = [  //agg
                     "entreprise_id" => $entrep->id,
                     "type" => "ScenarioNotif",
 
                     "store" => true,
 
-                    "text" => "Des incendies se sont déclenchés!",
-                    "title" => "Incendies",
-                    "icon_path" => "/assets/icons/fire.svg",
+                    "text" => " Un  décalage saisonnier impromptu !",//agg
+                    "title" => "Changement climatique",
+                    "icon_path" => "/assets/icons/fire.svg",//agg
 
                     "style" => "scenario",
                 ];
                 event(new NewNotification($notification));
             }
-        } else if ($scenario == 'loi des finances') {
-            // Update CA taxes %
-            $this->set_game_setting('ca_tax_percent', 0.15);
+        } else if ($scenario == 'Un post dun influenceur') { //agg
 
-            // // Update pollution taxes %
-            // $this->set_game_setting('pollution_unit_cost', '');
+            //prix marketing //agg
+            DB::table('products')->where('id', '=', 1)->update(['ad_coef' => 1.2]);     // Pantalo Cargo
+            DB::table('products')->where('id', '=', 2)->update(['ad_coef' => 1.2]);     // Pantalo Cargo
+            DB::table('products')->where('id', '=', 3)->update(['ad_coef' => 1.2]);     // Pantalo Cargo
+            DB::table('products')->where('id', '=', 4)->update(['ad_coef' => 1.2]);     // Pantalo Cargo
+            DB::table('products')->where('id', '=', 5)->update(['ad_coef' => 1.2]);     // Pantalo Cargo
+            DB::table('products')->where('id', '=', 6)->update(['ad_coef' => 1.2]);     // Pantalo Cargo
+            DB::table('products')->where('id', '=', 7)->update(['ad_coef' => 1.2]);     // Pantalo Cargo
+            DB::table('products')->where('id', '=', 8)->update(['ad_coef' => 1.2]);     // Pantalo Cargo
+            DB::table('products')->where('id', '=', 9)->update(['ad_coef' => 1.2]);     // Pantalo Cargo
+            DB::table('products')->where('id', '=', 10)->update(['ad_coef' => 1.2]);     // Pantalo Cargo
+            DB::table('products')->where('id', '=', 11)->update(['ad_coef' => 1.2]);     // Pantalo Cargo
+            DB::table('products')->where('id', '=', 12)->update(['ad_coef' => 1.2]);     // Pantalo Cargo
 
-            // Update raw materials prices
-            DB::table('raw_materials')->where('id', '=', 1)->update(['price' => 130]);   // Sucre
-            DB::table('raw_materials')->where('id', '=', 4)->update(['price' => 63]);   // Blé
-            DB::table('raw_materials')->where('id', '=', 5)->update(['price' => 1250]);   // Lait
-            DB::table('raw_materials')->where('id', '=', 6)->update(['price' => 900]);   // Beurre
+
+            // Update Products demand  //agg
+            DB::table('products')->where('id', '=', 1)->update(['percent_population' => 5.288]);     // Pantalo Cargo
+            DB::table('products')->where('id', '=', 4)->update(['percent_population' => 27.302]);    // T-shirt
+            DB::table('products')->where('id', '=', 7)->update(['percent_population' => 3.027]);     // Parkas
+            DB::table('products')->where('id', '=', 11)->update(['percent_population' =>5.987]);     // Jupe longue
+            DB::table('products')->where('id', '=', 12)->update(['percent_population' => 15.894]);   // Pull a col bateau
 
             $entreprises = Entreprise::all();
-            foreach ($entreprises as $entrep) {
+            foreach ($entreprises as $entrep) {//agg
                 $notification = [
                     "entreprise_id" => $entrep->id,
                     "type" => "ScenarioNotif",
 
                     "store" => true,
 
-                    "text" => "La nouvelle loi des finances a été mise en place!",
-                    "title" => "Loi des finances",
-                    "icon_path" => "/assets/icons/loi_finance.svg",
+                    "text" => "La nouvelle story de XOXO fait l'affaire ", //agg
+                    "title" => "Un post dun influenceur",
+                    "icon_path" => "/assets/icons/loi_finance.svg", //agg
 
                     "style" => "scenario",
                 ];
                 event(new NewNotification($notification));
             }
-        } else if ($scenario == 'crise cacao') {
-            // Update cocoa availability
-            DB::table('raw_material_supplier')
-                ->where('raw_material_id', '=', 9)
-                ->update(['is_available' => false]);   // Chocolat
+        } else if ($scenario == 'Reglement RH') {//agg
 
-            // Update % population
-            DB::table('products')->where('id', '=', 1)->update(['percent_population' => 0.85]);   // Galettes
-            DB::table('products')->where('id', '=', 2)->update(['percent_population' => 0.47]);   // Cookies
-            DB::table('products')->where('id', '=', 3)->update(['percent_population' => 0.32]);   // Sandwich glacé
-            DB::table('products')->where('id', '=', 4)->update(['percent_population' => 0.28]);   // Céréales
-            DB::table('products')->where('id', '=', 5)->update(['percent_population' => 0.04]);   // Granola
+            // Update machine Price  //agg
+
+
+            $this->set_game_setting('machines_lv1_price', 9900000); //agg
+            $this->set_game_setting('machines_lv2_price', 19800000); //agg
+            $this->set_game_setting('machines_lv3_price', 49500000); //agg
+
+
+            // Update RH decrease factor
+            $this->set_game_setting('workers_mood_decay_rate', 0.0575); //agg
+            // Update % de taxes sur les CA
+            $this->set_game_setting('ca_tax_percent', 0.13);
+            // bloquer la nouvelle machine
+             //$this->set_game_setting('can_buy_machines_lv0',0 ); //agg à changer
+             $entreprises = Entreprise::all();
+             foreach ($entreprises as $entrep) {
+             DB::table('entreprise_indicator')->where('entreprise_id', '=', $entrep->id)->where('indicator_id', '=', 52)->update(['value' => 0]) ;
+             } // nb de machine nv0 devient 0
+             $this->set_game_setting('machines_lv0_price',0);
+             $this->set_game_setting('machines_lv0_durability',0 );
 
 
             $entreprises = Entreprise::all();
@@ -428,34 +453,29 @@ class IndicatorUpdaterController
 
                     "store" => true,
 
-                    "text" => "Une crise de cacao frappe l'industrie!",
-                    "title" => "Crise cacao",
-                    "icon_path" => "/assets/icons/cacao.svg",
+                    "text" => "Un nouveau règlement gouvernemental imposant aux entreprises d’utiliser des machines qui respectent quelques exigences", //agg
+                    "title" => "Reglement RH",
+                    "icon_path" => "/assets/icons/cacao.svg", //agg
 
                     "style" => "scenario",
                 ];
                 event(new NewNotification($notification));
             }
         }
-        else if ($scenario == 'war start') {
-            // Update raw materials prices
-            DB::table('raw_materials')->where('id', '=', 1)->update(['price' => 130]);   // Sucre
-            DB::table('raw_materials')->where('id', '=', 4)->update(['price' => 65]);   // Blé
-            DB::table('raw_materials')->where('id', '=', 8)->update(['price' => 900]);   // Avoine
-            DB::table('raw_materials')->where('id', '=', 9)->update(['price' => 1100]);   // Cacao
+        else if ($scenario == 'Tremblement de terre Turquie') {
+            // Update raw materials prices  //agg
 
-            // Update CA taxes %
-            $this->set_game_setting('ca_tax_percent', 0.17);
+            DB::table('raw_materials')->where('id', '=', 10)->update(['price' => 11000]);    //laine
+            DB::table('raw_materials')->where('id', '=', 11)->update(['price' => 3300]);    //coton
 
-            // Update % population
-            DB::table('products')->where('id', '=', 1)->update(['percent_population' => 0.9]);   // Galettes
-            DB::table('products')->where('id', '=', 2)->update(['percent_population' => 0.5]);   // Cookies
-            DB::table('products')->where('id', '=', 3)->update(['percent_population' => 0.35]);   // Sandwich glacé
-            DB::table('products')->where('id', '=', 4)->update(['percent_population' => 0.3]);   // Céréales
-            DB::table('products')->where('id', '=', 5)->update(['percent_population' => 0.05]);   // Granola
+            // Update Products  //agg
 
-            // Update RH decrease factor
-            $this->set_game_setting('workers_mood_decay_rate', 0.0575);
+            DB::table('products')->where('id', '=', 1)->update(['percent_population' => 8.593]);     // Pantalo Cargo
+            DB::table('products')->where('id', '=', 12)->update(['percent_population' => 25.827]);     // pull col bqtequ
+            DB::table('products')->where('id', '=', 7)->update(['percent_population' =>7.568]);     // Parkas
+
+            // Update POPULATION  //agg
+            $this->set_game_setting('population', 1010000); //agg
 
             $entreprises = Entreprise::all();
             foreach ($entreprises as $entrep) {
@@ -465,38 +485,40 @@ class IndicatorUpdaterController
 
                     "store" => true,
 
-                    "text" => "Une guerre se déclenche et chamboule l'industrie mondiale!",
-                    "title" => "Guerre_1",
-                    "icon_path" => "/assets/icons/war.svg",
+                    "text" => "Un séisme ravageur d'une magnitude de 7,7 a frappé le sud-est de la Turquie aux premières heures du 6 février!", //agg
+                    "title" => "Tremblement de terre Turquie", //agg
+                    "icon_path" => "/assets/icons/war.svg",  //agg
 
                     "style" => "scenario",
                 ];
                 event(new NewNotification($notification));
             }
-        } else if ($scenario == 'war middle') {
-            // Update delivery times
-            DB::table('raw_material_supplier')->where('supplier_id', 1)->update(['time_to_deliver' => 3]);
-            DB::table('raw_material_supplier')->where('supplier_id', 2)->update(['time_to_deliver' => 6]);
+        } else if ($scenario == ' Les repercusions de la guerre') { //agg
+            // Update delivery times  //agg
+            DB::table('raw_material_supplier')->where('supplier_id', 1)->update(['time_to_deliver' => 7]);
+            //DB::table('raw_material_supplier')->where('supplier_id', 2)->update(['time_to_deliver' => 6]);
 
-            // // Update loans interests
 
-            // Update % population
-            DB::table('products')->where('id', '=', 1)->update(['percent_population' => 0.9]);   // Galettes
-            DB::table('products')->where('id', '=', 2)->update(['percent_population' => 0.4]);   // Cookies
-            DB::table('products')->where('id', '=', 3)->update(['percent_population' => 0.28]);   // Sandwich glacé
-            DB::table('products')->where('id', '=', 4)->update(['percent_population' => 0.24]);   // Céréales
-            DB::table('products')->where('id', '=', 5)->update(['percent_population' => 0.05]);   // Granola
+            // Update Polyester and lin  price  //agg
+            DB::table('raw_materials')->where('id', '=', 12)->update(['price' => 1100]);    //Polyester
+            DB::table('raw_materials')->where('id', '=', 14)->update(['price' => 31000]);    //lin
+            DB::table('raw_materials')->where('id', '=', 10)->update(['price' => 10000]);    //laine
+            DB::table('raw_materials')->where('id', '=', 11)->update(['price' => 3000]);    //coton
 
-            // Update avoine price
-            DB::table('raw_materials')->where('id', '=', 8)->update(['price' => 1100]);   // Avoine
+            // Frais supplémentaires  //agg
+            DB::table('products')->where('id', '=', 1)->update(['unit_prod_price' => 575]);
+            DB::table('products')->where('id', '=', 2)->update(['unit_prod_price' => 2300]);
+            DB::table('products')->where('id', '=', 3)->update(['unit_prod_price' => 3450]);
+            DB::table('products')->where('id', '=', 4)->update(['unit_prod_price' => 575]);
+            DB::table('products')->where('id', '=', 5)->update(['unit_prod_price' => 2300]);
+            DB::table('products')->where('id', '=', 6)->update(['unit_prod_price' => 2300]);
+            DB::table('products')->where('id', '=', 7)->update(['unit_prod_price' => 920]);
+            DB::table('products')->where('id', '=', 8)->update(['unit_prod_price' => 2300]);
+            DB::table('products')->where('id', '=', 9)->update(['unit_prod_price' => 2875]);
+            DB::table('products')->where('id', '=', 10)->update(['unit_prod_price' => 2300]);
+            DB::table('products')->where('id', '=', 11)->update(['unit_prod_price' => 575]);
+            DB::table('products')->where('id', '=', 12)->update(['unit_prod_price' => 575]);
 
-            // Update machines prices
-            $this->set_game_setting('machines_lv1_price', 600000);
-            $this->set_game_setting('machines_lv2_price', 1500000);
-            $this->set_game_setting('machines_lv3_price', 3000000);
-
-            // Update RH decrease factor
-            $this->set_game_setting('workers_mood_decay_rate', 0.0625);
 
             $entreprises = Entreprise::all();
             foreach ($entreprises as $entrep) {
@@ -506,39 +528,48 @@ class IndicatorUpdaterController
 
                     "store" => true,
 
-                    "text" => "La guerre continue et ses répercussions se font sentir!",
-                    "title" => "Guerre_2",
-                    "icon_path" => "/assets/icons/war.svg",
+                    "text" => "La guerre continue et ses répercussions se font sentir!", //agg
+                    "title" => " Les repercusions de la guerre", //agg
+                    "icon_path" => "/assets/icons/war.svg",  //agg
 
                     "style" => "scenario",
                 ];
                 event(new NewNotification($notification));
             }
-        } else if ($scenario == 'war end') {
-            // Update % population
-            DB::table('products')->where('id', '=', 1)->update(['percent_population' => 0.95]);   // Galettes
-            DB::table('products')->where('id', '=', 2)->update(['percent_population' => 0.55]);   // Cookies
-            DB::table('products')->where('id', '=', 3)->update(['percent_population' => 0.40]);   // Sandwich glacé
-            DB::table('products')->where('id', '=', 4)->update(['percent_population' => 0.35]);   // Céréales
-            DB::table('products')->where('id', '=', 5)->update(['percent_population' => 0.12]);   // Granola
+        } else if ($scenario == 'Les crises geopolitiques') {
 
-            // Update raw materials prices
-            DB::table('raw_materials')->where('id', '=', 1)->update(['price' => 80]);   // Sucre
-            DB::table('raw_materials')->where('id', '=', 4)->update(['price' => 50]);   // Blé
-            DB::table('raw_materials')->where('id', '=', 8)->update(['price' => 400]);   // Avoine
+            // Update raw materials prices //agg
+            DB::table('raw_materials')->where('id', '=', 15)->update(['price' => 39000]);   // La soie
+            DB::table('raw_materials')->where('id', '=', 16)->update(['price' => 10000]);   // cuir
+            DB::table('raw_materials')->where('id', '=', 11)->update(['price' => 4000]);   // coton
 
-            // Update CA taxes %
-            $this->set_game_setting('ca_tax_percent', 0.09);
+           // Update delivery times  //agg
+           DB::table('raw_material_supplier')->where('supplier_id', 1)->update(['time_to_deliver' => 7]);
+           DB::table('raw_material_supplier')->where('supplier_id', 2)->update(['time_to_deliver' => 4]);
 
-            // Update machines prices
-            $this->set_game_setting('machines_lv1_price', 450000);
-            $this->set_game_setting('machines_lv2_price', 1125000);
-            $this->set_game_setting('machines_lv3_price', 2250000);
+            // Update Machines Prix //agg
 
-            // Update RH decrease factor
-            $this->set_game_setting('workers_mood_decay_rate', 0.05);
+            $this->set_game_setting('machines_lv0_price', 6820000); //agg
+            $this->set_game_setting('machines_lv1_price', 9900000); //agg
+            $this->set_game_setting('machines_lv2_price', 19800000); //agg
+            $this->set_game_setting('machines_lv3_price', 49500000); //agg
 
-            // Update marketing price
+           // Frais supplémentaires  //agg
+            DB::table('products')->where('id', '=', 1)->update(['unit_prod_price' => 625]);
+            DB::table('products')->where('id', '=', 2)->update(['unit_prod_price' => 2500]);
+            DB::table('products')->where('id', '=', 3)->update(['unit_prod_price' => 3750]);
+            DB::table('products')->where('id', '=', 4)->update(['unit_prod_price' => 625]);
+            DB::table('products')->where('id', '=', 5)->update(['unit_prod_price' => 2500]);
+            DB::table('products')->where('id', '=', 6)->update(['unit_prod_price' => 2500]);
+            DB::table('products')->where('id', '=', 7)->update(['unit_prod_price' => 1000]);
+            DB::table('products')->where('id', '=', 8)->update(['unit_prod_price' => 2500]);
+            DB::table('products')->where('id', '=', 9)->update(['unit_prod_price' => 3125]);
+            DB::table('products')->where('id', '=', 10)->update(['unit_prod_price' => 2500]);
+            DB::table('products')->where('id', '=', 11)->update(['unit_prod_price' => 625]);
+            DB::table('products')->where('id', '=', 12)->update(['unit_prod_price' => 625]);
+
+            // couts de transport
+
 
             $entreprises = Entreprise::all();
             foreach ($entreprises as $entrep) {
@@ -548,15 +579,46 @@ class IndicatorUpdaterController
 
                     "store" => true,
 
-                    "text" => "La guerre se termine enfin...",
-                    "title" => "Guerre_3",
-                    "icon_path" => "/assets/icons/war.svg",
+                    "text" => "une crise géopolitique a éclaté dans le monde, touchant plusieurs...", //agg
+                    "title" => "Les crises geopolitiques", //agg
+                    "icon_path" => "/assets/icons/war.svg", //agg
 
                     "style" => "scenario",
                 ];
                 event(new NewNotification($notification));
             }
+        } else if  ($scenario == 'Crise banque et inflations') {
+            // prix unitaire emmisions carbon 	2000
+            $this->set_game_setting('pollution_unit_cost', 2000); //agg
+
+            //  % interets des banques	*1,05
+            $entreprises = Entreprise::all();
+             foreach ($entreprises as $entrep) {
+             DB::table('entreprise_indicator')->where('entreprise_id', '=', $entrep->id)->where('indicator_id', '=', "30")->update(['value' => 1.05]) ;
+             }
+
+            //% des taxes caf	15%
+            $this->set_game_setting('ca_tax_percent', 0.15); //agg
+
+            $entreprises = Entreprise::all();
+            foreach ($entreprises as $entrep) {
+                $notification = [
+                    "entreprise_id" => $entrep->id,
+                    "type" => "ScenarioNotif",
+
+                    "store" => true,
+
+                    "text" => "Les nombreux enjeux géopolitiques ont déclenché une crise bancaire, mettant en danger la santé financière ...", //agg
+                    "title" => "Crise banque et inflations", //agg
+                    "icon_path" => "/assets/icons/war.svg", //agg
+
+                    "style" => "scenario",
+                ];
+                event(new NewNotification($notification));
+            }
+
         }
+
 
         return response()->json(["message" => "Scénario " . $scenario . " lancé.", "success" => true], 200);
     }

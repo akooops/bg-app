@@ -55,29 +55,46 @@ class WeeklyOperations implements ShouldQueue
         DB::table('notifications')->where('time', '<', $current_date - $nb_notif_weeks_to_keep)->delete();
 
         // Compute new avg demand for the seasonal product
+        // for summer
         $x = $current_date % 52;
         $pop_percent = 0;
         if ($x <= 13 || 39 <= $x) {
-            $pop_percent = 0;
+            $pop_percent = 0.001;
         }
         else {
             $val = ($x - 13) / 26;
-            $pop_percent = 0.8 * sqrt( 1 - $val ) * $val * exp($val);
+           // $pop_percent = 0.8 * sqrt( 1 - $val ) * $val * exp($val);
+           $pop_percent = (1-(pow((($val-0.375)*2-0.25),2)))*exp(pow((($val-0.375)*2-0.25),2));
         }
-
+        DB::table('products')->where('id', '=', 4)->update(['percent_population' => $pop_percent]); //tshirt
+        DB::table('products')->where('id', '=', 5)->update(['percent_population' => $pop_percent]); //polo rugby
+        DB::table('products')->where('id', '=', 6)->update(['percent_population' => $pop_percent]); //pull col rond
+        // for winter
+        $x = $current_date % 52;
+        $pop_percent = 0;
+        if ($x >= 13 || $x <= 39 ) {
+            $pop_percent = 0.001;
+        }
+        else {
+            $val = ($x - 13) / 26;
+           // $pop_percent = 0.8 * sqrt( 1 - $val ) * $val * exp($val);
+           $pop_percent = (1-(pow((($val-0.375)*2-0.25),2)))*exp(pow((($val-0.375)*2-0.25),2));
+        }
         DB::table('products')->where('id', '=', 7)->update(['percent_population' => $pop_percent]);
 
         // Refresh products' left demand every week
         $nb_entrep = count(Entreprise::all());
         $population = $this->get_game_setting('population');
-        $coeff = $nb_entrep * $population / 2;
+       // $coeff = $population ;
+       // $coeff = $nb_entrep * $population / 2;
 
         $products = Product::all();
         foreach($products as $product) {
-            DB::table('products')->where('id', $product->id)->update(['left_demand' => $coeff * $product->percent_population]);
+            DB::table('products')->where('id', $product->id)->update(['left_demand' => $product->percent_population * $population ]);
         }
 
         // Send changing date event
         event(new SimulationDateChanged());
     }
 }
+

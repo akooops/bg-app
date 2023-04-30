@@ -213,6 +213,17 @@
                             Choix de la machine :
                         </h1>
 
+                        <div class="flex gap-3 items-center">
+                                <input
+                                    v-model="launch_data.machine_lvl"
+                                    type="radio"
+                                    id="machine0"
+                                    name="machine0"
+                                    class="text-vert"
+                                    :value="0"
+                                /><label for="machine0">Niveau 0</label>
+                            </div>
+
                         <div class="flex flex-col m-3 gap-4 mx-auto">
                             <div class="flex gap-3 items-center">
                                 <input
@@ -223,17 +234,6 @@
                                     class="text-vert"
                                     :value="1"
                                 /><label for="machine1">Niveau 1</label>
-                            </div>
-
-                            <div class="flex gap-3 items-center">
-                                <input
-                                    v-model="launch_data.machine_lvl"
-                                    type="radio"
-                                    id="machine0"
-                                    name="machine0"
-                                    class="text-vert"
-                                    :value="0"
-                                /><label for="machine0">Niveau 0</label>
                             </div>
 
                             <div class="flex gap-3 items-center">
@@ -289,7 +289,7 @@
                     <div>
                         <h1 class="text-vN text-lg font-heading font-medium"
                          >
-                            Quantité (en lots de 1000 pièces)
+                         la quantite (En lots de {{ selectedProd.lot_quantity }} pieces) :
                         </h1>
                         <input
                             type="number"
@@ -337,7 +337,7 @@
                             @click="
                                 launch_prod_modal = false;
                                 launch_data.quantity = 1;
-                                launch_data.machine_lvl = 1;
+                                launch_data.machine_lvl = 0;
                                 launch_data.machine_nb = 1;
                             "
                         >
@@ -822,10 +822,10 @@ export default {
             quantity: 1,
             launch_prod_modal: false,
             launch_data: {
-                prod_id: 1, //pourquoi 5 ?
+                prod_id: 1,
                 // price: 0,
                 quantity: 1,
-                machine_lvl: 1,
+                machine_lvl: 0,
                 machine_nb: 1,
             },
             prod_factors: {
@@ -1047,7 +1047,7 @@ export default {
                 0.4 *
                 (1 - n["machines_lv1_health"]["value"]) *
                 n["nb_machines_lv1"]["value"];
-                
+
             this.action.price["maintenance_lv0"] =
                 this.machine.buy_price_lv0 *
                 0.4 *
@@ -1163,20 +1163,23 @@ export default {
             return (
                 this.machine.buy_price_lv1 + this.machine.buy_price_lv0 +
                     this.machine.buy_price_lv2 +
-                    this.machine.buy_price_lv3 == 0
+                    this.machine.buy_price_lv3 +
+                    0
+                    == 0
             );
         },
         selectedProd() {
             return this.products.find(
                 (item) => item.id == this.launch_data.prod_id
+              // bochra  (item) => item.lot_quantity == this.launch_data.lot_quantity
             );
         },
 
         totalCost() {
             return (
                 this.launch_data.quantity *
-                this.selectedProd.unit_prod_price *
-                1000
+                this.selectedProd.unit_prod_price * //unit price here means les frais supp de chaque produit et non pas son prix de production
+                this.selectedProd.lot_quantity //bochra for remember
             );
         },
 
@@ -1192,7 +1195,7 @@ export default {
                     : this.machine.speed_lv3) *
                 this.launch_data.machine_nb *
                 this.selectedProd.prod_speed_factor *
-                26;
+                2 ; //bochra
 
             return this.launch_data.quantity / coeff;
         },
@@ -1211,6 +1214,7 @@ export default {
                 labor_lv1: this.prod_factors.labor_lv1, // number of necessary simple free workers to produce
                 labor_lv2: this.prod_factors.labor_lv2, // number of necessary simple free workers to produce
                 machines_lvl: this.launch_data.machine_lvl, // selected machine level
+                lot_quantity: this.selectedProd.lot_quantity
             };
 
             if (this.caisse < data.cost) {
@@ -1238,7 +1242,7 @@ export default {
                     this.launch_data.prod_id = 1;
 
                     this.launch_data.quantity = 1;
-                    this.launch_data.machine_lvl = 1;
+                    this.launch_data.machine_lvl = 0;
                     this.launch_data.machine_nb = 1;
 
                     // this.getStock();
@@ -1273,7 +1277,7 @@ export default {
 
                     this.launch_data.prod_id = 1;
                     this.launch_data.quantity = 1;
-                    this.launch_data.machine_lvl = 1;
+                    this.launch_data.machine_lvl = 0;
 
                     // this.getStock();
                 });
@@ -1312,7 +1316,7 @@ export default {
                     (this.launch_data.machine_lvl == 1
                         ? 1
                         : this.launch_data.machine_lvl == 0
-                        ? 0 //not sure about it ??
+                        ? 2
                         : this.launch_data.machine_lvl == 2
                         ? 2
                         : 3) * this.launch_data.machine_nb,

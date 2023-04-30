@@ -209,16 +209,16 @@ export default {
         return {
             indicators: [],
             products_stock: [],
-            selected_product: 5,
+            selected_product: 12,
             product_selected: {
-                name: "Galletes",
+                name: "Pull à col bateau",
                 description:
-                    "Galettes à la base du blé qui conviennent tous les jours, un produit simple mais un goût unique.",
+                    " Trop beau",
                 left_demand: 0,
                 quantity: 0,
                 price_min: 0,
                 price_min: 0,
-                icon: "/assets/galettes.jpg",
+                icon: "/assets/pullcol.webp",
             },
             market_share_prod: null,
             market_share_entrep: null,
