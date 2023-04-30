@@ -1,6 +1,9 @@
 <template>
     <div
-        class="relative flex items-center rounded-[41px] py-4 w-full px-1 text-vN bg-gradient-to-t from-[#C59866] to-[#FAEEDE]"
+        class="relative flex items-center rounded-[40px] w-full px-1 text-vN mb-[40px]"
+        style="
+            background-image: linear-gradient(to right, rgba(197, 152, 102, 0.35), rgba(250, 238, 222, 1));
+        "
     >
         <div
             class="relative only:flex items-center font-heading font-semibold w-full"
