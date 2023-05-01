@@ -21,7 +21,7 @@
             </p>
             <!-- Email Address -->
             <div>
-                <x-label for="email" :value="__('Email')" />
+                <x-label for="email" :value="__('Email')" class="lightBrown"/>
 
                 <x-input id="email" class="block mt-1 w-full px-3 py-2" placeholder="username@bg.iec" type="email" name="email" :value="old('email')" required autofocus />
             </div>

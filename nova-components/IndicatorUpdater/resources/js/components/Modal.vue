@@ -19,7 +19,7 @@
                 leave-to-class="opacity-0 translate-y-4 md:translate-y-0 md:scale-95"
             >
                 <div
-                    class="flex px-4 py-6 mx-auto my-auto bg-white rounded-md " style="box-shadow : 2px 6px 47px 4px rgba(0,0,0,0.25)
+                    class="flex px-4 py-6 mx-auto my-auto bg-[#FAEEDE] rounded-md " style="box-shadow : 2px 6px 47px 4px rgba(0,0,0,0.25)
 "
                     role="dialog"
                     aria-modal="true"

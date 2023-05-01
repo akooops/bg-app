@@ -119,7 +119,6 @@ trait IndicatorTrait
     {
         $entreprise = Entreprise::where('id', '=', $entreprise_id)->first();
         $indicator = DB::table("indicators")->where("code", "=", $indicator_code)->first();
-
         $entrep_indicator = DB::table("entreprise_indicator")->where("entreprise_id", "=", $entreprise_id)->where("indicator_id", "=", $indicator->id)->first();
 
         if ($entreprise != null && $indicator != null) {

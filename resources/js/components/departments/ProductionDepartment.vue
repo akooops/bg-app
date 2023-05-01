@@ -62,7 +62,7 @@
                 class="relative flex w-1/4 gap-3 justify-evenly items-center rounded-xl px-3 bg-white shadow-sm"
             >
                 <img
-                    class="h-12 w-12 p-1"
+                    class="h-[80px] w-[70px] p-1"
                     src="/assets/icons/machine.svg"
                     alt="machine icon"
                 />
@@ -201,8 +201,8 @@
                 class="relative flex w-1/4 gap-3 justify-evenly items-center rounded-xl px-3 bg-white shadow-sm"
             >
                 <img
-                    class="h-12 w-12 p-1"
-                    src="/assets/icons/employees.svg"
+                    class="h-[80px] w-[70px] p-1"
+                    src="/assets/icons/nv/employe.svg"
                     alt="employees icon"
                 />
                 <h1 class="text-vN text-lg font-medium font-heading">
@@ -500,8 +500,8 @@
                             <td
                                 :class="
                                     prod.status_code == 'pending'
-                                        ? 'text-jaune'
-                                        : 'text-black'
+                                        ? 'text-[#84C566]'
+                                        : 'text-vN'
                                 "
                                 class="w-full lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
                             >

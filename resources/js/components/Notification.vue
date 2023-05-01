@@ -14,7 +14,7 @@
                 <img
                     src="/assets/icons/notifications.svg"
                     alt="notification icon"
-                    class="h-11 w-11"
+                    class="h-11 w-[2.2em]"
                     :class="nb_unread_notifs > 0 ? 'horloge' : ''"
                 />
 
@@ -217,6 +217,10 @@ export default {
                                 break;
                             case "Les crises geopolitiques ":
                                 this.event = "chine";
+
+                                break;
+                            case "Crise banque et inflations":
+                                this.event = "banque";
 
                                 break;
                             default:

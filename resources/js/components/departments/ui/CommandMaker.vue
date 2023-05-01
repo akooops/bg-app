@@ -71,6 +71,9 @@
                             Prix Unitaire
                         </th>
                         <th class="p-3 text-sm table-cell text-center">
+                            Prix de livraison
+                        </th>
+                        <th class="p-3 text-sm table-cell text-center">
                             Prix Total
                         </th>
                         <th class="p-3 text-sm table-cell text-center">
@@ -104,6 +107,11 @@
                             class="lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
                         >
                             {{ cmd.price }} DA/KG
+                        </td>
+                        <td
+                            class="lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
+                        >
+                            {{ cmd.liv }} DA
                         </td>
                         <td
                             class="lg:w-auto p-1 text-center block lg:table-cell relative lg:static"
@@ -315,6 +323,12 @@
                             >
                                 {{ materialPrice }}
                             </p>
+                            <h1 class="font-semibold">Prix de livraison :</h1>
+                            <p
+                                class="py-2 px-4 border-gray-200 w-40 text-jaune border rounded-md h-10"
+                            >
+                                {{ livPrice }}
+                            </p>
 
                             <h1 class="font-semibold mt-3">Prix Total :</h1>
                             <p
@@ -407,6 +421,7 @@ export default {
                 quantity: 1,
                 total_price: null,
                 time_to_ship: 0,
+                liv : 0,
             },
             commands: [],
             filtered_materials: [],
@@ -475,6 +490,36 @@ export default {
                 return Math.round(material.price * supp_raw_mat.price_factor);
             } else {
                 return 0;
+            }},
+            livPrice() {
+            if (
+                this.commandItem.material != "" &&
+                this.commandItem.supplier != ""
+            ) {
+                let material = this.materials.find(
+                    (item) => this.commandItem.material == item.name
+                );
+
+                let supplier = this.suppliers.find(
+                    (item) => this.commandItem.supplier == item.name
+                );
+
+                let supp_raw_mat = supplier.raw_materials.find(
+                    (item) => item.id == material.id
+                );
+
+                if (supp_raw_mat == undefined) {
+                    return 0;
+                } else {
+                    supp_raw_mat = supp_raw_mat.pivot;
+                }
+                    if (supp_raw_mat.supplier_id == 1)
+                    {return Math.round(material.price *( supp_raw_mat.price_factor - 0.77))
+                    } else if (supp_raw_mat.supplier_id == 2){
+                        return Math.round(material.price *( supp_raw_mat.price_factor - 0.97)) ;
+                    }
+            } else {
+                return 0;
             }
         },
         totalPrice() {
@@ -482,7 +527,7 @@ export default {
                 return (
                     Math.round(
                         this.materialPrice * this.commandItem.quantity * 100
-                    ) / 100
+                     / 100 + this.livPrice )
                 );
             } else {
                 return 0;
@@ -561,6 +606,7 @@ export default {
                 price: this.materialPrice,
                 total_price: this.totalPrice,
                 item_id: this.num_commands,
+                liv:this.livPrice,
             };
 
             let cmd_id = this.commands.findIndex(
@@ -655,6 +701,7 @@ export default {
                     price: this.materialPrice,
                     total_price: this.totalPrice,
                     item_id: this.commands[index].num_commands,
+                    liv:this.livPrice
                 };
 
                 this.commands[index] = command;

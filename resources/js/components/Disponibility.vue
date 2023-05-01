@@ -20,7 +20,7 @@
             </p>
             <p
                 class="font-bold flex justify-start"
-                :class="dettes_diff > 0 ? 'text-jaune' : 'text-vert'"
+                :class="dettes_diff > 0 ? 'text-[#ED3A3A]' : 'text-[#84C566]'"
             >
                 {{
                     Math.round(dettes_diff)
@@ -52,7 +52,7 @@
             </div>
             <div
                 class="font-bold flex justify-start"
-                :class="caisse_diff > 0 ? 'text-vert' : 'text-jaune'"
+                :class="caisse_diff > 0 ? 'text-[#84C566]' : 'text-[#ED3A3A]'"
             >
                 {{
                     Math.round(caisse_diff)
@@ -171,7 +171,7 @@ export default {
                 this.option.series[0].data = [
                     0.7, 0.5, 0.6, 0.4, 0.2, 0.3, 0.2, 0.1,
                 ];
-                this.option.color = ["#FFBC3E"];
+                this.option.color = ["#ED3A3A"];
             }
         },
         dettes_diff: function (n, o) {
@@ -179,7 +179,7 @@ export default {
                 this.option2.series[0].data = [
                     0.1, 0.2, 0.3, 0.2, 0.4, 0.6, 0.5, 0.7,
                 ];
-                this.option2.color = ["#FFBC3E"];
+                this.option2.color = ["#ED3A3A"];
             } else {
                 this.option2.series[0].data = [
                     0.7, 0.5, 0.6, 0.4, 0.2, 0.3, 0.2, 0.1,

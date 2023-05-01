@@ -79,7 +79,7 @@
         >
             <button
                 @click="apply_changes(item)"
-                class="rounded-3xl font-semibold px-3 py-2 bg-vert text-white"
+                class="rounded-3xl font-semibold px-3 py-2 bg-[#84C566] text-white"
                 :class="
                     new_changes && canSell
                         ? 'bg-vert'

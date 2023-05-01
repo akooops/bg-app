@@ -394,13 +394,13 @@
         .welcome {
             height: 100vh;
             width: 100vw;
-            background: linear-gradient(to top right,#0b3232ee 20%,#c59966ee);
+            background: linear-gradient(to top right,#0b3232,#0b3232ee 45%,#c59966ee 70%,#c59966);
             background-size: 300% 300%;
             display: grid;
             place-items: center;
             cursor: pointer;
             justify-content: space-around;
-            animation: animate  5s ease-in-out infinite;
+            /* animation: animate  5s ease-in-out infinite; */
         }
         @keyframes animate{
             0 {
@@ -466,6 +466,16 @@
         body {
             font-family: 'Ubuntu', sans-serif;
         }
+        .letStartBtn{
+            color:#0B3434;
+            width: 200px;
+            background-color: #C59866;
+            border: 2px solid #000;
+            border-radius: 20px;
+            padding: 20px 40px;
+            font-size: 20px;
+            /* font-family: Ubuntu, serif; */
+        }
     </style>
 </head>
 
@@ -475,7 +485,8 @@
             <img src="/assets/logo/bg1.svg" alt="logo">
         </div>
         <div class='typewriter w-fit'>
-            <h1>Click Anywhere to start!</h1>
+            <button class="letStartBtn Ubuntu">let's start</button>
+            <!-- <h1>Click Anywhere to start!</h1> -->
         </div>
     </div>
 </body>

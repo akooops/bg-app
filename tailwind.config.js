@@ -30,7 +30,6 @@ module.exports = {
                 lighterVert: "#C59866",
                 tableBorder: "#EEEEF2",
                 bleu: "#0B3434",
-
             },
             zIndex: {
                 100: "100",

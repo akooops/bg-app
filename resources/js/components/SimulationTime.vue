@@ -6,10 +6,10 @@
                 <span class="uppercase">{{ user.name }}</span>
             </p>
             <div
-                class="w-12 p-1 h-12 relative flex justify-center items-center rounded-full text-sm text-white uppercase bg-vN"
+                class="w-10 p-1 h-10 relative flex justify-center items-center rounded-full text-sm text-white uppercase bg-vN" style="margin-left: 10px;"
             >
                 <a href="/entreprise/profil">
-                    <img src="/assets/logo/IEC_WHITE.png" alt="IEC logo"
+                    <img src="/assets/logo/IEC_WHITE.png" alt="IEC logo" 
                 /></a>
             </div>
             <button
@@ -33,7 +33,7 @@
                             alt="logout icon"
                             class="w-5 h-5"
                         />
-                        <p>Se déconnecter</p>
+                        <p>log out</p>
                     </a>
                 </transition>
             </button>

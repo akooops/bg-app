@@ -3,9 +3,9 @@
         class="w-full flex flex-col items-center rounded-2xl gap-3 shadow-md bg-white py-6"
     >
         <div
-            class="h-20 w-20 rounded-full bg-gradient-to-t from-lightVert to-lighterVert p-4"
+            class="h-20 w-20 rounded-full bg-[#FAEEDE] p-4"
         >
-            <img :src="icon" :alt="title" />
+            <img :src="icon" :alt="title" style="filter: sepia(60%);"/>
         </div>
         <p class="w-28 h-12 text-center text-md font-normal text-vN">
             {{ title }}

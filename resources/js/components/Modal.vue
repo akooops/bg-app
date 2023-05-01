@@ -11,7 +11,7 @@
                 <!-- This element is to trick the browser into centering the modal contents. -->
 
                 <div
-                    class="flex px-4 py-6 mx-auto my-auto bg-white rounded-md"
+                    class="flex px-4 py-6 mx-auto my-auto bg-[#FAEEDE] rounded-md"
                     v-bind:class="description ? 'w-1/2' : 'w-fit'"
                     style="box-shadow: 2px 6px 47px 4px rgba(0, 0, 0, 0.25)"
                     role="dialog"

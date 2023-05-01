@@ -1,6 +1,6 @@
 <template>
     <div
-        class="flex flex-col items-center gap-4 ml-2 bg-gradient-to-r from-[#B2D06B45] to-[#B2D06B15] rounded-xl py-2"
+        class="flex flex-col items-center gap-4 ml-2 bg-gradient-to-r from-[#C59866] to-[#FAEEDE] rounded-xl py-2"
     >
         <div class="flex item-center gap-4 my-5">
             <div class="flex flex-col font-semibold items-center">
