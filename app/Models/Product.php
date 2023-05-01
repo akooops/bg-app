@@ -24,7 +24,8 @@ class Product extends Model
         'icon',
         'prod_speed_factor',
         'unit_prod_price',
-        'percent_population'
+        'percent_population',
+        'volume'
     ];
     public function producedBy()
     {

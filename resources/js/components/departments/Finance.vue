@@ -213,7 +213,7 @@ export default {
             product_selected: {
                 name: "Pull à col bateau",
                 description:
-                    " Trop beau",
+                    " Fabriqué à partir d’un mélange doux de coton et de lin, ce pull vous offrira un confort optimal tout en vous tenant bien au chaud. Son col bateau élégant apporte une touche de sophistication à votre tenue.",
                 left_demand: 0,
                 quantity: 0,
                 price_min: 0,

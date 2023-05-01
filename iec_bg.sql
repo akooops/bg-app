@@ -1095,7 +1095,21 @@ CREATE TABLE IF NOT EXISTS `products` (
 --
 -- Déchargement des données de la table `products`
 --
+INSERT INTO `products` (`id`, `created_at`, `updated_at`, `name`, `price_min`, `price_max`, `quantity`, `avg_demand`, `left_demand`, `ad_coef`, `description`, `prod_speed_factor`, `unit_prod_price`, `icon`, `dist_cost`, `percent_population`, `lot_quantity`, `volume`) VALUES
+(1, '2023-04-15 18:50:12', '2023-04-15 18:50:12', 'Pantalon cargo', 2599, 3599, 0, 66102, 66100, 1.00, 'Ce pantalon est fabriqué en coton et polyester pour un ajustement confortable et facile à porter. Les matières chimiques et les fixations sont utilisées pour garantir que le tissu est solide et durable. tandis que l\'emballage est conçu pour une présentation soignée. Ce pantalon est idéal pour ceux qui cherchent un look moderne et tendance à un prix abordable.', 1.50, 500.00, '/assets/cargo.webp', 0, 6.61, 500, 1),
+(2, '2023-04-15 18:50:49', '2023-04-15 18:50:49', 'Pantalon portofino', 25999, 35999, 0, 7625, 7600, 1.00, 'Ce pantalon est conçu avec de la laine et du lin pour une sensation de douceur et de luxe. La combinaison de ces matières de haute qualité offre un ajustement confortable. tandis que la coupe élégante en fait un choix parfait pour des occasions formelles ou professionnelles.', 1.00, 2000.00, '/assets/portofino.webp', 0, 0.76, 100, 2),
+(3, '2023-04-15 18:51:17', '2023-04-15 18:52:38', 'Robe de mariée à dos ouvert', 91999, 119999, 0, 588, 600, 1.00, 'Nos robes de mariage sont fabriquées à partir des meilleures matières chimiques et des fixations pour obtenir le meilleur tissu possible. Nous ajoutons également de la garniture pour un look élégant et raffiné. La coupe flatteuse et la conception de la robe garantissent une allure inoubliable pour votre jour spécial.', 0.80, 3000.00, '/assets/robe.webp', 0, 0.06, 50, 2),
+(4, '2023-04-15 18:52:04', '2023-04-15 18:52:04', 'T-shirt', 1999, 2999, 0, 341278, 995200, 1.00, 'Ce T-shirt est fabriqué en coton et polyester pour un ajustement confortable et facile à porter. Les matières chimiques et les fixations sont utilisées pour garantir que le tissu est solide et durable. malgré qu’il a un effet négatif sur l\'environnement. Ce T-shirt est idéal pour ceux qui cherchent un look décontracté et tendance à un prix abordable.', 1.50, 500.00, '/assets/tshirt.webp', 0, 34.13, 1000, 1),
+(5, '2023-04-15 18:53:23', '2023-04-15 18:53:23', 'Polo rugby', 25999, 35999, 0, 9661, 995200, 1.00, 'Ce T-shirt de luxe est conçu avec du coton et de la soie pour une sensation de confort et de qualité supérieure. La combinaison de ces matières de haute qualité offre un ajustement confortable. tandis que la coupe flatteuse et la conception élégante en font un choix parfait pour des occasions spéciales ou des tenues décontractées haut de gamme.', 1.00, 2000.00, '/assets/polo.webp', 0, 0.97, 100, 2),
+(6, '2023-04-15 18:53:38', '2023-04-15 18:53:38', 'Pull à col rond', 20999, 30999, 0, 9661, 0, 1.00, 'Ce pull en coton et polyester est doux et confortable. parfait pour une journée de détente à la maison ou une soirée avec des amis. La coupe flatteuse et la conception simple mais élégante en font un choix polyvalent pour toutes les occasions.', 1.00, 2000.00, '/assets/pull.webp', 0, 1.53, 100, 2),
+(7, '2023-04-15 18:53:54', '2023-04-15 18:53:54', 'Parkas', 4999, 6499, 0, 37841, 0, 1.00, 'Cette veste en polyester et coton est parfaite pour un style décontracté et pratique. Les matières chimiques et les fixations sont utilisées pour garantir que le tissu est solide et durable. tandis que l\'emballage est conçu pour une présentation soignée. La veste est idéale pour ceux qui cherchent un look décontracté et pratique à un prix abordable.', 1.50, 800.00, '/assets/parka.webp', 0, 3.78, 250, 1),
+(10, '2023-04-15 18:55:34', '2023-04-15 18:55:34', 'Jupe ajustée a taille ceinturée', 20999, 30999, 0, 7049, 7000, 1.00, 'Cette jupe est conçue pour mettre en valeur votre silhouette grâce à sa coupe ajustée à la taille et sa ceinture qui souligne votre taille. Elle est fabriquée à partir de coton de haute qualité. ce qui lui confère un toucher doux et confortable. Le tissu est également durable et facile à entretenir. Cette jupe est parfaite pour une variété d\'occasions. qu\'il s\'agisse d\'une journée de travail ou d\'une soirée en ville. Elle se marie parfaitement avec des hauts. des chaussures et des accessoires de toutes sortes. ce qui en fait un choix polyvalent pour votre garde-robe.', 1.00, 2000.00, '/assets/jupe1.webp', 0, 0.70, 100, 2),
+(9, '2023-04-15 18:54:57', '2023-04-15 18:54:57', 'Tuxedo', 43999, 58999, 0, 2106, 2100, 1.00, 'Ce costume de luxe en coton et polyester est parfait pour un look élégant et professionnel. La combinaison de ces matières de haute qualité offre un ajustement confortable et une coupe flatteuse. tandis que la conception élégante convient à toutes les occasions professionnelles.', 1.00, 2500.00, '/assets/tuxedo.webp', 0, 0.21, 50, 2),
+(8, '2023-04-15 18:54:12', '2023-04-15 18:54:12', 'Richelieu', 22999, 32999, 0, 2078, 2100, 1.00, 'Ces chaussures en cuir sont conçues pour la durabilité et le confort. Le cuir de haute qualité offre un ajustement confortable. tandis que la conception classique et intemporelle convient à toutes les occasions.', 1.00, 2000.00, '/assets/richelieu.webp', 0, 0.21, 100, 1),
+(12, '2023-04-25 18:30:44', '2023-04-25 18:30:44', 'Pull à col bâteau', 2399, 3399, 0, 198671, 995200, 1.00, 'Fabriqué à partir d’un mélange doux de coton et de lin, ce pull vous offrira un confort optimal tout en vous tenant bien au chaud. Son col bateau élégant apporte une touche de sophistication à votre tenue. \nCe pull s\'adapte à tous les styles et toutes les occasions. Sa coupe ajustée mettra en valeur votre silhouette tout en vous offrant une liberté de mouvement totale.\nC’est la pièce ultime qui complètera votre collection de vêtements d’hiver.', 1.50, 500.00, '/assets/pullcol.webp', 0, 19.87, 500, 1),
+(11, '2023-04-15 18:55:47', '2023-04-15 18:55:47', 'Jupe longue', 2399, 3399, 0, 74836, 74800, 1.00, 'Cette jupe est un choix abordable pour ceux qui recherchent un style à la mode sans se ruiner. Elle est fabriquée à partir de polyester. un matériau synthétique qui est durable et facile à entretenir. mais qui a également un impact environnemental négatif. La jupe est conçue pour être jetable après quelques utilisations. ce qui la rend moins durable que d\'autres options. Le design est à la mode et suit les dernières tendances de la mode. ce qui en fait un choix populaire pour les acheteurs qui recherchent un style à la pointe de la mode.', 1.50, 500.00, '/assets/jupe2.webp', 0, 7.48, 500, 1);
 
+ // 9dima
 INSERT INTO `products` (`id`, `created_at`, `updated_at`, `name`, `price_min`, `price_max`, `quantity`, `avg_demand`, `left_demand`, `ad_coef`, `description`, `prod_speed_factor`, `unit_prod_price`, `icon`, `dist_cost`, `percent_population`, `lot_quantity`) VALUES
 (12, '2023-04-25 19:30:44', '2023-04-25 19:30:44', 'Pull à col bâteau', 2399, 3399, 0, 198671, 198671, 1.00, 'Fabriqué à partir d’un mélange doux de coton et de lin, ce pull vous offrira un confort optimal tout en vous tenant bien au chaud. Son col bateau élégant apporte une touche de sophistication à votre tenue.
 Ce pull s'adapte à tous les styles et toutes les occasions. Sa coupe ajustée mettra en valeur votre silhouette tout en vous offrant une liberté de mouvement totale.
@@ -1111,6 +1125,7 @@ C’est la pièce ultime qui complètera votre collection de vêtements d’hive
 (3, '2023-04-15 19:51:17', '2023-04-15 19:52:38', 'Robe de mariée à dos ouvert', 91999, 119999, 0, 588, 588, 1.00, 'Nos robes de mariage sont fabriquées à partir des meilleures matières chimiques et des fixations pour obtenir le meilleur tissu possible. Nous ajoutons également de la garniture pour un look élégant et raffiné. La coupe flatteuse et la conception de la robe garantissent une allure inoubliable pour votre jour spécial.', 0.80, 3000.00, '/assets/robe.webp', 0, 0.01, 50),
 (2, '2023-04-15 19:50:49', '2023-04-15 19:50:49', 'Pantalon portofino', 25999, 35999, 0, 7625, 7625, 1.00, 'Ce pantalon est conçu avec de la laine et du lin pour une sensation de douceur et de luxe. La combinaison de ces matières de haute qualité offre un ajustement confortable. tandis que la coupe élégante en fait un choix parfait pour des occasions formelles ou professionnelles.', 1.00, 2000.00, '/assets/portofino.webp', 0, 0.04, 100),
 (1, '2023-04-15 19:50:12', '2023-04-15 19:50:12', 'Pantalon cargo', 2599, 3599, 0, 66102, 66102, 1.00, 'Ce pantalon est fabriqué en coton et polyester pour un ajustement confortable et facile à porter. Les matières chimiques et les fixations sont utilisées pour garantir que le tissu est solide et durable. tandis que l\'emballage est conçu pour une présentation soignée. Ce pantalon est idéal pour ceux qui cherchent un look moderne et tendance à un prix abordable.', 1.50, 500.00, '/assets/cargo.webp', 0, 0.61, 500);
+
 
 -- --------------------------------------------------------
 
@@ -1264,26 +1279,27 @@ CREATE TABLE IF NOT EXISTS `raw_material_supplier` (
 --
 
 INSERT INTO `raw_material_supplier` (`raw_material_id`, `supplier_id`, `price_factor`, `time_to_deliver`, `created_at`, `updated_at`, `is_available`, `cout_t`) VALUES
-(12, 1, 0.90, 6, NULL, NULL, 1, 0),
-(13, 1, 0.90, 6, NULL, NULL, 1, 0),
-(14, 1, 0.90, 6, NULL, NULL, 1, 0),
-(10, 1, 0.90, 6, NULL, NULL, 1, 0),
-(10, 2, 1.10, 3, NULL, NULL, 1, 0),
-(11, 1, 0.90, 6, NULL, NULL, 1, 0),
-(15, 1, 0.90, 6, NULL, NULL, 1, 0),
-(16, 1, 0.90, 6, NULL, NULL, 1, 0),
-(17, 1, 0.90, 6, NULL, NULL, 1, 0),
-(18, 1, 0.90, 6, NULL, NULL, 1, 0),
-(19, 1, 0.90, 6, NULL, NULL, 1, 0),
-(15, 2, 1.10, 3, NULL, NULL, 1, 0),
-(16, 2, 1.10, 3, NULL, NULL, 1, 0),
-(17, 2, 1.10, 3, NULL, NULL, 1, 0),
-(18, 2, 1.10, 3, NULL, NULL, 1, 0),
-(19, 2, 1.10, 3, NULL, NULL, 1, 0),
-(11, 2, 1.10, 3, NULL, NULL, 1, 0),
-(12, 2, 1.10, 3, NULL, NULL, 1, 0),
-(13, 2, 1.10, 3, NULL, NULL, 1, 0),
-(14, 2, 1.10, 3, NULL, NULL, 1, 0);
+(12, 1, 0.80, 6, NULL, NULL, 1, 0),
+(13, 1, 0.80, 6, NULL, NULL, 1, 0),
+(14, 1, 0.80, 6, NULL, NULL, 1, 0),
+(10, 1, 0.80, 6, NULL, NULL, 1, 0),
+(10, 2, 1.00, 3, NULL, NULL, 1, 0),
+(11, 1, 0.80, 6, NULL, NULL, 1, 0),
+(15, 1, 0.80, 6, NULL, NULL, 1, 0),
+(16, 1, 0.80, 6, NULL, NULL, 1, 0),
+(17, 1, 0.80, 6, NULL, NULL, 1, 0),
+(18, 1, 0.80, 6, NULL, NULL, 1, 0),
+(19, 1, 0.80, 6, NULL, NULL, 1, 0),
+(15, 2, 1.00, 3, NULL, NULL, 1, 0),
+(16, 2, 1.00, 3, NULL, NULL, 1, 0),
+(17, 2, 1.00, 3, NULL, NULL, 1, 0),
+(18, 2, 1.00, 3, NULL, NULL, 1, 0),
+(19, 2, 1.00, 3, NULL, NULL, 1, 0),
+(11, 2, 1.00, 3, NULL, NULL, 1, 0),
+(12, 2, 1.00, 3, NULL, NULL, 1, 0),
+(13, 2, 1.00, 3, NULL, NULL, 1, 0),
+(14, 2, 1.00, 3, NULL, NULL, 1, 0);
+
 
 -- --------------------------------------------------------
 

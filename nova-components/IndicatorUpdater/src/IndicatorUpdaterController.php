@@ -364,7 +364,7 @@ class IndicatorUpdaterController
             DB::table('products')->where('id', '=', 5)->update(['percent_population' => 1.063]);     // Polo rugby
             DB::table('products')->where('id', '=', 7)->update(['percent_population' => 4.162]);     // Parkas
             DB::table('products')->where('id', '=', 10)->update(['percent_population' => 0.775]);     // jupe ajuste
-            DB::table('products')->where('id', '=', 11)->update(['percent_population' => 8.2832]);      // jupe longue
+            DB::table('products')->where('id', '=', 11)->update(['percent_population' => 8.232]);      // jupe longue
             $entreprises = Entreprise::all();
             foreach ($entreprises as $entrep) {
                 $notification = [  //agg
@@ -569,7 +569,8 @@ class IndicatorUpdaterController
             DB::table('products')->where('id', '=', 12)->update(['unit_prod_price' => 625]);
 
             // couts de transport
-
+            DB::table('raw_material_supplier')->where('supplier_id', 1)->update(['price_factor ' => 0.85]);
+            DB::table('raw_material_supplier')->where('supplier_id', 2)->update(['price_factor ' => 1.05]);
 
             $entreprises = Entreprise::all();
             foreach ($entreprises as $entrep) {
