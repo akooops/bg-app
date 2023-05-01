@@ -2,7 +2,7 @@
     <div
         class="relative flex items-center rounded-[40px] w-full px-1 text-vN mb-[40px]"
         style="
-            background-image: linear-gradient(to right, rgba(197, 152, 102, 0.35), rgba(250, 238, 222, 1));
+            background-image: linear-gradient(to top,rgba(250, 238, 222, 1),rgba(197, 152, 102, 0.35));
         "
     >
         <div
@@ -12,16 +12,18 @@
                 <div class="bg-vN p-3 h-20 w-20 rounded-full">
                     <img src="/assets/logo/IEC_WHITE.png"/>
                 </div>
-                <span class="text-center" style="
-                    color: #000;
+                <span class="text-center border border-[#5F4735]" style="
+                    
+                    color: #0B3434;
                     height: 25px;
                     width: 25px;
-                    background-color: #bbb;
+                    background-color: #FAEEDE;
                     border-radius: 50%;
-                    display: inline-block;">
+                    display: inline-block;
+                    ">
                 {{ position }}
                 </span>
-                <h1 class="uppercase text-2xl font-bold text-vN">
+                <h1 class="uppercase text-2xl font-bold text-vN left-3">
                     {{ name }}
                 </h1>
             </div>
@@ -32,7 +34,7 @@
                 <p class="text-center">Rank</p>
             </div> -->
             <div
-                class="absolute flex items-center gap-4 mx-auto right-[40px] bottom-1/2 border border-[10px] bg-[#FAEEDE] " 
+                class="absolute flex items-center gap-4 mx-auto right-[40px] border border-[1px] border-[#5F4735] rounded-full bg-[#FAEEDE] px-2" 
             >
                 
                 <p class="text-2xl font-bold text-vN">

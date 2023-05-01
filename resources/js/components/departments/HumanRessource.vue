@@ -407,7 +407,7 @@
                     class="flex flex-row items-center px-4 py-2 gap-2 border-2 shadow-lg rounded-2xl justify-left pr-3"
                 >
                     <img
-                        src="/assets/icons/loupe.png"
+                        src="/assets/icons/nv/loupe.svg"
                         alt=""
                         class="w-14 p-2 h-14"
                     />
@@ -451,7 +451,7 @@
                     @click="hire_modal = true"
                     :disabled="!indicators_loaded || !data_loaded"
                     class="rounded-3xl font-semibold text-vN py-2 "
-                    style="border: solid 0.5px #B2D06B ; "
+                    style="border: solid 0.5px #C59866 ; "
                     :class="
                         !indicators_loaded || !data_loaded
                             ? 'bg-gray-200 shadow-lg'
@@ -468,7 +468,7 @@
                         total_nb_employees == 0
                     "
                     class="rounded-3xl font-semibold text-vN  py-2"
-                     style="border: solid 0.5px #B2D06B ; "
+                     style="border: solid 0.5px #C59866 ; "
                     :class="
                         !indicators_loaded ||
                         !data_loaded ||
@@ -487,7 +487,7 @@
                         total_nb_employees == 0
                     "
                     class="rounded-3xl font-semibold text-vN  py-2 px-3"
-                     style="border: solid 0.5px #B2D06B ; "
+                     style="border: solid 0.5px #C59866 ; "
                     :class="
                         !indicators_loaded ||
                         !data_loaded ||
@@ -506,7 +506,7 @@
                         total_nb_employees == 0
                     "
                     class="rounded-3xl font-semibold text-vN py-2"
-                     style="border: solid 0.5px #B2D06B ; "
+                     style="border: solid 0.5px #C59866 ; "
                     :class="
                         !indicators_loaded ||
                         !data_loaded ||
