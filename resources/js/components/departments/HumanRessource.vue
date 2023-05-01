@@ -365,6 +365,151 @@
                 </div>
             </template>
         </Modal>
+        <!-- v-if="salary_modal" -->
+        <Modal
+            v-if="salary_modal"
+            class="align-center openmodal"
+            custom_css="w-1/3"
+        >
+            <template v-slot:content>
+                <div class="flex flex-col text-vN px-5 gap-4">
+                    <h1 class="text-center text-vert text-2xl">
+                        Donner un Nv salaire 
+                    </h1>
+                    <div>
+                        <h1 class="pt-5 pb-3">
+                            Nv salaire :
+                        </h1>
+                        <input
+                            type="number"
+                            v-model="newsalary"
+                            :min="20000"
+                            :max="200000"
+                            class="rounded-sm w-3/4"
+                        />
+                    </div>
+                    <div
+                        class="flex flex-row items-center mt-6 px-4 py-2 gap-3 border rounded-md border-yellow-500"
+                    >
+                        <img
+                            src="/assets/icons/warning.png"
+                            class="h-10 w-10"
+                            alt="fgghgf"
+                        />
+                        <h1 class="opacity-80 w-80">
+                            le Nv salaire est : 
+                            <span class="text-yellow-600"
+                                >{{
+                                    
+                                    this.indicators["wrklvl1salary"].value  
+                                }}
+                                DA</span
+                            >
+                        </h1>
+                        <h1 class="opacity-80 w-80">
+                            le Nv taux d'humeur est : 
+                            <span class="text-yellow-600"
+                                >{{
+                                    
+                                    this.indicators["workers_mood_decay_rate"].value  
+                                }}
+                                </span
+                            >
+                        </h1>
+                    </div>
+
+                    <div
+                        class="w-full flex items-center gap-4 justify-end mt-5"
+                    >
+                        <button
+                            class="font-medium font-heading border-0 px-3 py-1 text-vN hover:text-vert bg-opacity-30"
+                            :class="
+                                newsalary == 0
+                                    ? ' text-gray-200 hover:text-gray-200'
+                                    : ' text-vN hover:text-vert' && salary_sent
+                                    ? 'opacity-50'
+                                    : ''
+                            "
+                            :disabled="
+                                salary_sent ||
+                                (newsalary==0)
+                            "
+                            @click="updateworkerssalary"
+                        >
+                            Valider
+                        </button>
+                        <button
+                            class="font-medium font-heading px-3 py-1 text-vN opacity-80 hover:opacity-100"
+                            @click="salary_modal = false"
+                        >
+                            Annuler
+                        </button>
+                    </div>
+                </div>
+            </template>
+        </Modal>
+        <Modal
+            v-if="hire_modal"
+            class="align-center openmodal"
+            custom_css="w-1/3"
+        >
+            <template v-slot:content>
+                <div class="flex flex-col text-vN px-5 gap-4">
+                    <h1 class="text-center text-vert text-2xl">
+                        Recrutement des employées
+                    </h1>
+                    <div>
+                        <h1
+                            class="text-md font-heading font-medium text-lg text-nav mb-2"
+                        >
+                            Entrez le nombre des employées à recruter :
+                        </h1>
+                        <input
+                            id="workers"
+                            type="number"
+                            name="workers"
+                            v-model="nb_workers_to_hire"
+                            class="rounded-sm py-3 w-1/2"
+                            min="1"
+                        />
+                    </div>
+                    <div>
+                        <h1 class="pt-3 opacity-80">
+                            le salaire mensuel d'un seul employé est fixé à :
+                            <span class="text-yellow-600"
+                                >{{ salary_lv1 }} DA</span
+                            >
+                        </h1>
+                        <h1 class="opacity-80">
+                            le salaire mensule pour le nombre d'employés choisis
+                            est fixé à :
+                            <span class="text-vert">
+                                {{ salary_lv1 * nb_workers_to_hire }} DA</span
+                            >
+                        </h1>
+                    </div>
+
+                    <div
+                        class="w-full flex items-center gap-4 justify-end mt-5"
+                    >
+                        <button
+                            class="font-medium font-heading border-0 px-3 py-1 text-vN hover:text-vert bg-opacity-30"
+                            :class="hire_sent ? 'opacity-50' : ''"
+                            :disabled="hire_sent"
+                            @click="hireWorker"
+                        >
+                            Valider
+                        </button>
+                        <button
+                            class="font-medium font-heading px-3 py-1 text-vN opacity-80 hover:opacity-100"
+                            @click="hire_modal = false"
+                        >
+                            Annuler
+                        </button>
+                    </div>
+                </div>
+            </template>
+        </Modal>
 
         <!-- Adding some details -->
         <div v-if="indicators_loaded" class="flex justify-center text-vN">
@@ -542,6 +687,7 @@ export default {
             nb_workers_to_train: 1,
             nb_workers_lv1_to_fire: 0,
             nb_workers_lv2_to_fire: 0,
+            newsalary: 0,
 
             message: "",
             error_message: "",
@@ -557,6 +703,8 @@ export default {
             workshop_sent: false,
             hire_sent: false,
             fire_sent: false,
+            salary_sent: false,
+            
 
             show_success: false,
             show_error: false,
@@ -569,6 +717,7 @@ export default {
             salary_lv2: 0,
             workshop_price: 0,
             bonus_coeff: 0,
+            
         };
     },
     computed: {
@@ -733,6 +882,30 @@ export default {
                     this.nb_workers_to_hire = 1;
                 });
         },
+        updateworkerssalary(){
+            this.salary_sent = true;
+            this.salary_modal = false;
+            axios
+            .post("/api/hr/updateworkerssalary",{
+                newsalary: this.newsalary,
+                entreprise_id: this.user.id,
+            })
+            .then((resp)=> {
+                    if (resp.data.success) {
+                        this.show_success = true;
+                        this.show_error = false;
+                    } else {
+                        this.show_success = false;
+                        this.show_error = true;
+                    }
+                    this.message = resp.data.message;
+
+                    this.salary_sent = false;
+                    this.newsalary = 30000;
+            });
+
+
+        },
         fireWorkers() {
             this.fire_sent = true;
             this.fire_modal = false;
@@ -774,6 +947,7 @@ export default {
                 this.salary_lv1 = resp.data.salary_lv1;
                 this.salary_lv2 = resp.data.salary_lv2;
                 this.bonus_coeff = resp.data.bonus_coeff;
+
 
                 this.data_loaded = true;
             });

@@ -72,7 +72,6 @@ class ProductionScheduler implements ShouldQueue
         $this->updateIndicator("nb_machines_lv2_busy", $entreprise_id, -1 * $production->machines_lv2);
         $this->updateIndicator("nb_machines_lv3_busy", $entreprise_id, -1 * $production->machines_lv3);
         $this->updateIndicator("nb_machines_lv0_busy", $entreprise_id, -1 * $production->machines_lv0);
-
         $this->updateIndicator("nb_workers_lv1_busy", $entreprise_id, -1 * $production->workers_lv1);
         $this->updateIndicator("nb_workers_lv2_busy", $entreprise_id, -1 * $production->workers_lv2);
 

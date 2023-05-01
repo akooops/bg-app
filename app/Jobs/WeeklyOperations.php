@@ -14,6 +14,8 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 
+
+
 class WeeklyOperations implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
@@ -77,6 +79,14 @@ class WeeklyOperations implements ShouldQueue
             DB::table('products')->where('id', $product->id)->update(['left_demand' => $coeff * $product->percent_population]);
         }
 
+        $sumworkerssalary=0;
+        $entreprises = Entreprise::get();
+        foreach ($entreprises as $entreprise) {
+            $wrklvl1salary = $this->getIndicator("wrklvl1salary", $entreprise->id)["value"];
+            $sumworkerssalary += $wrklvl1salary;
+        }
+        $avgworkerssalary = ( $sumworkerssalary/$nb_entrep);
+        $this->set_game_setting('avgsalary',$avgworkerssalary);
         // Send changing date event
         event(new SimulationDateChanged());
     }

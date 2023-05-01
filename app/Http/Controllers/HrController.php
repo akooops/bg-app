@@ -17,7 +17,7 @@ class HrController extends Controller
             "nb_workers_lv1", "nb_workers_lv1_busy",
             "nb_workers_lv2", "nb_workers_lv2_busy",
             "nb_workers_to_hire",
-            "workers_mood", "productivity_coeff"
+            "workers_mood", "productivity_coeff","wrklvl1salary","workers_mood_decay_rate"
         ];
 
         $entreprise_id = $request->entreprise_id;
@@ -37,6 +37,7 @@ class HrController extends Controller
             "salary_lv1" => (int) $this->get_game_setting("salary_lv1"),
             "salary_lv2" => (int) $this->get_game_setting("salary_lv2"),
             "bonus_coeff" => $this->get_game_setting("bonus_coeff"),
+
         ];
 
         return $data;
@@ -130,7 +131,97 @@ class HrController extends Controller
 
         return Response::json(["message" => $message, "success" => true], 200);
     }
+    /*
+    public function updateworkerssalary(Request $request)
+    {
+        if ($this->get_game_setting('game_started') == "0") {
+            return Response::json(["message" => "La simulation n'est pas en cours actuellement", "success" => false], 200);
+        }
+ 
+        $nb_workers_lv1 = $this->getIndicator('nb_workers_lv1', $request->entreprise_id)['value'];
+        $nb_workers_lv2 = $this->getIndicator('nb_workers_lv2', $request->entreprise_id)['value'];
 
+        $workers_mood = $this->getIndicator('workers_mood', $request->entreprise_id)['value'];
+
+        $salary_lv1 = (int) $this->get_game_setting('salary_lv1');
+        $salary_lv2 = (int) $this->get_game_setting('salary_lv2');
+        $a=0.2;
+        $salaryadd = $request->salaryadd;
+        $bonus_coeff = (float) $this->get_game_setting('bonus_coeff');
+        $bonus_max = (1/$a)*((1 - $workers_mood) * ($nb_workers_lv1 * $salary_lv1 + $nb_workers_lv2 * $salary_lv2)) / ($bonus_coeff * ($nb_workers_lv1 + $nb_workers_lv2));
+        /// get salary of lv1 and 2
+        $salary_lv1 = (int) $this->get_game_setting('salary_lv1');
+        $salary_lv2 = (int) $this->get_game_setting('salary_lv2');
+        /// the input is  a salary increase 
+        $bonussalary = $request->bonus;
+        $this->updateIndicator('bonussalary', $request->entreprise_id, $bonussalary);
+        $salary= $this ->getIndicator('salary',$request->entreprise_id)['value'];  
+        $this->updateIndicator('salary', $request->entreprise_id, $salary + $coefsalary);
+        $mood_increase = 0.2 * ($request->mood_increase);
+        //necessary condition        
+        if ($bonus > $bonus_max) {
+            return Response::json([
+                "message" => "Impossible de donner une prime aux employés: La somme spécifiée implique une perte d'argent inutile.",
+                "success" => false
+            ], 200);
+        } 
+        /// once the salary is updated the  acceleration rate of the mood of total company decreases by a certain % 
+        if ($mood_increase + $workers_mood > 1) {
+            $this->setIndicator('workers_mood', $request->entreprise_id, 1);
+        } 
+        else {
+            $this->updateIndicator('workers_mood', $request->entreprise_id, $mood_increase);
+        }
+        // the mood on the short term updates as well but not as much as it would with a bonus 
+        $caisse = $this->getIndicator('caisse', $request->entreprise_id)['value'];
+        $message = "Primes attribuées, l'humeur des employés augmente.";
+        $notification = [
+            "type" => "WorkersUpdate",
+            "entreprise_id" => $request->entreprise_id,
+
+            "store" => true,
+
+            "text" => $message,
+            "title" => "Primes attribuées & workers salary updated",
+            "icon_path" => "/assets/icons/check.svg",
+
+            "style" => "success",
+        ];
+        event(new NewNotification($notification));
+        return Response::json(["message" => $message, "success" => true], 200);
+    } */
+
+    public function updateworkerssalary(Request $request)
+    {
+        $entreprise_id = $request->entreprise_id;
+       $newsalary = $request -> $newsalary;
+        if ($newsalary < 200000 ) {
+            return Response::json(["message" => "Le salaire d'employee doit être supérieur à 200000", "success" => false], 200);
+        }
+        $this->updateIndicator('wrklvl1salary', $request->entreprise_id,$newsalary);
+        $workers_mood_decay_rate = $this->getIndicator('workers_mood_decay_rate', $request->entreprise_id)['value'];
+        $wrklvl1salary = $this->getIndicator('wrklvl1salary', $request->entreprise_id)['value'];
+        $avgsalary = $this->get_game_setting('avgsalary');
+        $newworkersmood= $workers_mood_decay_rate * (1-($wrklvl1salary/$avgsalary));
+        $this->updateIndicator('workers_mood_decay_rate',$request -> entreprise_id,$newworkersmood );
+
+        $message = "Nv salary ajoutee";
+        $notification = [
+            "type" => "WorkersUpdate",
+            "entreprise_id" => $request->entreprise_id,
+
+            "store" => true,
+
+            "text" => $message,
+            "title" => "Nv salary",
+            "icon_path" => "/assets/icons/check.svg",
+
+            "style" => "success",
+        ];
+        event(new NewNotification($notification));
+        return Response::json(["message" => $message, "success" => true], 200);
+ 
+    } 
     public function primeWorkers(Request $request)
     {
         if ($this->get_game_setting('game_started') == "0") {

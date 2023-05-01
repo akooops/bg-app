@@ -1,3 +1,6 @@
+
+
+
 <x-app-layout>
     <div class="mx-auto px-8 py-10">
         <div class="flex flex-wrap sm:rounded-lg">

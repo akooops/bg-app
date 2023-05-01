@@ -16,6 +16,7 @@ use App\Events\NewNotification;
 use App\Models\Banker;
 use App\Models\RawMaterial;
 use App\Traits\HelperTrait;
+use App\Models\Product;
 
 class MonthlyCosts implements ShouldQueue
 {
@@ -53,6 +54,7 @@ class MonthlyCosts implements ShouldQueue
             $pollution_unit_cost = $this->get_game_setting('pollution_unit_cost');
 
             $mp_stock_price = (int) $this->get_game_setting('mp_stock_price');
+            $pf_stock_price = (int) $this->get_game_setting('pf_stock_price');
 
             // For every entreprise
             $entreprises = Entreprise::get();
@@ -69,21 +71,34 @@ class MonthlyCosts implements ShouldQueue
                 $workers_lv2 = $this->getIndicator('nb_workers_lv2', $entreprise->id)['value'];
 
                 $cost = 0;
-
+/*
                 // Compute salaries cost
                 $salary_cost = 0;
-                $salary_cost += $workers_lv1 * $salary_lv1 + $workers_lv2 * $salary_lv2;
+                $stock_cost_p =0;
+                $bonussalary = $this ->getIndicator('salary',$request->entreprise_id)['value'];
+                $salary_cost += $workers_lv1 * $salary_lv1 + $workers_lv2 * $salary_lv2 + $bonussalary;
 
+            */
+            //comute salary cost : 
+                $wrklvl1salary = $this->getIndicator('wrklvl1salary', $entreprise->id)['value'];
+                $salary_cost = 0;
+                $salary_cost += $workers_lv1 * $wrklvl1salary;
+                //$pf_stock_price=2.5;
                 // Compute raw materials stock cost
                 $stock_cost = 0;
                 $raw_materials =  DB::table("raw_materials_stock")->where("entreprise_id", "=", $entreprise->id)->where('quantity', '<>', 0)->get();
                 foreach ($raw_materials as $raw_material) {
-                    // Stock cost depends on quantity and volume of raw material
-                    $stock_cost += $raw_material->quantity * RawMaterial::find($raw_material->raw_material_id)->volume * $mp_stock_price;
+                     //Stock cost depends on quantity and volume of raw material
+                    $stock_cost += $raw_material->quantity *RawMaterial::find($raw_material->raw_material_id)->volume *$mp_stock_price;
                 }
+                
+                $products =  DB::table("stock")->where("entreprise_id", "=", $entreprise->id)->where('quantity', '<>', 0)->get();
+                foreach ($products as $product) {
+                    // Stock cost depends on quantity of product
+                    $stock_cost_p += $product->quantity *Product::find($product->product_id)->volume * $pf_stock_price;} 
 
                 // Compute pollution cost based on machines
-                $pollution_cost = 0;
+                $pollution_cost = 0;        
                 $pollution_cost += $pollution_unit_cost *
                     ($machines_lv1 * $pollution_machines_lv1_factor +
                     $machines_lv0 * $pollution_machines_lv0_factor+
@@ -150,6 +165,7 @@ class MonthlyCosts implements ShouldQueue
                                     - Taxes ( " . $ca_tax_cost . " DA )
                                     - Salaires ( " . $salary_cost . " DA )
                                     - Stockage ( " . $stock_cost . " DA )
+                                    - Stockage produit fini  ( " . $stock_cost_p ." DA)
                                     - Pollution ( " . $pollution_cost . " DA ). Total: " . $cost . " DA.",
                         "title" => "Frais mensuels",
                         "icon_path" => "/assets/icons/info.svg",

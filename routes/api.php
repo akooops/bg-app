@@ -50,6 +50,7 @@ Route::prefix("entreprise")->middleware(['game_started'])->group(function () {
     Route::post("/hr/fire", [HrController::class, "fireWorkers"]);
     Route::post("/hr/launch-workshop", [HrController::class, "launchWorkshop"]);
     Route::post("/hr/prime-workers", [HrController::class, "primeWorkers"]);
+    Route::post("/hr/updateworkerssalary", [HrController::class, "updateworkerssalary"]);
 
     Route::get("/notifications", [EntrepriseController::class, "getNotifications"]);
     Route::post("/read-notifications", [EntrepriseController::class, "readNotifications"]);

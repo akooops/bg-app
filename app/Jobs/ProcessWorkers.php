@@ -67,6 +67,8 @@ class ProcessWorkers implements ShouldQueue
             } else {
                 $this->setIndicator("workers_mood", $entreprise->id, 0);
             }
+            //improve working conditions that takes a huge investment but makes the rate lower 
+            
 
             $notification = [
                 "entreprise_id" => $entreprise->id,

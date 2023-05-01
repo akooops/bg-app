@@ -26,6 +26,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
             // Employees salaries, formation et prime
             Number::make('Salaire employés niveau 1', 'salary_lv1'),
             Number::make('Salaire employés niveau 2', 'salary_lv2'),
+            Number::make('average salary', 'avgsalary'),
 
             Number::make('Prix formation', 'workshop_price'),
             Number::make('Coefficient prime', 'bonus_coeff')->step('0.01'),
@@ -66,6 +67,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
             Number::make('Cout unitaire pollution', 'pollution_unit_cost'),
 
             Number::make('Prix de la manutention des MP', 'mp_stock_price')->step('0.1'),
+            Number::make('Prix de la manutention des PF', 'pf_stock_price')->step('0.1'),
             Boolean::make('Simulation en cours ?', 'game_started'),
             Number::make('Jour début de la simulation', 'start_date'),
             Number::make('Jour courant de la simulation', 'current_date'),
@@ -100,7 +102,9 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
             'pollution_unit_cost' => 'float',
 
             'mp_stock_price' => 'float',
-            'show_final_score' => 'boolean'
+            'pf_stock_price' =>'float',
+            'show_final_score' => 'boolean',
+            'avgsalary'=>'float'
         ], "Général");
     }
 

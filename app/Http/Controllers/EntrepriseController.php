@@ -459,7 +459,10 @@ class EntrepriseController extends Controller
             $nb_machines = $this->getIndicator("nb_machines_lv3", $entreprise_id)["value"];
             $nb_busy_machines = $this->getIndicator("nb_machines_lv3_busy", $entreprise_id)["value"];
             $machines_health = $this->getIndicator("machines_lv3_health", $entreprise_id)["value"];
-        }
+        } else if ($machines_lvl == 0 &&  $dontbuy=0 ){
+                $message = "Impossible de lancer la production avec machine lvl0";
+                return Response::json(["message" => $message, "success" => false], 200);
+            }
 
         // Check if enough machines
         if ($nb_machines < $nb_machines_needed) {
@@ -764,12 +767,12 @@ class EntrepriseController extends Controller
                 $this->setIndicator("machines_lv3_health", $entreprise_id, 1);
             }
         }else if ($level == 0) {
-            $this->updateIndicator("nb_machines_lv0", $entreprise_id, $number);
+            $dontbuy = $this->get_game_setting("dontbuy");
+            $this->updateIndicator("nb_machines_lv0", $entreprise_id, $number*$dontbuy);
 
             $machines_health = $this->getIndicator("machines_lv0_health", $entreprise_id)["value"];
             $nb_machines = $this->getIndicator("nb_machines_lv0", $entreprise_id)["value"];
-
-            if (($nb_machines * $machines_health + $number) / ($nb_machines + 1) <= 1) {
+            if (($nb_machines * $machines_health + $number*$dontbuy) / ($nb_machines + 1) <= 1) {
                 $this->setIndicator("machines_lv0_health", $entreprise_id, ($nb_machines * $machines_health + $number) / ($nb_machines + 1));
                 $health_msg = "Santé des machines légèrement augmentée.";
             } else {

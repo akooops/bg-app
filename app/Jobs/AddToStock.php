@@ -50,6 +50,7 @@ class AddToStock implements ShouldQueue
                 $stock->increment("quantity", $quant);
             }
         }
+        $cost += $quant*3;
         //dd("working until now");
         $this->updateIndicator("raw_materials_cost", $entreprise_id, $cost);
         $this->updateIndicator("caisse", $entreprise_id, -1 * $cost);
