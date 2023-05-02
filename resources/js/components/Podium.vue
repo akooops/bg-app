@@ -1,13 +1,8 @@
 <template>
     <div
         :class="
-            'relative h-48 flex items-center bg-gradient-to-t rounded-3xl py-7 w-full px-4 text-vN mb-10 border-[#EEEEF2] '+bg
-        "
-    >   <div v-if="position == 1"
-        class="mb-[200px]"
+            'relative h-48 flex items-center bg-gradient-to-t rounded-3xl py-7 w-full px-4 text-vN mb-10 border-[#EEEEF2] '+bg "
         >
-
-        </div>
         <div class="flex flex-col h-3/4 items-start justify-between">
             <h1 class="uppercase text-2xl font-bold text-vN">
                 {{ name }}
