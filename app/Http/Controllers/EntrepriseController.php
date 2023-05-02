@@ -380,7 +380,7 @@ class EntrepriseController extends Controller
 
         $entreprise_id = $request->entreprise_id;
         $cost = $request->cost;
-
+        $dontbuy = $this->get_game_setting("dontbuy");
         // Check if enough money to launch prod
         $caisse = $this->getIndicator("caisse", $entreprise_id)["value"];
         if ($cost > $caisse) {
