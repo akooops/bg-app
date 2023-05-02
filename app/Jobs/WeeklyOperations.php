@@ -83,28 +83,34 @@ class WeeklyOperations implements ShouldQueue
             DB::table('products')->where('id', '=', 7)->update(['percent_population' =>3.7841 * $pop_percent]); //parka
             DB::table('products')->where('id', '=', 6)->update(['percent_population' =>0.9661 * $pop_percent]); // pull col rond
 */
-        $x = $current_date % 52;
-        $pop_percent = 0;
-        if ($x <= 13 ||39 >= $x ) {
-            $pop_percent = 0.001;
+
+         $x = $current_date % 48;
+         $pop_percent = 0;
+        if ($x <= 13 ||39 <= $x ) {
+            $pop_percent = 0.1;
         }
         else {
             $val = ($x - 13) / 26;
-        $pop_percent = (1-(pow((($val-0.375)*2-0.25),2)))*exp(pow((($val-0.375)*2-0.25),2))/100;
+        // $pop_percent = 0.8 * sqrt( 1 - $val ) * $val * exp($val);
+        $pop_percent = (1-(pow((($val-0.375)*2-0.25),2)))*exp(pow((($val-0.375)*2-0.25),2));
         }
-            DB::table('products')->where('id', '=', 4)->update(['percent_population' => $pop_percent]); //tshirt
+            DB::table('products')->where('id', '=', 4)->update(['percent_population' => 34.1278 * $pop_percent]); //tshirt
+            DB::table('products')->where('id', '=', 5)->update(['percent_population' => 0.9661* $pop_percent]); //polo rugby
 
-            $x = $current_date % 52;
-            $pop_percent = 0;
-            if ($x <= 13 ||39 >= $x ) {
-                $val = (($x +13) % 26 ) /26;
-                $pop_percent = (1-(pow((($val-0.375)*2-0.25),2)))*exp(pow((($val-0.375)*2-0.25),2))/100;
-            }
-            else {
-                $pop_percent = 0.001;
+        // for winter
+        $x = $current_date % 48;
+        $pop_percent = 0;
+        if ($x < 13 ||39 < $x ) {
+            $val = (($x +13) % 26 ) /26 ;
+            $pop_percent = (1-(pow((($val-0.375)*2-0.25),2)))*exp(pow((($val-0.375)*2-0.25),2));
+        }
+        else {
+            $pop_percent = 0.1;
+        }
+            DB::table('products')->where('id', '=', 7)->update(['percent_population' =>3.7841 * $pop_percent]); //parka
+            DB::table('products')->where('id', '=', 6)->update(['percent_population' =>0.9661 * $pop_percent]); // pull col rond
+            DB::table('products')->where('id', '=', 12)->update(['percent_population' =>19.8671* $pop_percent]); //pull col BATEAU
 
-           }
-                DB::table('products')->where('id', '=', 7)->update(['percent_population' => $pop_percent]); //PARKA
 
         // Refresh products' left demand every week
         $nb_entrep = count(Entreprise::all());

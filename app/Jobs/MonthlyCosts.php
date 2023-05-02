@@ -16,6 +16,7 @@ use App\Events\NewNotification;
 use App\Models\Banker;
 use App\Models\RawMaterial;
 use App\Traits\HelperTrait;
+use App\Models\Product;
 
 class MonthlyCosts implements ShouldQueue
 {
@@ -82,6 +83,7 @@ class MonthlyCosts implements ShouldQueue
                     $stock_cost += $raw_material->quantity * RawMaterial::find($raw_material->raw_material_id)->volume * $mp_stock_price;
                 }
                 $stock_cost_p =0;
+                $pf_stock_price = $this->get_game_setting('pf_stock_price');
                 $products =  DB::table("stock")->where("entreprise_id", "=", $entreprise->id)->where('quantity', '<>', 0)->get();
                 foreach ($products as $product) {
                     // Stock cost depends on quantity of product
@@ -155,7 +157,7 @@ class MonthlyCosts implements ShouldQueue
                                     - Taxes ( " . $ca_tax_cost . " DA )
                                     - Salaires ( " . $salary_cost . " DA )
                                     - Stockage ( " . $stock_cost . " DA )
-                                    - Stockage produit fini  ( " . $stock_cost_p ." DA)
+                                    - Stockage produits finis  ( " . $stock_cost_p ." DA)
                                     - Pollution ( " . $pollution_cost . " DA ). Total: " . $cost . " DA.",
                         "title" => "Frais mensuels",
                         "icon_path" => "/assets/icons/info.svg",
