@@ -76,7 +76,7 @@ export default {
     },
     mounted() {
         this.getSimulationData();
-
+        console.log(this.user.name);
         window.Echo.channel("entreprise_" + this.user.id).listen(
             "NewNotification",
             (e) => {
@@ -103,6 +103,7 @@ export default {
             );
         }
     },
+
 };
 </script>
 

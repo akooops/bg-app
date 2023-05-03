@@ -466,7 +466,7 @@
         body {
             font-family: 'Ubuntu', sans-serif;
         }
-        .letStartBtn{
+        /* .letStartBtn{
             color:#0B3434;
             width: 200px;
             background-color: #C59866;
@@ -474,8 +474,8 @@
             border-radius: 20px;
             padding: 20px 40px;
             font-size: 20px;
-            /* font-family: Ubuntu, serif; */
-        }
+            font-family: Ubuntu, serif;
+        } */
     </style>
 </head>
 
@@ -485,8 +485,8 @@
             <img src="/assets/logo/bg1.svg" alt="logo">
         </div>
         <div class='typewriter w-fit'>
-            <button class="letStartBtn Ubuntu">let's start</button>
-            <!-- <h1>Click Anywhere to start!</h1> -->
+            <!-- <button class="letStartBtn Ubuntu">let's start</button> -->
+            <h1>Click Anywhere to start!</h1>
         </div>
     </div>
 </body>
