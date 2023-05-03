@@ -421,7 +421,9 @@ class IndicatorUpdaterController
                 ];
                 event(new NewNotification($notification));
             }
-        } else if ($scenario == 'Reglement RH') {//agg
+        } else if ($scenario == 'Réglement sur les conditions du travail') {//agg
+
+
 
             // Update machine Price  //agg
 
@@ -444,6 +446,10 @@ class IndicatorUpdaterController
              $this->set_game_setting('machines_lv0_price',0);
              $this->set_game_setting('machines_lv0_durability',0 );
 
+            $this->set_game_setting("dontbuy",0);
+
+
+
 
             $entreprises = Entreprise::all();
             foreach ($entreprises as $entrep) {
@@ -454,7 +460,7 @@ class IndicatorUpdaterController
                     "store" => true,
 
                     "text" => "Un nouveau règlement gouvernemental imposant aux entreprises d’utiliser des machines qui respectent quelques exigences", //agg
-                    "title" => "Reglement RH",
+                    "title" => "Réglement sur les conditions du travail",
                     "icon_path" => "/assets/icons/cacao.svg", //agg
 
                     "style" => "scenario",
@@ -493,7 +499,7 @@ class IndicatorUpdaterController
                 ];
                 event(new NewNotification($notification));
             }
-        } else if ($scenario == ' Les repercusions de la guerre') { //agg
+        } else if ($scenario == 'Les repercusions de la guerre') { //agg
             // Update delivery times  //agg
             DB::table('raw_material_supplier')->where('supplier_id', 1)->update(['time_to_deliver' => 7]);
             //DB::table('raw_material_supplier')->where('supplier_id', 2)->update(['time_to_deliver' => 6]);
@@ -529,7 +535,7 @@ class IndicatorUpdaterController
                     "store" => true,
 
                     "text" => "La guerre continue et ses répercussions se font sentir!", //agg
-                    "title" => " Les repercusions de la guerre", //agg
+                    "title" => "Les repercusions de la guerre", //agg
                     "icon_path" => "/assets/icons/war.svg",  //agg
 
                     "style" => "scenario",
@@ -569,8 +575,8 @@ class IndicatorUpdaterController
             DB::table('products')->where('id', '=', 12)->update(['unit_prod_price' => 625]);
 
             // couts de transport
-            DB::table('raw_material_supplier')->where('supplier_id', 1)->update(['price_factor ' => 0.85]);
-            DB::table('raw_material_supplier')->where('supplier_id', 2)->update(['price_factor ' => 1.05]);
+            DB::table('raw_material_supplier')->where('supplier_id', 1)->update(['price_factor' => 0.85]);
+            DB::table('raw_material_supplier')->where('supplier_id', 2)->update(['price_factor' => 1.05]);
 
             $entreprises = Entreprise::all();
             foreach ($entreprises as $entrep) {

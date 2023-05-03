@@ -289,7 +289,7 @@ class EntrepriseController extends Controller
 
             "store" => true,
 
-            "title" => "Commande effctuée",
+            "title" => "Commande effectuée",
             "text" => $message,
             "icon_path" => "/assets/icons/check.svg",      // ADD ICON HERE LATER
 
@@ -380,7 +380,7 @@ class EntrepriseController extends Controller
 
         $entreprise_id = $request->entreprise_id;
         $cost = $request->cost;
-
+        $dontbuy = $this->get_game_setting("dontbuy");
         // Check if enough money to launch prod
         $caisse = $this->getIndicator("caisse", $entreprise_id)["value"];
         if ($cost > $caisse) {
@@ -399,7 +399,7 @@ class EntrepriseController extends Controller
             return Response::json(["message" => $message, "success" => false], 200);
         }
 
-        $quantity = $request->quantity * $request->lot_quantity;; // should be divided by 1000 for nb lots
+        $quantity = $request->quantity * 1000; // should be divided by 1000 for nb lots
 
         for ($i = 0; $i < count($product); $i++) {
             if ($product[$i]->raw_material_id != $stock[$i]->raw_material_id) {
@@ -431,7 +431,7 @@ class EntrepriseController extends Controller
             $nb_machines = $this->getIndicator("nb_machines_lv0", $entreprise_id)["value"];
             $nb_busy_machines = $this->getIndicator("nb_machines_lv0_busy", $entreprise_id)["value"];
             $machines_health = $this->getIndicator("machines_lv0_health", $entreprise_id)["value"];
-        
+
         } else if ($machines_lvl == 1) {
             if ($this->getIndicator("machines_lv1_health", $entreprise_id) <= 0) {
                 $message = "Impossible de lancer la production: veuillez réparer vos machines.";
@@ -459,6 +459,12 @@ class EntrepriseController extends Controller
             $nb_machines = $this->getIndicator("nb_machines_lv3", $entreprise_id)["value"];
             $nb_busy_machines = $this->getIndicator("nb_machines_lv3_busy", $entreprise_id)["value"];
             $machines_health = $this->getIndicator("machines_lv3_health", $entreprise_id)["value"];
+        }
+
+        //NEW condition
+        if ($machines_lvl == 0 &&  $dontbuy=0 ){
+            $message = "Impossible de lancer la production avec machine lvl0";
+            return Response::json(["message" => $message, "success" => false], 200);
         }
 
         // Check if enough machines
@@ -764,19 +770,37 @@ class EntrepriseController extends Controller
                 $this->setIndicator("machines_lv3_health", $entreprise_id, 1);
             }
         }else if ($level == 0) {
-            $this->updateIndicator("nb_machines_lv0", $entreprise_id, $number);
+            $dontbuy = $this->get_game_setting("dontbuy");
+            $this->updateIndicator("nb_machines_lv0", $entreprise_id, $number*$dontbuy);
 
             $machines_health = $this->getIndicator("machines_lv0_health", $entreprise_id)["value"];
             $nb_machines = $this->getIndicator("nb_machines_lv0", $entreprise_id)["value"];
-
-            if (($nb_machines * $machines_health + $number) / ($nb_machines + 1) <= 1) {
+            if (($nb_machines * $machines_health + $number*$dontbuy) / ($nb_machines + 1) <= 1) {
                 $this->setIndicator("machines_lv0_health", $entreprise_id, ($nb_machines * $machines_health + $number) / ($nb_machines + 1));
                 $health_msg = "Santé des machines légèrement augmentée.";
             } else {
                 $this->setIndicator("machines_lv0_health", $entreprise_id, 1);
             }
         }
+       if ($level == 0 && $dontbuy ==0){
+        $message = "Impossible d'acheter une machine de lvl 0";
+        $notification = [
+                "entreprise_id" => $entreprise_id,
+                "type" => "MachinesUpdate",
 
+                "store" => true,
+
+                "text" => $message,
+                "title" => "Echec de l'achat de machine",
+
+                "icon_path" => "/assets/icons/alerte.svg",
+
+                "style" => "failure",
+        ];
+        event(new NewNotification($notification));
+        return Response::json(["message" => $message, "success" => false], 200);
+
+       }else {
         $message = "Vous avez acheté " . $number . " machine(s) de niveau " . $level . " au prix de " . $buy_price * $number . " DA. " . $health_msg;
         $notification = [
             "type" => "MachinesUpdate",
@@ -793,6 +817,10 @@ class EntrepriseController extends Controller
         ];
         event(new NewNotification($notification));
         return Response::json(["message" => $message, "success" => true], 200);
+
+       }
+
+
     }
 
     public function sellMachine(Request $request)
@@ -1280,32 +1308,32 @@ class EntrepriseController extends Controller
                         $notification = [
                             "type" => "ActionUpdate",
                             "entreprise_id" => $entreprise_id,
-    
+
                             "store" => true,
-    
+
                             "text" => $message,
                             "title" => "Réparation machines niveau 0",
                             "icon_path" => "/assets/icons/alerte.svg",
-    
+
                             "style" => "failure",
                         ];
                         event(new NewNotification($notification));
                         return Response::json(["message" => $message, "success" => false], 200);
                     }
-    
+
                     $machines_health = $this->getIndicator("machines_lv0_health", $entreprise_id)["value"];
                     if ($machines_health >= 0.9) {
                         $message = "Vos machines de niveau 1 sont en bon état, vous ne pouvez pas les réparer plus que ça!";
                         $notification = [
                             "type" => "ActionUpdate",
                             "entreprise_id" => $entreprise_id,
-    
+
                             "store" => true,
-    
+
                             "text" => $message,
                             "title" => "Réparation machines niveau 0",
                             "icon_path" => "/assets/icons/alerte.svg",
-    
+
                             "style" => "failure",
                         ];
                         event(new NewNotification($notification));
@@ -1313,25 +1341,25 @@ class EntrepriseController extends Controller
                     } else {
                         $this->setIndicator("machines_lv0_health", $entreprise_id, 0.9);
                         $this->updateIndicator("caisse", $entreprise_id, -1 * $price);
-    
+
                         $message = "Vos machines de niveau 0 sont maintenant en meilleur état, vous pouvez les vendre plus cher!";
                         $notification = [
                             "type" => "ActionUpdate",
                             "entreprise_id" => $entreprise_id,
-    
+
                             "store" => true,
-    
+
                             "text" => $message,
                             "title" => "Réparation machines niveau 0",
                             "icon_path" => "/assets/icons/check.svg",
-    
+
                             "style" => "success",
                         ];
                         event(new NewNotification($notification));
                         return Response::json(["message" => $message, "success" => true], 200);
                     }
                     break;
-                
+
         }
     }
     /*
@@ -1604,7 +1632,7 @@ class EntrepriseController extends Controller
                 ->pluck('value')
                 ->toArray()
         );
-     
+
         $ca_5 = array_reverse(
             DB::table('stats')
                 ->where('entreprise_id', '=', $entreprise_id)
@@ -1680,7 +1708,7 @@ class EntrepriseController extends Controller
                 ->take($number)
                 ->pluck('value')
                 ->toArray()
-        ); 
+        );
 
         $data = [
             'dates' => $dates,

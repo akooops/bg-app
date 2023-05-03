@@ -41,7 +41,7 @@ export default {
                         max: 100,
                         splitNumber: 10,
                         itemStyle: {
-                            color: "#B2D06B",
+                            color: "#C59866",
                             shadowColor: "rgba(0,138,255,0.45)",
                             shadowBlur: 10,
                             shadowOffsetX: 2,

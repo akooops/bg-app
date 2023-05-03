@@ -73,7 +73,7 @@ export default {
                     img: "influenceur.jpg", //agg
                 },
                 rh: {
-                    title: "Reglement RH", //agg
+                    title: "Réglement sur les conditions du travail", //agg
                     description: //agg
                         "Un nouveau règlement gouvernemental imposant aux entreprises d’utiliser des machines qui respectent quelques exigences, de ce fait les acteurs de cette industrie n’auront plus le droit d’utiliser certains types de machines non conformes à cette loi, aussi ils seront amenés à améliorer les conditions du travail afin de garder la motivation du personnel.",
                     img: "rh.jpg", //agg
