@@ -181,12 +181,12 @@ export default {
                                     })
                                 );
                                 break;
-                            case " Tremblement de terre Turquie":         //agg
+                            case "Tremblement de terre Turquie":         //agg
                                 this.event = "turquie";
                                 localStorage.setItem(
                                     "current_event",
                                     JSON.stringify({
-                                        name: " Tremblement de terre Turquie",
+                                        name: "Tremblement de terre Turquie",
                                         changes: {
                                             raw_materials: [
                                                 {
@@ -203,11 +203,11 @@ export default {
                                     })
                                 );
                                 break;
-                            case "Un post d’un influenceur":
+                            case "Un post dun influenceur":
                                 this.event = "influenceur";
 
                                 break;
-                            case "Reglement RH":
+                            case "Réglement sur les conditions du travail":
                                 this.event = "rh";
 
                                 break;
@@ -215,7 +215,7 @@ export default {
                                 this.event = "guerre";
 
                                 break;
-                            case "Les crises geopolitiques ":
+                            case "Les crises geopolitiques":
                                 this.event = "chine";
 
                                 break;

@@ -47,7 +47,7 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-    
+
     protected static function booted()
     {
         static::created(function ($user) {
@@ -61,5 +61,20 @@ class User extends Authenticatable
                 $rawMaterialStock->save();
             }
         });
-}
+
+            static::created(function ($user) {
+                $products = Product::all();
+                foreach ($products as $product) {
+                    $product_stock = new stock;
+                    $product_stock->entreprise_id = $user->id;
+                    $product_stock->product_id = $product->id;
+                    $product_stock->quantity = 0;
+                    $product_stock->phase = 0;
+                    $product_stock->quantity_selling = 0;
+                    $product_stock->price = 0;
+                    $product_stock->save();
+                }
+            });
+    }
+
 }
