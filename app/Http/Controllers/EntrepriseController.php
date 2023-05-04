@@ -399,7 +399,7 @@ class EntrepriseController extends Controller
             return Response::json(["message" => $message, "success" => false], 200);
         }
 
-        $quantity = $request->quantity * 1000; // should be divided by 1000 for nb lots
+        $quantity = $request->quantity * $request->lot_quantity;; // should be divided by 1000 for nb lots
 
         for ($i = 0; $i < count($product); $i++) {
             if ($product[$i]->raw_material_id != $stock[$i]->raw_material_id) {

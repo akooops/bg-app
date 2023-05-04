@@ -5,13 +5,10 @@ import VCalendar from "v-calendar";
 import Toasted from "vue-toasted";
 
 axios.defaults.withCredentials = false;
-<<<<<<< HEAD
+
 let local_url = "http://localhost:8000";
 let localhost = "http://localhost:8000";
-=======
-let local_url = "http://localhost:8001";
-let localhost = "http://localhost:8001";
->>>>>>> 5b902ea635791bf087cff4928e54965bcb090c83
+
 axios.defaults.baseURL = localhost;
 
 Vue.component(
