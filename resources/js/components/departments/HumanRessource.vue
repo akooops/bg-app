@@ -374,7 +374,7 @@
                     class="flex flex-row items-center px-4 py-2 gap-2 border-2 shadow-lg rounded-2xl justify-left"
                 >
                     <img
-                        src="/assets/icons/employees.svg"
+                        src="/assets/icons/employee.svg"
                         alt=""
                         class="w-14 p-2 h-14"
                     />
@@ -391,7 +391,7 @@
                     class="flex flex-row items-center px-4 py-2 gap-2 border-2 shadow-lg rounded-2xl justify-left"
                 >
                     <img
-                        src="/assets/icons/employees.svg"
+                        src="/assets/icons/employee.svg"
                         alt=""
                         class="w-14 p-2 h-14"
                     />
@@ -454,8 +454,8 @@
                     style="border: solid 0.5px #C59866 ; "
                     :class="
                         !indicators_loaded || !data_loaded
-                            ? 'bg-gray-200 shadow-lg'
-                            : 'bg-white  shadow-lg '
+                            ? 'bg-gray-500 shadow-lg'
+                            : 'bg-[#FAEEDE] shadow-lg '
                     "
                 >
                     Recruter des employés
@@ -473,8 +473,8 @@
                         !indicators_loaded ||
                         !data_loaded ||
                         total_nb_employees == 0
-                            ? 'bg-gray-200 shadow-lg'
-                            : 'bg-white shadow-lg '
+                            ? 'bg-gray-500 shadow-lg'
+                            : 'bg-[#FAEEDE] shadow-lg '
                     "
                 >
                     Former des employés
@@ -492,8 +492,8 @@
                         !indicators_loaded ||
                         !data_loaded ||
                         total_nb_employees == 0
-                            ? 'bg-gray-200 shadow-lg'
-                            : 'bg-white shadow-lg '
+                            ? 'bg-gray-500 shadow-lg'
+                            : 'bg-[#FAEEDE] shadow-lg '
                     "
                 >
                     Ajouter une prime aux employés
@@ -511,8 +511,8 @@
                         !indicators_loaded ||
                         !data_loaded ||
                         total_nb_employees == 0
-                            ? 'bg-gray-200 shadow-lg'
-                            : 'bg-white shadow-lg'
+                            ? 'bg-gray-500 shadow-lg'
+                            : 'bg-[#FAEEDE] shadow-lg'
                     "
                 >
                     Licencier des employés

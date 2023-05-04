@@ -22,7 +22,7 @@
             <Podium
                 :name="listing[1].entreprise_name"
                 :key="listing[1].entreprise_name"
-                :caisse="listing[1].caisse"
+                :caisse="listing[1].profit"
                 :ca="listing[1].ca"
                 :dettes="listing[1].dettes"
                 :score="listing[1].score"
@@ -31,7 +31,7 @@
             <Podium
                 :name="listing[0].entreprise_name"
                 :key="listing[0].entreprise_name"
-                :caisse="listing[0].caisse"
+                :caisse="listing[0].profit"
                 :ca="listing[0].ca"
                 :dettes="listing[0].dettes"
                 :score="listing[0].score"
@@ -40,7 +40,7 @@
             <Podium
                 :name="listing[2].entreprise_name"
                 :key="listing[2].entreprise_name"
-                :caisse="listing[2].caisse"
+                :caisse="listing[2].profit"
                 :ca="listing[2].ca"
                 :dettes="listing[2].dettes"
                 :score="listing[2].score"
@@ -54,7 +54,7 @@
                     v-for="(item, i) in listing.slice(3, 13)"
                     :key="item.entreprise_name"
                     :name="item.entreprise_name"
-                    :caisse="item.caisse"
+                    :caisse="item.profit"
                     :ca="item.ca"
                     :dettes="item.dettes"
                     :score="item.score"
