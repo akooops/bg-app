@@ -8,6 +8,7 @@ use Illuminate\Bus\Queueable;
 use App\Traits\IndicatorTrait;
 use App\Events\NewNotification;
 use App\Models\Product;
+use App\Models\Entreprise;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -28,6 +29,25 @@ class SellProductionsScheduler implements ShouldQueue
     public function __construct()
     {
         //
+    }
+
+    public function socialInfluence($entreprise_id, $coeff_array)
+    {
+        $indicators = ["nb_subscribers", "social_presence", "media_presence", "events_presence"];
+        $entreprise_ss = 0;
+        $all_ss = 0;
+        for ($i = 0; $i < count($coeff_array); $i++) {
+            $entreprise_ss += $coeff_array[$i] * $this->getIndicator($indicators[$i], $entreprise_id)["value"];
+        }
+
+        $entreprises = Entreprise::all();
+        foreach ($entreprises as $entreprise) {
+            $eid = $entreprise->id;
+            for ($i = 0; $i < count($coeff_array); $i++) {
+                $all_ss += $coeff_array[$i] * $this->getIndicator($indicators[$i], $eid)["value"];
+            }
+        }
+        return $entreprise_ss / $all_ss;
     }
 
     /**
@@ -66,12 +86,15 @@ class SellProductionsScheduler implements ShouldQueue
 
                 break;
             }
-
-            // $production_quantity = $s->quantity;
-
+            $coeffs = [1, 1, 1, 1];
+            $ss = $this->socialInfluence($entreprise_id, $coeffs);
+            $market_share = $this->getIndicator("market_share", $entreprise_id)["value"];
             $quantity_to_sell = $this->productDemandReal($product_id, $entreprise_id, $price, $s->quantity_selling);
-            $quantity_to_sell = min($quantity_to_sell, DB::table("products")->where("id", "=", $product_id)->first()->left_demand);
-
+            $quantity_to_sell = min($quantity_to_sell,(0.5*($ss)+0.5*$market_share)*(DB::table("products")->where("id", "=", $product_id)->first()->left_demand));
+            // $production_quantity = $s->quantity;
+            //$market_share = $this->getIndicator("market_share", $entreprise_id)["value"];
+            //$quantity_to_sell = $this->productDemandReal($product_id, $entreprise_id, $price, $s->quantity_selling);
+            //$quantity_to_sell = min($quantity_to_sell,$market_share*DB::table("products")->where("id", "=", $product_id)->first()->left_demand);
             // $production_quantity_sold = $production->sold;
 
             // $production_percentage_to_sell = $this->get_game_setting("production_percentage_to_sell");

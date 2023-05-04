@@ -83,33 +83,39 @@ class WeeklyOperations implements ShouldQueue
             DB::table('products')->where('id', '=', 7)->update(['percent_population' =>3.7841 * $pop_percent]); //parka
             DB::table('products')->where('id', '=', 6)->update(['percent_population' =>0.9661 * $pop_percent]); // pull col rond
 */
-
+$population = $this->get_game_setting("population");
          $x = $current_date % 48;
          $pop_percent = 0;
-        if ($x <= 13 ||39 <= $x ) {
+        if ($x <= 12 ||36 <= $x ) {
             $pop_percent = 0.1;
         }
         else {
-            $val = ($x - 13) / 26;
+            $val = ($x - 12) / 24;
         // $pop_percent = 0.8 * sqrt( 1 - $val ) * $val * exp($val);
         $pop_percent = (1-(pow((($val-0.375)*2-0.25),2)))*exp(pow((($val-0.375)*2-0.25),2));
         }
-            DB::table('products')->where('id', '=', 4)->update(['percent_population' => 34.1278 * $pop_percent]); //tshirt
-            DB::table('products')->where('id', '=', 5)->update(['percent_population' => 0.9661* $pop_percent]); //polo rugby
+            $avgdemand4 =DB::table('products')->where('id', '=', 4)->value('avg_demand');
+            DB::table('products')->where('id', '=', 4)->update(['percent_population' => ($avgdemand4/$population) * $pop_percent]); //tshirt
+            $avgdemand5 =DB::table('products')->where('id', '=', 5)->value('avg_demand');
+            DB::table('products')->where('id', '=', 5)->update(['percent_population' => ($avgdemand5/$population) * $pop_percent]); //polo rugby
 
         // for winter
         $x = $current_date % 48;
         $pop_percent = 0;
-        if ($x < 13 ||39 < $x ) {
-            $val = (($x +13) % 26 ) /26 ;
+        if ($x <= 12 ||36 <= $x ) {
+            $val = (($x +12) % 24 ) /24 ;
             $pop_percent = (1-(pow((($val-0.375)*2-0.25),2)))*exp(pow((($val-0.375)*2-0.25),2));
         }
         else {
             $pop_percent = 0.1;
         }
-            DB::table('products')->where('id', '=', 7)->update(['percent_population' =>3.7841 * $pop_percent]); //parka
-            DB::table('products')->where('id', '=', 6)->update(['percent_population' =>0.9661 * $pop_percent]); // pull col rond
-            DB::table('products')->where('id', '=', 12)->update(['percent_population' =>19.8671* $pop_percent]); //pull col BATEAU
+
+            $avgdemand7 =DB::table('products')->where('id', '=', 7)->value('avg_demand');
+            DB::table('products')->where('id', '=', 7)->update(['percent_population' => ($avgdemand7/$population) * $pop_percent]);//parka
+            $avgdemand6 =DB::table('products')->where('id', '=', 6)->value('avg_demand');
+            DB::table('products')->where('id', '=', 6)->update(['percent_population' => ($avgdemand6/$population) * $pop_percent]); // pull col rond
+            $avgdemand12 =DB::table('products')->where('id', '=', 12)->value('avg_demand');
+            DB::table('products')->where('id', '=', 12)->update(['percent_population' => ($avgdemand12/$population) * $pop_percent]); //pull col BATEAU
 
 
         // Refresh products' left demand every week

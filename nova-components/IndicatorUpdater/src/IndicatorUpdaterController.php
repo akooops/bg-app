@@ -360,11 +360,11 @@ class IndicatorUpdaterController
 
 
             // Update % population
-            DB::table('products')->where('id', '=', 4)->update(['percent_population' => 37.541]);     // T-shirt      //agg
-            DB::table('products')->where('id', '=', 5)->update(['percent_population' => 1.063]);     // Polo rugby
-            DB::table('products')->where('id', '=', 7)->update(['percent_population' => 4.162]);     // Parkas
-            DB::table('products')->where('id', '=', 10)->update(['percent_population' => 0.775]);     // jupe ajuste
-            DB::table('products')->where('id', '=', 11)->update(['percent_population' => 8.232]);      // jupe longue
+            DB::table('products')->where('id', '=', 4)->update(['avg_demand' => 37541]);     // T-shirt      //agg
+            DB::table('products')->where('id', '=', 5)->update(['avg_demand' => 1063]);     // Polo rugby
+            DB::table('products')->where('id', '=', 7)->update(['avg_demand' => 4162]);     // Parkas
+            DB::table('products')->where('id', '=', 10)->update(['avg_demand' => 0775]);     // jupe ajuste
+            DB::table('products')->where('id', '=', 11)->update(['avg_demand' => 8232]);      // jupe longue
             $entreprises = Entreprise::all();
             foreach ($entreprises as $entrep) {
                 $notification = [  //agg
@@ -399,11 +399,11 @@ class IndicatorUpdaterController
 
 
             // Update Products demand  //agg
-            DB::table('products')->where('id', '=', 1)->update(['percent_population' => 5.288]);     // Pantalo Cargo
-            DB::table('products')->where('id', '=', 4)->update(['percent_population' => 27.302]);    // T-shirt
-            DB::table('products')->where('id', '=', 7)->update(['percent_population' => 3.027]);     // Parkas
-            DB::table('products')->where('id', '=', 11)->update(['percent_population' =>5.987]);     // Jupe longue
-            DB::table('products')->where('id', '=', 12)->update(['percent_population' => 15.894]);   // Pull a col bateau
+            DB::table('products')->where('id', '=', 1)->update(['avg_demand' => 5288]);     // Pantalo Cargo
+            DB::table('products')->where('id', '=', 4)->update(['avg_demand' => 27302]);    // T-shirt
+            DB::table('products')->where('id', '=', 7)->update(['avg_demand' => 3027]);     // Parkas
+            DB::table('products')->where('id', '=', 11)->update(['avg_demand' =>5987]);     // Jupe longue
+            DB::table('products')->where('id', '=', 12)->update(['avg_demand' => 15894]);   // Pull a col bateau
 
             $entreprises = Entreprise::all();
             foreach ($entreprises as $entrep) {//agg
@@ -476,9 +476,9 @@ class IndicatorUpdaterController
 
             // Update Products  //agg
 
-            DB::table('products')->where('id', '=', 1)->update(['percent_population' => 8.593]);     // Pantalo Cargo
-            DB::table('products')->where('id', '=', 12)->update(['percent_population' => 25.827]);     // pull col bqtequ
-            DB::table('products')->where('id', '=', 7)->update(['percent_population' =>7.568]);     // Parkas
+            DB::table('products')->where('id', '=', 1)->update(['avg_demand' => 8593]);     // Pantalo Cargo
+            DB::table('products')->where('id', '=', 12)->update(['avg_demand' => 25827]);     // pull col bqtequ
+            DB::table('products')->where('id', '=', 7)->update(['avg_demand' =>7568]);     // Parkas
 
             // Update POPULATION  //agg
             $this->set_game_setting('population', 1010000); //agg
