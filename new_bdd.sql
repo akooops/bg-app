@@ -4,6 +4,14 @@
  the old rows in iec_bg database that are not assosiated with your entreprise_id (especially the commands table , stock table or the raw_material_stock table )
 
 */ 
+-- departments
+INSERT INTO `departments` (`id`, `name`, `starting_worker_nb`, `created_at`, `updated_at`, `icon`) VALUES
+(1, 'Production', 5, '2021-03-20 20:44:18', '2021-03-20 21:23:16', 'fa-industry'),
+(2, 'Approvisionnement', 2, '2021-03-20 21:23:44', '2021-03-20 21:23:44', 'fa-box-open'),
+(3, 'Marketing', 5, '2021-03-20 21:23:58', '2021-03-20 21:23:58', 'fa-ad'),
+(4, 'Finance', 3, '2021-03-20 21:25:16', '2021-03-20 21:25:16', 'fa-file-invoice-dollar'),
+(5, 'Ressources Humaines', 2, '2021-03-20 21:32:30', '2021-04-08 10:53:02', 'fa-users');
+
 -- raw materials 
 INSERT INTO `raw_materials` (`id`, `created_at`, `updated_at`, `price`, `unit`, `name`, `volume`, `icon`) VALUES
  (10, '2023-04-15 13:50:54', '2023-04-15 13:50:54', '70.00', NULL, 'Laine', '1', '/assets/icons/nv/laine.svg'), 

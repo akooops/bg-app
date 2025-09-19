@@ -6,8 +6,7 @@ import Toasted from "vue-toasted";
 
 axios.defaults.withCredentials = false;
 
-let local_url = "http://localhost:8000";
-let localhost = "http://localhost:8000";
+let localhost = "https://bg.iecenp.com";
 
 axios.defaults.baseURL = localhost;
 

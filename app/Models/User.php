@@ -55,6 +55,10 @@ class User extends Authenticatable
             if ($user->type === 'entreprise') {
                 $products = Product::all();
                 foreach ($products as $product) {
+                    if(stock::where('entreprise_id', $user->id)->where('product_id', $product->id)->exists()) {
+                        continue;
+                    }
+            
                     DB::table('stock')->insert([
                         'entreprise_id' => $user->id,
                         'product_id' => $product->id,
@@ -68,6 +72,9 @@ class User extends Authenticatable
                 $rawMaterials = RawMaterial::all();
                 foreach ($rawMaterials as $rawMaterial) {
                     // Use raw SQL instead of Eloquent
+                    if(RawMaterialStock::where('entreprise_id', $user->id)->where('raw_material_id', $rawMaterial->id)->exists()) {
+                        continue;
+                    }
                     DB::table('raw_materials_stock')->insert([
                         'entreprise_id' => $user->id,
                         'raw_material_id' => $rawMaterial->id,
