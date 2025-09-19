@@ -23,5 +23,4 @@ class Entreprise extends User
     {
         return $this->hasMany(Notification::class);
     }
-
 }

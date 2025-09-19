@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
 
 class User extends Authenticatable
 {
@@ -51,30 +52,30 @@ class User extends Authenticatable
     protected static function booted()
     {
         static::created(function ($user) {
-            $rawMaterials = RawMaterial::all();
-            foreach ($rawMaterials as $rawMaterial) {
-                $rawMaterialStock = new RawMaterialStock;
-                $rawMaterialStock->entreprise_id = $user->id;
-                $rawMaterialStock->raw_material_id = $rawMaterial->id;
-                $rawMaterialStock->quantity = 0;
-                $rawMaterialStock->phase = 0;
-                $rawMaterialStock->save();
-            }
-        });
-
-            static::created(function ($user) {
+            if ($user->type === 'entreprise') {
                 $products = Product::all();
                 foreach ($products as $product) {
-                    $product_stock = new stock;
-                    $product_stock->entreprise_id = $user->id;
-                    $product_stock->product_id = $product->id;
-                    $product_stock->quantity = 0;
-                    $product_stock->phase = 0;
-                    $product_stock->quantity_selling = 0;
-                    $product_stock->price = 0;
-                    $product_stock->save();
+                    DB::table('stock')->insert([
+                        'entreprise_id' => $user->id,
+                        'product_id' => $product->id,
+                        'quantity' => 0,
+                        'phase' => 0,
+                        'quantity_selling' => 0,
+                        'price' => 0
+                    ]);
                 }
-            });
-    }
 
+                $rawMaterials = RawMaterial::all();
+                foreach ($rawMaterials as $rawMaterial) {
+                    // Use raw SQL instead of Eloquent
+                    DB::table('raw_materials_stock')->insert([
+                        'entreprise_id' => $user->id,
+                        'raw_material_id' => $rawMaterial->id,
+                        'quantity' => 0,
+                        'phase' => 0
+                    ]);
+                }
+            }
+        });
+    }
 }
